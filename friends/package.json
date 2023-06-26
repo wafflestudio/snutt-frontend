@@ -7,7 +7,9 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "build:android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/com/wafflestudio/snutt-staging/src/main/assets/index.android.bundle --assets-dest android/com/wafflestudio/snutt-staging/src/main/res/",
+    "build:ios": "react-native bundle --dev false --entry-file index.js --bundle-output ios/main.jsbundle --assets-dest ./ios --platform ios"
   },
   "dependencies": {
     "react": "18.2.0",
