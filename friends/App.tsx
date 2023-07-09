@@ -46,7 +46,7 @@ function Section({children, title}: SectionProps): JSX.Element {
   );
 }
 
-function App(): JSX.Element {
+function App(props: {token: string}): JSX.Element {
   const [count, setCount] = useState(1);
   const [data, setData] = useState<{title: string}>();
   const isDarkMode = useColorScheme() === 'dark';
@@ -82,6 +82,7 @@ function App(): JSX.Element {
           <Section title="data fetching">
             {data ? data.title : 'loading...'}
           </Section>
+          <Section title="token">{props.token}</Section>
         </View>
       </ScrollView>
     </SafeAreaView>
