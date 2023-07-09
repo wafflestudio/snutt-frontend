@@ -5,9 +5,10 @@
  * @format
  */
 
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import type {PropsWithChildren} from 'react';
 import {
+  Button,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -17,13 +18,7 @@ import {
   View,
 } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {Colors, Header} from 'react-native/Libraries/NewAppScreen';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -36,18 +31,14 @@ function Section({children, title}: SectionProps): JSX.Element {
       <Text
         style={[
           styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
+          {color: isDarkMode ? Colors.white : Colors.black},
         ]}>
         {title}
       </Text>
       <Text
         style={[
           styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
+          {color: isDarkMode ? Colors.light : Colors.dark},
         ]}>
         {children}
       </Text>
@@ -56,11 +47,19 @@ function Section({children, title}: SectionProps): JSX.Element {
 }
 
 function App(): JSX.Element {
+  const [count, setCount] = useState(1);
+  const [data, setData] = useState<{title: string}>();
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+
+  useEffect(() => {
+    fetch(`https://jsonplaceholder.typicode.com/todos/${count}`)
+      .then(res => res.json())
+      .then(setData);
+  }, [count]);
 
   return (
     <SafeAreaView style={backgroundStyle}>
@@ -77,16 +76,12 @@ function App(): JSX.Element {
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
           <Section title="스누티티">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
+            count: {count}{' '}
+            <Button title="+1" onPress={() => setCount(count + 1)} />
           </Section>
-          <Section title="리액트네이티브">
-            <ReloadInstructions />
+          <Section title="data fetching">
+            {data ? data.title : 'loading...'}
           </Section>
-          <Section title="되냐이거">
-            <DebugInstructions />
-          </Section>
-          <LearnMoreLinks />
         </View>
       </ScrollView>
     </SafeAreaView>
