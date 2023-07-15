@@ -13,7 +13,7 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { useServiceContext } from '../main';
 import { Timetable } from '../entities/timetable';
 
-function App(): JSX.Element {
+export const App = () => {
   const [data, setData] = useState<Timetable[]>();
   const isDarkMode = useColorScheme() === 'dark';
   const { timetableService } = useServiceContext();
@@ -50,6 +50,4 @@ function App(): JSX.Element {
       </ScrollView>
     </SafeAreaView>
   );
-}
-
-export default App;
+};

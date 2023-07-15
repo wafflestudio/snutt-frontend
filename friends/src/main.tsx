@@ -1,11 +1,11 @@
 import { createContext, useContext, useMemo } from 'react';
-import App from './app/App';
 import { ErrorBoundary } from './app/components/ErrorBoundary';
 import { Text, View } from 'react-native';
 import { createFetchClient } from './infrastructures/createFetchClient';
 import { createTimetableRepository } from './infrastructures/createTimetableRepository';
 import { createTimetableService } from './infrastructures/createTimetableService';
 import { TimetableService } from './usecases/timetableService';
+import { App } from './app/App';
 
 type ServiceContext = { timetableService: TimetableService };
 const serviceContext = createContext<ServiceContext | null>(null);
@@ -43,5 +43,5 @@ export const Main = ({ token }: { token: string }) => {
 };
 
 const baseUrl = 'https://snutt-api-dev.wafflestudio.com';
-const apiKey =
+const apiKey = // TODO: change this from props
   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdHJpbmciOiJ0ZXN0Iiwia2V5X3ZlcnNpb24iOiIwIiwiaWF0IjoxNTA3NzIzNzA3fQ.Oux87M0p4FPwVFAM9HmOmmVh-FKyre7DJ0tUZlX5mQg';
