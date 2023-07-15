@@ -5,8 +5,8 @@
  * @format
  */
 
-import React, {useEffect, useState} from 'react';
-import type {PropsWithChildren} from 'react';
+import React, { useEffect, useState } from 'react';
+import type { PropsWithChildren } from 'react';
 import {
   Button,
   SafeAreaView,
@@ -18,37 +18,39 @@ import {
   View,
 } from 'react-native';
 
-import {Colors, Header} from 'react-native/Libraries/NewAppScreen';
+import { Colors, Header } from 'react-native/Libraries/NewAppScreen';
 
 type SectionProps = PropsWithChildren<{
   title: string;
 }>;
 
-function Section({children, title}: SectionProps): JSX.Element {
+function Section({ children, title }: SectionProps): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <View style={styles.sectionContainer}>
       <Text
         style={[
           styles.sectionTitle,
-          {color: isDarkMode ? Colors.white : Colors.black},
-        ]}>
+          { color: isDarkMode ? Colors.white : Colors.black },
+        ]}
+      >
         {title}
       </Text>
       <Text
         style={[
           styles.sectionDescription,
-          {color: isDarkMode ? Colors.light : Colors.dark},
-        ]}>
+          { color: isDarkMode ? Colors.light : Colors.dark },
+        ]}
+      >
         {children}
       </Text>
     </View>
   );
 }
 
-function App(props: {token: string}): JSX.Element {
+function App(props: { token: string }): JSX.Element {
   const [count, setCount] = useState(1);
-  const [data, setData] = useState<{title: string}>();
+  const [data, setData] = useState<{ title: string }>();
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
@@ -57,7 +59,7 @@ function App(props: {token: string}): JSX.Element {
 
   useEffect(() => {
     fetch(`https://jsonplaceholder.typicode.com/todos/${count}`)
-      .then(res => res.json())
+      .then((res) => res.json())
       .then(setData);
   }, [count]);
 
@@ -69,12 +71,14 @@ function App(props: {token: string}): JSX.Element {
       />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
+        style={backgroundStyle}
+      >
         <Header />
         <View
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
+          }}
+        >
           <Section title="스누티티">
             count: {count}{' '}
             <Button title="+1" onPress={() => setCount(count + 1)} />
