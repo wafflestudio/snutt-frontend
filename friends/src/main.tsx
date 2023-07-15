@@ -7,6 +7,17 @@ import { createTimetableService } from './infrastructures/createTimetableService
 import { TimetableService } from './usecases/timetableService';
 import { App } from './app/App';
 
+type ExternalProps = {
+  'x-access-token': string;
+  'x-build-number': string;
+  'x-os-version': string;
+  'x-device-model': string;
+  'x-os-type': 'android' | 'ios';
+  'x-access-apikey': string;
+  'x-device-id': string;
+  'x-app-type': string;
+  'x-app-version': string;
+};
 type ServiceContext = { timetableService: TimetableService };
 const serviceContext = createContext<ServiceContext | null>(null);
 export const useServiceContext = () => {
@@ -15,8 +26,11 @@ export const useServiceContext = () => {
   return context;
 };
 
-export const Main = ({ token }: { token: string }) => {
-  const fetchClient = createFetchClient(baseUrl, token, apiKey);
+export const Main = ({
+  'x-access-token': xAccessToken,
+  'x-access-apikey': xAccessApikey,
+}: ExternalProps) => {
+  const fetchClient = createFetchClient(baseUrl, xAccessToken, xAccessApikey);
   const timetableRepository = createTimetableRepository(fetchClient);
   const timetableService = createTimetableService({
     repositories: [timetableRepository],
@@ -43,5 +57,3 @@ export const Main = ({ token }: { token: string }) => {
 };
 
 const baseUrl = 'https://snutt-api-dev.wafflestudio.com';
-const apiKey = // TODO: change this from props
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdHJpbmciOiJ0ZXN0Iiwia2V5X3ZlcnNpb24iOiIwIiwiaWF0IjoxNTA3NzIzNzA3fQ.Oux87M0p4FPwVFAM9HmOmmVh-FKyre7DJ0tUZlX5mQg';
