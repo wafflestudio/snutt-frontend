@@ -6,6 +6,8 @@ import { createTimetableRepository } from './infrastructures/createTimetableRepo
 import { createTimetableService } from './infrastructures/createTimetableService';
 import { TimetableService } from './usecases/timetableService';
 import { App } from './app/App';
+import { TimetableViewService } from './usecases/timetableViewService';
+import { createTimetableViewService } from './infrastructures/createTimetableViewService';
 
 type ExternalProps = {
   'x-access-token': string;
@@ -18,7 +20,7 @@ type ExternalProps = {
   'x-app-type': string;
   'x-app-version': string;
 };
-type ServiceContext = { timetableService: TimetableService };
+type ServiceContext = { timetableService: TimetableService; timetableViewService: TimetableViewService };
 const serviceContext = createContext<ServiceContext | null>(null);
 export const useServiceContext = () => {
   const context = useContext(serviceContext);
@@ -32,8 +34,12 @@ export const Main = ({ 'x-access-token': xAccessToken, 'x-access-apikey': xAcces
   const timetableService = createTimetableService({
     repositories: [timetableRepository],
   });
+  const timetableViewService = createTimetableViewService();
 
-  const contextValue = useMemo(() => ({ timetableService }), [timetableService]);
+  const contextValue = useMemo(
+    () => ({ timetableService, timetableViewService }),
+    [timetableService, timetableViewService],
+  );
 
   return (
     <ErrorBoundary

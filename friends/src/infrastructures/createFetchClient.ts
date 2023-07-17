@@ -8,8 +8,6 @@ export const createFetchClient = (baseUrl: string, token: string, apiKey: string
       });
       const data = await response.text();
 
-      console.log(data);
-
       if (!response.ok) throw JSON.parse(data);
       return JSON.parse(data) as T;
     },
