@@ -1,9 +1,10 @@
 import { ApiClient } from '../clients/apiClient';
-import { Timetable } from '../entities/timetable';
+import { BasicTimetable, FullTimetable } from '../entities/timetable';
 import { TimetableRepository } from '../repositories/timetableRepository';
 
-export const createTimetableRepository = (
-  apiClient: ApiClient,
-): TimetableRepository => {
-  return { listTimetables: () => apiClient.get<Timetable[]>('/v1/tables') };
+export const createTimetableRepository = (apiClient: ApiClient): TimetableRepository => {
+  return {
+    listTimetables: () => apiClient.get<BasicTimetable[]>('/v1/tables'),
+    getTimetable: (id) => apiClient.get<FullTimetable>(`/v1/tables/${id}`),
+  };
 };

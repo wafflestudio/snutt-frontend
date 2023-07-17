@@ -26,20 +26,14 @@ export const useServiceContext = () => {
   return context;
 };
 
-export const Main = ({
-  'x-access-token': xAccessToken,
-  'x-access-apikey': xAccessApikey,
-}: ExternalProps) => {
+export const Main = ({ 'x-access-token': xAccessToken, 'x-access-apikey': xAccessApikey }: ExternalProps) => {
   const fetchClient = createFetchClient(baseUrl, xAccessToken, xAccessApikey);
   const timetableRepository = createTimetableRepository(fetchClient);
   const timetableService = createTimetableService({
     repositories: [timetableRepository],
   });
 
-  const contextValue = useMemo(
-    () => ({ timetableService }),
-    [timetableService],
-  );
+  const contextValue = useMemo(() => ({ timetableService }), [timetableService]);
 
   return (
     <ErrorBoundary
