@@ -1,5 +1,6 @@
-import { Timetable } from '../entities/timetable';
+import { FullTimetable, BasicTimetable } from '../entities/timetable';
 
 export type TimetableRepository = {
-  listTimetables: () => Promise<Timetable[]>;
+  listTimetables: () => Promise<BasicTimetable[]>;
+  getTimetable: (id: FullTimetable['_id']) => Promise<FullTimetable>;
 };

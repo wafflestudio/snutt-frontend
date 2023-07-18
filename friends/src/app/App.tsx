@@ -1,30 +1,36 @@
 import { useEffect, useState } from 'react';
-import {
-  FlatList,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, useColorScheme, View } from 'react-native';
 
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { useServiceContext } from '../main';
-import { Timetable } from '../entities/timetable';
+import { BasicTimetable, FullTimetable } from '../entities/timetable';
+import { Timetable } from './components/Timetable';
+import { Color } from '../entities/color';
 
 export const App = () => {
-  const [data, setData] = useState<Timetable[]>();
+  const [table, setTable] = useState<FullTimetable>();
+  const [tables, setTables] = useState<BasicTimetable[]>();
+  const [palette, setPalette] = useState<Color[]>();
   const isDarkMode = useColorScheme() === 'dark';
-  const { timetableService } = useServiceContext();
+  const { timetableService, colorService } = useServiceContext();
 
+  const representativeTableId = tables?.[0]?._id;
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
   useEffect(() => {
-    timetableService.listTimetables().then(setData);
+    colorService.getColorPalette().then(setPalette);
+  }, [colorService]);
+
+  useEffect(() => {
+    timetableService.listTimetables().then(setTables);
   }, [timetableService]);
+
+  useEffect(() => {
+    if (!representativeTableId) return setTable(undefined);
+    timetableService.getTimetable(representativeTableId).then(setTable);
+  }, [timetableService, representativeTableId]);
 
   return (
     <SafeAreaView style={backgroundStyle}>
@@ -32,22 +38,18 @@ export const App = () => {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}
-      >
+      <ScrollView contentInsetAdjustmentBehavior="automatic" style={backgroundStyle}>
         <View
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}
         >
-          <Text>GET /tables</Text>
-          <FlatList
-            data={data?.map((d) => ({ key: d._id, title: d.title }))}
-            renderItem={({ item }) => <Text>{item.title}</Text>}
-          />
+          <Text>{table?.title}</Text>
+          {table && palette && <Timetable timetable={table} style={styles.table} palette={palette} />}
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({ table: { margin: 10 } });

@@ -6,5 +6,8 @@ export const createTimetableService = ({
 }: {
   repositories: [TimetableRepository];
 }): TimetableService => {
-  return { listTimetables: () => timetableRepository.listTimetables() };
+  return {
+    listTimetables: () => timetableRepository.listTimetables(),
+    getTimetable: (id) => timetableRepository.getTimetable(id),
+  };
 };
