@@ -8,6 +8,9 @@ import { TimetableService } from './usecases/timetableService';
 import { App } from './app/App';
 import { TimetableViewService } from './usecases/timetableViewService';
 import { createTimetableViewService } from './infrastructures/createTimetableViewService';
+import { ColorService } from './usecases/colorService';
+import { createColorService } from './infrastructures/createColorService';
+import { createColorRepository } from './infrastructures/createColorRepository';
 
 type ExternalProps = {
   'x-access-token': string;
@@ -20,7 +23,11 @@ type ExternalProps = {
   'x-app-type': string;
   'x-app-version': string;
 };
-type ServiceContext = { timetableService: TimetableService; timetableViewService: TimetableViewService };
+type ServiceContext = {
+  timetableService: TimetableService;
+  timetableViewService: TimetableViewService;
+  colorService: ColorService;
+};
 const serviceContext = createContext<ServiceContext | null>(null);
 export const useServiceContext = () => {
   const context = useContext(serviceContext);
@@ -35,10 +42,11 @@ export const Main = ({ 'x-access-token': xAccessToken, 'x-access-apikey': xAcces
     repositories: [timetableRepository],
   });
   const timetableViewService = createTimetableViewService();
+  const colorService = createColorService({ repositories: [createColorRepository({ clients: [fetchClient] })] });
 
   const contextValue = useMemo(
-    () => ({ timetableService, timetableViewService }),
-    [timetableService, timetableViewService],
+    () => ({ timetableService, timetableViewService, colorService }),
+    [timetableService, timetableViewService, colorService],
   );
 
   return (

@@ -13,7 +13,7 @@ export type FullTimetable = {
   year: number;
   semester: 1 | 2 | 3 | 4;
   title: string;
-  lecture_list: {
+  lecture_list: ({
     _id: string;
     classification: string;
     department: string;
@@ -36,10 +36,11 @@ export type FullTimetable = {
     category: string;
     course_number: string;
     lecture_number: string;
-    color: {};
-    colorIndex: number;
     lecture_id: string;
-  }[];
+  } & (
+    | { color: Record<'bg' | 'fg', never>; colorIndex: 0 }
+    | { color: Record<'bg' | 'fg', string>; colorIndex: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 }
+  ))[];
   theme: 0;
   updated_at: string;
 };

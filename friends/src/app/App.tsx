@@ -5,17 +5,23 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { useServiceContext } from '../main';
 import { BasicTimetable, FullTimetable } from '../entities/timetable';
 import { Timetable } from './components/Timetable';
+import { Color } from '../entities/color';
 
 export const App = () => {
   const [table, setTable] = useState<FullTimetable>();
   const [tables, setTables] = useState<BasicTimetable[]>();
+  const [palette, setPalette] = useState<Color[]>();
   const isDarkMode = useColorScheme() === 'dark';
-  const { timetableService } = useServiceContext();
+  const { timetableService, colorService } = useServiceContext();
 
   const representativeTableId = tables?.[0]?._id;
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+
+  useEffect(() => {
+    colorService.getColorPalette().then(setPalette);
+  }, [colorService]);
 
   useEffect(() => {
     timetableService.listTimetables().then(setTables);
@@ -39,7 +45,7 @@ export const App = () => {
           }}
         >
           <Text>{table?.title}</Text>
-          {table && <Timetable timetable={table} style={styles.table} />}
+          {table && palette && <Timetable timetable={table} style={styles.table} palette={palette} />}
         </View>
       </ScrollView>
     </SafeAreaView>
