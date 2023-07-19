@@ -1,5 +1,16 @@
 import { useEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import {
+  FlatList,
+  NativeEventEmitter,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+  NativeModules,
+} from 'react-native';
 
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { useServiceContext } from '../main';
@@ -7,7 +18,10 @@ import { BasicTimetable, FullTimetable } from '../entities/timetable';
 import { Timetable } from './components/Timetable';
 import { Color } from '../entities/color';
 
+const MyEventEmitter = new NativeEventEmitter(NativeModules.MyNativeModule);
+
 export const App = () => {
+  const [events, setEvents] = useState<string[]>([]);
   const [table, setTable] = useState<FullTimetable>();
   const [tables, setTables] = useState<BasicTimetable[]>();
   const [palette, setPalette] = useState<Color[]>();
@@ -18,6 +32,15 @@ export const App = () => {
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+
+  useEffect(() => {
+    // 이벤트 리스너 등록
+    const listener = MyEventEmitter.addListener('MyEvent', (event) => {
+      setEvents((prev) => [...prev, JSON.stringify(event)]);
+    });
+
+    return () => listener.remove();
+  }, []);
 
   useEffect(() => {
     colorService.getColorPalette().then(setPalette);
@@ -38,6 +61,10 @@ export const App = () => {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
+      <View>
+        <Text>여기 이벤트들 ({events.length}개)</Text>
+        <FlatList data={events} renderItem={({ item, index }) => <Text key={index}>{item}</Text>} />
+      </View>
       <ScrollView contentInsetAdjustmentBehavior="automatic" style={backgroundStyle}>
         <View
           style={{
