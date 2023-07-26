@@ -13,6 +13,7 @@
     "deploy:all": "yarn build:android && yarn build:ios && aws s3 sync dist s3://snutt-rn-assets --delete --content-type 'application/javascript'"
   },
   "dependencies": {
+    "@tanstack/react-query": "^4.32.0",
     "react": "18.2.0",
     "react-native": "0.72.0"
   },
