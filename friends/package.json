@@ -10,7 +10,8 @@
     "test": "jest",
     "build:android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output dist/android.jsbundle --assets-dest android/com/wafflestudio/snutt-staging/src/main/res/",
     "build:ios": "react-native bundle --dev false --entry-file index.js --bundle-output dist/ios.jsbundle --assets-dest ./ios --platform ios",
-    "deploy:all": "yarn build:android && yarn build:ios && aws s3 sync dist s3://snutt-rn-assets --delete --content-type 'application/javascript'"
+    "deploy:dev": "scripts/deploy.sh dev",
+    "deploy:prod": "echo prod 배포는 github 에서 직접 릴리즈를 생성해 주세요."
   },
   "dependencies": {
     "@tanstack/react-query": "^4.32.0",
