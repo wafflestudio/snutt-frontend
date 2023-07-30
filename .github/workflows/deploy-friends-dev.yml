@@ -45,3 +45,17 @@ jobs:
           aws s3 cp ./dist/ios.jsbundle s3://$AWS_S3_BUCKET/$TAG_NAME/ios.jsbundle
           aws s3 cp ./dist/android.jsbundle s3://$AWS_S3_BUCKET/$TAG_NAME/android.jsbundle
           aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_DISTRIBUTION_ID --paths "/:$TAG_NAME/*"
+
+      - name: Update configs
+        id: update-configs
+        env:
+          SNUTT_API_KEY: ${{ secrets.SNUTT_APIKEY }}
+          SNUTT_TOKEN: ${{ secrets.SNUTT_TOKEN }}
+        run: |
+          curl 'https://snutt-api-dev.wafflestudio.com/v1/admin/configs/reactNativeBundleFriends' \
+            -X POST \
+            -H 'x-access-apikey: $SNUTT_APIKEY' \
+            -H 'x-access-token: $SNUTT_TOKEN' \
+            -H 'Content-Type: application/json' \
+            -d '{ "data": { "src": { "android": "", "ios": "" } }, minVersion: { "android": "3.2.0", "ios": "3.2.0" } }' \
+            --compressed
