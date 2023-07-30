@@ -3,7 +3,7 @@ name: deploy-dev
 on:
   push:
     tags:
-      - dev-*
+      - friends-dev-*
 
 jobs:
   deploy:
@@ -38,6 +38,6 @@ jobs:
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
           AWS_CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }}
         run: |
-          aws s3 cp ./dist/ios.jsbundle s3://$AWS_S3_BUCKET/friends/$TAG_NAME/ios.jsbundle
-          aws s3 cp ./dist/android.jsbundle s3://$AWS_S3_BUCKET/friends/$TAG_NAME/android.jsbundle
-          aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_DISTRIBUTION_ID --paths "/friends/:$TAG_NAME/*"
+          aws s3 cp ./dist/ios.jsbundle s3://$AWS_S3_BUCKET/$TAG_NAME/ios.jsbundle
+          aws s3 cp ./dist/android.jsbundle s3://$AWS_S3_BUCKET/$TAG_NAME/android.jsbundle
+          aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_DISTRIBUTION_ID --paths "/:$TAG_NAME/*"
