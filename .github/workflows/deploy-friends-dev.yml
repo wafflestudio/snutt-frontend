@@ -21,8 +21,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Create dist/ folder
+      - name: Cd and create dist/ folder
         run: |
+          cd friends
           mkdir dist
 
       - name: Build & Export
