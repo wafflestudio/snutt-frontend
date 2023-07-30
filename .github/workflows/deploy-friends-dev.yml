@@ -1,0 +1,62 @@
+name: deploy-dev
+
+on:
+  push:
+    tags:
+      - friends-dev-*
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    env:
+      TAG_NAME: ${{ github.ref_name }}
+
+    defaults:
+      run:
+        working-directory: friends
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Create dist/ folder
+        run: |
+          mkdir dist
+
+      - name: Build & Export
+        run: |
+          yarn install
+          yarn build:android
+          yarn build:ios
+
+      - name: Deploy to S3 and Invalidate Cloudfront
+        id: deploy-s3
+        env:
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }}
+        run: |
+          aws s3 cp ./dist/ios.jsbundle s3://$AWS_S3_BUCKET/$TAG_NAME/ios.jsbundle --content-type 'application/javascript'
+          aws s3 cp ./dist/android.jsbundle s3://$AWS_S3_BUCKET/$TAG_NAME/android.jsbundle --content-type 'application/javascript'
+          aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_DISTRIBUTION_ID --paths "/$TAG_NAME/*"
+
+      - name: Update configs
+        id: update-configs
+        env:
+          BUCKET_URL: "https://snutt-rn-assets.wafflestudio.com"
+          SNUTT_APIKEY: ${{ secrets.SNUTT_APIKEY }}
+          SNUTT_TOKEN: ${{ secrets.SNUTT_TOKEN }}
+        run: |
+          curl 'https://snutt-api-dev.wafflestudio.com/v1/admin/configs/reactNativeBundleFriends' \
+            -H 'Content-Type: application/json' \
+            -H "x-access-apikey: $SNUTT_APIKEY" \
+            -H "x-access-token: $SNUTT_TOKEN" \
+            --data-raw '{ "data": { "src": { "android": "'"$BUCKET_URL/$TAG_NAME/android.jsbundle"'", "ios": "'"$BUCKET_URL/$TAG_NAME/ios.jsbundle"'" } }, "minVersion": { "android": "3.2.0", "ios": "3.2.0" } }' \
+            --compressed

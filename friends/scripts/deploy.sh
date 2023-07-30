@@ -3,7 +3,7 @@
 env=$1
 
 today=$(date +%y.%m.%d)
-tagFormat="${env}-${today}-"
+tagFormat="friends-${env}-${today}-"
 
 git fetch --all --tags
 tagCount=$(git tag -l | grep -c $tagFormat)
