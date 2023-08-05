@@ -13,6 +13,6 @@ export const createFriendRepository = (apiClient: ApiClient): FriendRepository =
     deleteFriend: ({ friendId }) => apiClient.post<void>(`/v1/friends/${friendId}/delete`),
     getFriendPrimaryTable: ({ friendId }) => apiClient.get<FullTimetable>(`/v1/friends/${friendId}/primary-table`),
     getFriendRegisteredSemesters: ({ friendId }) =>
-      apiClient.get<CourseBook[]>(`/v1/friends/${friendId}/registered-semesters`),
+      apiClient.get<CourseBook[]>(`/v1/friends/${friendId}/registered-course-books`),
   };
 };
