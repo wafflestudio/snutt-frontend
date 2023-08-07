@@ -1,10 +1,19 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useServiceContext } from '../../../../main';
+import { FriendId } from '../../../../entities/friend';
+import { useFriends } from '../../../queries/useFriends';
 
 type Props = {
   onClose: () => void;
 };
 
 export const ManageFriendsDrawerContent = ({ onClose }: Props) => {
+  const { data: requestedFriends } = useFriends({ state: 'REQUESTED' });
+  const { data: activeFriends } = useFriends({ state: 'ACTIVE' });
+  const { mutate: acceptFriend } = useAcceptFriend();
+  const { mutate: declineFriend } = useDeclineFriend();
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -13,6 +22,37 @@ export const ManageFriendsDrawerContent = ({ onClose }: Props) => {
           <Text>X</Text>
         </TouchableOpacity>
       </View>
+      <Text>요청받은거</Text>
+      <FlatList
+        data={requestedFriends}
+        renderItem={({ item }) => (
+          <View>
+            <Text>
+              {item.nickname}#{item.tag}
+            </Text>
+            <TouchableOpacity onPress={() => acceptFriend(item.friendId)}>
+              <Text>승인</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => declineFriend(item.friendId)}>
+              <Text>거절</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      />
+      <Text>친구 목록</Text>
+      <FlatList
+        data={activeFriends}
+        renderItem={({ item }) => (
+          <View>
+            <Text>
+              {item.nickname}#{item.tag}
+            </Text>
+            <TouchableOpacity>
+              <Text>취소</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      />
     </View>
   );
 };
@@ -25,3 +65,19 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
 });
+
+const useAcceptFriend = () => {
+  const queryClient = useQueryClient();
+  const { friendService } = useServiceContext();
+  return useMutation((friendId: FriendId) => friendService.acceptFriend({ friendId }), {
+    onSuccess: () => queryClient.invalidateQueries(),
+  });
+};
+
+const useDeclineFriend = () => {
+  const queryClient = useQueryClient();
+  const { friendService } = useServiceContext();
+  return useMutation((friendId: FriendId) => friendService.declineFriend({ friendId }), {
+    onSuccess: () => queryClient.invalidateQueries(),
+  });
+};
