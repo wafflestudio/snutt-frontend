@@ -6,5 +6,5 @@ export type TimetableViewService = {
   getDayRange: (table: FullTimetable) => [Day, Day];
   getHourRange: (table: FullTimetable) => [Hour, Hour];
   getDayLabel: (day: Day) => string;
-  getLessonColor: (lesson: FullTimetable['lecture_list'][number], palette: Color[]) => { bg: string; fg: string };
+  getLessonColor: (lesson: FullTimetable['lectures'][number], palette: Color[]) => { bg: string; fg: string };
 };

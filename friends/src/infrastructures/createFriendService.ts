@@ -14,6 +14,6 @@ export const createFriendService = ({
     deleteFriend: (req) => friendRepository.deleteFriend(req),
     requestFriend: (req) => friendRepository.requestFriend(req),
     getFriendPrimaryTable: (req) => friendRepository.getFriendPrimaryTable(req),
-    getFriendRegisteredSemesters: (req) => friendRepository.getFriendRegisteredSemesters(req),
+    getFriendRegisteredCourseBooks: (req) => friendRepository.getFriendRegisteredCourseBooks(req),
   };
 };

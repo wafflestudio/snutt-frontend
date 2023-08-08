@@ -7,15 +7,40 @@ import { Modal, StyleSheet, Text, TextInput, View } from 'react-native';
 import { ManageFriendsDrawerContent } from './ManageFriendsDrawerContent';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useServiceContext } from '../../../main';
-import { useState } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
 import { Nickname } from '../../../entities/user';
+import { FriendId } from '../../../entities/friend';
+import { useFriends } from '../../queries/useFriends';
+
+type MainScreenContext = {
+  selectedFriendId: FriendId | undefined;
+  onSelectFriend: (friendId: FriendId | undefined) => void;
+};
+const mainScreenContext = createContext<MainScreenContext | null>(null);
+export const useMainScreenContext = () => {
+  const context = useContext(mainScreenContext);
+  if (context === null) throw new Error('MainScreenContext is not provided');
+  return context;
+};
 const Drawer = createDrawerNavigator();
 
 export const MainScreen = () => {
+  const [selectedFriendId, setSelectedFriendId] = useState<FriendId>();
+
+  const { data: friends } = useFriends({ state: 'ACTIVE' });
+  const selectedFriendIdWithDefault = selectedFriendId ?? friends?.[0]?.friendId;
+
   return (
-    <Drawer.Navigator screenOptions={{ header: Header }} drawerContent={DrawerContent}>
-      <Drawer.Screen name="Main" component={FriendTimetable} />
-    </Drawer.Navigator>
+    <mainScreenContext.Provider
+      value={useMemo(
+        () => ({ selectedFriendId: selectedFriendIdWithDefault, onSelectFriend: setSelectedFriendId }),
+        [selectedFriendIdWithDefault],
+      )}
+    >
+      <Drawer.Navigator screenOptions={{ header: Header }} drawerContent={DrawerContent}>
+        <Drawer.Screen name="Main" component={FriendTimetable} />
+      </Drawer.Navigator>
+    </mainScreenContext.Provider>
   );
 };
 

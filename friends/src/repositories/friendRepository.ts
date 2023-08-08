@@ -28,5 +28,5 @@ export type FriendRepository = {
 
   getFriendPrimaryTable: (req: { friendId: FriendId; semester: Semester; year: Year }) => Promise<FullTimetable>;
 
-  getFriendRegisteredSemesters: (req: { friendId: FriendId }) => Promise<CourseBook[]>;
+  getFriendRegisteredCourseBooks: (req: { friendId: FriendId }) => Promise<CourseBook[]>;
 };
