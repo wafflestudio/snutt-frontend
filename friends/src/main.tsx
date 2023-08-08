@@ -2,9 +2,6 @@ import { createContext, useContext, useMemo } from 'react';
 import { ErrorBoundary } from './app/components/ErrorBoundary';
 import { Text, View } from 'react-native';
 import { createFetchClient } from './infrastructures/createFetchClient';
-import { createTimetableRepository } from './infrastructures/createTimetableRepository';
-import { createTimetableService } from './infrastructures/createTimetableService';
-import { TimetableService } from './usecases/timetableService';
 import { App } from './app/App';
 import { TimetableViewService } from './usecases/timetableViewService';
 import { createTimetableViewService } from './infrastructures/createTimetableViewService';
@@ -27,7 +24,6 @@ type ExternalProps = {
   'x-app-version': string;
 };
 type ServiceContext = {
-  timetableService: TimetableService;
   timetableViewService: TimetableViewService;
   colorService: ColorService;
   friendService: FriendService;
@@ -42,17 +38,13 @@ export const useServiceContext = () => {
 export const Main = ({ 'x-access-token': xAccessToken, 'x-access-apikey': xAccessApikey }: ExternalProps) => {
   const fetchClient = createFetchClient(baseUrl, xAccessToken, xAccessApikey);
   const friendRepository = createFriendRepository(fetchClient);
-  const timetableRepository = createTimetableRepository(fetchClient);
-  const timetableService = createTimetableService({
-    repositories: [timetableRepository],
-  });
   const timetableViewService = createTimetableViewService();
   const colorService = createColorService({ repositories: [createColorRepository({ clients: [fetchClient] })] });
   const friendService = createFriendService({ repositories: [friendRepository] });
 
   const contextValue = useMemo(
-    () => ({ timetableService, timetableViewService, colorService, friendService }),
-    [timetableService, timetableViewService, colorService, friendService],
+    () => ({ timetableViewService, colorService, friendService }),
+    [timetableViewService, colorService, friendService],
   );
 
   return (

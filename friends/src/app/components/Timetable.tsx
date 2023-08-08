@@ -20,8 +20,8 @@ export const Timetable = ({ timetable, style, palette }: Props) => {
       <View style={styles.dayRow}>
         <View style={styles.dayTimeCell} />
         {days.map((d) => {
-          const currentDayClasses = timetable.lecture_list
-            .flatMap((l) => l.class_time_json.map((c) => ({ ...c, lesson: l })))
+          const currentDayClasses = timetable.lectures
+            .flatMap((l) => l.classPlaceAndTimes.map((c) => ({ ...c, lesson: l })))
             .filter((c) => c.day === d);
           return (
             <View style={styles.dayCell} key={d}>
@@ -30,7 +30,7 @@ export const Timetable = ({ timetable, style, palette }: Props) => {
                 const { bg, fg } = timetableViewService.getLessonColor(c.lesson, palette);
                 return (
                   <View
-                    key={c._id}
+                    key={`${c.day} ${c.startMinute} ${c.endMinute}`}
                     style={{
                       ...styles.classCell,
                       top: DAY_LABEL_HEIGHT + ((c.startMinute - startHour * 60) / 60) * HOUR_HEIGHT,
@@ -38,7 +38,7 @@ export const Timetable = ({ timetable, style, palette }: Props) => {
                       backgroundColor: bg,
                     }}
                   >
-                    <Text style={{ ...styles.classTitle, color: fg }}>{c.lesson.course_title}</Text>
+                    <Text style={{ ...styles.classTitle, color: fg }}>{c.lesson.courseTitle}</Text>
                     <Text style={{ ...styles.classPlace, color: fg }}>{c.place}</Text>
                   </View>
                 );
@@ -78,7 +78,7 @@ export const Timetable = ({ timetable, style, palette }: Props) => {
   );
 };
 
-const HOUR_HEIGHT = 50;
+const HOUR_HEIGHT = 36;
 const DAY_LABEL_HEIGHT = 20;
 const HOUR_LABEL_WIDTH = 20;
 const DARK_BORDER_COLOR = '#e6e6e6';

@@ -10,9 +10,10 @@ export const createFriendRepository = (apiClient: ApiClient): FriendRepository =
     requestFriend: ({ nickname }) => apiClient.post<void>('/v1/friends', { nickname }),
     acceptFriend: ({ friendId }) => apiClient.post<void>(`/v1/friends/${friendId}/accept`),
     declineFriend: ({ friendId }) => apiClient.post<void>(`/v1/friends/${friendId}/decline`),
-    deleteFriend: ({ friendId }) => apiClient.post<void>(`/v1/friends/${friendId}/delete`),
-    getFriendPrimaryTable: ({ friendId }) => apiClient.get<FullTimetable>(`/v1/friends/${friendId}/primary-table`),
-    getFriendRegisteredSemesters: ({ friendId }) =>
+    deleteFriend: ({ friendId }) => apiClient.delete<void>(`/v1/friends/${friendId}`),
+    getFriendPrimaryTable: ({ friendId, semester, year }) =>
+      apiClient.get<FullTimetable>(`/v1/friends/${friendId}/primary-table?year=${year}&semester=${semester}`),
+    getFriendRegisteredCourseBooks: ({ friendId }) =>
       apiClient.get<CourseBook[]>(`/v1/friends/${friendId}/registered-course-books`),
   };
 };

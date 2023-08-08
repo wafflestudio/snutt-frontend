@@ -3,16 +3,19 @@ import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native
 import { useServiceContext } from '../../../../main';
 import { FriendId } from '../../../../entities/friend';
 import { useFriends } from '../../../queries/useFriends';
+import { useMainScreenContext } from '..';
 
 type Props = {
   onClose: () => void;
 };
 
 export const ManageFriendsDrawerContent = ({ onClose }: Props) => {
+  const { onSelectFriend } = useMainScreenContext();
   const { data: requestedFriends } = useFriends({ state: 'REQUESTED' });
   const { data: activeFriends } = useFriends({ state: 'ACTIVE' });
   const { mutate: acceptFriend } = useAcceptFriend();
   const { mutate: declineFriend } = useDeclineFriend();
+  const { mutate: deleteFriend } = useDeleteFriend();
 
   return (
     <View style={styles.container}>
@@ -44,11 +47,20 @@ export const ManageFriendsDrawerContent = ({ onClose }: Props) => {
         data={activeFriends}
         renderItem={({ item }) => (
           <View>
-            <Text>
-              {item.nickname}#{item.tag}
-            </Text>
-            <TouchableOpacity>
-              <Text>취소</Text>
+            <TouchableOpacity
+              onPress={() => {
+                onSelectFriend(item.friendId);
+                onClose();
+              }}
+            >
+              <Text>
+                {item.nickname}#{item.tag}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => deleteFriend(item.friendId, { onSuccess: () => onSelectFriend(undefined) })}
+            >
+              <Text>삭제</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -78,6 +90,14 @@ const useDeclineFriend = () => {
   const queryClient = useQueryClient();
   const { friendService } = useServiceContext();
   return useMutation((friendId: FriendId) => friendService.declineFriend({ friendId }), {
+    onSuccess: () => queryClient.invalidateQueries(),
+  });
+};
+
+const useDeleteFriend = () => {
+  const queryClient = useQueryClient();
+  const { friendService } = useServiceContext();
+  return useMutation((friendId: FriendId) => friendService.deleteFriend({ friendId }), {
     onSuccess: () => queryClient.invalidateQueries(),
   });
 };
