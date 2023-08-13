@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { CourseBook } from '../../../../entities/courseBook';
 import { useFriends } from '../../../queries/useFriends';
 import { useFriendPrimaryTable } from '../../../queries/useFriendPrimaryTable';
+import { Picker } from '@react-native-picker/picker';
 
 export const FriendTimetable = () => {
   const { data: friends } = useFriends({ state: 'ACTIVE' });
@@ -38,6 +39,13 @@ export const FriendTimetable = () => {
             </Text>
           </TouchableOpacity>
         ))}
+        <Picker selectedValue={1}>
+          <Picker.Item label="1" value={1} />
+          <Picker.Item label="2" value={2} />
+        </Picker>
+        <Text>
+          {selectedCourseBookWithDefault?.year}-{selectedCourseBookWithDefault?.semester}
+        </Text>
       </View>
       {palette && fullTimetable && <Timetable style={styles.timetable} palette={palette} timetable={fullTimetable} />}
     </ScrollView>
