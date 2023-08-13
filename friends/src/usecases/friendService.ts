@@ -15,4 +15,6 @@ export type FriendService = {
   deleteFriend: (req: { friendId: FriendId }) => Promise<void>;
   getFriendPrimaryTable: (req: { friendId: FriendId; semester: Semester; year: Year }) => Promise<FullTimetable>;
   getFriendRegisteredCourseBooks: (req: { friendId: FriendId }) => Promise<CourseBook[]>;
+
+  formatNickname: (req: { nickname: Nickname; tag: NicknameTag }) => string;
 };
