@@ -3,7 +3,7 @@ import { FriendTimetable } from './FriendTimetable';
 import { DrawerContentComponentProps, DrawerHeaderProps, createDrawerNavigator } from '@react-navigation/drawer';
 import { AppBar } from '../../components/Appbar';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { Modal, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Modal, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { ManageFriendsDrawerContent } from './ManageFriendsDrawerContent';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useServiceContext } from '../../../main';
@@ -58,7 +58,7 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
   };
 
   return (
-    <>
+    <SafeAreaView>
       <AppBar
         title="친구 시간표"
         left={
@@ -88,7 +88,7 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
           </View>
         </View>
       </Modal>
-    </>
+    </SafeAreaView>
   );
 };
 
