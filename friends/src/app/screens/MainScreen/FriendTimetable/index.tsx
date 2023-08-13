@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Timetable } from '../../../components/Timetable';
 import { useColors } from '../../../queries/useColors';
 import { useMainScreenContext } from '..';
@@ -11,7 +11,7 @@ import { useFriendPrimaryTable } from '../../../queries/useFriendPrimaryTable';
 
 export const FriendTimetable = () => {
   const { data: friends } = useFriends({ state: 'ACTIVE' });
-  const [selectedCourseBook] = useState<CourseBook>();
+  const [selectedCourseBook, setSelectedCourseBook] = useState<CourseBook>();
   const { selectedFriendId } = useMainScreenContext();
   const { data: palette } = useColors();
   const { data: courseBooks } = useFriendRegisteredCourseBooks(selectedFriendId);
@@ -26,17 +26,21 @@ export const FriendTimetable = () => {
   const selectedFriend = friends?.find((f) => f.friendId === selectedFriendId);
 
   return (
-    <View style={styles.wrapper}>
+    <ScrollView style={styles.wrapper}>
       <View>
         <Text>
           {selectedFriend?.nickname}#{selectedFriend?.tag}
         </Text>
-        <Text>
-          {selectedCourseBookWithDefault?.year}-{selectedCourseBookWithDefault?.semester}
-        </Text>
+        {courseBooks?.map((c) => (
+          <TouchableOpacity key={c.year + '-' + c.semester} onPress={() => setSelectedCourseBook(c)}>
+            <Text>
+              {c.year}-{c.semester}
+            </Text>
+          </TouchableOpacity>
+        ))}
       </View>
       {palette && fullTimetable && <Timetable style={styles.timetable} palette={palette} timetable={fullTimetable} />}
-    </View>
+    </ScrollView>
   );
 };
 
