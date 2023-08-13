@@ -1,4 +1,4 @@
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { FriendId } from '../../../../../entities/friend';
 import { useFriends } from '../../../../queries/useFriends';
 import { useServiceContext } from '../../../../../main';
@@ -16,8 +16,8 @@ export const ManageFriendsDrawerContentActiveList = ({}: Props) => {
       <FlatList
         data={activeFriends}
         renderItem={({ item }) => (
-          <View key={item.friendId}>
-            <Text>{friendService.formatNickname(item)}</Text>
+          <View key={item.friendId} style={styles.item}>
+            <Text style={styles.nickname}>{friendService.formatNickname(item)}</Text>
 
             <TouchableOpacity onPress={() => deleteFriend(item.friendId)}>
               <Text>삭제</Text>
@@ -36,3 +36,8 @@ const useDeleteFriend = () => {
     onSuccess: () => queryClient.invalidateQueries(),
   });
 };
+
+const styles = StyleSheet.create({
+  item: { height: 40, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 4 },
+  nickname: { flex: 1, lineHeight: 15, fontSize: 13 },
+});

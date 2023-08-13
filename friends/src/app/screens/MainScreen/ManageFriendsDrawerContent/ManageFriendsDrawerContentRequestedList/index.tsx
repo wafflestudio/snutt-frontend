@@ -1,8 +1,9 @@
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { useFriends } from '../../../../queries/useFriends';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { FriendId } from '../../../../../entities/friend';
 import { useServiceContext } from '../../../../../main';
+import { Button } from '../../../../components/Button';
 
 type Props = {};
 
@@ -18,14 +19,14 @@ export const ManageFriendsDrawerContentRequestedList = ({}: Props) => {
       <FlatList
         data={requestedFriends}
         renderItem={({ item }) => (
-          <View key={item.friendId}>
-            <Text>{friendService.formatNickname(item)}</Text>
-            <TouchableOpacity onPress={() => acceptFriend(item.friendId)}>
-              <Text>승인</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => declineFriend(item.friendId)}>
-              <Text>거절</Text>
-            </TouchableOpacity>
+          <View style={styles.item} key={item.friendId}>
+            <Text style={styles.nickname}>{friendService.formatNickname(item)}</Text>
+            <Button variant="outlined" color="gray" onPress={() => declineFriend(item.friendId)}>
+              거절
+            </Button>
+            <Button variant="outlined" color="primary" onPress={() => acceptFriend(item.friendId)}>
+              승인
+            </Button>
           </View>
         )}
       />
@@ -48,3 +49,8 @@ const useDeclineFriend = () => {
     onSuccess: () => queryClient.invalidateQueries(),
   });
 };
+
+const styles = StyleSheet.create({
+  item: { height: 40, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 4 },
+  nickname: { flex: 1, lineHeight: 15, fontSize: 13 },
+});
