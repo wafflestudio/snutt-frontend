@@ -8,10 +8,10 @@ import { useState } from 'react';
 import { CourseBook } from '../../../../entities/courseBook';
 import { useFriends } from '../../../queries/useFriends';
 import { useFriendPrimaryTable } from '../../../queries/useFriendPrimaryTable';
-import User from '../../../assets/user.svg';
 
 import { useServiceContext } from '../../../../main';
 import { Select } from '../../../components/Select';
+import { UserIcon } from '../../../components/Icons/UserIcon';
 
 export const FriendTimetable = () => {
   const { courseBookService } = useServiceContext();
@@ -27,14 +27,17 @@ export const FriendTimetable = () => {
         friendId: selectedFriendId,
         courseBook: selectedCourseBookWithDefault,
       },
+    { keepPreviousData: true },
   );
   const selectedFriend = friends?.find((f) => f.friendId === selectedFriendId);
 
   return (
     <ScrollView style={styles.wrapper}>
       <View style={styles.header}>
+        <UserIcon width={16} height={16} style={styles.userIcon} />
+
         <Text style={styles.nickname}>
-          <User width={120} height={40} /> {selectedFriend?.nickname}#{selectedFriend?.tag}
+          {selectedFriend?.nickname}#{selectedFriend?.tag}
         </Text>
 
         <Select
@@ -61,6 +64,8 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 18,
     paddingHorizontal: 36,
+    gap: 2,
   },
-  nickname: { fontSize: 14, fontWeight: '500', color: '#1ca6a0' },
+  userIcon: { color: '#00B8B0' },
+  nickname: { fontSize: 14, fontWeight: '500', color: '#1ca6a0', flex: 1 },
 });

@@ -11,6 +11,9 @@ import { createContext, useContext, useMemo, useState } from 'react';
 import { Nickname } from '../../../entities/user';
 import { FriendId } from '../../../entities/friend';
 import { useFriends } from '../../queries/useFriends';
+import { HamburgerIcon } from '../../components/Icons/HamburgerIcon';
+import { UserPlusIcon } from '../../components/Icons/UserPlusIcon';
+import { WarningIcon } from '../../components/Icons/WarningIcon';
 
 type MainScreenContext = {
   selectedFriendId: FriendId | undefined;
@@ -47,8 +50,11 @@ export const MainScreen = () => {
 const Header = ({ navigation }: DrawerHeaderProps) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [friendName, setFriendName] = useState('');
-
+  const { friendService } = useServiceContext();
   const { mutate: request } = useRequestFriend();
+
+  const guideMessageState =
+    friendName === '' ? 'disabled' : friendService.isValidNicknameTag(friendName) ? 'hidden' : 'enabled';
 
   const openModal = () => setModalOpen(true);
 
@@ -63,12 +69,12 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
         title="친구 시간표"
         left={
           <TouchableOpacity onPress={() => navigation.openDrawer()}>
-            <Text>=</Text>
+            <HamburgerIcon width={30} height={30} />
           </TouchableOpacity>
         }
         right={
           <TouchableOpacity onPress={openModal}>
-            <Text>+</Text>
+            <UserPlusIcon width={22} height={22} />
           </TouchableOpacity>
         }
       />
@@ -84,7 +90,16 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
               </TouchableOpacity>
             </View>
             <TextInput style={styles.input} value={friendName} onChange={(e) => setFriendName(e.nativeEvent.text)} />
-            <Text>i 닉네임 전체를 입력하세요</Text>
+            {guideMessageState !== 'hidden' &&
+              (() => {
+                const color = { enabled: '#00b8b0', disabled: '#777777' }[guideMessageState];
+                return (
+                  <View style={styles.guide}>
+                    <WarningIcon width={18} height={18} style={{ color }} />
+                    <Text style={{ ...styles.guideText, color }}>닉네임 전체를 입력하세요</Text>
+                  </View>
+                );
+              })()}
           </View>
         </View>
       </Modal>
@@ -127,5 +142,16 @@ const styles = StyleSheet.create({
   },
   input: {
     borderBottomWidth: 1,
+  },
+  guide: {
+    marginTop: 5,
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 1,
+    alignItems: 'center',
+  },
+  guideText: {
+    color: '#00b8b0',
+    fontSize: 10,
   },
 });

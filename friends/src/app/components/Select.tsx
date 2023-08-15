@@ -1,6 +1,7 @@
 import { useReducer } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ChevronDownIcon } from './Icons/ChevronDownIcon';
 
 type Props<T extends string> = {
   value: T | undefined;
@@ -17,12 +18,14 @@ export const Select = <T extends string>({ value, onChange, items = [], style = 
     <View style={{ ...styles.container, width: style.width }}>
       <View style={styles.dropdown}>
         <TouchableOpacity style={styles.item} onPress={toggleOpen}>
-          <Text style={styles.label}>{selected?.label} v</Text>
+          <Text style={styles.label}>{selected?.label}</Text>
+          <ChevronDownIcon width={20} height={20} />
         </TouchableOpacity>
 
         {isOpen &&
           items.map((it) => (
             <TouchableOpacity
+              key={it.value}
               style={styles.item}
               onPress={() => {
                 onChange(it.value);
@@ -44,7 +47,8 @@ const styles = StyleSheet.create({
   dropdown: { position: 'absolute', borderRadius: 4, borderWidth: 1, borderColor: '#b3b3b3', width: '100%' },
   item: {
     height: ITEM_HEIGHT,
-    paddingHorizontal: 10,
+    paddingLeft: 10,
+    paddingRight: 5,
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',

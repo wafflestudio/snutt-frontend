@@ -17,4 +17,5 @@ export type FriendService = {
   getFriendRegisteredCourseBooks: (req: { friendId: FriendId }) => Promise<CourseBook[]>;
 
   formatNickname: (req: { nickname: Nickname; tag: NicknameTag }) => string;
+  isValidNicknameTag: (str: string) => boolean;
 };
