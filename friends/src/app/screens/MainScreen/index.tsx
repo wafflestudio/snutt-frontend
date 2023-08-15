@@ -3,7 +3,7 @@ import { FriendTimetable } from './FriendTimetable';
 import { DrawerContentComponentProps, DrawerHeaderProps, createDrawerNavigator } from '@react-navigation/drawer';
 import { AppBar } from '../../components/Appbar';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { Modal, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { ManageFriendsDrawerContent } from './ManageFriendsDrawerContent';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useServiceContext } from '../../../main';
@@ -15,6 +15,7 @@ import { HamburgerIcon } from '../../components/Icons/HamburgerIcon';
 import { UserPlusIcon } from '../../components/Icons/UserPlusIcon';
 import { WarningIcon } from '../../components/Icons/WarningIcon';
 import { Input } from '../../components/Input';
+import { BottomSheet } from '../../components/BottomSheet';
 
 type MainScreenContext = {
   selectedFriendId: FriendId | undefined;
@@ -79,45 +80,46 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
           </TouchableOpacity>
         }
       />
-      <Modal visible={isModalOpen} animationType="slide" transparent={true} onRequestClose={closeModal}>
-        <View style={styles.addFriendModal}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <TouchableOpacity onPress={closeModal}>
-                <Text style={styles.modalHeaderText}>취소</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                disabled={guideMessageState !== 'enabled'}
-                onPress={() => request(friendName, { onSuccess: closeModal })}
+      <BottomSheet isOpen={isModalOpen} onClose={closeModal}>
+        <View style={styles.modalContent}>
+          <View style={styles.modalHeader}>
+            <TouchableOpacity onPress={closeModal}>
+              <Text style={styles.modalHeaderText}>취소</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              disabled={!friendService.isValidNicknameTag(friendName)}
+              onPress={() => request(friendName, { onSuccess: closeModal })}
+            >
+              <Text
+                // eslint-disable-next-line react-native/no-inline-styles
+                style={{
+                  ...styles.modalHeaderText,
+                  color: friendService.isValidNicknameTag(friendName) ? undefined : '#c4c4c4',
+                }}
               >
-                <Text
-                  // eslint-disable-next-line react-native/no-inline-styles
-                  style={{ ...styles.modalHeaderText, color: guideMessageState === 'enabled' ? undefined : '#c4c4c4' }}
-                >
-                  요청 보내기
-                </Text>
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.inputDescription}>추가하고 싶은 친구의 닉네임</Text>
-            <Input
-              style={styles.input}
-              value={friendName}
-              onChange={(e) => setFriendName(e)}
-              placeholder="예) 홍길동#1234"
-            />
-            {guideMessageState !== 'hidden' &&
-              (() => {
-                const color = { enabled: '#00b8b0', disabled: '#777777' }[guideMessageState];
-                return (
-                  <View style={styles.guide}>
-                    <WarningIcon width={18} height={18} style={{ color }} />
-                    <Text style={{ ...styles.guideText, color }}>닉네임 전체를 입력하세요</Text>
-                  </View>
-                );
-              })()}
+                요청 보내기
+              </Text>
+            </TouchableOpacity>
           </View>
+          <Text style={styles.inputDescription}>추가하고 싶은 친구의 닉네임</Text>
+          <Input
+            style={styles.input}
+            value={friendName}
+            onChange={(e) => setFriendName(e)}
+            placeholder="예) 홍길동#1234"
+          />
+          {guideMessageState !== 'hidden' &&
+            (() => {
+              const color = { enabled: '#00b8b0', disabled: '#777777' }[guideMessageState];
+              return (
+                <View style={styles.guide}>
+                  <WarningIcon width={18} height={18} style={{ color }} />
+                  <Text style={{ ...styles.guideText, color }}>닉네임 전체를 입력하세요</Text>
+                </View>
+              );
+            })()}
         </View>
-      </Modal>
+      </BottomSheet>
     </SafeAreaView>
   );
 };
@@ -136,19 +138,7 @@ const useRequestFriend = () => {
 };
 
 const styles = StyleSheet.create({
-  addFriendModal: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  modalContent: {
-    width: '100%',
-    borderTopRightRadius: 32,
-    borderTopLeftRadius: 32,
-    height: 200,
-    backgroundColor: 'white',
-    padding: 20,
-  },
+  modalContent: { paddingBottom: 30 },
   modalHeader: {
     width: '100%',
     display: 'flex',
