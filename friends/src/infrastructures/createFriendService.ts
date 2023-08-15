@@ -17,5 +17,12 @@ export const createFriendService = ({
     getFriendRegisteredCourseBooks: (req) => friendRepository.getFriendRegisteredCourseBooks(req),
 
     formatNickname: (req) => `${req.nickname}#${req.tag}`,
+    isValidNicknameTag: (str) => {
+      const [nickname, tag] = str.split('#');
+      if (!nickname || !tag) return false;
+      if (nickname.length > 10 || tag.length !== 4) return false;
+      if (Number(`${Number(tag)}`) !== Number(tag)) return false;
+      return true;
+    },
   };
 };
