@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, View } from 'react-native';
 
 import Modal from 'react-native-modal';
 
@@ -15,7 +15,9 @@ export const BottomSheet = ({ isOpen, onClose, children }: PropsWithChildren<Pro
       useNativeDriver
       style={styles.modal}
     >
-      <View style={styles.modalContent}>{children}</View>
+      <KeyboardAvoidingView behavior="padding">
+        <View style={styles.modalContent}>{children}</View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };
