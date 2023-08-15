@@ -78,15 +78,16 @@ export const Timetable = ({ timetable, style, palette }: Props) => {
   );
 };
 
-const HOUR_HEIGHT = 36;
-const DAY_LABEL_HEIGHT = 20;
+const HOUR_HEIGHT = 38;
+const DAY_LABEL_HEIGHT = 26;
 const HOUR_LABEL_WIDTH = 20;
-const DARK_BORDER_COLOR = '#e6e6e6';
-const LIGHT_BORDER_COLOR = '#fafafa';
-const DARKER_BORDER_COLOR = '#a6a6a6';
+const DARK_BORDER_COLOR = '#ebebeb';
+const LIGHT_BORDER_COLOR = '#f3f3f3';
+const DARKER_BORDER_COLOR = '#b3b3b3';
 
 const styles = StyleSheet.create({
   container: {
+    zIndex: -1,
     borderTopWidth: 1,
     borderLeftWidth: 1,
     borderTopColor: DARKER_BORDER_COLOR,

@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Timetable } from '../../../components/Timetable';
 import { useColors } from '../../../queries/useColors';
 import { useMainScreenContext } from '..';
@@ -8,9 +8,12 @@ import { useState } from 'react';
 import { CourseBook } from '../../../../entities/courseBook';
 import { useFriends } from '../../../queries/useFriends';
 import { useFriendPrimaryTable } from '../../../queries/useFriendPrimaryTable';
-import { Picker } from '@react-native-picker/picker';
+
+import { useServiceContext } from '../../../../main';
+import { Select } from '../../../components/Select';
 
 export const FriendTimetable = () => {
+  const { courseBookService } = useServiceContext();
   const { data: friends } = useFriends({ state: 'ACTIVE' });
   const [selectedCourseBook, setSelectedCourseBook] = useState<CourseBook>();
   const { selectedFriendId } = useMainScreenContext();
@@ -28,28 +31,35 @@ export const FriendTimetable = () => {
 
   return (
     <ScrollView style={styles.wrapper}>
-      <View>
-        <Text>
+      <View style={styles.header}>
+        <Text style={styles.nickname}>
           {selectedFriend?.nickname}#{selectedFriend?.tag}
         </Text>
-        {courseBooks?.map((c) => (
-          <TouchableOpacity key={c.year + '-' + c.semester} onPress={() => setSelectedCourseBook(c)}>
-            <Text>
-              {c.year}-{c.semester}
-            </Text>
-          </TouchableOpacity>
-        ))}
-        <Picker selectedValue={1}>
-          <Picker.Item label="1" value={1} />
-          <Picker.Item label="2" value={2} />
-        </Picker>
-        <Text>
-          {selectedCourseBookWithDefault?.year}-{selectedCourseBookWithDefault?.semester}
-        </Text>
+
+        <Select
+          value={selectedCourseBookWithDefault && courseBookService.toValue(selectedCourseBookWithDefault)}
+          onChange={(v) => setSelectedCourseBook(courseBookService.fromValue(v))}
+          items={courseBooks?.map((cb) => ({
+            label: `${cb.year}-${cb.semester}`,
+            value: courseBookService.toValue(cb),
+          }))}
+        />
       </View>
-      {palette && fullTimetable && <Timetable style={styles.timetable} palette={palette} timetable={fullTimetable} />}
+      {palette && fullTimetable && <Timetable palette={palette} timetable={fullTimetable} />}
     </ScrollView>
   );
 };
 
-const styles = StyleSheet.create({ wrapper: { backgroundColor: 'white' }, timetable: { margin: 8 } });
+const styles = StyleSheet.create({
+  wrapper: { backgroundColor: 'white' },
+  header: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: 20,
+    paddingBottom: 18,
+    paddingHorizontal: 36,
+  },
+  nickname: { fontSize: 14, fontWeight: '500', color: '#1ca6a0' },
+});
