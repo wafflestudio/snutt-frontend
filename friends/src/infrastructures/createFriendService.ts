@@ -15,5 +15,7 @@ export const createFriendService = ({
     requestFriend: (req) => friendRepository.requestFriend(req),
     getFriendPrimaryTable: (req) => friendRepository.getFriendPrimaryTable(req),
     getFriendRegisteredCourseBooks: (req) => friendRepository.getFriendRegisteredCourseBooks(req),
+
+    formatNickname: (req) => `${req.nickname}#${req.tag}`,
   };
 };

@@ -1,21 +1,18 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useServiceContext } from '../../../../main';
-import { FriendId } from '../../../../entities/friend';
-import { useFriends } from '../../../queries/useFriends';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useMainScreenContext } from '..';
+import { useState } from 'react';
+import { ManageFriendsDrawerContentActiveList } from './ManageFriendsDrawerContentActiveList';
+import { ManageFriendsDrawerContentRequestedList } from './ManageFriendsDrawerContentRequestedList';
+
+type Tab = 'ACTIVE' | 'REQUESTED';
 
 type Props = {
   onClose: () => void;
 };
 
 export const ManageFriendsDrawerContent = ({ onClose }: Props) => {
+  const [tab, setTab] = useState<Tab>('ACTIVE');
   const { onSelectFriend } = useMainScreenContext();
-  const { data: requestedFriends } = useFriends({ state: 'REQUESTED' });
-  const { data: activeFriends } = useFriends({ state: 'ACTIVE' });
-  const { mutate: acceptFriend } = useAcceptFriend();
-  const { mutate: declineFriend } = useDeclineFriend();
-  const { mutate: deleteFriend } = useDeleteFriend();
 
   return (
     <View style={styles.container}>
@@ -25,79 +22,60 @@ export const ManageFriendsDrawerContent = ({ onClose }: Props) => {
           <Text>X</Text>
         </TouchableOpacity>
       </View>
-      <Text>요청받은거</Text>
-      <FlatList
-        data={requestedFriends}
-        renderItem={({ item }) => (
-          <View>
-            <Text>
-              {item.nickname}#{item.tag}
-            </Text>
-            <TouchableOpacity onPress={() => acceptFriend(item.friendId)}>
-              <Text>승인</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => declineFriend(item.friendId)}>
-              <Text>거절</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      />
-      <Text>친구 목록</Text>
-      <FlatList
-        data={activeFriends}
-        renderItem={({ item }) => (
-          <View>
+      <View style={styles.divider} />
+
+      <View style={styles.tabs}>
+        {tabs.map(({ label, value }) => {
+          const isActive = tab === value;
+          return (
             <TouchableOpacity
-              onPress={() => {
-                onSelectFriend(item.friendId);
-                onClose();
-              }}
+              key={value}
+              onPress={() => setTab(value)}
+              // eslint-disable-next-line react-native/no-inline-styles
+              style={{ ...styles.tab, borderBottomColor: isActive ? '#b3b3b3' : '#f2f2f2' }}
             >
-              <Text>
-                {item.nickname}#{item.tag}
-              </Text>
+              <Text style={styles.tabText}>{label}</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => deleteFriend(item.friendId, { onSuccess: () => onSelectFriend(undefined) })}
-            >
-              <Text>삭제</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      />
+          );
+        })}
+      </View>
+
+      <View style={styles.tabContent}>
+        <TouchableOpacity style={styles.addFriend}>
+          <Text style={styles.addFriendText}>친구 추가하기 +</Text>
+        </TouchableOpacity>
+
+        {
+          {
+            ACTIVE: <ManageFriendsDrawerContentActiveList onClickFriend={onSelectFriend} />,
+            REQUESTED: <ManageFriendsDrawerContentRequestedList />,
+          }[tab]
+        }
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { paddingVertical: 22.5, paddingHorizontal: 20 },
+  container: { paddingVertical: 22, paddingHorizontal: 20 },
   header: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    height: 30,
   },
+  divider: { marginTop: 20, height: 1, marginBottom: 16, backgroundColor: '#f2f2f2' },
+  tabs: { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' },
+  tab: { height: 40, borderBottomWidth: 3, width: '50%', display: 'flex', justifyContent: 'center' },
+  tabText: { textAlign: 'center', fontSize: 16 },
+  tabContent: { paddingLeft: 15, paddingRight: 15, paddingTop: 16 },
+
+  addFriend: { borderBottomColor: '#f2f2f2', borderBottomWidth: 2, paddingBottom: 9, marginBottom: 8 },
+  addFriendText: { color: '#777', fontSize: 12 },
 });
 
-const useAcceptFriend = () => {
-  const queryClient = useQueryClient();
-  const { friendService } = useServiceContext();
-  return useMutation((friendId: FriendId) => friendService.acceptFriend({ friendId }), {
-    onSuccess: () => queryClient.invalidateQueries(),
-  });
-};
-
-const useDeclineFriend = () => {
-  const queryClient = useQueryClient();
-  const { friendService } = useServiceContext();
-  return useMutation((friendId: FriendId) => friendService.declineFriend({ friendId }), {
-    onSuccess: () => queryClient.invalidateQueries(),
-  });
-};
-
-const useDeleteFriend = () => {
-  const queryClient = useQueryClient();
-  const { friendService } = useServiceContext();
-  return useMutation((friendId: FriendId) => friendService.deleteFriend({ friendId }), {
-    onSuccess: () => queryClient.invalidateQueries(),
-  });
-};
+const tabs: { label: string; value: Tab }[] = [
+  { label: '친구 목록', value: 'ACTIVE' },
+  { label: '친구 요청', value: 'REQUESTED' },
+];
