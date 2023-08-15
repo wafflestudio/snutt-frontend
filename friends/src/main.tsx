@@ -11,6 +11,8 @@ import { createColorRepository } from './infrastructures/createColorRepository';
 import { FriendService } from './usecases/friendService';
 import { createFriendRepository } from './infrastructures/createFriendRepository';
 import { createFriendService } from './infrastructures/createFriendService';
+import { createCourseBookService } from './infrastructures/createCourseBookService';
+import { CourseBookService } from './usecases/courseBookService';
 
 type ExternalProps = {
   'x-access-token': string;
@@ -27,6 +29,7 @@ type ServiceContext = {
   timetableViewService: TimetableViewService;
   colorService: ColorService;
   friendService: FriendService;
+  courseBookService: CourseBookService;
 };
 const serviceContext = createContext<ServiceContext | null>(null);
 export const useServiceContext = () => {
@@ -41,10 +44,11 @@ export const Main = ({ 'x-access-token': xAccessToken, 'x-access-apikey': xAcces
   const timetableViewService = createTimetableViewService();
   const colorService = createColorService({ repositories: [createColorRepository({ clients: [fetchClient] })] });
   const friendService = createFriendService({ repositories: [friendRepository] });
+  const courseBookService = createCourseBookService();
 
   const contextValue = useMemo(
-    () => ({ timetableViewService, colorService, friendService }),
-    [timetableViewService, colorService, friendService],
+    () => ({ timetableViewService, colorService, friendService, courseBookService }),
+    [timetableViewService, colorService, friendService, courseBookService],
   );
 
   return (

@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomColor: '#b3b3b3',
     borderBottomWidth: 1,
+    backgroundColor: '#ffffff',
   },
   left: { ...sideStyle, justifyContent: 'flex-start', paddingLeft: 13 },
   right: { ...sideStyle, justifyContent: 'flex-end', paddingRight: 17 },

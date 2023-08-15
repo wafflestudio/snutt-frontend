@@ -3,6 +3,7 @@ import { FriendId } from '../../../../../entities/friend';
 import { useFriends } from '../../../../queries/useFriends';
 import { useServiceContext } from '../../../../../main';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMainScreenContext } from '../..';
 
 type Props = { onClickFriend: (friendId: FriendId) => void };
 
@@ -10,19 +11,20 @@ export const ManageFriendsDrawerContentActiveList = ({}: Props) => {
   const { friendService } = useServiceContext();
   const { data: activeFriends } = useFriends({ state: 'ACTIVE' });
   const { mutate: deleteFriend } = useDeleteFriend();
+  const { onSelectFriend } = useMainScreenContext();
 
   return (
     <View>
       <FlatList
         data={activeFriends}
         renderItem={({ item }) => (
-          <View key={item.friendId} style={styles.item}>
+          <TouchableOpacity key={item.friendId} style={styles.item} onPress={() => onSelectFriend(item.friendId)}>
             <Text style={styles.nickname}>{friendService.formatNickname(item)}</Text>
 
             <TouchableOpacity onPress={() => deleteFriend(item.friendId)}>
               <Text>삭제</Text>
             </TouchableOpacity>
-          </View>
+          </TouchableOpacity>
         )}
       />
     </View>
