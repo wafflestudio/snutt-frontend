@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { CourseBook } from '../../../../entities/courseBook';
 import { useFriends } from '../../../queries/useFriends';
 import { useFriendPrimaryTable } from '../../../queries/useFriendPrimaryTable';
+import User from '../../../assets/user.svg';
 
 import { useServiceContext } from '../../../../main';
 import { Select } from '../../../components/Select';
@@ -33,7 +34,7 @@ export const FriendTimetable = () => {
     <ScrollView style={styles.wrapper}>
       <View style={styles.header}>
         <Text style={styles.nickname}>
-          {selectedFriend?.nickname}#{selectedFriend?.tag}
+          <User width={120} height={40} /> {selectedFriend?.nickname}#{selectedFriend?.tag}
         </Text>
 
         <Select
