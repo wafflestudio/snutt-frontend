@@ -3,7 +3,7 @@ import { FriendTimetable } from './FriendTimetable';
 import { DrawerContentComponentProps, DrawerHeaderProps, createDrawerNavigator } from '@react-navigation/drawer';
 import { AppBar } from '../../components/Appbar';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { Modal, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Modal, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { ManageFriendsDrawerContent } from './ManageFriendsDrawerContent';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useServiceContext } from '../../../main';
@@ -14,6 +14,7 @@ import { useFriends } from '../../queries/useFriends';
 import { HamburgerIcon } from '../../components/Icons/HamburgerIcon';
 import { UserPlusIcon } from '../../components/Icons/UserPlusIcon';
 import { WarningIcon } from '../../components/Icons/WarningIcon';
+import { Input } from '../../components/Input';
 
 type MainScreenContext = {
   selectedFriendId: FriendId | undefined;
@@ -83,13 +84,27 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <TouchableOpacity onPress={closeModal}>
-                <Text>취소</Text>
+                <Text style={styles.modalHeaderText}>취소</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => request(friendName, { onSuccess: closeModal })}>
-                <Text>요청 보내기</Text>
+              <TouchableOpacity
+                disabled={guideMessageState !== 'enabled'}
+                onPress={() => request(friendName, { onSuccess: closeModal })}
+              >
+                <Text
+                  // eslint-disable-next-line react-native/no-inline-styles
+                  style={{ ...styles.modalHeaderText, color: guideMessageState === 'enabled' ? undefined : '#c4c4c4' }}
+                >
+                  요청 보내기
+                </Text>
               </TouchableOpacity>
             </View>
-            <TextInput style={styles.input} value={friendName} onChange={(e) => setFriendName(e.nativeEvent.text)} />
+            <Text style={styles.inputDescription}>추가하고 싶은 친구의 닉네임</Text>
+            <Input
+              style={styles.input}
+              value={friendName}
+              onChange={(e) => setFriendName(e)}
+              placeholder="예) 홍길동#1234"
+            />
             {guideMessageState !== 'hidden' &&
               (() => {
                 const color = { enabled: '#00b8b0', disabled: '#777777' }[guideMessageState];
@@ -130,7 +145,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderTopRightRadius: 32,
     borderTopLeftRadius: 32,
-    height: 180,
+    height: 200,
     backgroundColor: 'white',
     padding: 20,
   },
@@ -140,9 +155,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  input: {
-    borderBottomWidth: 1,
-  },
+  modalHeaderText: { fontSize: 14, color: '#0e0e0e' },
+  inputDescription: { marginTop: 30, color: '#777', fontSize: 14 },
+  input: { marginTop: 15 },
   guide: {
     marginTop: 5,
     display: 'flex',
@@ -150,8 +165,5 @@ const styles = StyleSheet.create({
     gap: 1,
     alignItems: 'center',
   },
-  guideText: {
-    color: '#00b8b0',
-    fontSize: 10,
-  },
+  guideText: { color: '#00b8b0', fontSize: 10 },
 });
