@@ -12,6 +12,7 @@ import { useFriendPrimaryTable } from '../../../queries/useFriendPrimaryTable';
 import { useServiceContext } from '../../../../main';
 import { Select } from '../../../components/Select';
 import { UserIcon } from '../../../components/Icons/UserIcon';
+import { FriendGuide } from './FriendGuide';
 
 export const FriendTimetable = () => {
   const { courseBookService } = useServiceContext();
@@ -30,6 +31,10 @@ export const FriendTimetable = () => {
     { keepPreviousData: true },
   );
   const selectedFriend = friends?.find((f) => f.friendId === selectedFriendId);
+
+  if (!friends) return;
+
+  if (friends.length === 0) return <FriendGuide />;
 
   return (
     <ScrollView style={styles.wrapper}>
