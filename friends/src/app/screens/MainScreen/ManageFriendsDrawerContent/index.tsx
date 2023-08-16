@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 30,
   },
+  snutt: { color: '#ffffff', fontSize: 18, fontWeight: '900' },
   divider: { marginTop: 20, height: 1, marginBottom: 16, backgroundColor: '#f2f2f2' },
   tabs: { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' },
   tab: { height: 40, borderBottomWidth: 3, width: '50%', display: 'flex', justifyContent: 'center' },

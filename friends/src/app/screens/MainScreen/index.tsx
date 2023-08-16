@@ -2,7 +2,7 @@ import { FriendTimetable } from './FriendTimetable';
 
 import { DrawerContentComponentProps, DrawerHeaderProps, createDrawerNavigator } from '@react-navigation/drawer';
 import { AppBar } from '../../components/Appbar';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
 import { ManageFriendsDrawerContent } from './ManageFriendsDrawerContent';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -55,8 +55,8 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
   const { friendService } = useServiceContext();
   const { mutate: request } = useRequestFriend();
 
-  const guideMessageState =
-    friendName === '' ? 'disabled' : friendService.isValidNicknameTag(friendName) ? 'hidden' : 'enabled';
+  const isValid = friendService.isValidNicknameTag(friendName);
+  const guideMessageState = friendName === '' ? 'disabled' : isValid ? 'hidden' : 'enabled';
 
   const openModal = () => setModalOpen(true);
 
@@ -86,15 +86,12 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
             <TouchableOpacity onPress={closeModal}>
               <Text style={styles.modalHeaderText}>취소</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              disabled={!friendService.isValidNicknameTag(friendName)}
-              onPress={() => request(friendName, { onSuccess: closeModal })}
-            >
+            <TouchableOpacity disabled={!isValid} onPress={() => request(friendName, { onSuccess: closeModal })}>
               <Text
                 // eslint-disable-next-line react-native/no-inline-styles
                 style={{
                   ...styles.modalHeaderText,
-                  color: friendService.isValidNicknameTag(friendName) ? undefined : '#c4c4c4',
+                  color: isValid ? '#0e0e0e' : '#c4c4c4',
                 }}
               >
                 요청 보내기
@@ -145,7 +142,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  modalHeaderText: { fontSize: 14, color: '#0e0e0e' },
+  modalHeaderText: { fontSize: 14 },
   inputDescription: { marginTop: 30, color: '#777', fontSize: 14 },
   input: { marginTop: 15 },
   guide: {
