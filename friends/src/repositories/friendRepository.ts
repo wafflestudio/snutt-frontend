@@ -3,7 +3,7 @@ import { FriendId } from '../entities/friend';
 import { Semester } from '../entities/semester';
 import { Timestamp } from '../entities/time';
 import { FullTimetable } from '../entities/timetable';
-import { Nickname, NicknameTag, UserId } from '../entities/user';
+import { DisplayName, Nickname, NicknameTag, UserId } from '../entities/user';
 import { Year } from '../entities/year';
 
 export type FriendRepository = {
@@ -11,6 +11,7 @@ export type FriendRepository = {
     content: {
       id: FriendId;
       userId: UserId;
+      displayName?: DisplayName;
       nickname: { nickname: Nickname; tag: NicknameTag };
       createdAt: Timestamp;
     }[];
@@ -29,4 +30,6 @@ export type FriendRepository = {
   getFriendPrimaryTable: (req: { friendId: FriendId; semester: Semester; year: Year }) => Promise<FullTimetable>;
 
   getFriendRegisteredCourseBooks: (req: { friendId: FriendId }) => Promise<CourseBook[]>;
+
+  patchFriendDisplayName: (req: { friendId: FriendId; displayName: DisplayName }) => Promise<void>;
 };
