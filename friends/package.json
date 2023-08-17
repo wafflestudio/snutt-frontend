@@ -11,7 +11,8 @@
     "build:android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output dist/android.jsbundle --assets-dest android/com/wafflestudio/snutt-staging/src/main/res/",
     "build:ios": "react-native bundle --dev false --entry-file index.js --bundle-output dist/ios.jsbundle --assets-dest ./ios --platform ios",
     "deploy:dev": "scripts/deploy.sh dev",
-    "deploy:prod": "echo prod 배포는 github 에서 직접 릴리즈를 생성해 주세요."
+    "deploy:prod": "echo prod 배포는 github 에서 직접 릴리즈를 생성해 주세요.",
+    "tsc": "tsc"
   },
   "dependencies": {
     "@react-navigation/drawer": "^6.6.3",

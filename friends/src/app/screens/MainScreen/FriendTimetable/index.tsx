@@ -28,7 +28,6 @@ export const FriendTimetable = () => {
         friendId: selectedFriendId,
         courseBook: selectedCourseBookWithDefault,
       },
-    { keepPreviousData: true },
   );
   const selectedFriend = friends?.find((f) => f.friendId === selectedFriendId);
 
@@ -52,7 +51,7 @@ export const FriendTimetable = () => {
           }))}
         />
       </View>
-      {palette && fullTimetable && <Timetable palette={palette} timetable={fullTimetable} />}
+      {palette && <Timetable palette={palette} timetable={fullTimetable ?? { lectures: [] }} />}
     </ScrollView>
   );
 };

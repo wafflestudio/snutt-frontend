@@ -6,7 +6,7 @@ import { Fragment } from 'react';
 import { Day } from '../../entities/time';
 import { Color } from '../../entities/color';
 
-type Props = { timetable: FullTimetable; style?: ViewStyle; palette: Color[] };
+type Props = { timetable: Pick<FullTimetable, 'lectures'>; style?: ViewStyle; palette: Color[] };
 
 export const Timetable = ({ timetable, style, palette }: Props) => {
   const { timetableViewService } = useServiceContext();
