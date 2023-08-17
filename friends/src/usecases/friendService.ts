@@ -22,4 +22,5 @@ export type FriendService = {
     options?: { type: 'default' | 'displayName' | 'nickname' },
   ) => string;
   isValidNicknameTag: (str: string) => boolean;
+  isValidDisplayName: (str: string) => boolean;
 };

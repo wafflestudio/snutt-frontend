@@ -3,6 +3,8 @@ import { useMainScreenContext } from '..';
 import { useState } from 'react';
 import { ManageFriendsDrawerContentActiveList } from './ManageFriendsDrawerContentActiveList';
 import { ManageFriendsDrawerContentRequestedList } from './ManageFriendsDrawerContentRequestedList';
+import { CloseIcon } from '../../../components/Icons/CloseIcon';
+import { SnuttLogoIcon } from '../../../components/Icons/SnuttLogoIcon';
 
 type Tab = 'ACTIVE' | 'REQUESTED';
 
@@ -17,9 +19,10 @@ export const ManageFriendsDrawerContent = ({ onClose }: Props) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+        <SnuttLogoIcon width={20} height={20} />
         <Text style={styles.snutt}>SNUTT</Text>
         <TouchableOpacity onPress={onClose}>
-          <Text>X</Text>
+          <CloseIcon width={30} height={30} />
         </TouchableOpacity>
       </View>
       <View style={styles.divider} />
@@ -64,8 +67,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     height: 30,
+    gap: 12,
   },
-  snutt: { color: '#000', fontSize: 18, fontWeight: '900' },
+  snutt: { color: '#000', fontSize: 18, fontWeight: '900', flex: 1 },
   divider: { marginTop: 20, height: 1, marginBottom: 16, backgroundColor: '#f2f2f2' },
   tabs: { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' },
   tab: { height: 40, borderBottomWidth: 3, width: '50%', display: 'flex', justifyContent: 'center' },
