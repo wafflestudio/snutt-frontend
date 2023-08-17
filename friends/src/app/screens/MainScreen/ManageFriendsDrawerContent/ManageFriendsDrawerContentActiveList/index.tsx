@@ -17,10 +17,15 @@ export const ManageFriendsDrawerContentActiveList = ({}: Props) => {
   const { friendService } = useServiceContext();
   const { data: activeFriends } = useFriends({ state: 'ACTIVE' });
   const { mutate: deleteFriend } = useDeleteFriend();
+  const { mutate: patchDisplayName } = usePatchDisplayName();
   const { onSelectFriend } = useMainScreenContext();
   const [bottomSheetState, setBottomSheetState] = useState<
-    { isOpen: false } | { isOpen: true; friendId: FriendId; type: 'detail' | 'setNickname' }
+    | { isOpen: false }
+    | ({ isOpen: true; friendId: FriendId } & ({ type: 'detail' } | { type: 'setNickname'; displayName: string }))
   >({ isOpen: false });
+  const bottomSheetFriend = bottomSheetState.isOpen
+    ? activeFriends?.find((f) => f.friendId === bottomSheetState.friendId)
+    : undefined;
 
   return (
     <View>
@@ -39,49 +44,60 @@ export const ManageFriendsDrawerContentActiveList = ({}: Props) => {
         )}
       />
       <BottomSheet isOpen={bottomSheetState.isOpen} onClose={() => setBottomSheetState({ isOpen: false })}>
-        {bottomSheetState.isOpen &&
-          {
-            detail: (
-              <View style={styles.sheetContent}>
-                <TouchableOpacity
-                  style={styles.sheetItem}
-                  onPress={() =>
-                    setBottomSheetState({ isOpen: true, friendId: bottomSheetState.friendId, type: 'setNickname' })
-                  }
-                >
-                  <PencilIcon width={30} height={30} />
-                  <Text>친구 이름 설정</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.sheetItem}
-                  onPress={() =>
-                    deleteFriend(bottomSheetState.friendId, { onSuccess: () => setBottomSheetState({ isOpen: false }) })
-                  }
-                >
-                  <TrashIcon width={30} height={30} />
-                  <Text>친구 목록에서 삭제</Text>
-                </TouchableOpacity>
-              </View>
-            ),
-            setNickname: (
-              <View style={styles.sheetContent}>
-                <View>
-                  <TouchableOpacity>
-                    <Text>취소</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity>
-                    <Text>적용</Text>
-                  </TouchableOpacity>
-                </View>
-                <View>
-                  <Text>나에게 표시될 친구 이름</Text>
-                  <Text>(공백 포함 한/영 10자 이내)</Text>
-                </View>
-                <Input value="" onChange={() => null} />
-                <Text>친구 닉네임: </Text>
-              </View>
-            ),
-          }[bottomSheetState.type]}
+        {!bottomSheetState.isOpen ? null : bottomSheetState.type === 'detail' ? (
+          <View style={styles.sheetContent}>
+            <TouchableOpacity
+              style={styles.sheetItem}
+              onPress={() => {
+                const friend = activeFriends?.find((f) => f.friendId === bottomSheetState.friendId);
+                setBottomSheetState({
+                  isOpen: true,
+                  friendId: bottomSheetState.friendId,
+                  type: 'setNickname',
+                  displayName: friend?.displayName ?? '',
+                });
+              }}
+            >
+              <PencilIcon width={30} height={30} />
+              <Text>친구 이름 설정</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.sheetItem}
+              onPress={() =>
+                deleteFriend(bottomSheetState.friendId, { onSuccess: () => setBottomSheetState({ isOpen: false }) })
+              }
+            >
+              <TrashIcon width={30} height={30} />
+              <Text>친구 목록에서 삭제</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={styles.sheetContent}>
+            <View>
+              <TouchableOpacity>
+                <Text>취소</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() =>
+                  patchDisplayName(bottomSheetState, { onSuccess: () => setBottomSheetState({ isOpen: false }) })
+                }
+              >
+                <Text>적용</Text>
+              </TouchableOpacity>
+            </View>
+            <View>
+              <Text>나에게 표시될 친구 이름</Text>
+              <Text>(공백 포함 한/영 10자 이내)</Text>
+            </View>
+            <Input
+              value={bottomSheetState.displayName}
+              onChange={(e) => setBottomSheetState({ ...bottomSheetState, displayName: e })}
+            />
+            <Text>
+              친구 닉네임: {bottomSheetFriend && friendService.formatNickname(bottomSheetFriend, { type: 'nickname' })}
+            </Text>
+          </View>
+        )}
       </BottomSheet>
     </View>
   );
@@ -93,6 +109,16 @@ const useDeleteFriend = () => {
   return useMutation((friendId: FriendId) => friendService.deleteFriend({ friendId }), {
     onSuccess: () => queryClient.invalidateQueries(),
   });
+};
+
+const usePatchDisplayName = () => {
+  const queryClient = useQueryClient();
+  const { friendService } = useServiceContext();
+  return useMutation(
+    ({ friendId, displayName }: { friendId: FriendId; displayName: string }) =>
+      friendService.patchFriendDisplayName({ friendId, displayName }),
+    { onSuccess: () => queryClient.invalidateQueries() },
+  );
 };
 
 const styles = StyleSheet.create({

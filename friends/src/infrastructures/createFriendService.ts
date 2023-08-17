@@ -8,15 +8,29 @@ export const createFriendService = ({
 }): FriendService => {
   return {
     listFriends: (req) =>
-      friendRepository.listFriends(req).then((res) => res.content.map((c) => ({ friendId: c.id, ...c.nickname }))),
+      friendRepository
+        .listFriends(req)
+        .then((res) => res.content.map((c) => ({ friendId: c.id, ...c.nickname, displayName: c.displayName }))),
     acceptFriend: (req) => friendRepository.acceptFriend(req),
     declineFriend: (req) => friendRepository.declineFriend(req),
     deleteFriend: (req) => friendRepository.deleteFriend(req),
     requestFriend: (req) => friendRepository.requestFriend(req),
     getFriendPrimaryTable: (req) => friendRepository.getFriendPrimaryTable(req),
     getFriendRegisteredCourseBooks: (req) => friendRepository.getFriendRegisteredCourseBooks(req),
+    patchFriendDisplayName: (req) => friendRepository.patchFriendDisplayName(req),
 
-    formatNickname: (req) => `${req.nickname}#${req.tag}`,
+    formatNickname: (req, options = { type: 'default' }) => {
+      const displayName = req.displayName;
+      const nickname = `${req.nickname}#${req.tag}`;
+      switch (options.type) {
+        case 'default':
+          return displayName ?? nickname;
+        case 'displayName':
+          return displayName ?? '';
+        case 'nickname':
+          return nickname;
+      }
+    },
     isValidNicknameTag: (str) => {
       const [nickname, tag] = str.split('#');
       if (!nickname || !tag) return false;

@@ -15,7 +15,7 @@ import { UserIcon } from '../../../components/Icons/UserIcon';
 import { FriendGuide } from './FriendGuide';
 
 export const FriendTimetable = () => {
-  const { courseBookService } = useServiceContext();
+  const { courseBookService, friendService } = useServiceContext();
   const { data: friends } = useFriends({ state: 'ACTIVE' });
   const [selectedCourseBook, setSelectedCourseBook] = useState<CourseBook>();
   const { selectedFriendId } = useMainScreenContext();
@@ -41,9 +41,7 @@ export const FriendTimetable = () => {
       <View style={styles.header}>
         <UserIcon width={16} height={16} style={styles.userIcon} />
 
-        <Text style={styles.nickname}>
-          {selectedFriend?.nickname}#{selectedFriend?.tag}
-        </Text>
+        <Text style={styles.nickname}>{selectedFriend && friendService.formatNickname(selectedFriend)}</Text>
 
         <Select
           value={selectedCourseBookWithDefault && courseBookService.toValue(selectedCourseBookWithDefault)}
