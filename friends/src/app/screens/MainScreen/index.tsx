@@ -7,7 +7,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { ManageFriendsDrawerContent } from './ManageFriendsDrawerContent';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useServiceContext } from '../../../main';
-import { createContext, useContext, useMemo, useState } from 'react';
+import { Dispatch, createContext, useContext, useMemo, useReducer, useState } from 'react';
 import { Nickname } from '../../../entities/user';
 import { FriendId } from '../../../entities/friend';
 import { useFriends } from '../../queries/useFriends';
@@ -16,10 +16,21 @@ import { UserPlusIcon } from '../../components/Icons/UserPlusIcon';
 import { WarningIcon } from '../../components/Icons/WarningIcon';
 import { Input } from '../../components/Input';
 import { BottomSheet } from '../../components/BottomSheet';
+import { CourseBook } from '../../../entities/courseBook';
+import { useFriendRegisteredCourseBooks } from '../../queries/useFriendRegisteredCourseBooks';
 
-type MainScreenContext = {
-  selectedFriendId: FriendId | undefined;
-  onSelectFriend: (friendId: FriendId | undefined) => void;
+type MainScreenState = { selectedFriendId: FriendId | undefined; selectedCourseBook: CourseBook | undefined };
+type MainScreenAction = { type: 'setFriend'; friendId: FriendId } | { type: 'setCourseBook'; courseBook: CourseBook };
+type MainScreenContext = MainScreenState & { dispatch: Dispatch<MainScreenAction> };
+const mainScreenReducer = (state: MainScreenState, action: MainScreenAction): MainScreenState => {
+  switch (action.type) {
+    case 'setFriend':
+      return { ...state, selectedFriendId: action.friendId, selectedCourseBook: undefined };
+    case 'setCourseBook':
+      return { ...state, selectedCourseBook: action.courseBook };
+    default:
+      return state;
+  }
 };
 const mainScreenContext = createContext<MainScreenContext | null>(null);
 export const useMainScreenContext = () => {
@@ -30,16 +41,25 @@ export const useMainScreenContext = () => {
 const Drawer = createDrawerNavigator();
 
 export const MainScreen = () => {
-  const [selectedFriendId, setSelectedFriendId] = useState<FriendId>();
+  const [state, dispatch] = useReducer(mainScreenReducer, {
+    selectedFriendId: undefined,
+    selectedCourseBook: undefined,
+  });
 
   const { data: friends } = useFriends({ state: 'ACTIVE' });
-  const selectedFriendIdWithDefault = selectedFriendId ?? friends?.[0]?.friendId;
+  const selectedFriendIdWithDefault = state.selectedFriendId ?? friends?.[0]?.friendId;
+  const { data: courseBooks } = useFriendRegisteredCourseBooks(selectedFriendIdWithDefault);
+  const selectedCourseBookWithDefault = state.selectedCourseBook ?? courseBooks?.at(0);
 
   return (
     <mainScreenContext.Provider
       value={useMemo(
-        () => ({ selectedFriendId: selectedFriendIdWithDefault, onSelectFriend: setSelectedFriendId }),
-        [selectedFriendIdWithDefault],
+        () => ({
+          selectedFriendId: selectedFriendIdWithDefault,
+          selectedCourseBook: selectedCourseBookWithDefault,
+          dispatch,
+        }),
+        [selectedFriendIdWithDefault, selectedCourseBookWithDefault],
       )}
     >
       <Drawer.Navigator screenOptions={{ header: Header }} drawerContent={DrawerContent}>

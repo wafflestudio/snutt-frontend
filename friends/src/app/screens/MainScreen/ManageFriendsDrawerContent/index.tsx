@@ -14,7 +14,7 @@ type Props = {
 
 export const ManageFriendsDrawerContent = ({ onClose }: Props) => {
   const [tab, setTab] = useState<Tab>('ACTIVE');
-  const { onSelectFriend } = useMainScreenContext();
+  const { dispatch } = useMainScreenContext();
 
   return (
     <View style={styles.container}>
@@ -50,7 +50,11 @@ export const ManageFriendsDrawerContent = ({ onClose }: Props) => {
 
         {
           {
-            ACTIVE: <ManageFriendsDrawerContentActiveList onClickFriend={onSelectFriend} />,
+            ACTIVE: (
+              <ManageFriendsDrawerContentActiveList
+                onClickFriend={(friendId) => dispatch({ type: 'setFriend', friendId })}
+              />
+            ),
             REQUESTED: <ManageFriendsDrawerContentRequestedList />,
           }[tab]
         }

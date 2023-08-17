@@ -18,7 +18,7 @@ export const ManageFriendsDrawerContentActiveList = ({}: Props) => {
   const { data: activeFriends } = useFriends({ state: 'ACTIVE' });
   const { mutate: deleteFriend } = useDeleteFriend();
   const { mutate: patchDisplayName } = usePatchDisplayName();
-  const { onSelectFriend } = useMainScreenContext();
+  const { dispatch } = useMainScreenContext();
   const [bottomSheetState, setBottomSheetState] = useState<
     | { isOpen: false }
     | ({ isOpen: true; friendId: FriendId } & ({ type: 'detail' } | { type: 'setNickname'; displayName: string }))
@@ -37,7 +37,11 @@ export const ManageFriendsDrawerContentActiveList = ({}: Props) => {
       <FlatList
         data={activeFriends}
         renderItem={({ item }) => (
-          <TouchableOpacity key={item.friendId} style={styles.item} onPress={() => onSelectFriend(item.friendId)}>
+          <TouchableOpacity
+            key={item.friendId}
+            style={styles.item}
+            onPress={() => dispatch({ type: 'setFriend', friendId: item.friendId })}
+          >
             <Text style={styles.nickname}>{friendService.formatNickname(item)}</Text>
 
             <TouchableOpacity
