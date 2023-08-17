@@ -3,9 +3,6 @@ import { Timetable } from '../../../components/Timetable';
 import { useColors } from '../../../queries/useColors';
 import { useMainScreenContext } from '..';
 import { useFriendRegisteredCourseBooks } from '../../../queries/useFriendRegisteredCourseBooks';
-import { useState } from 'react';
-
-import { CourseBook } from '../../../../entities/courseBook';
 import { useFriends } from '../../../queries/useFriends';
 import { useFriendPrimaryTable } from '../../../queries/useFriendPrimaryTable';
 
@@ -15,19 +12,13 @@ import { UserIcon } from '../../../components/Icons/UserIcon';
 import { FriendGuide } from './FriendGuide';
 
 export const FriendTimetable = () => {
+  const { selectedFriendId, selectedCourseBook, dispatch } = useMainScreenContext();
   const { courseBookService, friendService } = useServiceContext();
   const { data: friends } = useFriends({ state: 'ACTIVE' });
-  const [selectedCourseBook, setSelectedCourseBook] = useState<CourseBook>();
-  const { selectedFriendId } = useMainScreenContext();
   const { data: palette } = useColors();
   const { data: courseBooks } = useFriendRegisteredCourseBooks(selectedFriendId);
-  const selectedCourseBookWithDefault = selectedCourseBook ?? courseBooks?.at(0);
   const { data: fullTimetable } = useFriendPrimaryTable(
-    selectedCourseBookWithDefault &&
-      selectedFriendId && {
-        friendId: selectedFriendId,
-        courseBook: selectedCourseBookWithDefault,
-      },
+    selectedCourseBook && selectedFriendId && { friendId: selectedFriendId, courseBook: selectedCourseBook },
   );
   const selectedFriend = friends?.find((f) => f.friendId === selectedFriendId);
 
@@ -43,8 +34,8 @@ export const FriendTimetable = () => {
         <Text style={styles.nickname}>{selectedFriend && friendService.formatNickname(selectedFriend)}</Text>
 
         <Select
-          value={selectedCourseBookWithDefault && courseBookService.toValue(selectedCourseBookWithDefault)}
-          onChange={(v) => setSelectedCourseBook(courseBookService.fromValue(v))}
+          value={selectedCourseBook && courseBookService.toValue(selectedCourseBook)}
+          onChange={(v) => dispatch({ type: 'setCourseBook', courseBook: courseBookService.fromValue(v) })}
           items={courseBooks?.map((cb) => ({
             label: `${cb.year}-${cb.semester}`,
             value: courseBookService.toValue(cb),
