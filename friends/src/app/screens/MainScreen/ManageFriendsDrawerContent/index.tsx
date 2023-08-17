@@ -5,6 +5,7 @@ import { ManageFriendsDrawerContentActiveList } from './ManageFriendsDrawerConte
 import { ManageFriendsDrawerContentRequestedList } from './ManageFriendsDrawerContentRequestedList';
 import { CloseIcon } from '../../../components/Icons/CloseIcon';
 import { SnuttLogoIcon } from '../../../components/Icons/SnuttLogoIcon';
+import { UserPlusIcon } from '../../../components/Icons/UserPlusIcon';
 
 type Tab = 'ACTIVE' | 'REQUESTED';
 
@@ -44,8 +45,9 @@ export const ManageFriendsDrawerContent = ({ onClose }: Props) => {
       </View>
 
       <View style={styles.tabContent}>
-        <TouchableOpacity style={styles.addFriend}>
-          <Text style={styles.addFriendText}>친구 추가하기 +</Text>
+        <TouchableOpacity style={styles.addFriend} onPress={() => dispatch({ type: 'setModalOpen', isOpen: true })}>
+          <Text style={styles.addFriendText}>친구 추가하기</Text>
+          <UserPlusIcon style={styles.addFriendIcon} width={16} height={16} />
         </TouchableOpacity>
 
         {
@@ -80,8 +82,17 @@ const styles = StyleSheet.create({
   tabText: { textAlign: 'center', fontSize: 16 },
   tabContent: { paddingLeft: 15, paddingRight: 15, paddingTop: 16 },
 
-  addFriend: { borderBottomColor: '#f2f2f2', borderBottomWidth: 2, paddingBottom: 9, marginBottom: 8 },
+  addFriend: {
+    borderBottomColor: '#f2f2f2',
+    borderBottomWidth: 2,
+    paddingBottom: 9,
+    marginBottom: 8,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   addFriendText: { color: '#777', fontSize: 12 },
+  addFriendIcon: { color: '#777777' },
 });
 
 const tabs: { label: string; value: Tab }[] = [
