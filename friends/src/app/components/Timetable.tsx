@@ -2,13 +2,13 @@ import { StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { FullTimetable } from '../../entities/timetable';
 import { useServiceContext } from '../../main';
 import { arrayFromRange } from '../../utils/array';
-import { Fragment } from 'react';
+import { Fragment, memo } from 'react';
 import { Day } from '../../entities/time';
 import { Color } from '../../entities/color';
 
 type Props = { timetable: Pick<FullTimetable, 'lectures'>; style?: ViewStyle; palette: Color[] };
 
-export const Timetable = ({ timetable, style, palette }: Props) => {
+export const Timetable = memo(({ timetable, style, palette }: Props) => {
   const { timetableViewService } = useServiceContext();
   const [startDay, endDay] = timetableViewService.getDayRange(timetable);
   const [startHour, endHour] = timetableViewService.getHourRange(timetable);
@@ -76,7 +76,7 @@ export const Timetable = ({ timetable, style, palette }: Props) => {
       </View>
     </View>
   );
-};
+});
 
 const HOUR_HEIGHT = 38;
 const DAY_LABEL_HEIGHT = 26;

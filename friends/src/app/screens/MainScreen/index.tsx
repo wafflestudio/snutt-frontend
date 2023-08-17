@@ -7,7 +7,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { ManageFriendsDrawerContent } from './ManageFriendsDrawerContent';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useServiceContext } from '../../../main';
-import { Dispatch, createContext, useContext, useMemo, useReducer, useState } from 'react';
+import { Dispatch, createContext, useContext, useMemo, useReducer } from 'react';
 import { Nickname } from '../../../entities/user';
 import { FriendId } from '../../../entities/friend';
 import { useFriends } from '../../queries/useFriends';
@@ -19,8 +19,17 @@ import { BottomSheet } from '../../components/BottomSheet';
 import { CourseBook } from '../../../entities/courseBook';
 import { useFriendRegisteredCourseBooks } from '../../queries/useFriendRegisteredCourseBooks';
 
-type MainScreenState = { selectedFriendId: FriendId | undefined; selectedCourseBook: CourseBook | undefined };
-type MainScreenAction = { type: 'setFriend'; friendId: FriendId } | { type: 'setCourseBook'; courseBook: CourseBook };
+type MainScreenState = {
+  selectedFriendId: FriendId | undefined;
+  selectedCourseBook: CourseBook | undefined;
+  isAddFriendModalOpen: boolean;
+  addFriendModalNickname: string;
+};
+type MainScreenAction =
+  | { type: 'setFriend'; friendId: FriendId }
+  | { type: 'setCourseBook'; courseBook: CourseBook }
+  | { type: 'setModalOpen'; isOpen: boolean }
+  | { type: 'setAddFriendModalNickname'; nickname: string };
 type MainScreenContext = MainScreenState & { dispatch: Dispatch<MainScreenAction> };
 const mainScreenReducer = (state: MainScreenState, action: MainScreenAction): MainScreenState => {
   switch (action.type) {
@@ -28,8 +37,13 @@ const mainScreenReducer = (state: MainScreenState, action: MainScreenAction): Ma
       return { ...state, selectedFriendId: action.friendId, selectedCourseBook: undefined };
     case 'setCourseBook':
       return { ...state, selectedCourseBook: action.courseBook };
-    default:
-      return state;
+    case 'setModalOpen':
+      return action.isOpen
+        ? { ...state, isAddFriendModalOpen: true }
+        : { ...state, isAddFriendModalOpen: false, addFriendModalNickname: '' };
+    case 'setAddFriendModalNickname':
+      if (!state.isAddFriendModalOpen) throw new Error();
+      return { ...state, addFriendModalNickname: action.nickname };
   }
 };
 const mainScreenContext = createContext<MainScreenContext | null>(null);
@@ -44,6 +58,8 @@ export const MainScreen = () => {
   const [state, dispatch] = useReducer(mainScreenReducer, {
     selectedFriendId: undefined,
     selectedCourseBook: undefined,
+    isAddFriendModalOpen: false,
+    addFriendModalNickname: '',
   });
 
   const { data: friends } = useFriends({ state: 'ACTIVE' });
@@ -57,9 +73,16 @@ export const MainScreen = () => {
         () => ({
           selectedFriendId: selectedFriendIdWithDefault,
           selectedCourseBook: selectedCourseBookWithDefault,
+          isAddFriendModalOpen: state.isAddFriendModalOpen,
+          addFriendModalNickname: state.addFriendModalNickname,
           dispatch,
         }),
-        [selectedFriendIdWithDefault, selectedCourseBookWithDefault],
+        [
+          selectedFriendIdWithDefault,
+          selectedCourseBookWithDefault,
+          state.isAddFriendModalOpen,
+          state.addFriendModalNickname,
+        ],
       )}
     >
       <Drawer.Navigator screenOptions={{ header: Header }} drawerContent={DrawerContent}>
@@ -70,20 +93,16 @@ export const MainScreen = () => {
 };
 
 const Header = ({ navigation }: DrawerHeaderProps) => {
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [friendName, setFriendName] = useState('');
+  const { addFriendModalNickname, isAddFriendModalOpen, dispatch } = useMainScreenContext();
   const { friendService } = useServiceContext();
   const { mutate: request } = useRequestFriend();
 
-  const isValid = friendService.isValidNicknameTag(friendName);
-  const guideMessageState = friendName === '' ? 'disabled' : isValid ? 'hidden' : 'enabled';
+  const isValid = friendService.isValidNicknameTag(addFriendModalNickname);
+  const guideMessageState = addFriendModalNickname === '' ? 'disabled' : isValid ? 'hidden' : 'enabled';
 
-  const openModal = () => setModalOpen(true);
+  const openModal = () => dispatch({ type: 'setModalOpen', isOpen: true });
 
-  const closeModal = () => {
-    setModalOpen(false);
-    setFriendName('');
-  };
+  const closeModal = () => dispatch({ type: 'setModalOpen', isOpen: false });
 
   return (
     <>
@@ -100,21 +119,21 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
           </TouchableOpacity>
         }
       />
-      <BottomSheet isOpen={isModalOpen} onClose={closeModal}>
+      <BottomSheet isOpen={isAddFriendModalOpen} onClose={closeModal}>
         <View style={styles.modalContent}>
           <BottomSheet.Header
             left={{ text: '취소', onPress: closeModal }}
             right={{
               text: '요청 보내기',
-              onPress: () => request(friendName, { onSuccess: closeModal }),
+              onPress: () => request(addFriendModalNickname, { onSuccess: closeModal }),
               disabled: !isValid,
             }}
           />
           <Text style={styles.inputDescription}>추가하고 싶은 친구의 닉네임</Text>
           <Input
             style={styles.input}
-            value={friendName}
-            onChange={(e) => setFriendName(e)}
+            value={addFriendModalNickname}
+            onChange={(e) => dispatch({ type: 'setAddFriendModalNickname', nickname: e })}
             placeholder="예) 홍길동#1234"
           />
           {guideMessageState !== 'hidden' &&
