@@ -82,22 +82,14 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
       />
       <BottomSheet isOpen={isModalOpen} onClose={closeModal}>
         <View style={styles.modalContent}>
-          <View style={styles.modalHeader}>
-            <TouchableOpacity onPress={closeModal}>
-              <Text style={styles.modalHeaderText}>취소</Text>
-            </TouchableOpacity>
-            <TouchableOpacity disabled={!isValid} onPress={() => request(friendName, { onSuccess: closeModal })}>
-              <Text
-                // eslint-disable-next-line react-native/no-inline-styles
-                style={{
-                  ...styles.modalHeaderText,
-                  color: isValid ? '#0e0e0e' : '#c4c4c4',
-                }}
-              >
-                요청 보내기
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <BottomSheet.Header
+            left={{ text: '취소', onPress: closeModal }}
+            right={{
+              text: '요청 보내기',
+              onPress: () => request(friendName, { onSuccess: closeModal }),
+              disabled: !isValid,
+            }}
+          />
           <Text style={styles.inputDescription}>추가하고 싶은 친구의 닉네임</Text>
           <Input
             style={styles.input}
@@ -136,13 +128,6 @@ const useRequestFriend = () => {
 
 const styles = StyleSheet.create({
   modalContent: { paddingBottom: 30 },
-  modalHeader: {
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  modalHeaderText: { fontSize: 14 },
   inputDescription: { marginTop: 30, color: '#777', fontSize: 14 },
   input: { marginTop: 15 },
   guide: {

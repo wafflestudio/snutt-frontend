@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react';
-import { KeyboardAvoidingView, StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import Modal from 'react-native-modal';
 
@@ -22,6 +22,38 @@ export const BottomSheet = ({ isOpen, onClose, children }: PropsWithChildren<Pro
   );
 };
 
+const BottomSheetHeader = ({
+  left,
+  right,
+}: {
+  left?: { text: string; onPress: () => void; disabled?: boolean };
+  right?: { text: string; onPress: () => void; disabled?: boolean };
+}) => {
+  return (
+    <View style={styles.modalHeader}>
+      {[left, right].map((item, i) => (
+        <View key={i}>
+          {item && (
+            <TouchableOpacity disabled={item.disabled} onPress={item.onPress}>
+              <Text
+                // eslint-disable-next-line react-native/no-inline-styles
+                style={{
+                  ...styles.modalHeaderText,
+                  color: !item.disabled ? '#0e0e0e' : '#c4c4c4',
+                }}
+              >
+                {item.text}
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      ))}
+    </View>
+  );
+};
+
+BottomSheet.Header = BottomSheetHeader;
+
 const styles = StyleSheet.create({
   modal: { justifyContent: 'flex-end', margin: 0 },
   modalContent: {
@@ -30,4 +62,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 20,
   },
+  modalHeader: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  modalHeaderText: { fontSize: 14 },
 });

@@ -26,6 +26,11 @@ export const ManageFriendsDrawerContentActiveList = ({}: Props) => {
   const bottomSheetFriend = bottomSheetState.isOpen
     ? activeFriends?.find((f) => f.friendId === bottomSheetState.friendId)
     : undefined;
+  const isDisplayNameModifyable =
+    bottomSheetState.isOpen &&
+    bottomSheetState.type === 'setNickname' &&
+    bottomSheetState.displayName !== bottomSheetFriend?.displayName &&
+    friendService.isValidDisplayName(bottomSheetState.displayName);
 
   return (
     <View>
@@ -72,28 +77,26 @@ export const ManageFriendsDrawerContentActiveList = ({}: Props) => {
             </TouchableOpacity>
           </View>
         ) : (
-          <View style={styles.sheetContent}>
-            <View>
-              <TouchableOpacity>
-                <Text>취소</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() =>
-                  patchDisplayName(bottomSheetState, { onSuccess: () => setBottomSheetState({ isOpen: false }) })
-                }
-              >
-                <Text>적용</Text>
-              </TouchableOpacity>
-            </View>
-            <View>
-              <Text>나에게 표시될 친구 이름</Text>
-              <Text>(공백 포함 한/영 10자 이내)</Text>
+          <View style={styles.displayNameSheetContent}>
+            <BottomSheet.Header
+              left={{ text: '취소', onPress: () => setBottomSheetState({ isOpen: false }) }}
+              right={{
+                text: '적용',
+                onPress: () =>
+                  patchDisplayName(bottomSheetState, { onSuccess: () => setBottomSheetState({ isOpen: false }) }),
+                disabled: !isDisplayNameModifyable,
+              }}
+            />
+            <View style={styles.displayNameInfo}>
+              <Text style={styles.displayNameInfoText}>나에게 표시될 친구 이름</Text>
+              <Text style={styles.displayNameInfoCaption}>(공백 포함 한/영 10자 이내)</Text>
             </View>
             <Input
+              style={styles.displayNameInput}
               value={bottomSheetState.displayName}
               onChange={(e) => setBottomSheetState({ ...bottomSheetState, displayName: e })}
             />
-            <Text>
+            <Text style={styles.displayNameInputCaption}>
               친구 닉네임: {bottomSheetFriend && friendService.formatNickname(bottomSheetFriend, { type: 'nickname' })}
             </Text>
           </View>
@@ -136,4 +139,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sheetItemText: { fontSize: 14 },
+
+  displayNameSheetContent: { paddingBottom: 30 },
+  displayNameInfo: {
+    marginTop: 30,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  displayNameInfoText: { fontSize: 14, color: '#777777' },
+  displayNameInfoCaption: { fontSize: 10, color: '#777777', marginTop: 2 },
+  displayNameInput: { marginTop: 16, fontSize: 14, color: '#0e0e0e' },
+  displayNameInputCaption: { marginTop: 5, fontSize: 10, color: '#00b8b0' },
 });
