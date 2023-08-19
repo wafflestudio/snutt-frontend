@@ -2,7 +2,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Timetable } from '../../../components/Timetable';
 import { useColors } from '../../../queries/useColors';
 import { useMainScreenContext } from '..';
-import { useFriendRegisteredCourseBooks } from '../../../queries/useFriendRegisteredCourseBooks';
+
 import { useFriends } from '../../../queries/useFriends';
 import { useFriendPrimaryTable } from '../../../queries/useFriendPrimaryTable';
 
@@ -10,13 +10,14 @@ import { useServiceContext } from '../../../../main';
 import { Select } from '../../../components/Select';
 import { UserIcon } from '../../../components/Icons/UserIcon';
 import { FriendGuide } from './FriendGuide';
+import { useFriendCourseBooks } from '../../../queries/useFriendCourseBooks';
 
 export const FriendTimetable = () => {
   const { selectedFriendId, selectedCourseBook, dispatch } = useMainScreenContext();
   const { courseBookService, friendService } = useServiceContext();
   const { data: friends } = useFriends({ state: 'ACTIVE' });
   const { data: palette } = useColors();
-  const { data: courseBooks } = useFriendRegisteredCourseBooks(selectedFriendId);
+  const { data: courseBooks } = useFriendCourseBooks(selectedFriendId);
   const { data: fullTimetable } = useFriendPrimaryTable(
     selectedCourseBook && selectedFriendId && { friendId: selectedFriendId, courseBook: selectedCourseBook },
   );

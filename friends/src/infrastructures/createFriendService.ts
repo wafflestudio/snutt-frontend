@@ -16,7 +16,7 @@ export const createFriendService = ({
     deleteFriend: (req) => friendRepository.deleteFriend(req),
     requestFriend: (req) => friendRepository.requestFriend(req),
     getFriendPrimaryTable: (req) => friendRepository.getFriendPrimaryTable(req),
-    getFriendRegisteredCourseBooks: (req) => friendRepository.getFriendRegisteredCourseBooks(req),
+    getFriendCourseBooks: (req) => friendRepository.getFriendCourseBooks(req),
     patchFriendDisplayName: (req) => friendRepository.patchFriendDisplayName(req),
 
     formatNickname: (req, options = { type: 'default' }) => {
