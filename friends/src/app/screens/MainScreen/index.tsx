@@ -17,7 +17,7 @@ import { WarningIcon } from '../../components/Icons/WarningIcon';
 import { Input } from '../../components/Input';
 import { BottomSheet } from '../../components/BottomSheet';
 import { CourseBook } from '../../../entities/courseBook';
-import { useFriendRegisteredCourseBooks } from '../../queries/useFriendRegisteredCourseBooks';
+import { useFriendCourseBooks } from '../../queries/useFriendCourseBooks';
 
 type MainScreenState = {
   selectedFriendId: FriendId | undefined;
@@ -64,7 +64,7 @@ export const MainScreen = () => {
 
   const { data: friends } = useFriends({ state: 'ACTIVE' });
   const selectedFriendIdWithDefault = state.selectedFriendId ?? friends?.[0]?.friendId;
-  const { data: courseBooks } = useFriendRegisteredCourseBooks(selectedFriendIdWithDefault);
+  const { data: courseBooks } = useFriendCourseBooks(selectedFriendIdWithDefault);
   const selectedCourseBookWithDefault = state.selectedCourseBook ?? courseBooks?.at(0);
 
   return (

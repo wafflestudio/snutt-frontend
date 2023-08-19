@@ -29,7 +29,7 @@ export type FriendRepository = {
 
   getFriendPrimaryTable: (req: { friendId: FriendId; semester: Semester; year: Year }) => Promise<FullTimetable>;
 
-  getFriendRegisteredCourseBooks: (req: { friendId: FriendId }) => Promise<CourseBook[]>;
+  getFriendCourseBooks: (req: { friendId: FriendId }) => Promise<CourseBook[]>;
 
   patchFriendDisplayName: (req: { friendId: FriendId; displayName: DisplayName }) => Promise<void>;
 };
