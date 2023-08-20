@@ -27,11 +27,7 @@ type ExternalProps = {
   theme: 'light' | 'dark';
 };
 
-export const Main = ({
-  'x-access-token': xAccessToken,
-  'x-access-apikey': xAccessApikey,
-  theme = 'dark', // TODO: remove this line https://wafflestudio.slack.com/archives/C0PAVPS5T/p1692498083991289?thread_ts=1692498022.594299&cid=C0PAVPS5T
-}: ExternalProps) => {
+export const Main = ({ 'x-access-token': xAccessToken, 'x-access-apikey': xAccessApikey, theme }: ExternalProps) => {
   const fetchClient = createFetchClient(baseUrl, xAccessToken, xAccessApikey);
   const friendRepository = createFriendRepository(fetchClient);
   const timetableViewService = createTimetableViewService();
