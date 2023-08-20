@@ -1,16 +1,15 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Timetable } from '../../../components/Timetable';
-import { useColors } from '../../../queries/useColors';
-import { useMainScreenContext } from '..';
 
-import { useFriends } from '../../../queries/useFriends';
-import { useFriendPrimaryTable } from '../../../queries/useFriendPrimaryTable';
-
-import { useServiceContext } from '../../../contexts/ServiceContext';
-import { Select } from '../../../components/Select';
 import { UserIcon } from '../../../components/Icons/UserIcon';
-import { FriendGuide } from './FriendGuide';
+import { Select } from '../../../components/Select';
+import { Timetable } from '../../../components/Timetable';
+import { useServiceContext } from '../../../contexts/ServiceContext';
+import { useColors } from '../../../queries/useColors';
 import { useFriendCourseBooks } from '../../../queries/useFriendCourseBooks';
+import { useFriendPrimaryTable } from '../../../queries/useFriendPrimaryTable';
+import { useFriends } from '../../../queries/useFriends';
+import { useMainScreenContext } from '..';
+import { FriendGuide } from './FriendGuide';
 
 export const FriendTimetable = () => {
   const { selectedFriendId, selectedCourseBook, dispatch } = useMainScreenContext();

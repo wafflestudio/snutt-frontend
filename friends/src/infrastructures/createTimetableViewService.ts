@@ -1,5 +1,4 @@
 import { Day, Hour } from '../entities/time';
-
 import { TimetableViewService } from '../usecases/timetableViewService';
 
 export const createTimetableViewService = (): TimetableViewService => {
