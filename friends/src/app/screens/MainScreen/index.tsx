@@ -2,7 +2,7 @@ import { createDrawerNavigator, DrawerContentComponentProps, DrawerHeaderProps }
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createContext, Dispatch, useContext, useMemo, useReducer } from 'react';
 import { TouchableOpacity } from 'react-native';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { CourseBook } from '../../../entities/courseBook';
 import { FriendId } from '../../../entities/friend';
@@ -13,10 +13,12 @@ import { HamburgerIcon } from '../../components/Icons/HamburgerIcon';
 import { UserPlusIcon } from '../../components/Icons/UserPlusIcon';
 import { WarningIcon } from '../../components/Icons/WarningIcon';
 import { Input } from '../../components/Input';
+import { Typography } from '../../components/Typography';
 import { useServiceContext } from '../../contexts/ServiceContext';
 import { useThemeContext } from '../../contexts/ThemeContext';
 import { useFriendCourseBooks } from '../../queries/useFriendCourseBooks';
 import { useFriends } from '../../queries/useFriends';
+import { COLORS } from '../../styles/colors';
 import { FriendTimetable } from './FriendTimetable';
 import { ManageFriendsDrawerContent } from './ManageFriendsDrawerContent';
 
@@ -101,6 +103,7 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
   const { addFriendModalNickname, isAddFriendModalOpen, dispatch } = useMainScreenContext();
   const { friendService } = useServiceContext();
   const { mutate: request } = useRequestFriend();
+  const guideEnabledColor = useThemeContext((data) => data.color.text.guide);
 
   const isValid = friendService.isValidNicknameTag(addFriendModalNickname);
   const guideMessageState = addFriendModalNickname === '' ? 'disabled' : isValid ? 'hidden' : 'enabled';
@@ -134,7 +137,9 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
               disabled: !isValid,
             }}
           />
-          <Text style={styles.inputDescription}>추가하고 싶은 친구의 닉네임</Text>
+          <Typography variant="description" style={styles.inputDescription}>
+            추가하고 싶은 친구의 닉네임
+          </Typography>
           <Input
             style={styles.input}
             value={addFriendModalNickname}
@@ -143,11 +148,13 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
           />
           {guideMessageState !== 'hidden' &&
             (() => {
-              const color = { enabled: '#00b8b0', disabled: '#777777' }[guideMessageState];
+              const color = { enabled: guideEnabledColor, disabled: COLORS.gray40 }[guideMessageState];
               return (
                 <View style={styles.guide}>
                   <WarningIcon width={18} height={18} style={{ color }} />
-                  <Text style={{ ...styles.guideText, color }}>닉네임 전체를 입력하세요</Text>
+                  <Typography variant="description" style={{ ...styles.guideText, color }}>
+                    닉네임 전체를 입력하세요
+                  </Typography>
                 </View>
               );
             })()}
@@ -172,7 +179,7 @@ const useRequestFriend = () => {
 
 const styles = StyleSheet.create({
   modalContent: { paddingBottom: 30 },
-  inputDescription: { marginTop: 30, color: '#777', fontSize: 14 },
+  inputDescription: { marginTop: 30, fontSize: 14 },
   input: { marginTop: 15 },
   guide: {
     marginTop: 5,
@@ -181,5 +188,5 @@ const styles = StyleSheet.create({
     gap: 1,
     alignItems: 'center',
   },
-  guideText: { color: '#00b8b0', fontSize: 10 },
+  guideText: { fontSize: 10 },
 });
