@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { CloseIcon } from '../../../components/Icons/CloseIcon';
 import { SnuttLogoIcon } from '../../../components/Icons/SnuttLogoIcon';
 import { UserPlusIcon } from '../../../components/Icons/UserPlusIcon';
+import { Typography } from '../../../components/Typography';
+import { useThemeContext } from '../../../contexts/ThemeContext';
 import { useMainScreenContext } from '..';
 import { ManageFriendsDrawerContentActiveList } from './ManageFriendsDrawerContentActiveList';
 import { ManageFriendsDrawerContentRequestedList } from './ManageFriendsDrawerContentRequestedList';
@@ -17,12 +19,13 @@ type Props = {
 export const ManageFriendsDrawerContent = ({ onClose }: Props) => {
   const [tab, setTab] = useState<Tab>('ACTIVE');
   const { dispatch } = useMainScreenContext();
+  const addFriendButtonColor = useThemeContext((data) => data.color.button.gray.text);
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <SnuttLogoIcon width={20} height={20} />
-        <Text style={styles.snutt}>SNUTT</Text>
+        <Typography style={styles.snutt}>SNUTT</Typography>
         <TouchableOpacity onPress={onClose}>
           <CloseIcon width={30} height={30} />
         </TouchableOpacity>
@@ -39,7 +42,7 @@ export const ManageFriendsDrawerContent = ({ onClose }: Props) => {
               // eslint-disable-next-line react-native/no-inline-styles
               style={{ ...styles.tab, borderBottomColor: isActive ? '#b3b3b3' : '#f2f2f2' }}
             >
-              <Text style={styles.tabText}>{label}</Text>
+              <Typography style={styles.tabText}>{label}</Typography>
             </TouchableOpacity>
           );
         })}
@@ -47,8 +50,8 @@ export const ManageFriendsDrawerContent = ({ onClose }: Props) => {
 
       <View style={styles.tabContent}>
         <TouchableOpacity style={styles.addFriend} onPress={() => dispatch({ type: 'setModalOpen', isOpen: true })}>
-          <Text style={styles.addFriendText}>친구 추가하기</Text>
-          <UserPlusIcon style={styles.addFriendIcon} width={16} height={16} />
+          <Typography style={{ ...styles.addFriendText, color: addFriendButtonColor }}>친구 추가하기</Typography>
+          <UserPlusIcon style={{ color: addFriendButtonColor }} width={16} height={16} />
         </TouchableOpacity>
 
         {
@@ -76,7 +79,7 @@ const styles = StyleSheet.create({
     height: 30,
     gap: 12,
   },
-  snutt: { color: '#000', fontSize: 18, fontWeight: '900', flex: 1 },
+  snutt: { fontSize: 18, fontWeight: '900', flex: 1 },
   divider: { marginTop: 20, height: 1, marginBottom: 16, backgroundColor: '#f2f2f2' },
   tabs: { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' },
   tab: { height: 40, borderBottomWidth: 3, width: '50%', display: 'flex', justifyContent: 'center' },
@@ -92,8 +95,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  addFriendText: { color: '#777', fontSize: 12 },
-  addFriendIcon: { color: '#777777' },
+  addFriendText: { fontSize: 12 },
 });
 
 const tabs: { label: string; value: Tab }[] = [

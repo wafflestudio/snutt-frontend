@@ -1,9 +1,10 @@
 import { useReducer } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { ChevronDownIcon } from './Icons/ChevronDownIcon';
 import { Paper } from './Paper';
+import { Typography } from './Typography';
 
 type Props<T extends string> = {
   value: T | undefined;
@@ -20,7 +21,9 @@ export const Select = <T extends string>({ value, onChange, items = [], style = 
     <View style={{ ...styles.container, width: style.width }}>
       <Paper style={styles.dropdown}>
         <TouchableOpacity style={styles.item} onPress={toggleOpen}>
-          <Text style={styles.label}>{selected?.label}</Text>
+          <Typography style={styles.label} variant="selectLabel">
+            {selected?.label}
+          </Typography>
           <ChevronDownIcon width={20} height={20} />
         </TouchableOpacity>
 
@@ -34,7 +37,9 @@ export const Select = <T extends string>({ value, onChange, items = [], style = 
                 toggleOpen();
               }}
             >
-              <Text style={styles.label}>{it.label}</Text>
+              <Typography style={styles.label} variant="selectLabel">
+                {it.label}
+              </Typography>
             </TouchableOpacity>
           ))}
       </Paper>
@@ -57,5 +62,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
   },
-  label: { fontSize: 12, color: '#505050' },
+  label: { fontSize: 12 },
 });

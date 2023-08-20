@@ -1,8 +1,10 @@
 import { PropsWithChildren } from 'react';
-import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Modal from 'react-native-modal';
 
+import { useThemeContext } from '../contexts/ThemeContext';
 import { Paper } from './Paper';
+import { Typography } from './Typography';
 
 type Props = { isOpen: boolean; onClose: () => void };
 
@@ -30,21 +32,22 @@ const BottomSheetHeader = ({
   left?: { text: string; onPress: () => void; disabled?: boolean };
   right?: { text: string; onPress: () => void; disabled?: boolean };
 }) => {
+  const disabledButtonColor = useThemeContext((data) => data.color.button.text.disabled);
+
   return (
     <View style={styles.modalHeader}>
       {[left, right].map((item, i) => (
         <View key={i}>
           {item && (
             <TouchableOpacity disabled={item.disabled} onPress={item.onPress}>
-              <Text
-                // eslint-disable-next-line react-native/no-inline-styles
+              <Typography
                 style={{
                   ...styles.modalHeaderText,
-                  color: !item.disabled ? '#0e0e0e' : '#c4c4c4',
+                  ...(item.disabled ? { color: disabledButtonColor } : {}),
                 }}
               >
                 {item.text}
-              </Text>
+              </Typography>
             </TouchableOpacity>
           )}
         </View>

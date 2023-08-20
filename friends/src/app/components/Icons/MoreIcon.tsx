@@ -1,3 +1,4 @@
 import Icon from '../../assets/more.svg';
+import { createIconComponent } from './_createIconComponent';
 
-export const MoreIcon = Icon;
+export const MoreIcon = createIconComponent(Icon);

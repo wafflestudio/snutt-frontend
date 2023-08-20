@@ -1,14 +1,16 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { FriendId } from '../../../../../entities/friend';
 import { BottomSheet } from '../../../../components/BottomSheet';
 import { MoreIcon } from '../../../../components/Icons/MoreIcon';
 import { PencilIcon } from '../../../../components/Icons/PencilIcon';
-import { TrashIcon } from '../../../../components/Icons/PencilIcon copy';
+import { TrashIcon } from '../../../../components/Icons/TrashIcon';
 import { Input } from '../../../../components/Input';
+import { Typography } from '../../../../components/Typography';
 import { useServiceContext } from '../../../../contexts/ServiceContext';
+import { useThemeContext } from '../../../../contexts/ThemeContext';
 import { useFriends } from '../../../../queries/useFriends';
 import { useMainScreenContext } from '../..';
 
@@ -20,6 +22,7 @@ export const ManageFriendsDrawerContentActiveList = ({}: Props) => {
   const { mutate: deleteFriend } = useDeleteFriend();
   const { mutate: patchDisplayName } = usePatchDisplayName();
   const { dispatch } = useMainScreenContext();
+  const moreIconColor = useThemeContext((data) => data.color.text.description);
   const [bottomSheetState, setBottomSheetState] = useState<
     | { isOpen: false }
     | ({ isOpen: true; friendId: FriendId } & ({ type: 'detail' } | { type: 'setNickname'; displayName: string }))
@@ -43,12 +46,12 @@ export const ManageFriendsDrawerContentActiveList = ({}: Props) => {
             style={styles.item}
             onPress={() => dispatch({ type: 'setFriend', friendId: item.friendId })}
           >
-            <Text style={styles.nickname}>{friendService.formatNickname(item)}</Text>
+            <Typography style={styles.nickname}>{friendService.formatNickname(item)}</Typography>
 
             <TouchableOpacity
               onPress={() => setBottomSheetState({ isOpen: true, friendId: item.friendId, type: 'detail' })}
             >
-              <MoreIcon style={styles.more} width={30} height={30} />
+              <MoreIcon width={30} height={30} style={{ color: moreIconColor }} />
             </TouchableOpacity>
           </TouchableOpacity>
         )}
@@ -69,7 +72,7 @@ export const ManageFriendsDrawerContentActiveList = ({}: Props) => {
               }}
             >
               <PencilIcon width={30} height={30} />
-              <Text>친구 이름 설정</Text>
+              <Typography>친구 이름 설정</Typography>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.sheetItem}
@@ -78,7 +81,7 @@ export const ManageFriendsDrawerContentActiveList = ({}: Props) => {
               }
             >
               <TrashIcon width={30} height={30} />
-              <Text>친구 목록에서 삭제</Text>
+              <Typography>친구 목록에서 삭제</Typography>
             </TouchableOpacity>
           </View>
         ) : (
@@ -93,17 +96,21 @@ export const ManageFriendsDrawerContentActiveList = ({}: Props) => {
               }}
             />
             <View style={styles.displayNameInfo}>
-              <Text style={styles.displayNameInfoText}>나에게 표시될 친구 이름</Text>
-              <Text style={styles.displayNameInfoCaption}>(공백 포함 한/영 10자 이내)</Text>
+              <Typography variant="description" style={styles.displayNameInfoText}>
+                나에게 표시될 친구 이름
+              </Typography>
+              <Typography variant="description" style={styles.displayNameInfoCaption}>
+                (공백 포함 한/영 10자 이내)
+              </Typography>
             </View>
             <Input
               style={styles.displayNameInput}
               value={bottomSheetState.displayName}
               onChange={(e) => setBottomSheetState({ ...bottomSheetState, displayName: e })}
             />
-            <Text style={styles.displayNameInputCaption}>
+            <Typography variant="guide" style={styles.displayNameInputCaption}>
               친구 닉네임: {bottomSheetFriend && friendService.formatNickname(bottomSheetFriend, { type: 'nickname' })}
-            </Text>
+            </Typography>
           </View>
         )}
       </BottomSheet>
@@ -132,7 +139,6 @@ const usePatchDisplayName = () => {
 const styles = StyleSheet.create({
   item: { height: 40, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 4 },
   nickname: { flex: 1, lineHeight: 15, fontSize: 13 },
-  more: { color: '#777777' },
 
   sheetContent: { paddingBottom: 20 },
   sheetItem: {
@@ -153,8 +159,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 4,
   },
-  displayNameInfoText: { fontSize: 14, color: '#777777' },
-  displayNameInfoCaption: { fontSize: 10, color: '#777777', marginTop: 2 },
-  displayNameInput: { marginTop: 16, fontSize: 14, color: '#0e0e0e' },
-  displayNameInputCaption: { marginTop: 5, fontSize: 10, color: '#00b8b0' },
+  displayNameInfoText: { fontSize: 14 },
+  displayNameInfoCaption: { fontSize: 10, marginTop: 2 },
+  displayNameInput: { marginTop: 16, fontSize: 14 },
+  displayNameInputCaption: { marginTop: 5, fontSize: 10 },
 });

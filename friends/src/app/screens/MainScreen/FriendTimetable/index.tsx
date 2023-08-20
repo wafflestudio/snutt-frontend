@@ -1,10 +1,12 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { UserIcon } from '../../../components/Icons/UserIcon';
 import { Paper } from '../../../components/Paper';
 import { Select } from '../../../components/Select';
 import { Timetable } from '../../../components/Timetable';
+import { Typography } from '../../../components/Typography';
 import { useServiceContext } from '../../../contexts/ServiceContext';
+import { useThemeContext } from '../../../contexts/ThemeContext';
 import { useColors } from '../../../queries/useColors';
 import { useFriendCourseBooks } from '../../../queries/useFriendCourseBooks';
 import { useFriendPrimaryTable } from '../../../queries/useFriendPrimaryTable';
@@ -15,6 +17,7 @@ import { FriendGuide } from './FriendGuide';
 export const FriendTimetable = () => {
   const { selectedFriendId, selectedCourseBook, dispatch } = useMainScreenContext();
   const { courseBookService, friendService } = useServiceContext();
+  const primaryColor = useThemeContext((data) => data.color.text.primary);
   const { data: friends } = useFriends({ state: 'ACTIVE' });
   const { data: palette } = useColors();
   const { data: courseBooks } = useFriendCourseBooks(selectedFriendId);
@@ -30,9 +33,10 @@ export const FriendTimetable = () => {
   return (
     <Paper>
       <View style={styles.header}>
-        <UserIcon width={16} height={16} style={styles.userIcon} />
-
-        <Text style={styles.nickname}>{selectedFriend && friendService.formatNickname(selectedFriend)}</Text>
+        <UserIcon width={16} height={16} style={{ color: primaryColor }} />
+        <Typography style={{ ...styles.nickname, color: primaryColor }}>
+          {selectedFriend && friendService.formatNickname(selectedFriend)}
+        </Typography>
 
         <Select
           value={selectedCourseBook && courseBookService.toValue(selectedCourseBook)}
@@ -59,6 +63,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 36,
     gap: 2,
   },
-  userIcon: { color: '#00B8B0' },
-  nickname: { fontSize: 14, fontWeight: '500', color: '#1ca6a0', flex: 1 },
+  nickname: { fontSize: 14, fontWeight: '500', flex: 1 },
 });

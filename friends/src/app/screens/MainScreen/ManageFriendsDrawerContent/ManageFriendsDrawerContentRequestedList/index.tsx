@@ -1,8 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 
 import { FriendId } from '../../../../../entities/friend';
 import { Button } from '../../../../components/Button';
+import { Typography } from '../../../../components/Typography';
 import { useServiceContext } from '../../../../contexts/ServiceContext';
 import { useFriends } from '../../../../queries/useFriends';
 
@@ -21,7 +22,7 @@ export const ManageFriendsDrawerContentRequestedList = ({}: Props) => {
         data={requestedFriends}
         renderItem={({ item }) => (
           <View style={styles.item} key={item.friendId}>
-            <Text style={styles.nickname}>{friendService.formatNickname(item)}</Text>
+            <Typography style={styles.nickname}>{friendService.formatNickname(item)}</Typography>
             <Button variant="outlined" color="gray" onPress={() => declineFriend(item.friendId)}>
               거절
             </Button>

@@ -1,7 +1,8 @@
 import { ReactNode } from 'react';
-import { StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { StyleSheet, View, ViewStyle } from 'react-native';
 
 import { Paper } from './Paper';
+import { Typography } from './Typography';
 
 type Props = { title: string; left?: ReactNode; right?: ReactNode };
 
@@ -10,7 +11,7 @@ export const AppBar = ({ title, left, right }: Props) => {
     <Paper style={styles.container}>
       <View style={styles.left}>{left}</View>
       <View>
-        <Text style={styles.title}>{title}</Text>
+        <Typography style={styles.title}>{title}</Typography>
       </View>
       <View style={styles.right}>{right}</View>
     </Paper>
