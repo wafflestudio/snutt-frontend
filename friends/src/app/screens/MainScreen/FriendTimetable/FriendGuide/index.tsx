@@ -1,12 +1,13 @@
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 
 import { Carousel } from '../../../../components/Carousel';
+import { Paper } from '../../../../components/Paper';
 import benz from './benz.png';
 import bmw from './bmw.png';
 
 export const FriendGuide = () => {
   return (
-    <View style={styles.wrapper}>
+    <Paper style={styles.wrapper}>
       <Carousel
         items={[
           { key: '1', item: <Image style={styles.image} source={bmw} /> },
@@ -16,11 +17,11 @@ export const FriendGuide = () => {
         width={300}
         height={300}
       />
-    </View>
+    </Paper>
   );
 };
 
 const styles = StyleSheet.create({
-  wrapper: { display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1, backgroundColor: '#fff' },
+  wrapper: { display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1 },
   image: { width: 200, height: 200 },
 });

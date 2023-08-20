@@ -1,6 +1,7 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { UserIcon } from '../../../components/Icons/UserIcon';
+import { Paper } from '../../../components/Paper';
 import { Select } from '../../../components/Select';
 import { Timetable } from '../../../components/Timetable';
 import { useServiceContext } from '../../../contexts/ServiceContext';
@@ -27,7 +28,7 @@ export const FriendTimetable = () => {
   if (friends.length === 0) return <FriendGuide />;
 
   return (
-    <ScrollView style={styles.wrapper}>
+    <Paper>
       <View style={styles.header}>
         <UserIcon width={16} height={16} style={styles.userIcon} />
 
@@ -43,12 +44,11 @@ export const FriendTimetable = () => {
         />
       </View>
       {palette && <Timetable palette={palette} timetable={fullTimetable ?? { lectures: [] }} />}
-    </ScrollView>
+    </Paper>
   );
 };
 
 const styles = StyleSheet.create({
-  wrapper: { backgroundColor: 'white' },
   header: {
     display: 'flex',
     flexDirection: 'row',

@@ -14,7 +14,7 @@ export const createTimetableViewService = (): TimetableViewService => {
       const end = Math.max(...times.map((t) => Math.ceil(t.endMinute / 60)), 22) as Hour;
       return [start, end];
     },
-    getDayLabel: (day) => ({ 0: '월', 1: '화', 2: '수', 3: '목', 4: '금', 5: '토', 6: '일' }[day]),
+    getDayLabel: (day) => ({ 0: '월', 1: '화', 2: '수', 3: '목', 4: '금', 5: '토', 6: '일' })[day],
     getLessonColor: (lesson, palette) => {
       if (lesson.colorIndex === 0) return lesson.color;
       return palette[lesson.colorIndex - 1];
