@@ -1,15 +1,16 @@
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { FriendId } from '../../../../../entities/friend';
-import { useFriends } from '../../../../queries/useFriends';
-import { useServiceContext } from '../../../../contexts/ServiceContext';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useMainScreenContext } from '../..';
-import { MoreIcon } from '../../../../components/Icons/MoreIcon';
-import { BottomSheet } from '../../../../components/BottomSheet';
 import { useState } from 'react';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
+import { FriendId } from '../../../../../entities/friend';
+import { BottomSheet } from '../../../../components/BottomSheet';
+import { MoreIcon } from '../../../../components/Icons/MoreIcon';
 import { PencilIcon } from '../../../../components/Icons/PencilIcon';
 import { TrashIcon } from '../../../../components/Icons/PencilIcon copy';
 import { Input } from '../../../../components/Input';
+import { useServiceContext } from '../../../../contexts/ServiceContext';
+import { useFriends } from '../../../../queries/useFriends';
+import { useMainScreenContext } from '../..';
 
 type Props = { onClickFriend: (friendId: FriendId) => void };
 

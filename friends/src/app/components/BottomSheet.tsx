@@ -1,6 +1,5 @@
 import { PropsWithChildren } from 'react';
 import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-
 import Modal from 'react-native-modal';
 
 type Props = { isOpen: boolean; onClose: () => void };

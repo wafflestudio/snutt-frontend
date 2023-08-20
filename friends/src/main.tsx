@@ -1,15 +1,16 @@
 import { useMemo } from 'react';
-import { ErrorBoundary } from './app/components/ErrorBoundary';
 import { Text, View } from 'react-native';
-import { createFetchClient } from './infrastructures/createFetchClient';
+
 import { App } from './app/App';
-import { createTimetableViewService } from './infrastructures/createTimetableViewService';
-import { createColorService } from './infrastructures/createColorService';
+import { ErrorBoundary } from './app/components/ErrorBoundary';
+import { serviceContext } from './app/contexts/ServiceContext';
 import { createColorRepository } from './infrastructures/createColorRepository';
+import { createColorService } from './infrastructures/createColorService';
+import { createCourseBookService } from './infrastructures/createCourseBookService';
+import { createFetchClient } from './infrastructures/createFetchClient';
 import { createFriendRepository } from './infrastructures/createFriendRepository';
 import { createFriendService } from './infrastructures/createFriendService';
-import { createCourseBookService } from './infrastructures/createCourseBookService';
-import { serviceContext } from './app/contexts/ServiceContext';
+import { createTimetableViewService } from './infrastructures/createTimetableViewService';
 
 type ExternalProps = {
   'x-access-token': string;

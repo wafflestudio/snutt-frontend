@@ -1,23 +1,23 @@
-import { FriendTimetable } from './FriendTimetable';
-
-import { DrawerContentComponentProps, DrawerHeaderProps, createDrawerNavigator } from '@react-navigation/drawer';
-import { AppBar } from '../../components/Appbar';
+import { createDrawerNavigator, DrawerContentComponentProps, DrawerHeaderProps } from '@react-navigation/drawer';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { createContext, Dispatch, useContext, useMemo, useReducer } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
-import { ManageFriendsDrawerContent } from './ManageFriendsDrawerContent';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useServiceContext } from '../../contexts/ServiceContext';
-import { Dispatch, createContext, useContext, useMemo, useReducer } from 'react';
-import { Nickname } from '../../../entities/user';
+
+import { CourseBook } from '../../../entities/courseBook';
 import { FriendId } from '../../../entities/friend';
-import { useFriends } from '../../queries/useFriends';
+import { Nickname } from '../../../entities/user';
+import { AppBar } from '../../components/Appbar';
+import { BottomSheet } from '../../components/BottomSheet';
 import { HamburgerIcon } from '../../components/Icons/HamburgerIcon';
 import { UserPlusIcon } from '../../components/Icons/UserPlusIcon';
 import { WarningIcon } from '../../components/Icons/WarningIcon';
 import { Input } from '../../components/Input';
-import { BottomSheet } from '../../components/BottomSheet';
-import { CourseBook } from '../../../entities/courseBook';
+import { useServiceContext } from '../../contexts/ServiceContext';
 import { useFriendCourseBooks } from '../../queries/useFriendCourseBooks';
+import { useFriends } from '../../queries/useFriends';
+import { FriendTimetable } from './FriendTimetable';
+import { ManageFriendsDrawerContent } from './ManageFriendsDrawerContent';
 
 type MainScreenState = {
   selectedFriendId: FriendId | undefined;

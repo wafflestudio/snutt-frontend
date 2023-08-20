@@ -1,9 +1,10 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native';
-import { useFriends } from '../../../../queries/useFriends';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
+
 import { FriendId } from '../../../../../entities/friend';
-import { useServiceContext } from '../../../../contexts/ServiceContext';
 import { Button } from '../../../../components/Button';
+import { useServiceContext } from '../../../../contexts/ServiceContext';
+import { useFriends } from '../../../../queries/useFriends';
 
 type Props = {};
 

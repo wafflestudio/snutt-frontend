@@ -1,11 +1,12 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useMainScreenContext } from '..';
 import { useState } from 'react';
-import { ManageFriendsDrawerContentActiveList } from './ManageFriendsDrawerContentActiveList';
-import { ManageFriendsDrawerContentRequestedList } from './ManageFriendsDrawerContentRequestedList';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
 import { CloseIcon } from '../../../components/Icons/CloseIcon';
 import { SnuttLogoIcon } from '../../../components/Icons/SnuttLogoIcon';
 import { UserPlusIcon } from '../../../components/Icons/UserPlusIcon';
+import { useMainScreenContext } from '..';
+import { ManageFriendsDrawerContentActiveList } from './ManageFriendsDrawerContentActiveList';
+import { ManageFriendsDrawerContentRequestedList } from './ManageFriendsDrawerContentRequestedList';
 
 type Tab = 'ACTIVE' | 'REQUESTED';
 

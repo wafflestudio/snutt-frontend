@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+
 import { FriendId } from '../../entities/friend';
 import { useServiceContext } from '../contexts/ServiceContext';
 

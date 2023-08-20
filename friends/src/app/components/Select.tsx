@@ -1,6 +1,7 @@
 import { useReducer } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+
 import { ChevronDownIcon } from './Icons/ChevronDownIcon';
 
 type Props<T extends string> = {

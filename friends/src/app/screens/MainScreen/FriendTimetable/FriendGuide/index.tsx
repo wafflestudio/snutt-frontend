@@ -1,8 +1,8 @@
 import { Image, StyleSheet, View } from 'react-native';
-import { Carousel } from '../../../../components/Carousel';
 
-import bmw from './bmw.png';
+import { Carousel } from '../../../../components/Carousel';
 import benz from './benz.png';
+import bmw from './bmw.png';
 
 export const FriendGuide = () => {
   return (
