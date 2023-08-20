@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { FriendId } from '../../entities/friend';
-import { useServiceContext } from '../../main';
+import { useServiceContext } from '../contexts/ServiceContext';
 
 export const useFriendCourseBooks = (friendId: FriendId | undefined) => {
   const { friendService } = useServiceContext();

@@ -1,7 +1,7 @@
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { FriendId } from '../../../../../entities/friend';
 import { useFriends } from '../../../../queries/useFriends';
-import { useServiceContext } from '../../../../../main';
+import { useServiceContext } from '../../../../contexts/ServiceContext';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useMainScreenContext } from '../..';
 import { MoreIcon } from '../../../../components/Icons/MoreIcon';

@@ -6,7 +6,7 @@ import { TouchableOpacity } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
 import { ManageFriendsDrawerContent } from './ManageFriendsDrawerContent';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useServiceContext } from '../../../main';
+import { useServiceContext } from '../../contexts/ServiceContext';
 import { Dispatch, createContext, useContext, useMemo, useReducer } from 'react';
 import { Nickname } from '../../../entities/user';
 import { FriendId } from '../../../entities/friend';

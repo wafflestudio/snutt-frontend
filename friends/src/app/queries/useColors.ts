@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useServiceContext } from '../../main';
+import { useServiceContext } from '../contexts/ServiceContext';
 
 export const useColors = () => {
   const { colorService } = useServiceContext();

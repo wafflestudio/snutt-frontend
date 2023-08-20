@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { FullTimetable } from '../../entities/timetable';
-import { useServiceContext } from '../../main';
 import { arrayFromRange } from '../../utils/array';
 import { Fragment, memo } from 'react';
 import { Day } from '../../entities/time';
 import { Color } from '../../entities/color';
+import { useServiceContext } from '../contexts/ServiceContext';
 
 type Props = { timetable: Pick<FullTimetable, 'lectures'>; style?: ViewStyle; palette: Color[] };
 
