@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { ChevronDownIcon } from './Icons/ChevronDownIcon';
+import { Paper } from './Paper';
 
 type Props<T extends string> = {
   value: T | undefined;
@@ -17,7 +18,7 @@ export const Select = <T extends string>({ value, onChange, items = [], style = 
 
   return (
     <View style={{ ...styles.container, width: style.width }}>
-      <View style={styles.dropdown}>
+      <Paper style={styles.dropdown}>
         <TouchableOpacity style={styles.item} onPress={toggleOpen}>
           <Text style={styles.label}>{selected?.label}</Text>
           <ChevronDownIcon width={20} height={20} />
@@ -26,8 +27,8 @@ export const Select = <T extends string>({ value, onChange, items = [], style = 
         {isOpen &&
           items.map((it) => (
             <TouchableOpacity
-              key={it.value}
               style={styles.item}
+              key={it.value}
               onPress={() => {
                 onChange(it.value);
                 toggleOpen();
@@ -36,7 +37,7 @@ export const Select = <T extends string>({ value, onChange, items = [], style = 
               <Text style={styles.label}>{it.label}</Text>
             </TouchableOpacity>
           ))}
-      </View>
+      </Paper>
     </View>
   );
 };
@@ -55,7 +56,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     width: '100%',
-    backgroundColor: 'white',
   },
   label: { fontSize: 12, color: '#505050' },
 });

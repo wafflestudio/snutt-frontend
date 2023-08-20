@@ -4,6 +4,8 @@ import { Text, View } from 'react-native';
 import { App } from './app/App';
 import { ErrorBoundary } from './app/components/ErrorBoundary';
 import { serviceContext } from './app/contexts/ServiceContext';
+import { themeContext } from './app/contexts/ThemeContext';
+import { getThemeValues } from './app/styles/theme';
 import { createColorRepository } from './infrastructures/createColorRepository';
 import { createColorService } from './infrastructures/createColorService';
 import { createCourseBookService } from './infrastructures/createCourseBookService';
@@ -22,9 +24,14 @@ type ExternalProps = {
   'x-device-id': string;
   'x-app-type': string;
   'x-app-version': string;
+  theme: 'light' | 'dark';
 };
 
-export const Main = ({ 'x-access-token': xAccessToken, 'x-access-apikey': xAccessApikey }: ExternalProps) => {
+export const Main = ({
+  'x-access-token': xAccessToken,
+  'x-access-apikey': xAccessApikey,
+  theme = 'dark', // TODO: remove this line https://wafflestudio.slack.com/archives/C0PAVPS5T/p1692498083991289?thread_ts=1692498022.594299&cid=C0PAVPS5T
+}: ExternalProps) => {
   const fetchClient = createFetchClient(baseUrl, xAccessToken, xAccessApikey);
   const friendRepository = createFriendRepository(fetchClient);
   const timetableViewService = createTimetableViewService();
@@ -32,10 +39,12 @@ export const Main = ({ 'x-access-token': xAccessToken, 'x-access-apikey': xAcces
   const friendService = createFriendService({ repositories: [friendRepository] });
   const courseBookService = createCourseBookService();
 
-  const contextValue = useMemo(
+  const serviceValue = useMemo(
     () => ({ timetableViewService, colorService, friendService, courseBookService }),
     [timetableViewService, colorService, friendService, courseBookService],
   );
+
+  const themeValue = useMemo(() => getThemeValues(theme), [theme]);
 
   return (
     <ErrorBoundary
@@ -45,8 +54,10 @@ export const Main = ({ 'x-access-token': xAccessToken, 'x-access-apikey': xAcces
         </View>
       }
     >
-      <serviceContext.Provider value={contextValue}>
-        <App />
+      <serviceContext.Provider value={serviceValue}>
+        <themeContext.Provider value={themeValue}>
+          <App />
+        </themeContext.Provider>
       </serviceContext.Provider>
     </ErrorBoundary>
   );

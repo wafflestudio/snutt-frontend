@@ -2,6 +2,8 @@ import { PropsWithChildren } from 'react';
 import { KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Modal from 'react-native-modal';
 
+import { Paper } from './Paper';
+
 type Props = { isOpen: boolean; onClose: () => void };
 
 export const BottomSheet = ({ isOpen, onClose, children }: PropsWithChildren<Props>) => {
@@ -15,7 +17,7 @@ export const BottomSheet = ({ isOpen, onClose, children }: PropsWithChildren<Pro
       style={styles.modal}
     >
       <KeyboardAvoidingView behavior="padding">
-        <View style={styles.modalContent}>{children}</View>
+        <Paper style={styles.modalContent}>{children}</Paper>
       </KeyboardAvoidingView>
     </Modal>
   );
@@ -58,7 +60,6 @@ const styles = StyleSheet.create({
   modalContent: {
     borderTopRightRadius: 16,
     borderTopLeftRadius: 16,
-    backgroundColor: 'white',
     padding: 20,
   },
   modalHeader: {

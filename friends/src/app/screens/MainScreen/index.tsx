@@ -14,6 +14,7 @@ import { UserPlusIcon } from '../../components/Icons/UserPlusIcon';
 import { WarningIcon } from '../../components/Icons/WarningIcon';
 import { Input } from '../../components/Input';
 import { useServiceContext } from '../../contexts/ServiceContext';
+import { useThemeContext } from '../../contexts/ThemeContext';
 import { useFriendCourseBooks } from '../../queries/useFriendCourseBooks';
 import { useFriends } from '../../queries/useFriends';
 import { FriendTimetable } from './FriendTimetable';
@@ -62,6 +63,7 @@ export const MainScreen = () => {
     addFriendModalNickname: '',
   });
 
+  const backgroundColor = useThemeContext((data) => data.color.bg.default);
   const { data: friends } = useFriends({ state: 'ACTIVE' });
   const selectedFriendIdWithDefault = state.selectedFriendId ?? friends?.[0]?.friendId;
   const { data: courseBooks } = useFriendCourseBooks(selectedFriendIdWithDefault);
@@ -85,7 +87,10 @@ export const MainScreen = () => {
         ],
       )}
     >
-      <Drawer.Navigator screenOptions={{ header: Header, drawerType: 'front' }} drawerContent={DrawerContent}>
+      <Drawer.Navigator
+        screenOptions={{ header: Header, drawerType: 'front', drawerStyle: { backgroundColor } }}
+        drawerContent={DrawerContent}
+      >
         <Drawer.Screen name="Main" component={FriendTimetable} />
       </Drawer.Navigator>
     </mainScreenContext.Provider>
