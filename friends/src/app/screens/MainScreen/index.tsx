@@ -85,7 +85,7 @@ export const MainScreen = () => {
         ],
       )}
     >
-      <Drawer.Navigator screenOptions={{ header: Header }} drawerContent={DrawerContent}>
+      <Drawer.Navigator screenOptions={{ header: Header, drawerType: 'front' }} drawerContent={DrawerContent}>
         <Drawer.Screen name="Main" component={FriendTimetable} />
       </Drawer.Navigator>
     </mainScreenContext.Provider>
