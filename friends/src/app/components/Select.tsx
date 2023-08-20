@@ -24,7 +24,7 @@ export const Select = <T extends string>({ value, onChange, items = [], style = 
           <Typography style={styles.label} variant="selectLabel">
             {selected?.label}
           </Typography>
-          <ChevronDownIcon width={20} height={20} />
+          <ChevronDownIcon variant="selectLabel" width={20} height={20} />
         </TouchableOpacity>
 
         {isOpen &&
