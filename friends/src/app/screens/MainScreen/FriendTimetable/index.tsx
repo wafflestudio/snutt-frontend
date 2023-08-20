@@ -6,7 +6,7 @@ import { useMainScreenContext } from '..';
 import { useFriends } from '../../../queries/useFriends';
 import { useFriendPrimaryTable } from '../../../queries/useFriendPrimaryTable';
 
-import { useServiceContext } from '../../../../main';
+import { useServiceContext } from '../../../contexts/ServiceContext';
 import { Select } from '../../../components/Select';
 import { UserIcon } from '../../../components/Icons/UserIcon';
 import { FriendGuide } from './FriendGuide';
