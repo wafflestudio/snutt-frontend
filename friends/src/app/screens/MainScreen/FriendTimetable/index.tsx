@@ -31,7 +31,7 @@ export const FriendTimetable = () => {
   if (friends.length === 0) return <FriendGuide />;
 
   return (
-    <Paper>
+    <Paper style={styles.wrapper}>
       <View style={styles.header}>
         <UserIcon width={16} height={16} style={{ color: primaryColor }} />
         <Typography style={{ ...styles.nickname, color: primaryColor }}>
@@ -53,6 +53,7 @@ export const FriendTimetable = () => {
 };
 
 const styles = StyleSheet.create({
+  wrapper: { flex: 1 },
   header: {
     display: 'flex',
     flexDirection: 'row',
