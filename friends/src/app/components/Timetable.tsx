@@ -1,4 +1,4 @@
-import { Fragment, memo } from 'react';
+import { Fragment, memo, useState } from 'react';
 import { StyleSheet, Text, View, ViewStyle } from 'react-native';
 
 import { Color } from '../../entities/color';
@@ -6,27 +6,34 @@ import { Day } from '../../entities/time';
 import { FullTimetable } from '../../entities/timetable';
 import { arrayFromRange } from '../../utils/array';
 import { useServiceContext } from '../contexts/ServiceContext';
+import { useThemeContext } from '../contexts/ThemeContext';
+import { Typography } from './Typography';
 
 type Props = { timetable: Pick<FullTimetable, 'lectures'>; style?: ViewStyle; palette: Color[] };
 
 export const Timetable = memo(({ timetable, style, palette }: Props) => {
+  const [height, setHeight] = useState(0);
   const { timetableViewService } = useServiceContext();
   const [startDay, endDay] = timetableViewService.getDayRange(timetable);
   const [startHour, endHour] = timetableViewService.getHourRange(timetable);
   const times = arrayFromRange(startHour, endHour);
   const days = arrayFromRange(startDay, endDay) as Day[];
+  const hourHeight = (height - DAY_LABEL_HEIGHT) / times.length;
+  const { timetableMajor, timetableMinor } = useThemeContext(({ color }) => color.border);
 
   return (
-    <View style={{ ...styles.container, ...style }}>
-      <View style={styles.dayRow}>
-        <View style={styles.dayTimeCell} />
+    <View style={{ ...styles.container, ...style }} onLayout={(e) => setHeight(e.nativeEvent.layout.height)}>
+      <View style={[styles.dayRow, { borderColor: timetableMajor }]}>
+        <View style={[styles.dayTimeCell, { borderColor: timetableMajor }]} />
         {days.map((d) => {
           const currentDayClasses = timetable.lectures
             .flatMap((l) => l.classPlaceAndTimes.map((c) => ({ ...c, lesson: l })))
             .filter((c) => c.day === d);
           return (
-            <View style={styles.dayCell} key={d}>
-              <Text style={styles.labelFont}>{timetableViewService.getDayLabel(d)}</Text>
+            <View style={[styles.dayCell, { borderColor: timetableMajor }]} key={d}>
+              <Typography variant="description" style={styles.labelFont}>
+                {timetableViewService.getDayLabel(d)}
+              </Typography>
               {currentDayClasses.map((c) => {
                 const { bg, fg } = timetableViewService.getLessonColor(c.lesson, palette);
                 return (
@@ -34,8 +41,8 @@ export const Timetable = memo(({ timetable, style, palette }: Props) => {
                     key={`${c.day} ${c.startMinute} ${c.endMinute}`}
                     style={{
                       ...styles.classCell,
-                      top: DAY_LABEL_HEIGHT + ((c.startMinute - startHour * 60) / 60) * HOUR_HEIGHT,
-                      height: ((c.endMinute - c.startMinute) / 60) * HOUR_HEIGHT,
+                      top: DAY_LABEL_HEIGHT + ((c.startMinute - startHour * 60) / 60) * hourHeight - 1,
+                      height: ((c.endMinute - c.startMinute) / 60) * hourHeight,
                       backgroundColor: bg,
                     }}
                   >
@@ -49,10 +56,12 @@ export const Timetable = memo(({ timetable, style, palette }: Props) => {
         })}
       </View>
       <View style={styles.timeRows}>
-        <View style={styles.timeColumn}>
+        <View style={[styles.timeColumn, { borderColor: timetableMajor }]}>
           {times.map((t) => (
-            <View key={t} style={styles.timeCell}>
-              <Text style={styles.labelFont}>{t}</Text>
+            <View key={t} style={{ ...styles.timeCell, height: hourHeight, borderColor: timetableMajor }}>
+              <Typography variant="description" style={styles.labelFont}>
+                {t}
+              </Typography>
             </View>
           ))}
         </View>
@@ -60,14 +69,14 @@ export const Timetable = memo(({ timetable, style, palette }: Props) => {
           {arrayFromRange(startHour, endHour).map((time) => {
             return (
               <Fragment key={time}>
-                <View style={{ ...styles.gridRow, ...styles.gridRowFront }}>
+                <View style={[styles.gridRow, { borderBottomColor: timetableMinor, height: hourHeight / 2 }]}>
                   {days.map((c) => (
-                    <View key={c} style={styles.gridCell} />
+                    <View key={c} style={[styles.gridCell, { borderColor: timetableMajor }]} />
                   ))}
                 </View>
-                <View style={{ ...styles.gridRow, ...styles.gridRowBack }}>
+                <View style={[styles.gridRow, { borderBottomColor: timetableMajor, height: hourHeight / 2 }]}>
                   {days.map((c) => (
-                    <View key={c} style={styles.gridCell} />
+                    <View key={c} style={[styles.gridCell, { borderColor: timetableMajor }]} />
                   ))}
                 </View>
               </Fragment>
@@ -79,28 +88,23 @@ export const Timetable = memo(({ timetable, style, palette }: Props) => {
   );
 });
 
-const HOUR_HEIGHT = 38;
 const DAY_LABEL_HEIGHT = 26;
 const HOUR_LABEL_WIDTH = 20;
-const DARK_BORDER_COLOR = '#ebebeb';
-const LIGHT_BORDER_COLOR = '#f3f3f3';
-const DARKER_BORDER_COLOR = '#b3b3b3';
 
 const styles = StyleSheet.create({
   container: {
+    marginRight: -1,
+    marginBottom: -1,
+    flex: 1,
     zIndex: -1,
-    borderTopWidth: 1,
-    borderLeftWidth: 1,
-    borderTopColor: DARKER_BORDER_COLOR,
-    borderLeftColor: DARK_BORDER_COLOR,
   },
 
   dayRow: {
     display: 'flex',
     flexDirection: 'row',
     height: DAY_LABEL_HEIGHT,
-    borderBottomWidth: 2,
-    borderColor: DARK_BORDER_COLOR,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
     zIndex: 2,
   },
   dayCell: {
@@ -109,25 +113,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRightWidth: 1,
-    borderColor: DARK_BORDER_COLOR,
     position: 'relative',
   },
   dayTimeCell: {
     height: DAY_LABEL_HEIGHT,
     width: HOUR_LABEL_WIDTH,
     borderRightWidth: 1,
-    borderColor: DARK_BORDER_COLOR,
   },
-  timeColumn: { width: HOUR_LABEL_WIDTH, borderRightWidth: 1, borderColor: DARK_BORDER_COLOR },
-  timeCell: { height: HOUR_HEIGHT, borderBottomWidth: 2, paddingTop: 4, borderColor: DARK_BORDER_COLOR },
+  timeColumn: { width: HOUR_LABEL_WIDTH, borderRightWidth: 1 },
+  timeCell: { borderBottomWidth: 1, paddingTop: 4 },
   timeRows: { display: 'flex', flexDirection: 'row' },
   timeGridWrapper: { flex: 1 },
-  gridRow: { height: HOUR_HEIGHT / 2, display: 'flex', flexDirection: 'row', borderBottomWidth: 2 },
-  gridRowFront: { borderColor: LIGHT_BORDER_COLOR },
-  gridRowBack: { borderColor: DARK_BORDER_COLOR },
-  gridCell: { flex: 1, borderRightWidth: 1, borderColor: DARK_BORDER_COLOR },
+  gridRow: { display: 'flex', flexDirection: 'row', borderBottomWidth: 1 },
+  gridCell: { flex: 1, borderRightWidth: 1 },
 
-  labelFont: { fontSize: 12, textAlign: 'center', color: DARKER_BORDER_COLOR },
+  labelFont: { fontSize: 12, textAlign: 'center' },
 
   classTitle: { fontSize: 10, fontWeight: '500', textAlign: 'center' },
   classPlace: { fontSize: 10, fontWeight: '700', textAlign: 'center' },
