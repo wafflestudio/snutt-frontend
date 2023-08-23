@@ -20,6 +20,9 @@ export const ManageFriendsDrawerContent = ({ onClose }: Props) => {
   const [tab, setTab] = useState<Tab>('ACTIVE');
   const { dispatch } = useMainScreenContext();
   const addFriendButtonColor = useThemeContext((data) => data.color.button.gray.text);
+  const tabActiveBorder = useThemeContext((data) => data.color.tab.active.border);
+  const tabInactiveBorder = useThemeContext((data) => data.color.tab.inactive.border);
+  const dividerColor = useThemeContext((data) => data.color.border.divider);
 
   return (
     <View style={styles.container}>
@@ -30,7 +33,7 @@ export const ManageFriendsDrawerContent = ({ onClose }: Props) => {
           <CloseIcon width={30} height={30} />
         </TouchableOpacity>
       </View>
-      <View style={styles.divider} />
+      <View style={{ ...styles.divider, backgroundColor: dividerColor }} />
 
       <View style={styles.tabs}>
         {tabs.map(({ label, value }) => {
@@ -39,8 +42,7 @@ export const ManageFriendsDrawerContent = ({ onClose }: Props) => {
             <TouchableOpacity
               key={value}
               onPress={() => setTab(value)}
-              // eslint-disable-next-line react-native/no-inline-styles
-              style={{ ...styles.tab, borderBottomColor: isActive ? '#b3b3b3' : '#f2f2f2' }}
+              style={{ ...styles.tab, borderBottomColor: isActive ? tabActiveBorder : tabInactiveBorder }}
             >
               <Typography style={styles.tabText}>{label}</Typography>
             </TouchableOpacity>
@@ -49,7 +51,10 @@ export const ManageFriendsDrawerContent = ({ onClose }: Props) => {
       </View>
 
       <View style={styles.tabContent}>
-        <TouchableOpacity style={styles.addFriend} onPress={() => dispatch({ type: 'setModalOpen', isOpen: true })}>
+        <TouchableOpacity
+          style={{ ...styles.addFriend, borderBottomColor: dividerColor }}
+          onPress={() => dispatch({ type: 'setModalOpen', isOpen: true })}
+        >
           <Typography style={{ ...styles.addFriendText, color: addFriendButtonColor }}>친구 추가하기</Typography>
           <UserPlusIcon style={{ color: addFriendButtonColor }} width={16} height={16} />
         </TouchableOpacity>
@@ -80,14 +85,13 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   snutt: { fontSize: 18, fontWeight: '900', flex: 1 },
-  divider: { marginTop: 20, height: 1, marginBottom: 16, backgroundColor: '#f2f2f2' },
+  divider: { marginTop: 20, height: 1, marginBottom: 16 },
   tabs: { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' },
   tab: { height: 40, borderBottomWidth: 3, width: '50%', display: 'flex', justifyContent: 'center' },
   tabText: { textAlign: 'center', fontSize: 16 },
   tabContent: { paddingLeft: 15, paddingRight: 15, paddingTop: 16 },
 
   addFriend: {
-    borderBottomColor: '#f2f2f2',
     borderBottomWidth: 2,
     paddingBottom: 9,
     marginBottom: 8,
