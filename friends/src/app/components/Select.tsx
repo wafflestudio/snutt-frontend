@@ -2,6 +2,7 @@ import { useReducer } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
+import { COLORS } from '../styles/colors';
 import { ChevronDownIcon } from './Icons/ChevronDownIcon';
 import { Paper } from './Paper';
 import { Typography } from './Typography';
@@ -51,7 +52,7 @@ const ITEM_HEIGHT = 28;
 
 const styles = StyleSheet.create({
   container: { position: 'relative', height: ITEM_HEIGHT },
-  dropdown: { position: 'absolute', borderRadius: 4, borderWidth: 1, borderColor: '#b3b3b3', width: '100%' },
+  dropdown: { position: 'absolute', borderRadius: 4, borderWidth: 1, borderColor: COLORS.gray30, width: '100%' },
   item: {
     height: ITEM_HEIGHT,
     paddingLeft: 10,

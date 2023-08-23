@@ -1,14 +1,17 @@
 import { ReactNode } from 'react';
 import { StyleSheet, View, ViewStyle } from 'react-native';
 
+import { useThemeContext } from '../contexts/ThemeContext';
 import { Paper } from './Paper';
 import { Typography } from './Typography';
 
 type Props = { title: string; left?: ReactNode; right?: ReactNode };
 
 export const AppBar = ({ title, left, right }: Props) => {
+  const borderBottomColor = useThemeContext(({ color }) => color.border.appBar);
+
   return (
-    <Paper style={styles.container}>
+    <Paper style={{ ...styles.container, borderBottomColor }}>
       <View style={styles.left}>{left}</View>
       <View>
         <Typography style={styles.title}>{title}</Typography>
@@ -26,7 +29,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: 45,
     alignItems: 'center',
-    borderBottomColor: '#b3b3b3',
     borderBottomWidth: 1,
   },
   left: { ...sideStyle, justifyContent: 'flex-start', paddingLeft: 13 },

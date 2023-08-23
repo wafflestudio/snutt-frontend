@@ -5,7 +5,9 @@ export type ThemeValues = {
     bg: { default: Color };
     text: { default: Color; selectLabel: Color; description: Color; guide: Color; primary: Color };
     button: { gray: { text: Color }; text: { disabled: Color } };
-    border: { timetableMajor: Color; timetableMinor: Color };
+    border: { timetableMajor: Color; timetableMinor: Color; appBar: Color; divider: Color };
+    input: { default: { border: Color }; focused: { border: Color } };
+    tab: { active: { border: Color }; inactive: { border: Color } };
   };
 };
 export const getThemeValues = (theme: 'dark' | 'light'): ThemeValues => {
@@ -23,7 +25,14 @@ const getLightThemeColors = (): ThemeValues['color'] => {
       primary: COLORS.primary20,
     },
     button: { gray: { text: COLORS.gray40 }, text: { disabled: COLORS.gray20 } },
-    border: { timetableMajor: COLORS.gray10, timetableMinor: COLORS.gray05 },
+    border: {
+      timetableMajor: COLORS.gray10,
+      timetableMinor: COLORS.gray05,
+      appBar: COLORS.gray30,
+      divider: COLORS.gray05,
+    },
+    input: { default: { border: COLORS.gray15 }, focused: { border: COLORS.primary10 } },
+    tab: { active: { border: COLORS.gray30 }, inactive: { border: COLORS.gray05 } },
   };
 };
 
@@ -38,6 +47,13 @@ const getDarkThemeColors = (): ThemeValues['color'] => {
       primary: COLORS.primary10,
     },
     button: { gray: { text: COLORS.gray30 }, text: { disabled: COLORS.gray40 } },
-    border: { timetableMajor: COLORS.gray70, timetableMinor: COLORS.gray70 },
+    border: {
+      timetableMajor: COLORS.gray70,
+      timetableMinor: COLORS.gray70,
+      appBar: COLORS.gray60,
+      divider: COLORS.gray60,
+    },
+    input: { default: { border: COLORS.gray60 }, focused: { border: COLORS.primary20 } },
+    tab: { active: { border: COLORS.white }, inactive: { border: COLORS.gray60 } },
   };
 };
