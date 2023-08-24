@@ -63,7 +63,10 @@ export const ManageFriendsDrawerContent = ({ onClose }: Props) => {
           {
             ACTIVE: (
               <ManageFriendsDrawerContentActiveList
-                onClickFriend={(friendId) => dispatch({ type: 'setFriend', friendId })}
+                onClickFriend={(friendId) => {
+                  dispatch({ type: 'setFriend', friendId });
+                  onClose();
+                }}
               />
             ),
             REQUESTED: <ManageFriendsDrawerContentRequestedList />,

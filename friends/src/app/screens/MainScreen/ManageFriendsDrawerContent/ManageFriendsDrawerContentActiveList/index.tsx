@@ -12,17 +12,16 @@ import { Typography } from '../../../../components/Typography';
 import { useServiceContext } from '../../../../contexts/ServiceContext';
 import { useThemeContext } from '../../../../contexts/ThemeContext';
 import { useFriends } from '../../../../queries/useFriends';
-import { useMainScreenContext } from '../..';
 
 type Props = { onClickFriend: (friendId: FriendId) => void };
 
-export const ManageFriendsDrawerContentActiveList = ({}: Props) => {
+export const ManageFriendsDrawerContentActiveList = ({ onClickFriend }: Props) => {
   const { friendService } = useServiceContext();
   const { data: activeFriends } = useFriends({ state: 'ACTIVE' });
   const { mutate: deleteFriend } = useDeleteFriend();
   const { mutate: patchDisplayName } = usePatchDisplayName();
-  const { dispatch } = useMainScreenContext();
   const moreIconColor = useThemeContext((data) => data.color.text.description);
+
   const [bottomSheetState, setBottomSheetState] = useState<
     | { isOpen: false }
     | ({ isOpen: true; friendId: FriendId } & ({ type: 'detail' } | { type: 'setNickname'; displayName: string }))
@@ -41,11 +40,7 @@ export const ManageFriendsDrawerContentActiveList = ({}: Props) => {
       <FlatList
         data={activeFriends}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            key={item.friendId}
-            style={styles.item}
-            onPress={() => dispatch({ type: 'setFriend', friendId: item.friendId })}
-          >
+          <TouchableOpacity key={item.friendId} style={styles.item} onPress={() => onClickFriend(item.friendId)}>
             <Typography style={styles.nickname}>{friendService.formatNickname(item)}</Typography>
 
             <TouchableOpacity
