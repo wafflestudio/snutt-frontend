@@ -42,7 +42,7 @@ export const FriendTimetable = () => {
           value={selectedCourseBook && courseBookService.toValue(selectedCourseBook)}
           onChange={(v) => dispatch({ type: 'setCourseBook', courseBook: courseBookService.fromValue(v) })}
           items={courseBooks?.map((cb) => ({
-            label: `${cb.year}-${cb.semester}`,
+            label: courseBookService.toLabel(cb),
             value: courseBookService.toValue(cb),
           }))}
         />
