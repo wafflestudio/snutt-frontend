@@ -1,7 +1,7 @@
 import { createDrawerNavigator, DrawerContentComponentProps, DrawerHeaderProps } from '@react-navigation/drawer';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createContext, Dispatch, useContext, useMemo, useReducer } from 'react';
-import { TouchableOpacity } from 'react-native';
+import { Alert, TouchableOpacity } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 
 import { CourseBook } from '../../../entities/courseBook';
@@ -133,7 +133,13 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
             left={{ text: '취소', onPress: closeModal }}
             right={{
               text: '요청 보내기',
-              onPress: () => request(addFriendModalNickname, { onSuccess: closeModal }),
+              onPress: () =>
+                request(addFriendModalNickname, {
+                  onSuccess: () => {
+                    Alert.alert('친구에게 요청을 보냈습니다.');
+                    closeModal();
+                  },
+                }),
               disabled: !isValid,
             }}
           />
