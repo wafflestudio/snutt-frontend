@@ -1,6 +1,7 @@
-import { StyleSheet, Text, TouchableOpacity, TouchableOpacityProps, ViewStyle } from 'react-native';
+import { StyleSheet, TouchableOpacity, TouchableOpacityProps, ViewStyle } from 'react-native';
 
 import { useThemeContext } from '../contexts/ThemeContext';
+import { Typography } from './Typography';
 
 type Props = Omit<TouchableOpacityProps, 'style' | 'children'> & {
   style?: ViewStyle;
@@ -13,7 +14,7 @@ export const Button = ({ color, children, style = {}, ...props }: Props) => {
 
   return (
     <TouchableOpacity style={{ ...styles.button, ...style, borderColor: buttonColor }} {...props}>
-      <Text style={{ ...styles.text, color: buttonColor }}>{children}</Text>
+      <Typography style={{ ...styles.text, color: buttonColor }}>{children}</Typography>
     </TouchableOpacity>
   );
 };

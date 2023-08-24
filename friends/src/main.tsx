@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 import { App } from './app/App';
 import { ErrorBoundary } from './app/components/ErrorBoundary';
 import { serviceContext } from './app/contexts/ServiceContext';
+import { textContext } from './app/contexts/TextContext';
 import { themeContext } from './app/contexts/ThemeContext';
 import { getThemeValues } from './app/styles/theme';
 import { createColorRepository } from './infrastructures/createColorRepository';
@@ -25,9 +26,15 @@ type ExternalProps = {
   'x-app-type': string;
   'x-app-version': string;
   theme: 'light' | 'dark';
+  allowFontScaling: boolean;
 };
 
-export const Main = ({ 'x-access-token': xAccessToken, 'x-access-apikey': xAccessApikey, theme }: ExternalProps) => {
+export const Main = ({
+  'x-access-token': xAccessToken,
+  'x-access-apikey': xAccessApikey,
+  theme,
+  allowFontScaling = false,
+}: ExternalProps) => {
   const fetchClient = createFetchClient(baseUrl, xAccessToken, xAccessApikey);
   const friendRepository = createFriendRepository(fetchClient);
   const timetableViewService = createTimetableViewService();
@@ -42,6 +49,8 @@ export const Main = ({ 'x-access-token': xAccessToken, 'x-access-apikey': xAcces
 
   const themeValue = useMemo(() => getThemeValues(theme), [theme]);
 
+  const textValue = useMemo(() => ({ allowFontScaling }), [allowFontScaling]);
+
   return (
     <ErrorBoundary
       fallback={
@@ -51,9 +60,11 @@ export const Main = ({ 'x-access-token': xAccessToken, 'x-access-apikey': xAcces
       }
     >
       <serviceContext.Provider value={serviceValue}>
-        <themeContext.Provider value={themeValue}>
-          <App />
-        </themeContext.Provider>
+        <textContext.Provider value={textValue}>
+          <themeContext.Provider value={themeValue}>
+            <App />
+          </themeContext.Provider>
+        </textContext.Provider>
       </serviceContext.Provider>
     </ErrorBoundary>
   );
