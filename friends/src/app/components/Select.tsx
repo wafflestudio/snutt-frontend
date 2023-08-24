@@ -14,7 +14,7 @@ type Props<T extends string> = {
   style?: { width?: number };
 };
 
-export const Select = <T extends string>({ value, onChange, items = [], style = { width: 100 } }: Props<T>) => {
+export const Select = <T extends string>({ value, onChange, items = [], style = { width: 130 } }: Props<T>) => {
   const [isOpen, toggleOpen] = useReducer((o) => !o, false);
   const selected = items.find((it) => it.value === value);
 
