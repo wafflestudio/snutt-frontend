@@ -1,5 +1,5 @@
 import { Fragment, memo, useState } from 'react';
-import { StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { StyleSheet, View, ViewStyle } from 'react-native';
 
 import { Color } from '../../entities/color';
 import { Day } from '../../entities/time';
@@ -46,8 +46,8 @@ export const Timetable = memo(({ timetable, style, palette }: Props) => {
                       backgroundColor: bg,
                     }}
                   >
-                    <Text style={{ ...styles.classTitle, color: fg }}>{c.lesson.courseTitle}</Text>
-                    <Text style={{ ...styles.classPlace, color: fg }}>{c.place}</Text>
+                    <Typography style={{ ...styles.classTitle, color: fg }}>{c.lesson.courseTitle}</Typography>
+                    <Typography style={{ ...styles.classPlace, color: fg }}>{c.place}</Typography>
                   </View>
                 );
               })}

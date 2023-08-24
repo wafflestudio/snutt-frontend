@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { StyleSheet, TextInput } from 'react-native';
 
+import { useTextContext } from '../contexts/TextContext';
 import { useThemeContext } from '../contexts/ThemeContext';
 
 type Props = {
@@ -13,11 +14,13 @@ type Props = {
 export const Input = ({ value, onChange, style = {}, placeholder }: Props) => {
   const [isFocused, setIsFocused] = useState(false);
   const textColors = useThemeContext((data) => data.color.text);
+  const { allowFontScaling } = useTextContext();
   const inputDefaultBorder = useThemeContext((data) => data.color.input.default.border);
   const inputFocusedBorder = useThemeContext((data) => data.color.input.focused.border);
 
   return (
     <TextInput
+      allowFontScaling={allowFontScaling}
       onFocus={() => setIsFocused(true)}
       onBlur={() => setIsFocused(false)}
       style={{
