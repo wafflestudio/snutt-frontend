@@ -146,18 +146,20 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
             onChange={(e) => dispatch({ type: 'setAddFriendModalNickname', nickname: e })}
             placeholder="예) 홍길동#1234"
           />
-          {guideMessageState !== 'hidden' &&
-            (() => {
-              const color = { enabled: guideEnabledColor, disabled: COLORS.gray40 }[guideMessageState];
-              return (
-                <View style={styles.guide}>
-                  <WarningIcon width={18} height={18} style={{ color }} />
-                  <Typography variant="description" style={{ ...styles.guideText, color }}>
-                    닉네임 전체를 입력하세요
-                  </Typography>
-                </View>
-              );
-            })()}
+          <View style={styles.guide}>
+            {guideMessageState !== 'hidden' &&
+              (() => {
+                const color = { enabled: guideEnabledColor, disabled: COLORS.gray40 }[guideMessageState];
+                return (
+                  <>
+                    <WarningIcon width={18} height={18} style={{ color }} />
+                    <Typography variant="description" style={{ ...styles.guideText, color }}>
+                      닉네임 전체를 입력하세요
+                    </Typography>
+                  </>
+                );
+              })()}
+          </View>
         </View>
       </BottomSheet>
     </>
@@ -187,6 +189,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 1,
     alignItems: 'center',
+    height: 12,
   },
   guideText: { fontSize: 10 },
 });
