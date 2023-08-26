@@ -101,6 +101,7 @@ export const ManageFriendsDrawerContentActiveList = ({ onClickFriend }: Props) =
             <Input
               style={styles.displayNameInput}
               value={bottomSheetState.displayName}
+              autoFocus
               onChange={(e) => setBottomSheetState({ ...bottomSheetState, displayName: e })}
             />
             <Typography variant="guide" style={styles.displayNameInputCaption}>
