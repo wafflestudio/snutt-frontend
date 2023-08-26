@@ -17,6 +17,7 @@ export const BottomSheet = ({ isOpen, onClose, children }: PropsWithChildren<Pro
       onBackdropPress={onClose}
       useNativeDriver
       style={styles.modal}
+      hideModalContentWhileAnimating
     >
       <KeyboardAvoidingView behavior="padding">
         <Paper style={styles.modalContent}>{children}</Paper>
