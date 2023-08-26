@@ -7,6 +7,7 @@ import { StyleSheet, View } from 'react-native';
 import { CourseBook } from '../../../entities/courseBook';
 import { FriendId } from '../../../entities/friend';
 import { Nickname } from '../../../entities/user';
+import { get } from '../../../utils/get';
 import { AppBar } from '../../components/Appbar';
 import { BottomSheet } from '../../components/BottomSheet';
 import { HamburgerIcon } from '../../components/Icons/HamburgerIcon';
@@ -138,6 +139,10 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
                   onSuccess: () => {
                     Alert.alert('친구에게 요청을 보냈습니다.');
                     closeModal();
+                  },
+                  onError: (err) => {
+                    const displayMessage = get(err, ['displayMessage']);
+                    Alert.alert(displayMessage ? `${displayMessage}` : '오류가 발생했습니다.');
                   },
                 }),
               disabled: !isValid,
