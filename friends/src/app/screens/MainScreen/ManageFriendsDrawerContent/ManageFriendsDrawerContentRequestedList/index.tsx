@@ -23,10 +23,10 @@ export const ManageFriendsDrawerContentRequestedList = ({}: Props) => {
         renderItem={({ item }) => (
           <View style={styles.item} key={item.friendId}>
             <Typography style={styles.nickname}>{friendService.formatNickname(item)}</Typography>
-            <Button variant="outlined" color="gray" onPress={() => declineFriend(item.friendId)}>
+            <Button color="gray" onPress={() => declineFriend(item.friendId)}>
               거절
             </Button>
-            <Button variant="outlined" color="primary" onPress={() => acceptFriend(item.friendId)}>
+            <Button color="primary" onPress={() => acceptFriend(item.friendId)}>
               승인
             </Button>
           </View>

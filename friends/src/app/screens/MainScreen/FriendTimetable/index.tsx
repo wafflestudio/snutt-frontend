@@ -26,7 +26,7 @@ export const FriendTimetable = () => {
   );
   const selectedFriend = friends?.find((f) => f.friendId === selectedFriendId);
 
-  if (!friends) return;
+  if (!friends) return null;
 
   if (friends.length === 0) return <FriendGuide />;
 
