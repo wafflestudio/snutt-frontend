@@ -18,6 +18,7 @@ export const Input = ({ value, onChange, style = {}, placeholder, autoFocus = fa
   const { allowFontScaling } = useTextContext();
   const inputDefaultBorder = useThemeContext((data) => data.color.input.default.border);
   const inputFocusedBorder = useThemeContext((data) => data.color.input.focused.border);
+  const inputPlaceholder = useThemeContext((data) => data.color.input.placeholder);
 
   return (
     <TextInput
@@ -34,7 +35,7 @@ export const Input = ({ value, onChange, style = {}, placeholder, autoFocus = fa
       value={value}
       onChange={(e) => onChange(e.nativeEvent.text)}
       placeholder={placeholder}
-      placeholderTextColor={textColors.description}
+      placeholderTextColor={inputPlaceholder}
     />
   );
 };

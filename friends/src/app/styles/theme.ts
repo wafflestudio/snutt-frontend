@@ -6,7 +6,7 @@ export type ThemeValues = {
     text: { default: Color; selectLabel: Color; description: Color; guide: Color; primary: Color };
     button: { gray: { text: Color }; text: { disabled: Color }; outlined: { primary: Color; gray: Color } };
     border: { timetableMajor: Color; timetableMinor: Color; appBar: Color; divider: Color };
-    input: { default: { border: Color }; focused: { border: Color } };
+    input: { placeholder: Color; default: { border: Color }; focused: { border: Color } };
     tab: { active: { border: Color }; inactive: { border: Color } };
   };
 };
@@ -35,7 +35,7 @@ const getLightThemeColors = (): ThemeValues['color'] => {
       appBar: COLORS.gray30,
       divider: COLORS.gray05,
     },
-    input: { default: { border: COLORS.gray15 }, focused: { border: COLORS.primary10 } },
+    input: { placeholder: COLORS.gray20, default: { border: COLORS.gray15 }, focused: { border: COLORS.primary10 } },
     tab: { active: { border: COLORS.gray30 }, inactive: { border: COLORS.gray05 } },
   };
 };
@@ -61,7 +61,11 @@ const getDarkThemeColors = (): ThemeValues['color'] => {
       appBar: COLORS.gray60,
       divider: COLORS.gray60,
     },
-    input: { default: { border: COLORS.gray60 }, focused: { border: COLORS.primary20 } },
+    input: {
+      placeholder: COLORS.gray40,
+      default: { border: COLORS.gray60 },
+      focused: { border: COLORS.primary20 },
+    },
     tab: { active: { border: COLORS.white }, inactive: { border: COLORS.gray60 } },
   };
 };
