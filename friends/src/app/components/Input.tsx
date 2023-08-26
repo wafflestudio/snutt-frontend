@@ -9,9 +9,10 @@ type Props = {
   onChange: (value: string) => void;
   style?: { marginTop?: number };
   placeholder?: string;
+  autoFocus?: boolean;
 };
 
-export const Input = ({ value, onChange, style = {}, placeholder }: Props) => {
+export const Input = ({ value, onChange, style = {}, placeholder, autoFocus = false }: Props) => {
   const [isFocused, setIsFocused] = useState(false);
   const textColors = useThemeContext((data) => data.color.text);
   const { allowFontScaling } = useTextContext();
@@ -21,6 +22,7 @@ export const Input = ({ value, onChange, style = {}, placeholder }: Props) => {
   return (
     <TextInput
       allowFontScaling={allowFontScaling}
+      autoFocus={autoFocus}
       onFocus={() => setIsFocused(true)}
       onBlur={() => setIsFocused(false)}
       style={{

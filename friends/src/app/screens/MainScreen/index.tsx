@@ -153,6 +153,7 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
           </Typography>
           <Input
             style={styles.input}
+            autoFocus
             value={addFriendModalNickname}
             onChange={(e) => dispatch({ type: 'setAddFriendModalNickname', nickname: e })}
             placeholder="예) 홍길동#1234"
