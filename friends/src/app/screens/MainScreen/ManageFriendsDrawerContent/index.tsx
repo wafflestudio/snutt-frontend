@@ -21,7 +21,9 @@ export const ManageFriendsDrawerContent = ({ onClose }: Props) => {
   const { dispatch } = useMainScreenContext();
   const addFriendButtonColor = useThemeContext((data) => data.color.button.gray.text);
   const tabActiveBorder = useThemeContext((data) => data.color.tab.active.border);
+  const tabActiveText = useThemeContext((data) => data.color.tab.active.text);
   const tabInactiveBorder = useThemeContext((data) => data.color.tab.inactive.border);
+  const tabInactiveText = useThemeContext((data) => data.color.tab.inactive.text);
   const dividerColor = useThemeContext((data) => data.color.border.divider);
 
   return (
@@ -44,7 +46,9 @@ export const ManageFriendsDrawerContent = ({ onClose }: Props) => {
               onPress={() => setTab(value)}
               style={{ ...styles.tab, borderBottomColor: isActive ? tabActiveBorder : tabInactiveBorder }}
             >
-              <Typography style={styles.tabText}>{label}</Typography>
+              <Typography style={{ ...styles.tabText, color: isActive ? tabActiveText : tabInactiveText }}>
+                {label}
+              </Typography>
             </TouchableOpacity>
           );
         })}
