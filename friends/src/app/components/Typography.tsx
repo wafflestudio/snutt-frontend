@@ -1,4 +1,4 @@
-import { Text, TextProps } from 'react-native';
+import { StyleSheet, Text, TextProps } from 'react-native';
 
 import { useTextContext } from '../contexts/TextContext';
 import { useThemeContext } from '../contexts/ThemeContext';
@@ -14,8 +14,14 @@ export const Typography = ({ children, style, variant = 'default', ...props }: P
   const { allowFontScaling } = useTextContext();
 
   return (
-    <Text allowFontScaling={allowFontScaling} {...props} style={{ color, ...style }}>
+    <Text allowFontScaling={allowFontScaling} {...props} style={{ color, ...styles.text, ...style }}>
       {children}
     </Text>
   );
 };
+
+const styles = StyleSheet.create({
+  text: {
+    fontFamily: '--apple-system',
+  },
+});
