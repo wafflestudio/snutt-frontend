@@ -3,7 +3,15 @@ import { Color, COLORS } from './colors';
 export type ThemeValues = {
   color: {
     bg: { default: Color };
-    text: { default: Color; selectLabel: Color; description: Color; guide: Color; primary: Color };
+    text: {
+      default: Color;
+      selectLabel: Color;
+      description: Color;
+      guide: Color;
+      primary: Color;
+      subtitle: Color;
+      caption: Color;
+    };
     button: { gray: { text: Color }; text: { disabled: Color }; outlined: { primary: Color; gray: Color } };
     border: { timetableMajor: Color; timetableMinor: Color; appBar: Color; divider: Color };
     input: { placeholder: Color; default: { border: Color }; focused: { border: Color } };
@@ -23,6 +31,8 @@ const getLightThemeColors = (): ThemeValues['color'] => {
       description: COLORS.gray40,
       guide: COLORS.primary10,
       primary: COLORS.primary20,
+      subtitle: COLORS.gray80,
+      caption: COLORS.gray35,
     },
     button: {
       gray: { text: COLORS.gray40 },
@@ -52,6 +62,8 @@ const getDarkThemeColors = (): ThemeValues['color'] => {
       description: COLORS.gray30,
       guide: COLORS.primary20,
       primary: COLORS.primary10,
+      subtitle: COLORS.white,
+      caption: COLORS.gray40,
     },
     button: {
       gray: { text: COLORS.gray30 },
