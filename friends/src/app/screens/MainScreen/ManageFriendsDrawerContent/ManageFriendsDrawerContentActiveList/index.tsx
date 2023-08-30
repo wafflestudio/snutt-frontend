@@ -7,11 +7,13 @@ import { BottomSheet } from '../../../../components/BottomSheet';
 import { MoreIcon } from '../../../../components/Icons/MoreIcon';
 import { PencilIcon } from '../../../../components/Icons/PencilIcon';
 import { TrashIcon } from '../../../../components/Icons/TrashIcon';
+import { UserPlusIcon } from '../../../../components/Icons/UserPlusIcon';
 import { Input } from '../../../../components/Input';
 import { Typography } from '../../../../components/Typography';
 import { useServiceContext } from '../../../../contexts/ServiceContext';
 import { useThemeContext } from '../../../../contexts/ThemeContext';
 import { useFriends } from '../../../../queries/useFriends';
+import { ManageFriendsDrawerContentEmptyCase } from '../ManageFriendsDrawerContentEmptyCase';
 
 type Props = { onClickFriend: (friendId: FriendId) => void };
 
@@ -36,9 +38,11 @@ export const ManageFriendsDrawerContentActiveList = ({ onClickFriend }: Props) =
     friendService.isValidDisplayName(bottomSheetState.displayName);
 
   return (
-    <View>
+    <>
       <FlatList
         data={activeFriends}
+        ListEmptyComponent={Empty}
+        contentContainerStyle={styles.listContainer}
         renderItem={({ item }) => (
           <TouchableOpacity key={item.friendId} style={styles.item} onPress={() => onClickFriend(item.friendId)}>
             <Typography style={styles.nickname}>{friendService.formatNickname(item)}</Typography>
@@ -110,7 +114,25 @@ export const ManageFriendsDrawerContentActiveList = ({ onClickFriend }: Props) =
           </View>
         )}
       </BottomSheet>
-    </View>
+    </>
+  );
+};
+
+const Empty = () => {
+  const { description } = useThemeContext(({ color }) => color.text);
+  return (
+    <ManageFriendsDrawerContentEmptyCase
+      title="추가한 친구가 없습니다."
+      descriptions={[
+        <>
+          <Typography style={{ color: description }}>
+            친구 추가하기 <UserPlusIcon width={11} height={11} />
+          </Typography>
+          를 눌러 요청을 보내보세요!
+        </>,
+        '친구가 수락하면 이 곳에 추가됩니다.',
+      ]}
+    />
   );
 };
 
@@ -135,6 +157,7 @@ const usePatchDisplayName = () => {
 const styles = StyleSheet.create({
   item: { height: 40, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 4 },
   nickname: { flex: 1, lineHeight: 15, fontSize: 13 },
+  listContainer: { flexGrow: 1 },
 
   sheetContent: { paddingBottom: 20 },
   sheetItem: {

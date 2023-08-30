@@ -82,7 +82,7 @@ export const ManageFriendsDrawerContent = ({ onClose }: Props) => {
 };
 
 const styles = StyleSheet.create({
-  container: { paddingVertical: 22, paddingHorizontal: 20 },
+  container: { paddingVertical: 22, paddingHorizontal: 20, height: '100%', display: 'flex' },
   header: {
     display: 'flex',
     flexDirection: 'row',
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   tabs: { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' },
   tab: { height: 40, borderBottomWidth: 3, width: '50%', display: 'flex', justifyContent: 'center' },
   tabText: { textAlign: 'center', fontSize: 16 },
-  tabContent: { paddingLeft: 15, paddingRight: 15, paddingTop: 16 },
+  tabContent: { paddingLeft: 15, paddingRight: 15, paddingTop: 16, flex: 1 },
 
   addFriend: {
     borderBottomWidth: 2,
