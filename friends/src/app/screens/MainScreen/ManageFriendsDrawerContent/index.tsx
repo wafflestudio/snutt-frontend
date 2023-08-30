@@ -3,6 +3,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { CloseIcon } from '../../../components/Icons/CloseIcon';
 import { SnuttLogoIcon } from '../../../components/Icons/SnuttLogoIcon';
+import { SnuttTextIcon } from '../../../components/Icons/SnuttTextIcon';
 import { UserPlusIcon } from '../../../components/Icons/UserPlusIcon';
 import { Typography } from '../../../components/Typography';
 import { useThemeContext } from '../../../contexts/ThemeContext';
@@ -30,7 +31,9 @@ export const ManageFriendsDrawerContent = ({ onClose }: Props) => {
     <View style={styles.container}>
       <View style={styles.header}>
         <SnuttLogoIcon width={20} height={20} />
-        <Typography style={styles.snutt}>SNUTT</Typography>
+        <View style={styles.snutt}>
+          <SnuttTextIcon width={67} height={21} />
+        </View>
         <TouchableOpacity onPress={onClose}>
           <CloseIcon width={30} height={30} />
         </TouchableOpacity>
