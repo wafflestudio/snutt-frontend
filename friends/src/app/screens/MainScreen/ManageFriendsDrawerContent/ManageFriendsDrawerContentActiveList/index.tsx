@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Alert, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { FriendId } from '../../../../../entities/friend';
 import { BottomSheet } from '../../../../components/BottomSheet';
@@ -75,9 +75,18 @@ export const ManageFriendsDrawerContentActiveList = ({ onClickFriend }: Props) =
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.sheetItem}
-              onPress={() =>
-                deleteFriend(bottomSheetState.friendId, { onSuccess: () => setBottomSheetState({ isOpen: false }) })
-              }
+              onPress={() => {
+                Alert.alert('친구 삭제', '정말로 친구를 삭제하시겠습니까?', [
+                  { text: '취소' },
+                  {
+                    text: '삭제',
+                    onPress: () =>
+                      deleteFriend(bottomSheetState.friendId, {
+                        onSuccess: () => setBottomSheetState({ isOpen: false }),
+                      }),
+                  },
+                ]);
+              }}
             >
               <TrashIcon width={30} height={30} />
               <Typography>친구 목록에서 삭제</Typography>
