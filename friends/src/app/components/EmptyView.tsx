@@ -2,16 +2,10 @@ import { ReactNode } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 
 import SurprisedCat from '../../../../assets/surprised-cat.png';
-import { Typography } from '../../../../components/Typography';
-import { useThemeContext } from '../../../../contexts/ThemeContext';
+import { useThemeContext } from '../contexts/ThemeContext';
+import { Typography } from './Typography';
 
-export const ManageFriendsDrawerContentEmptyCase = ({
-  title,
-  descriptions,
-}: {
-  title: ReactNode;
-  descriptions: ReactNode[];
-}) => {
+export const EmptyView = ({ title, descriptions }: { title: ReactNode; descriptions: ReactNode[] }) => {
   const { subtitle, caption } = useThemeContext(({ color }) => color.text);
   return (
     <View style={styles.container}>
