@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { Alert, FlatList, StyleSheet, View } from 'react-native';
 
 import { FriendId } from '../../../../../entities/friend';
 import { Button } from '../../../../components/Button';
@@ -25,11 +25,22 @@ export const ManageFriendsDrawerContentRequestedList = ({}: Props) => {
       renderItem={({ item }) => (
         <View style={styles.item} key={item.friendId}>
           <Typography style={styles.nickname}>{friendService.formatNickname(item)}</Typography>
-          <Button color="gray" onPress={() => declineFriend(item.friendId)}>
+          <Button
+            color="gray"
+            onPress={() =>
+              Alert.alert('친구 요청을 거절하시겠습니까? 목록에서 삭제됩니다.', undefined, [
+                { text: '취소' },
+                { text: '거절', onPress: () => declineFriend(item.friendId) },
+              ])
+            }
+          >
             거절
           </Button>
-          <Button color="primary" onPress={() => acceptFriend(item.friendId)}>
-            승인
+          <Button
+            color="primary"
+            onPress={() => acceptFriend(item.friendId, { onSuccess: () => Alert.alert('친구 요청을 수락했습니다.') })}
+          >
+            수락
           </Button>
         </View>
       )}
