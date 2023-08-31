@@ -3,10 +3,10 @@ import { FlatList, StyleSheet, View } from 'react-native';
 
 import { FriendId } from '../../../../../entities/friend';
 import { Button } from '../../../../components/Button';
+import { EmptyView } from '../../../../components/EmptyView';
 import { Typography } from '../../../../components/Typography';
 import { useServiceContext } from '../../../../contexts/ServiceContext';
 import { useFriends } from '../../../../queries/useFriends';
-import { ManageFriendsDrawerContentEmptyCase } from '../ManageFriendsDrawerContentEmptyCase';
 
 type Props = {};
 
@@ -39,7 +39,7 @@ export const ManageFriendsDrawerContentRequestedList = ({}: Props) => {
 
 const Empty = () => {
   return (
-    <ManageFriendsDrawerContentEmptyCase
+    <EmptyView
       title="받은 친구 요청이 없습니다."
       descriptions={['친구가 나에게 요청을 보내면', '여기에서 수락 또는 거절할 수 있어요.']}
     />

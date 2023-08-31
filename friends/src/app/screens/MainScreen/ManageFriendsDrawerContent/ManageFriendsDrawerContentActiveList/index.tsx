@@ -4,6 +4,7 @@ import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { FriendId } from '../../../../../entities/friend';
 import { BottomSheet } from '../../../../components/BottomSheet';
+import { EmptyView } from '../../../../components/EmptyView';
 import { MoreIcon } from '../../../../components/Icons/MoreIcon';
 import { PencilIcon } from '../../../../components/Icons/PencilIcon';
 import { TrashIcon } from '../../../../components/Icons/TrashIcon';
@@ -13,7 +14,6 @@ import { Typography } from '../../../../components/Typography';
 import { useServiceContext } from '../../../../contexts/ServiceContext';
 import { useThemeContext } from '../../../../contexts/ThemeContext';
 import { useFriends } from '../../../../queries/useFriends';
-import { ManageFriendsDrawerContentEmptyCase } from '../ManageFriendsDrawerContentEmptyCase';
 
 type Props = { onClickFriend: (friendId: FriendId) => void };
 
@@ -121,7 +121,7 @@ export const ManageFriendsDrawerContentActiveList = ({ onClickFriend }: Props) =
 const Empty = () => {
   const { description } = useThemeContext(({ color }) => color.text);
   return (
-    <ManageFriendsDrawerContentEmptyCase
+    <EmptyView
       title="추가한 친구가 없습니다."
       descriptions={[
         <>

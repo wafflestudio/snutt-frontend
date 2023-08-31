@@ -1,5 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 
+import { EmptyView } from '../../../components/EmptyView';
 import { UserIcon } from '../../../components/Icons/UserIcon';
 import { Paper } from '../../../components/Paper';
 import { Select } from '../../../components/Select';
@@ -30,6 +31,8 @@ export const FriendTimetable = () => {
 
   if (friends.length === 0) return <FriendGuide />;
 
+  const isTimetableEmpty = courseBooks?.length === 0;
+
   return (
     <Paper style={styles.wrapper}>
       <View style={styles.header}>
@@ -38,16 +41,28 @@ export const FriendTimetable = () => {
           {selectedFriend && friendService.formatNickname(selectedFriend)}
         </Typography>
 
-        <Select
-          value={selectedCourseBook && courseBookService.toValue(selectedCourseBook)}
-          onChange={(v) => dispatch({ type: 'setCourseBook', courseBook: courseBookService.fromValue(v) })}
-          items={courseBooks?.map((cb) => ({
-            label: courseBookService.toLabel(cb),
-            value: courseBookService.toValue(cb),
-          }))}
-        />
+        {!isTimetableEmpty && (
+          <Select
+            value={selectedCourseBook && courseBookService.toValue(selectedCourseBook)}
+            onChange={(v) => dispatch({ type: 'setCourseBook', courseBook: courseBookService.fromValue(v) })}
+            items={courseBooks?.map((cb) => ({
+              label: courseBookService.toLabel(cb),
+              value: courseBookService.toValue(cb),
+            }))}
+          />
+        )}
       </View>
-      {palette && <Timetable palette={palette} timetable={fullTimetable ?? { lectures: [] }} />}
+      {isTimetableEmpty ? (
+        <View style={styles.emptyWrapper}>
+          <EmptyView
+            size="big"
+            title="친구에게 대표 시간표가 없습니다."
+            descriptions={['친구는 공개할 대표 시간표를', '학기마다 하나씩 지정할 수 있습니다.']}
+          />
+        </View>
+      ) : (
+        palette && <Timetable palette={palette} timetable={fullTimetable ?? { lectures: [] }} />
+      )}
     </Paper>
   );
 };
@@ -65,4 +80,5 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   nickname: { fontSize: 14, fontWeight: '500', flex: 1 },
+  emptyWrapper: { marginBottom: 100 },
 });
