@@ -32,7 +32,7 @@ type ExternalProps = {
 export const Main = ({
   'x-access-token': xAccessToken,
   'x-access-apikey': xAccessApikey,
-  theme,
+  theme = 'dark',
   allowFontScaling = false,
 }: ExternalProps) => {
   const fetchClient = createFetchClient(baseUrl, xAccessToken, xAccessApikey);
