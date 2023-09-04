@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import SurprisedCat from '../assets/surprised-cat.png';
+import SurprisedCat from '../assets/images/surprised-cat.svg';
 import { useThemeContext } from '../contexts/ThemeContext';
 import { Typography } from './Typography';
 
@@ -19,7 +19,7 @@ export const EmptyView = ({
 
   return (
     <View style={styles.container}>
-      <Image source={SurprisedCat} style={sizeStyle.image} />
+      <SurprisedCat width={sizeStyle.image.width} height={sizeStyle.image.height} />
       <Typography style={{ color: subtitle, ...styles.subtitle, ...sizeStyle.subtitle }}>{title}</Typography>
       {descriptions.map((d, i) => (
         <Typography key={i} style={{ ...styles.description, color: caption, ...sizeStyle.description }}>
