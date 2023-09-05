@@ -3,16 +3,15 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
-    "ios": "react-native run-ios",
     "lint": "eslint .",
-    "start": "react-native start",
     "test": "jest",
+    "tsc": "tsc",
+    "start:dev": "APP_ENV=dev react-native start",
+    "start:prod": "APP_ENV=prod react-native start",
     "build:android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output dist/android.jsbundle --assets-dest android/com/wafflestudio/snutt-staging/src/main/res/",
     "build:ios": "react-native bundle --dev false --entry-file index.js --bundle-output dist/ios.jsbundle --assets-dest ./ios --platform ios",
     "deploy:dev": "scripts/deploy.sh dev",
-    "deploy:prod": "echo prod 배포는 github 에서 직접 릴리즈를 생성해 주세요.",
-    "tsc": "tsc"
+    "deploy:prod": "echo prod 배포는 github 에서 직접 릴리즈를 생성해 주세요."
   },
   "dependencies": {
     "@react-navigation/drawer": "6.6.3",
@@ -36,6 +35,7 @@
     "@tsconfig/react-native": "^3.0.0",
     "@types/metro-config": "^0.76.3",
     "@types/react": "^18.0.24",
+    "@types/react-native-dotenv": "^0.2.0",
     "@types/react-test-renderer": "^18.0.0",
     "babel-jest": "^29.2.1",
     "eslint": "^8.47.0",
@@ -44,6 +44,7 @@
     "jest": "^29.2.1",
     "metro-react-native-babel-preset": "0.76.5",
     "prettier": "^3.0.2",
+    "react-native-dotenv": "^3.4.9",
     "react-native-svg-transformer": "^1.1.0",
     "react-test-renderer": "18.2.0",
     "typescript": "^5.0.4"

@@ -1,9 +1,9 @@
-name: deploy-dev
+name: deploy-prod
 
 on:
   push:
     tags:
-      - friends-dev-*
+      - friends-prod-*
 
 jobs:
   deploy:
@@ -33,7 +33,7 @@ jobs:
 
       - name: Set ENV
         run: |
-          cp .env.dev .env
+          cp .env.prod .env
 
       - name: Build & Export
         run: |
@@ -56,9 +56,9 @@ jobs:
         env:
           BUCKET_URL: "https://snutt-rn-assets.wafflestudio.com"
           SNUTT_APIKEY: ${{ secrets.SNUTT_APIKEY }}
-          SNUTT_TOKEN: ${{ secrets.SNUTT_TOKEN_DEV }}
+          SNUTT_TOKEN: ${{ secrets.SNUTT_TOKEN_PROD }}
         run: |
-          curl 'https://snutt-api-dev.wafflestudio.com/v1/admin/configs/reactNativeBundleFriends' \
+          curl 'https://snutt-api.wafflestudio.com/v1/admin/configs/reactNativeBundleFriends' \
             -H 'Content-Type: application/json' \
             -H "x-access-apikey: $SNUTT_APIKEY" \
             -H "x-access-token: $SNUTT_TOKEN" \
