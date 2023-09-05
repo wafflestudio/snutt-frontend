@@ -108,7 +108,7 @@ export const ManageFriendsDrawerContentActiveList = ({ onClickFriend }: Props) =
                 나에게 표시될 친구 이름
               </Typography>
               <Typography variant="description" style={styles.displayNameInfoCaption}>
-                (공백 포함 한/영 10자 이내)
+                (공백 포함 한/영/숫자 10자 이내)
               </Typography>
             </View>
             <Input
