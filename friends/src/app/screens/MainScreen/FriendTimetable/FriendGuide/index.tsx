@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
   image: { width: 210, height: 210 },
   typoMargin4: { paddingTop: 8 },
   detailButton: { marginTop: 20, flexDirection: 'row', alignItems: 'center', gap: 4 },
-  hint: { textDecorationLine: 'underline' },
+  hint: { textDecorationLine: 'underline', fontSize: 10 },
 
   modalHeader: {
     flexDirection: 'row',
