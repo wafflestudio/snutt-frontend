@@ -31,6 +31,10 @@ jobs:
         run: |
           mkdir dist
 
+      - name: Set ENV
+        run: |
+          cp .env.prod .env
+
       - name: Build & Export
         run: |
           yarn install
