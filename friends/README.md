@@ -4,6 +4,15 @@
 
 ## installation
 
-- /android 폴더에 android 레포를 둡니다.
-- /ios 폴더에 ios 프로젝트를 둡니다.
+```bash
+git clone https://github.com/wafflestudio/snutt-rn
+cd snutt-rn/friends
+yarn
+```
 
+## run
+
+```bash
+yarn start
+yarn start:assets
+```
