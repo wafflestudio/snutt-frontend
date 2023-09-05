@@ -1,3 +1,4 @@
+import { API_URL } from '@env';
 import { useMemo } from 'react';
 import { Text, View } from 'react-native';
 
@@ -35,7 +36,7 @@ export const Main = ({
   theme,
   allowFontScaling = false,
 }: ExternalProps) => {
-  const fetchClient = createFetchClient(baseUrl, xAccessToken, xAccessApikey);
+  const fetchClient = createFetchClient(API_URL, xAccessToken, xAccessApikey);
   const friendRepository = createFriendRepository(fetchClient);
   const timetableViewService = createTimetableViewService();
   const colorService = createColorService({ repositories: [createColorRepository({ clients: [fetchClient] })] });
@@ -69,5 +70,3 @@ export const Main = ({
     </ErrorBoundary>
   );
 };
-
-const baseUrl = 'https://snutt-api-dev.wafflestudio.com';
