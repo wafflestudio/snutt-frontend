@@ -11,6 +11,7 @@ import { get } from '../../../utils/get';
 import { AppBar } from '../../components/Appbar';
 import { BottomSheet } from '../../components/BottomSheet';
 import { HamburgerIcon } from '../../components/Icons/HamburgerIcon';
+import { QuestionIcon } from '../../components/Icons/QuestionIcon';
 import { UserPlusIcon } from '../../components/Icons/UserPlusIcon';
 import { WarningIcon } from '../../components/Icons/WarningIcon';
 import { Input } from '../../components/Input';
@@ -28,12 +29,14 @@ type MainScreenState = {
   selectedCourseBook: CourseBook | undefined;
   isAddFriendModalOpen: boolean;
   addFriendModalNickname: string;
+  isGuideModalOpen: boolean;
 };
 type MainScreenAction =
   | { type: 'setFriend'; friendId: FriendId }
   | { type: 'setCourseBook'; courseBook: CourseBook }
-  | { type: 'setModalOpen'; isOpen: boolean }
-  | { type: 'setAddFriendModalNickname'; nickname: string };
+  | { type: 'setAddFriendModalOpen'; isOpen: boolean }
+  | { type: 'setAddFriendModalNickname'; nickname: string }
+  | { type: 'setGuideModalOpen'; isOpen: boolean };
 type MainScreenContext = MainScreenState & { dispatch: Dispatch<MainScreenAction> };
 const mainScreenReducer = (state: MainScreenState, action: MainScreenAction): MainScreenState => {
   switch (action.type) {
@@ -41,13 +44,15 @@ const mainScreenReducer = (state: MainScreenState, action: MainScreenAction): Ma
       return { ...state, selectedFriendId: action.friendId, selectedCourseBook: undefined };
     case 'setCourseBook':
       return { ...state, selectedCourseBook: action.courseBook };
-    case 'setModalOpen':
+    case 'setAddFriendModalOpen':
       return action.isOpen
         ? { ...state, isAddFriendModalOpen: true }
         : { ...state, isAddFriendModalOpen: false, addFriendModalNickname: '' };
     case 'setAddFriendModalNickname':
       if (!state.isAddFriendModalOpen) throw new Error();
       return { ...state, addFriendModalNickname: action.nickname };
+    case 'setGuideModalOpen':
+      return { ...state, isGuideModalOpen: action.isOpen };
   }
 };
 const mainScreenContext = createContext<MainScreenContext | null>(null);
@@ -64,6 +69,7 @@ export const MainScreen = () => {
     selectedCourseBook: undefined,
     isAddFriendModalOpen: false,
     addFriendModalNickname: '',
+    isGuideModalOpen: false,
   });
 
   const backgroundColor = useThemeContext((data) => data.color.bg.default);
@@ -80,6 +86,7 @@ export const MainScreen = () => {
           selectedCourseBook: selectedCourseBookWithDefault,
           isAddFriendModalOpen: state.isAddFriendModalOpen,
           addFriendModalNickname: state.addFriendModalNickname,
+          isGuideModalOpen: state.isGuideModalOpen,
           dispatch,
         }),
         [
@@ -87,6 +94,7 @@ export const MainScreen = () => {
           selectedCourseBookWithDefault,
           state.isAddFriendModalOpen,
           state.addFriendModalNickname,
+          state.isGuideModalOpen,
         ],
       )}
     >
@@ -104,41 +112,51 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
   const { addFriendModalNickname, isAddFriendModalOpen, dispatch } = useMainScreenContext();
   const { friendService } = useServiceContext();
   const { mutate: request } = useRequestFriend();
+  const { data: friends } = useFriends({ state: 'ACTIVE' });
   const guideEnabledColor = useThemeContext((data) => data.color.text.guide);
 
+  const isNoFriends = friends?.length === 0;
   const isValid = friendService.isValidNicknameTag(addFriendModalNickname);
   const guideMessageState = addFriendModalNickname === '' ? 'disabled' : isValid ? 'hidden' : 'enabled';
 
-  const openModal = () => dispatch({ type: 'setModalOpen', isOpen: true });
-
-  const closeModal = () => dispatch({ type: 'setModalOpen', isOpen: false });
-
+  const openAddFriendModal = () => dispatch({ type: 'setAddFriendModalOpen', isOpen: true });
+  const closeAddFriendModal = () => dispatch({ type: 'setAddFriendModalOpen', isOpen: false });
+  const openGuideModal = () => dispatch({ type: 'setGuideModalOpen', isOpen: true });
   return (
     <>
       <AppBar
-        title="친구 시간표"
+        title={
+          <>
+            <AppBar.Title>친구 시간표</AppBar.Title>
+            {isNoFriends && (
+              <TouchableOpacity style={styles.questionIconButton} onPress={openGuideModal}>
+                <QuestionIcon style={styles.questionIcon} width={16} height={16} />
+              </TouchableOpacity>
+            )}
+          </>
+        }
         left={
           <TouchableOpacity onPress={() => navigation.openDrawer()}>
             <HamburgerIcon width={30} height={30} />
           </TouchableOpacity>
         }
         right={
-          <TouchableOpacity onPress={openModal}>
+          <TouchableOpacity onPress={openAddFriendModal}>
             <UserPlusIcon width={22} height={22} />
           </TouchableOpacity>
         }
       />
-      <BottomSheet isOpen={isAddFriendModalOpen} onClose={closeModal}>
+      <BottomSheet isOpen={isAddFriendModalOpen} onClose={closeAddFriendModal}>
         <View style={styles.modalContent}>
           <BottomSheet.Header
-            left={{ text: '취소', onPress: closeModal }}
+            left={{ text: '취소', onPress: closeAddFriendModal }}
             right={{
               text: '요청 보내기',
               onPress: () =>
                 request(addFriendModalNickname, {
                   onSuccess: () => {
                     Alert.alert('친구에게 요청을 보냈습니다.');
-                    closeModal();
+                    closeAddFriendModal();
                   },
                   onError: (err) => {
                     const displayMessage = get(err, ['displayMessage']);
@@ -192,6 +210,8 @@ const useRequestFriend = () => {
 };
 
 const styles = StyleSheet.create({
+  questionIconButton: { marginLeft: 6 },
+  questionIcon: { color: COLORS.gray30 },
   modalContent: { paddingBottom: 30 },
   inputDescription: { marginTop: 30, fontSize: 14 },
   input: { marginTop: 15 },

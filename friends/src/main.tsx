@@ -1,4 +1,4 @@
-import { API_URL } from '@env';
+import { API_URL, ASSET_URL } from '@env';
 import { useMemo } from 'react';
 import { Text, View } from 'react-native';
 
@@ -8,6 +8,7 @@ import { serviceContext } from './app/contexts/ServiceContext';
 import { textContext } from './app/contexts/TextContext';
 import { themeContext } from './app/contexts/ThemeContext';
 import { getThemeValues } from './app/styles/theme';
+import { createAssetService } from './infrastructures/createAssetService';
 import { createColorRepository } from './infrastructures/createColorRepository';
 import { createColorService } from './infrastructures/createColorService';
 import { createCourseBookService } from './infrastructures/createCourseBookService';
@@ -38,14 +39,15 @@ export const Main = ({
 }: ExternalProps) => {
   const fetchClient = createFetchClient(API_URL, xAccessToken, xAccessApikey);
   const friendRepository = createFriendRepository(fetchClient);
+  const assetService = createAssetService({ baseUrl: ASSET_URL });
   const timetableViewService = createTimetableViewService();
   const colorService = createColorService({ repositories: [createColorRepository({ clients: [fetchClient] })] });
   const friendService = createFriendService({ repositories: [friendRepository] });
   const courseBookService = createCourseBookService();
 
   const serviceValue = useMemo(
-    () => ({ timetableViewService, colorService, friendService, courseBookService }),
-    [timetableViewService, colorService, friendService, courseBookService],
+    () => ({ timetableViewService, colorService, friendService, courseBookService, assetService }),
+    [timetableViewService, colorService, friendService, courseBookService, assetService],
   );
 
   const themeValue = useMemo(() => getThemeValues(theme), [theme]);

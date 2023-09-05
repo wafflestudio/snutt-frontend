@@ -1,26 +1,32 @@
-import { ReactElement, useState } from 'react';
+import { ReactElement, useEffect, useRef, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 
-type Props = {
-  items: { key: string; item: ReactElement }[];
+type Props<K extends string> = {
+  current: K;
+  setCurrent: (key: K) => void;
+  items: { key: K; item: ReactElement }[];
   width: number;
   gap: number;
-  height: number;
 };
 
-export const Carousel = ({ items, gap, width, height }: Props) => {
-  const [current, setCurrent] = useState<string>();
-
+export const Carousel = <K extends string>({ items, gap, width, current, setCurrent }: Props<K>) => {
+  const [isScrolling, setIsScrolling] = useState(false);
+  const listRef = useRef<FlatList>(null);
   const itemWidth = width - gap;
-  const currentWithDefault = current ?? items[0].key;
 
   const onScroll = (e: any) => {
+    if (!isScrolling) return;
     const newPage = Math.round(e.nativeEvent.contentOffset.x / width);
     setCurrent(items[newPage].key);
   };
 
+  useEffect(() => {
+    if (isScrolling) return;
+    listRef.current?.scrollToOffset({ offset: width * items.findIndex((i) => i.key === current), animated: true });
+  }, [current, items, width, isScrolling]);
+
   return (
-    <View style={{ width: width, height }}>
+    <View style={{ width }}>
       <FlatList
         automaticallyAdjustContentInsets={false}
         data={items}
@@ -32,13 +38,16 @@ export const Carousel = ({ items, gap, width, height }: Props) => {
         snapToAlignment="start"
         snapToInterval={width}
         showsHorizontalScrollIndicator={false}
+        onScrollBeginDrag={() => setIsScrolling(true)}
         onScroll={onScroll}
+        onScrollEndDrag={() => setIsScrolling(false)}
+        ref={listRef}
       />
       <View style={styles.dots}>
         {items.map((i) => (
           <View
             // eslint-disable-next-line react-native/no-inline-styles
-            style={{ ...styles.dot, backgroundColor: currentWithDefault === i.key ? '#000' : '#777' }}
+            style={{ ...styles.dot, backgroundColor: current === i.key ? '#000' : '#777' }}
             key={i.key}
           />
         ))}
@@ -48,6 +57,6 @@ export const Carousel = ({ items, gap, width, height }: Props) => {
 };
 
 const styles = StyleSheet.create({
-  dots: { display: 'flex', flexDirection: 'row', gap: 20, justifyContent: 'center', marginTop: 10 },
-  dot: { width: 10, height: 10, borderRadius: 5 },
+  dots: { display: 'flex', flexDirection: 'row', gap: 5, justifyContent: 'center', marginTop: 18 },
+  dot: { width: 6, height: 6, borderRadius: 3 },
 });
