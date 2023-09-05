@@ -34,6 +34,7 @@ jobs:
       - name: Set ENV
         run: |
           cp .env.dev .env
+          echo "ASSET_URL=https://snutt-rn-assets.wafflestudio.com/$TAG_NAME/assets" >> .env
 
       - name: Build & Export
         run: |
@@ -47,6 +48,7 @@ jobs:
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
           AWS_CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }}
         run: |
+          aws s3 cp ./public s3://$AWS_S3_BUCKET/$TAG_NAME/assets --recursive --content-type 'image/png'
           aws s3 cp ./dist/ios.jsbundle s3://$AWS_S3_BUCKET/$TAG_NAME/ios.jsbundle --content-type 'application/javascript'
           aws s3 cp ./dist/android.jsbundle s3://$AWS_S3_BUCKET/$TAG_NAME/android.jsbundle --content-type 'application/javascript'
           aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_DISTRIBUTION_ID --paths "/$TAG_NAME/*"

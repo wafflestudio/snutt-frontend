@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react';
-import { KeyboardAvoidingView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Modal from 'react-native-modal';
 
 import { useThemeContext } from '../contexts/ThemeContext';
@@ -12,16 +12,13 @@ export const BottomSheet = ({ isOpen, onClose, children }: PropsWithChildren<Pro
   return (
     <Modal
       isVisible={isOpen}
-      swipeDirection={['down']}
-      onSwipeComplete={onClose}
       onBackdropPress={onClose}
       useNativeDriver
       style={styles.modal}
       hideModalContentWhileAnimating
+      avoidKeyboard
     >
-      <KeyboardAvoidingView behavior="padding">
-        <Paper style={styles.modalContent}>{children}</Paper>
-      </KeyboardAvoidingView>
+      <Paper style={styles.modalContent}>{children}</Paper>
     </Modal>
   );
 };
