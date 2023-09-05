@@ -9,10 +9,12 @@ export const EmptyView = ({
   title,
   descriptions,
   size = 'small',
+  etc,
 }: {
   title: ReactNode;
   descriptions: ReactNode[];
   size?: 'small' | 'big';
+  etc?: ReactNode;
 }) => {
   const { subtitle, caption } = useThemeContext(({ color }) => color.text);
   const sizeStyle = { small: smallStyle, big: bigStyle }[size];
@@ -26,6 +28,7 @@ export const EmptyView = ({
           {d}
         </Typography>
       ))}
+      {etc}
     </View>
   );
 };

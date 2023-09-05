@@ -60,7 +60,7 @@ export const ManageFriendsDrawerContent = ({ onClose }: Props) => {
       <View style={styles.tabContent}>
         <TouchableOpacity
           style={{ ...styles.addFriend, borderBottomColor: dividerColor }}
-          onPress={() => dispatch({ type: 'setModalOpen', isOpen: true })}
+          onPress={() => dispatch({ type: 'setAddFriendModalOpen', isOpen: true })}
         >
           <Typography style={{ ...styles.addFriendText, color: addFriendButtonColor }}>친구 추가하기</Typography>
           <UserPlusIcon style={{ color: addFriendButtonColor }} width={16} height={16} />

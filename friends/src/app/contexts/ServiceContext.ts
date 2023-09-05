@@ -1,5 +1,6 @@
 import { createContext, useContext } from 'react';
 
+import { AssetService } from '../../usecases/assetService';
 import { ColorService } from '../../usecases/colorService';
 import { CourseBookService } from '../../usecases/courseBookService';
 import { FriendService } from '../../usecases/friendService';
@@ -10,6 +11,7 @@ type ServiceContext = {
   colorService: ColorService;
   friendService: FriendService;
   courseBookService: CourseBookService;
+  assetService: AssetService;
 };
 export const serviceContext = createContext<ServiceContext | null>(null);
 export const useServiceContext = () => {
