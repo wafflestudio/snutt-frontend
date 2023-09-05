@@ -68,3 +68,7 @@ yarn-error.log
 # native apps
 /ios
 /android
+
+# env
+.env.local
+.env.*.local

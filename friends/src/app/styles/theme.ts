@@ -1,6 +1,7 @@
 import { Color, COLORS } from './colors';
 
 export type ThemeValues = {
+  theme: 'light' | 'dark';
   color: {
     bg: { default: Color };
     text: {
@@ -11,6 +12,7 @@ export type ThemeValues = {
       primary: Color;
       subtitle: Color;
       caption: Color;
+      hint: Color;
     };
     button: { gray: { text: Color }; text: { disabled: Color }; outlined: { primary: Color; gray: Color } };
     border: { timetableMajor: Color; timetableMinor: Color; appBar: Color; divider: Color };
@@ -19,7 +21,7 @@ export type ThemeValues = {
   };
 };
 export const getThemeValues = (theme: 'dark' | 'light'): ThemeValues => {
-  return { color: theme === 'dark' ? getDarkThemeColors() : getLightThemeColors() };
+  return { theme, color: theme === 'dark' ? getDarkThemeColors() : getLightThemeColors() };
 };
 
 const getLightThemeColors = (): ThemeValues['color'] => {
@@ -33,6 +35,7 @@ const getLightThemeColors = (): ThemeValues['color'] => {
       primary: COLORS.primary20,
       subtitle: COLORS.gray80,
       caption: COLORS.gray35,
+      hint: COLORS.gray40,
     },
     button: {
       gray: { text: COLORS.gray40 },
@@ -64,6 +67,7 @@ const getDarkThemeColors = (): ThemeValues['color'] => {
       primary: COLORS.primary10,
       subtitle: COLORS.white,
       caption: COLORS.gray40,
+      hint: COLORS.gray35,
     },
     button: {
       gray: { text: COLORS.gray30 },
