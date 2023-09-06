@@ -13,7 +13,7 @@ export const AppBar = ({ title, left, right }: Props) => {
   return (
     <Paper style={{ ...styles.container, borderBottomColor }}>
       <View style={styles.left}>{left}</View>
-      <View style={styles.center}>{title}</View>
+      <View>{title}</View>
       <View style={styles.right}>{right}</View>
     </Paper>
   );
@@ -32,7 +32,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   left: { ...sideStyle, justifyContent: 'flex-start', paddingLeft: 13 },
-  center: { display: 'flex', flexDirection: 'row', alignItems: 'center' },
   right: { ...sideStyle, justifyContent: 'flex-end', paddingRight: 17 },
 
   title: { fontSize: 17 },
