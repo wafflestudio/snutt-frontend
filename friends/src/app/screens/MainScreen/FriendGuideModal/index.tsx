@@ -50,13 +50,13 @@ export const FriendGuideModal = () => {
     key: url,
     item: <Image resizeMode="stretch" style={styles.image} source={{ uri: url }} />,
   }));
-  const currentWithDefault = current ?? assets[0].key;
+  const currentWithDefault = current ?? assets[0]!.key;
   const currentIndex = assets.findIndex((i) => i.key === currentWithDefault);
 
   const moveCurrent = (dir: 'left' | 'right') => {
     const nextIndex = dir === 'left' ? currentIndex - 1 : currentIndex + 1;
     if (nextIndex < 0 || nextIndex >= assets.length) return;
-    setCurrent(assets[nextIndex].key);
+    setCurrent(assets[nextIndex]?.key);
   };
 
   return (

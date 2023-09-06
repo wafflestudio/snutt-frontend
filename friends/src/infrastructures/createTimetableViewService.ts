@@ -1,3 +1,4 @@
+import { Color } from '../entities/color';
 import { Day, Hour } from '../entities/time';
 import { TimetableViewService } from '../usecases/timetableViewService';
 
@@ -17,7 +18,7 @@ export const createTimetableViewService = (): TimetableViewService => {
     getDayLabel: (day) => ({ 0: '월', 1: '화', 2: '수', 3: '목', 4: '금', 5: '토', 6: '일' })[day],
     getLessonColor: (lesson, palette) => {
       if (lesson.colorIndex === 0) return lesson.color;
-      return palette[lesson.colorIndex - 1];
+      return palette[lesson.colorIndex - 1] as Color;
     },
   };
 };
