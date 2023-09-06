@@ -3,7 +3,7 @@ import { FlatList, StyleSheet, View } from 'react-native';
 
 type Props<K extends string> = {
   current: K;
-  setCurrent: (key: K) => void;
+  setCurrent: (key: K | undefined) => void;
   items: { key: K; item: ReactElement }[];
   width: number;
   gap: number;
@@ -12,12 +12,17 @@ type Props<K extends string> = {
 export const Carousel = <K extends string>({ items, gap, width, current, setCurrent }: Props<K>) => {
   const [isScrolling, setIsScrolling] = useState(false);
   const listRef = useRef<FlatList>(null);
+  const velocityX = useRef<number | null>(null);
   const itemWidth = width - gap;
 
-  const onScroll = (e: any) => {
+  const onScrollEnd = (offsetX: number) => {
     if (!isScrolling) return;
-    const newPage = Math.round(e.nativeEvent.contentOffset.x / width);
-    setCurrent(items[newPage].key);
+    const lastVelocityX = velocityX.current ?? 0;
+    velocityX.current = null;
+
+    const newPage = Math.round((offsetX + lastVelocityX) / width);
+    setIsScrolling(false);
+    setCurrent(items.at(newPage)?.key);
   };
 
   useEffect(() => {
@@ -39,8 +44,8 @@ export const Carousel = <K extends string>({ items, gap, width, current, setCurr
         snapToInterval={width}
         showsHorizontalScrollIndicator={false}
         onScrollBeginDrag={() => setIsScrolling(true)}
-        onScroll={onScroll}
-        onScrollEndDrag={() => setIsScrolling(false)}
+        onScroll={(e) => (velocityX.current = e.nativeEvent.velocity?.x ?? null)}
+        onScrollEndDrag={(e) => onScrollEnd(e.nativeEvent.contentOffset.x)}
         ref={listRef}
       />
       <View style={styles.dots}>
