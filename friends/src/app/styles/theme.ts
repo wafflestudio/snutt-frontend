@@ -18,6 +18,7 @@ export type ThemeValues = {
     border: { timetableMajor: Color; timetableMinor: Color; appBar: Color; divider: Color };
     input: { placeholder: Color; default: { border: Color }; focused: { border: Color } };
     tab: { active: { border: Color; text: Color }; inactive: { border: Color; text: Color } };
+    carousel: { dots: { active: Color; inactive: Color } };
   };
 };
 export const getThemeValues = (theme: 'dark' | 'light'): ThemeValues => {
@@ -53,6 +54,7 @@ const getLightThemeColors = (): ThemeValues['color'] => {
       active: { border: COLORS.gray30, text: COLORS.black },
       inactive: { border: COLORS.gray05, text: COLORS.gray30 },
     },
+    carousel: { dots: { active: COLORS.gray40, inactive: COLORS.gray15 } },
   };
 };
 
@@ -89,5 +91,6 @@ const getDarkThemeColors = (): ThemeValues['color'] => {
       active: { border: COLORS.white, text: COLORS.white },
       inactive: { border: COLORS.gray60, text: COLORS.gray40 },
     },
+    carousel: { dots: { active: COLORS.gray30, inactive: COLORS.gray60 } },
   };
 };

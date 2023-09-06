@@ -90,14 +90,14 @@ export const FriendGuideModal = () => {
 };
 
 const styles = StyleSheet.create({
-  image: { width: 210, height: 210 },
+  image: { width: 210, height: 212 },
 
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    paddingBottom: 12,
-    paddingTop: 22,
-    paddingHorizontal: 22,
+    paddingBottom: 4,
+    paddingTop: 14,
+    paddingHorizontal: 15,
   },
   modalContent: {
     paddingBottom: 36,
