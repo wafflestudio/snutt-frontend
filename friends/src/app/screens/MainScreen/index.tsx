@@ -112,10 +112,8 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
   const { addFriendModalNickname, isAddFriendModalOpen, dispatch } = useMainScreenContext();
   const { friendService } = useServiceContext();
   const { mutate: request } = useRequestFriend();
-  const { data: friends } = useFriends({ state: 'ACTIVE' });
   const guideEnabledColor = useThemeContext((data) => data.color.text.guide);
 
-  const isNoFriends = friends?.length === 0;
   const isValid = friendService.isValidNicknameTag(addFriendModalNickname);
   const guideMessageState = addFriendModalNickname === '' ? 'disabled' : isValid ? 'hidden' : 'enabled';
 
@@ -126,14 +124,11 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
     <>
       <AppBar
         title={
-          <>
+          <TouchableOpacity onPress={openGuideModal} style={styles.questionIconButton}>
             <AppBar.Title>친구 시간표</AppBar.Title>
-            {isNoFriends && (
-              <TouchableOpacity style={styles.questionIconButton} onPress={openGuideModal}>
-                <QuestionIcon style={styles.questionIcon} width={16} height={16} />
-              </TouchableOpacity>
-            )}
-          </>
+
+            <QuestionIcon style={styles.questionIcon} width={16} height={16} />
+          </TouchableOpacity>
         }
         left={
           <TouchableOpacity onPress={() => navigation.openDrawer()}>
@@ -210,7 +205,7 @@ const useRequestFriend = () => {
 };
 
 const styles = StyleSheet.create({
-  questionIconButton: { marginLeft: 6 },
+  questionIconButton: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   questionIcon: { color: COLORS.gray30 },
   modalContent: { paddingBottom: 30 },
   inputDescription: { marginTop: 30, fontSize: 14 },

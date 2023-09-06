@@ -13,6 +13,7 @@ import { useFriendCourseBooks } from '../../../queries/useFriendCourseBooks';
 import { useFriendPrimaryTable } from '../../../queries/useFriendPrimaryTable';
 import { useFriends } from '../../../queries/useFriends';
 import { useMainScreenContext } from '..';
+import { FriendGuideModal } from '../FriendGuideModal';
 import { FriendGuide } from './FriendGuide';
 
 export const FriendTimetable = () => {
@@ -29,40 +30,45 @@ export const FriendTimetable = () => {
 
   if (!friends) return null;
 
-  if (friends.length === 0) return <FriendGuide />;
-
   const isTimetableEmpty = courseBooks?.length === 0;
 
   return (
     <Paper style={styles.wrapper}>
-      <View style={styles.header}>
-        <UserIcon width={16} height={16} style={{ color: primaryColor }} />
-        <Typography style={{ ...styles.nickname, color: primaryColor }}>
-          {selectedFriend && friendService.formatNickname(selectedFriend)}
-        </Typography>
-
-        {!isTimetableEmpty && (
-          <Select
-            value={selectedCourseBook && courseBookService.toValue(selectedCourseBook)}
-            onChange={(v) => dispatch({ type: 'setCourseBook', courseBook: courseBookService.fromValue(v) })}
-            items={courseBooks?.map((cb) => ({
-              label: courseBookService.toLabel(cb),
-              value: courseBookService.toValue(cb),
-            }))}
-          />
-        )}
-      </View>
-      {isTimetableEmpty ? (
-        <View style={styles.emptyWrapper}>
-          <EmptyView
-            size="big"
-            title="친구에게 대표 시간표가 없습니다."
-            descriptions={['친구는 공개할 대표 시간표를', '학기마다 하나씩 지정할 수 있습니다.']}
-          />
-        </View>
+      {friends.length === 0 ? (
+        <FriendGuide />
       ) : (
-        palette && <Timetable palette={palette} timetable={fullTimetable ?? { lectures: [] }} />
+        <>
+          <View style={styles.header}>
+            <UserIcon width={16} height={16} style={{ color: primaryColor }} />
+            <Typography style={{ ...styles.nickname, color: primaryColor }}>
+              {selectedFriend && friendService.formatNickname(selectedFriend)}
+            </Typography>
+
+            {!isTimetableEmpty && (
+              <Select
+                value={selectedCourseBook && courseBookService.toValue(selectedCourseBook)}
+                onChange={(v) => dispatch({ type: 'setCourseBook', courseBook: courseBookService.fromValue(v) })}
+                items={courseBooks?.map((cb) => ({
+                  label: courseBookService.toLabel(cb),
+                  value: courseBookService.toValue(cb),
+                }))}
+              />
+            )}
+          </View>
+          {isTimetableEmpty ? (
+            <View style={styles.emptyWrapper}>
+              <EmptyView
+                size="big"
+                title="친구에게 대표 시간표가 없습니다."
+                descriptions={['친구는 공개할 대표 시간표를', '학기마다 하나씩 지정할 수 있습니다.']}
+              />
+            </View>
+          ) : (
+            palette && <Timetable palette={palette} timetable={fullTimetable ?? { lectures: [] }} />
+          )}
+        </>
       )}
+      <FriendGuideModal />
     </Paper>
   );
 };
