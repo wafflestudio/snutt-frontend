@@ -1,9 +1,9 @@
 import { ReactElement, useEffect, useRef, useState } from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, NativeScrollEvent, NativeSyntheticEvent, StyleSheet, View } from 'react-native';
 
 type Props<K extends string> = {
   current: K;
-  setCurrent: (key: K) => void;
+  setCurrent: (key: K | undefined) => void;
   items: { key: K; item: ReactElement }[];
   width: number;
   gap: number;
@@ -13,11 +13,15 @@ export const Carousel = <K extends string>({ items, gap, width, current, setCurr
   const [isScrolling, setIsScrolling] = useState(false);
   const listRef = useRef<FlatList>(null);
   const itemWidth = width - gap;
+  const lastVelocity = useLastScrollVelocity();
 
-  const onScroll = (e: any) => {
+  const onScrollEnd = (offsetX: number) => {
     if (!isScrolling) return;
-    const newPage = Math.round(e.nativeEvent.contentOffset.x / width);
-    setCurrent(items[newPage].key);
+
+    const newPage = Math.round((offsetX + lastVelocity.getLastVelocityPixelPerMillis() * 100) / width); // 현재 속도대로 0.1초 더 스크롤했다 치고
+    setIsScrolling(false);
+    setCurrent(items.at(newPage)?.key);
+    lastVelocity.onScrollEnd();
   };
 
   useEffect(() => {
@@ -39,8 +43,8 @@ export const Carousel = <K extends string>({ items, gap, width, current, setCurr
         snapToInterval={width}
         showsHorizontalScrollIndicator={false}
         onScrollBeginDrag={() => setIsScrolling(true)}
-        onScroll={onScroll}
-        onScrollEndDrag={() => setIsScrolling(false)}
+        onScroll={lastVelocity.onScroll}
+        onScrollEndDrag={(e) => onScrollEnd(e.nativeEvent.contentOffset.x)}
         ref={listRef}
       />
       <View style={styles.dots}>
@@ -60,3 +64,22 @@ const styles = StyleSheet.create({
   dots: { display: 'flex', flexDirection: 'row', gap: 5, justifyContent: 'center', marginTop: 18 },
   dot: { width: 6, height: 6, borderRadius: 3 },
 });
+
+const useLastScrollVelocity = () => {
+  const positionRef = useRef<{ position: number; timestamp: number }[]>([]);
+
+  return {
+    onScroll: (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+      positionRef.current = [
+        { position: e.nativeEvent.contentOffset.x, timestamp: new Date().getTime() },
+        ...positionRef.current,
+      ].slice(0, 2);
+    },
+    onScrollEnd: () => (positionRef.current = []),
+    getLastVelocityPixelPerMillis: () => {
+      const [first, second] = positionRef.current;
+      if (!first || !second) return 0;
+      return (first.position - second.position) / (first.timestamp - second.timestamp);
+    },
+  };
+};
