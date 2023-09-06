@@ -90,7 +90,7 @@ export const FriendGuideModal = () => {
 };
 
 const styles = StyleSheet.create({
-  image: { width: 210, height: 210 },
+  image: { width: 210, height: 212 },
 
   modalHeader: {
     flexDirection: 'row',
