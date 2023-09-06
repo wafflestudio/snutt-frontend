@@ -1,6 +1,8 @@
 import { ReactElement, useEffect, useRef, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 
+import { Typography } from './Typography';
+
 type Props<K extends string> = {
   current: K;
   setCurrent: (key: K | undefined) => void;
@@ -14,15 +16,17 @@ export const Carousel = <K extends string>({ items, gap, width, current, setCurr
   const listRef = useRef<FlatList>(null);
   const velocityX = useRef<number | null>(null);
   const itemWidth = width - gap;
+  const [dlx, setDLX] = useState<string>('');
 
   const onScrollEnd = (offsetX: number) => {
     if (!isScrolling) return;
     const lastVelocityX = velocityX.current ?? 0;
-    velocityX.current = null;
 
-    const newPage = Math.round((offsetX + lastVelocityX) / width);
+    const newPage = Math.round((offsetX + lastVelocityX * 2) / width);
+    setDLX(`${velocityX.current} - ${newPage}`);
     setIsScrolling(false);
     setCurrent(items.at(newPage)?.key);
+    velocityX.current = null;
   };
 
   useEffect(() => {
@@ -32,6 +36,7 @@ export const Carousel = <K extends string>({ items, gap, width, current, setCurr
 
   return (
     <View style={{ width }}>
+      <Typography>{dlx}</Typography>
       <FlatList
         automaticallyAdjustContentInsets={false}
         data={items}
