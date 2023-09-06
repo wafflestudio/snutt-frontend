@@ -1,6 +1,8 @@
 import { ReactElement, useEffect, useRef, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 
+import { useThemeContext } from '../contexts/ThemeContext';
+
 type Props<K extends string> = {
   current: K;
   setCurrent: (key: K) => void;
@@ -13,6 +15,7 @@ export const Carousel = <K extends string>({ items, gap, width, current, setCurr
   const [isScrolling, setIsScrolling] = useState(false);
   const listRef = useRef<FlatList>(null);
   const itemWidth = width - gap;
+  const { active, inactive } = useThemeContext((t) => t.color.carousel.dots);
 
   const onScroll = (e: any) => {
     if (!isScrolling) return;
@@ -45,11 +48,7 @@ export const Carousel = <K extends string>({ items, gap, width, current, setCurr
       />
       <View style={styles.dots}>
         {items.map((i) => (
-          <View
-            // eslint-disable-next-line react-native/no-inline-styles
-            style={{ ...styles.dot, backgroundColor: current === i.key ? '#000' : '#777' }}
-            key={i.key}
-          />
+          <View style={{ ...styles.dot, backgroundColor: current === i.key ? active : inactive }} key={i.key} />
         ))}
       </View>
     </View>
