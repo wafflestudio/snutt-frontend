@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Alert, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { FriendId } from '../../../../../entities/friend';
+import { get } from '../../../../../utils/get';
 import { BottomSheet } from '../../../../components/BottomSheet';
 import { EmptyView } from '../../../../components/EmptyView';
 import { MoreIcon } from '../../../../components/Icons/MoreIcon';
@@ -99,7 +100,13 @@ export const ManageFriendsDrawerContentActiveList = ({ onClickFriend }: Props) =
               right={{
                 text: '적용',
                 onPress: () =>
-                  patchDisplayName(bottomSheetState, { onSuccess: () => setBottomSheetState({ isOpen: false }) }),
+                  patchDisplayName(bottomSheetState, {
+                    onSuccess: () => setBottomSheetState({ isOpen: false }),
+                    onError: (err) => {
+                      const message = get(err, ['displayMessage']);
+                      Alert.alert(message ? `${message}` : '오류가 발생했습니다.');
+                    },
+                  }),
                 disabled: !isDisplayNameModifyable,
               }}
             />
