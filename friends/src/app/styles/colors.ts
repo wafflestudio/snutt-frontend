@@ -16,4 +16,6 @@ export const COLORS = {
 
   primary10: '#00b8b0',
   primary20: '#1ca6a0',
+
+  red: '#E54459',
 } satisfies Record<string, Color>;

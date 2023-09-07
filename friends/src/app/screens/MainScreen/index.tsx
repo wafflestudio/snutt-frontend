@@ -15,6 +15,7 @@ import { QuestionIcon } from '../../components/Icons/QuestionIcon';
 import { UserPlusIcon } from '../../components/Icons/UserPlusIcon';
 import { WarningIcon } from '../../components/Icons/WarningIcon';
 import { Input } from '../../components/Input';
+import { NotificationDot } from '../../components/NotificationDot';
 import { Typography } from '../../components/Typography';
 import { useServiceContext } from '../../contexts/ServiceContext';
 import { useThemeContext } from '../../contexts/ThemeContext';
@@ -113,7 +114,9 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
   const { friendService } = useServiceContext();
   const { mutate: request } = useRequestFriend();
   const guideEnabledColor = useThemeContext((data) => data.color.text.guide);
+  const { data: requestedFriends } = useFriends({ state: 'REQUESTED' });
 
+  const isRequestedFriendExist = requestedFriends && requestedFriends.length !== 0;
   const isValid = friendService.isValidNicknameTag(addFriendModalNickname);
   const guideMessageState = addFriendModalNickname === '' ? 'disabled' : isValid ? 'hidden' : 'enabled';
 
@@ -132,7 +135,10 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
         }
         left={
           <TouchableOpacity onPress={() => navigation.openDrawer()}>
-            <HamburgerIcon width={30} height={30} />
+            <View style={styles.hamburgerWrapper}>
+              <HamburgerIcon width={30} height={30} />
+              {isRequestedFriendExist && <NotificationDot style={styles.hamburgerNotificationDot} />}
+            </View>
           </TouchableOpacity>
         }
         right={
@@ -219,4 +225,6 @@ const styles = StyleSheet.create({
     height: 12,
   },
   guideText: { fontSize: 10 },
+  hamburgerWrapper: { position: 'relative' },
+  hamburgerNotificationDot: { position: 'absolute', top: 5, right: -1 },
 });
