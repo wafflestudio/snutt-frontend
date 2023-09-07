@@ -60,7 +60,6 @@ export const FriendTimetable = () => {
               <EmptyView
                 size="big"
                 title="친구에게 대표 시간표가 없습니다."
-                descriptions={['친구는 공개할 대표 시간표를', '학기마다 하나씩 지정할 수 있습니다.']}
               />
             </View>
           ) : (

@@ -12,7 +12,7 @@ export const EmptyView = ({
   etc,
 }: {
   title: ReactNode;
-  descriptions: ReactNode[];
+  descriptions?: ReactNode[];
   size?: 'small' | 'big';
   etc?: ReactNode;
 }) => {
