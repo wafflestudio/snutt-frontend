@@ -23,7 +23,7 @@ export const EmptyView = ({
     <View style={styles.container}>
       <SurprisedCat width={sizeStyle.image.width} height={sizeStyle.image.height} />
       <Typography style={{ color: subtitle, ...styles.subtitle, ...sizeStyle.subtitle }}>{title}</Typography>
-      {descriptions.map((d, i) => (
+      {descriptions?.map((d, i) => (
         <Typography key={i} style={{ ...styles.description, color: caption, ...sizeStyle.description }}>
           {d}
         </Typography>

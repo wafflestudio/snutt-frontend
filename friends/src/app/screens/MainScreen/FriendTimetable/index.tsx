@@ -57,10 +57,7 @@ export const FriendTimetable = () => {
           </View>
           {isTimetableEmpty ? (
             <View style={styles.emptyWrapper}>
-              <EmptyView
-                size="big"
-                title="친구에게 대표 시간표가 없습니다."
-              />
+              <EmptyView size="big" title="친구에게 대표 시간표가 없습니다." />
             </View>
           ) : (
             palette && <Timetable palette={palette} timetable={fullTimetable ?? { lectures: [] }} />
