@@ -97,7 +97,11 @@ export const ManageFriendsDrawerContentActiveList = ({ onClickFriend }: Props) =
         ) : (
           <View style={styles.displayNameSheetContent}>
             <BottomSheet.Header
-              left={{ text: '취소', onPress: () => setBottomSheetState({ isOpen: false }) }}
+              left={{
+                text: '취소',
+                onPress: () =>
+                  setBottomSheetState({ isOpen: true, type: 'detail', friendId: bottomSheetState.friendId }),
+              }}
               right={{
                 text: '적용',
                 onPress: () =>
