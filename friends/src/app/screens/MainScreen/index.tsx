@@ -217,14 +217,14 @@ const styles = StyleSheet.create({
   inputDescription: { marginTop: 30, fontSize: 14 },
   input: { marginTop: 15 },
   guide: {
-    marginTop: 5,
+    marginTop: 7,
     display: 'flex',
     flexDirection: 'row',
     gap: 1,
     alignItems: 'center',
     height: 12,
   },
-  guideText: { fontSize: 10 },
+  guideText: { fontSize: 12 },
   hamburgerWrapper: { position: 'relative' },
   hamburgerNotificationDot: { position: 'absolute', top: 5, right: -1 },
 });
