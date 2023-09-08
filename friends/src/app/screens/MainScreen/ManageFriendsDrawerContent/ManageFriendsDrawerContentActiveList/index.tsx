@@ -197,5 +197,5 @@ const styles = StyleSheet.create({
   displayNameInfoText: { fontSize: 14 },
   displayNameInfoCaption: { fontSize: 10, marginTop: 2 },
   displayNameInput: { marginTop: 16, fontSize: 14 },
-  displayNameInputCaption: { marginTop: 5, fontSize: 10 },
+  displayNameInputCaption: { marginTop: 7, fontSize: 12 },
 });
