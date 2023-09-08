@@ -81,6 +81,7 @@ export const ManageFriendsDrawerContentActiveList = ({ onClickFriend }: Props) =
                   { text: '취소' },
                   {
                     text: '삭제',
+                    style: 'destructive',
                     onPress: () =>
                       deleteFriend(bottomSheetState.friendId, {
                         onSuccess: () => setBottomSheetState({ isOpen: false }),
