@@ -15,6 +15,7 @@ import { Typography } from '../../../../components/Typography';
 import { useServiceContext } from '../../../../contexts/ServiceContext';
 import { useThemeContext } from '../../../../contexts/ThemeContext';
 import { useFriends } from '../../../../queries/useFriends';
+import { useMainScreenContext } from '../..';
 
 type Props = { onClickFriend: (friendId: FriendId) => void };
 
@@ -24,6 +25,7 @@ export const ManageFriendsDrawerContentActiveList = ({ onClickFriend }: Props) =
   const { mutate: deleteFriend } = useDeleteFriend();
   const { mutate: patchDisplayName } = usePatchDisplayName();
   const moreIconColor = useThemeContext((data) => data.color.text.description);
+  const { dispatch } = useMainScreenContext();
 
   const [bottomSheetState, setBottomSheetState] = useState<
     | { isOpen: false }
@@ -84,7 +86,10 @@ export const ManageFriendsDrawerContentActiveList = ({ onClickFriend }: Props) =
                     style: 'destructive',
                     onPress: () =>
                       deleteFriend(bottomSheetState.friendId, {
-                        onSuccess: () => setBottomSheetState({ isOpen: false }),
+                        onSuccess: () => {
+                          setBottomSheetState({ isOpen: false });
+                          dispatch({ type: 'setFriend', friendId: undefined });
+                        },
                       }),
                   },
                 ]);
@@ -161,7 +166,7 @@ const useDeleteFriend = () => {
   const queryClient = useQueryClient();
   const { friendService } = useServiceContext();
   return useMutation((friendId: FriendId) => friendService.deleteFriend({ friendId }), {
-    onSuccess: () => queryClient.invalidateQueries(),
+    onSuccess: () => queryClient.invalidateQueries(['friends']),
   });
 };
 
