@@ -33,7 +33,7 @@ type MainScreenState = {
   isGuideModalOpen: boolean;
 };
 type MainScreenAction =
-  | { type: 'setFriend'; friendId: FriendId }
+  | { type: 'setFriend'; friendId: FriendId | undefined }
   | { type: 'setCourseBook'; courseBook: CourseBook }
   | { type: 'setAddFriendModalOpen'; isOpen: boolean }
   | { type: 'setAddFriendModalNickname'; nickname: string }
@@ -123,6 +123,7 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
   const openAddFriendModal = () => dispatch({ type: 'setAddFriendModalOpen', isOpen: true });
   const closeAddFriendModal = () => dispatch({ type: 'setAddFriendModalOpen', isOpen: false });
   const openGuideModal = () => dispatch({ type: 'setGuideModalOpen', isOpen: true });
+
   return (
     <>
       <AppBar
