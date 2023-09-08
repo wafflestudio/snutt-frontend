@@ -14,6 +14,7 @@ export const Modal = ({ isOpen, onClose, children }: PropsWithChildren<Props>) =
       onBackdropPress={onClose}
       useNativeDriver
       hideModalContentWhileAnimating
+      onBackButtonPress={onClose}
     >
       <View style={styles.container}>{children}</View>
     </RNModal>

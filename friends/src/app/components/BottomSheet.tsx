@@ -17,6 +17,7 @@ export const BottomSheet = ({ isOpen, onClose, children }: PropsWithChildren<Pro
       style={styles.modal}
       hideModalContentWhileAnimating
       avoidKeyboard
+      onBackButtonPress={onClose}
     >
       <Paper style={styles.modalContent}>{children}</Paper>
     </Modal>
