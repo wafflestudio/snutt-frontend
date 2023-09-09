@@ -73,6 +73,6 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_CHANNEL: team-snutt-deploy
           SLACK_TITLE: Deployed Tag [${{ github.ref_name }}]
-          SLACK_USERNAME: snutt-rn
+          SLACK_USERNAME: snutt-friends-react-native
           SLACK_ICON: https://user-images.githubusercontent.com/39977696/191924403-3a26618c-5568-4c22-b592-aedc77323e8d.png
-          SLACK_MESSAGE: Check <https://github.com/wafflestudio/snutt-rn/releases/tag/${{ github.ref_name }}|Release Note> for updated environment
+          SLACK_MESSAGE: Check <https://github.com/wafflestudio/snutt-frontend/releases/tag/${{ github.ref_name }}|Release Note> for updated environment
