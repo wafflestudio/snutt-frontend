@@ -1,3 +1,3 @@
-# snutt-rn
+# snutt-frontend
 
-snutt 리액트네이티브 소스코드
+snutt 프론트엔드 모노레포
