@@ -6,13 +6,9 @@ on:
 
 jobs:
   build:
-    name: Test
+    name: ci
     timeout-minutes: 15
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: friends
 
     steps:
       - name: Check out code
@@ -28,3 +24,6 @@ jobs:
 
       - name: Type Check
         run: yarn tsc
+
+      - name: Unit Test
+        run: yarn test

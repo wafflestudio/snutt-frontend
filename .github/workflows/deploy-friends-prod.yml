@@ -14,7 +14,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: friends
+        working-directory: apps/friends
 
     steps:
       - name: Checkout
