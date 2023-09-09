@@ -5,8 +5,8 @@
 ## installation
 
 ```bash
-git clone https://github.com/wafflestudio/snutt-rn
-cd snutt-rn/friends
+git clone https://github.com/wafflestudio/snutt-frontend
+cd snutt-frontend/apps/friends-react-native
 yarn
 ```
 

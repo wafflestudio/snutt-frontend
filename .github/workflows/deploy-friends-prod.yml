@@ -14,7 +14,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: friends
+        working-directory: apps/friends-react-native
 
     steps:
       - name: Checkout
@@ -45,8 +45,8 @@ jobs:
       - name: Deploy to S3 and Invalidate Cloudfront
         id: deploy-s3
         env:
-          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-          AWS_CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }}
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET_SNUTT_RN_ASSETS }}
+          AWS_CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID_SNUTT_RN_ASSETS }}
         run: |
           aws s3 cp ./public s3://$AWS_S3_BUCKET/$TAG_NAME/assets --recursive --content-type 'image/png'
           aws s3 cp ./dist/ios.jsbundle s3://$AWS_S3_BUCKET/$TAG_NAME/ios.jsbundle --content-type 'application/javascript'
@@ -57,8 +57,8 @@ jobs:
         id: update-configs
         env:
           BUCKET_URL: "https://snutt-rn-assets.wafflestudio.com"
-          SNUTT_APIKEY: ${{ secrets.SNUTT_APIKEY }}
-          SNUTT_TOKEN: ${{ secrets.SNUTT_TOKEN_PROD }}
+          SNUTT_APIKEY: ${{ secrets.SNUTT_ADMIN_APIKEY }}
+          SNUTT_TOKEN: ${{ secrets.SNUTT_ADMIN_TOKEN_PROD }}
         run: |
           curl 'https://snutt-api.wafflestudio.com/v1/admin/configs/reactNativeBundleFriends' \
             -H 'Content-Type: application/json' \

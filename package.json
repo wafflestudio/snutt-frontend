@@ -1,0 +1,17 @@
+{
+  "name": "snutt-frontend",
+  "private": true,
+  "license": "MIT",
+  "author": "woohm402 <woohm404@gmail.com>",
+  "scripts": {
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "tsc": "turbo run tsc"
+  },
+  "dependencies": {
+    "turbo": "^1.10.12"
+  },
+  "workspaces": [
+    "apps/*"
+  ]
+}
