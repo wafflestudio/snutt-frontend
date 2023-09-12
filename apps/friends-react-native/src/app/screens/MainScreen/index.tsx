@@ -100,7 +100,7 @@ export const MainScreen = () => {
       )}
     >
       <Drawer.Navigator
-        screenOptions={{ header: Header, drawerType: 'front', drawerStyle: { backgroundColor } }}
+        screenOptions={{ header: Header, drawerType: 'front', drawerStyle: { backgroundColor, width: 300 } }}
         drawerContent={DrawerContent}
       >
         <Drawer.Screen name="Main" component={FriendTimetable} />
