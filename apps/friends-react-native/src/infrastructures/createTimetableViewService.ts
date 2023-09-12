@@ -11,8 +11,8 @@ export const createTimetableViewService = (): TimetableViewService => {
     },
     getHourRange: (timetable) => {
       const times = timetable.lectures.flatMap((l) => l.classPlaceAndTimes);
-      const start = Math.min(...times.map((t) => Math.floor(t.startMinute / 60)), 8) as Hour;
-      const end = Math.max(...times.map((t) => Math.ceil(t.endMinute / 60)), 22) as Hour;
+      const start = Math.min(...times.map((t) => Math.floor(t.startMinute / 60)), 9) as Hour;
+      const end = Math.max(...times.map((t) => Math.floor(t.endMinute / 60)), 17) as Hour;
       return [start, end];
     },
     getDayLabel: (day) => ({ 0: '월', 1: '화', 2: '수', 3: '목', 4: '금', 5: '토', 6: '일' })[day],
