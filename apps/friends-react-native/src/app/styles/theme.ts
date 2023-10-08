@@ -39,7 +39,7 @@ const getLightThemeColors = (): ThemeValues['color'] => {
       hint: COLORS.gray40,
     },
     button: {
-      gray: { text: COLORS.gray40 },
+      gray: { text: COLORS.gray35 },
       text: { disabled: COLORS.gray20 },
       outlined: { primary: COLORS.primary20, gray: COLORS.gray20 },
     },
