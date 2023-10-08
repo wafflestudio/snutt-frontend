@@ -189,7 +189,15 @@ const usePatchDisplayName = () => {
 };
 
 const styles = StyleSheet.create({
-  item: { height: 40, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 24 },
+  item: {
+    height: 40,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingLeft: 24,
+    paddingRight: 20,
+  },
   nickname: { flex: 1, lineHeight: 15, fontSize: 14 },
   listContainer: { flexGrow: 1 },
 
