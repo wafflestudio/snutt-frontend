@@ -42,7 +42,7 @@ export const ManageFriendsDrawerContent = ({ onClose }: Props) => {
           <CloseIcon width={30} height={30} />
         </TouchableOpacity>
       </View>
-      <View style={{ ...styles.divider, backgroundColor: dividerColor }} />
+      <View style={{ ...styles.divider, borderColor: dividerColor }} />
 
       <View style={styles.tabs}>
         {tabs.map(({ label, value }) => {
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   snutt: { fontSize: 18, fontWeight: '900', flex: 1 },
-  divider: { marginTop: 20, height: 1, marginBottom: 16 },
+  divider: { marginTop: 20, borderTopWidth: 0.5, marginBottom: 16 },
   tabs: { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' },
   tab: {
     height: 40,
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   tabContent: { paddingLeft: 15, paddingRight: 15, paddingTop: 16, flex: 1 },
 
   addFriend: {
-    borderBottomWidth: 2,
+    borderBottomWidth: 0.5,
     paddingBottom: 9,
     marginBottom: 8,
     display: 'flex',
