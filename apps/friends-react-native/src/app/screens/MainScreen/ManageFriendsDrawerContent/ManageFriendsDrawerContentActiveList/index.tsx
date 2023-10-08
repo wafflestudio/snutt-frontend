@@ -25,7 +25,8 @@ export const ManageFriendsDrawerContentActiveList = ({ onClickFriend }: Props) =
   const { mutate: deleteFriend } = useDeleteFriend();
   const { mutate: patchDisplayName } = usePatchDisplayName();
   const moreIconColor = useThemeContext((data) => data.color.text.description);
-  const { dispatch } = useMainScreenContext();
+  const activeItemBackgroundColor = useThemeContext((data) => data.color.bg.listActiveItem);
+  const { dispatch, selectedFriendId } = useMainScreenContext();
 
   const [bottomSheetState, setBottomSheetState] = useState<
     | { isOpen: false }
@@ -47,7 +48,14 @@ export const ManageFriendsDrawerContentActiveList = ({ onClickFriend }: Props) =
         ListEmptyComponent={Empty}
         contentContainerStyle={styles.listContainer}
         renderItem={({ item }) => (
-          <TouchableOpacity key={item.friendId} style={styles.item} onPress={() => onClickFriend(item.friendId)}>
+          <TouchableOpacity
+            key={item.friendId}
+            style={[
+              styles.item,
+              { backgroundColor: item.friendId === selectedFriendId ? activeItemBackgroundColor : undefined },
+            ]}
+            onPress={() => onClickFriend(item.friendId)}
+          >
             <Typography style={styles.nickname}>{friendService.formatNickname(item)}</Typography>
 
             <TouchableOpacity
@@ -181,8 +189,16 @@ const usePatchDisplayName = () => {
 };
 
 const styles = StyleSheet.create({
-  item: { height: 40, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 4 },
-  nickname: { flex: 1, lineHeight: 15, fontSize: 13 },
+  item: {
+    height: 40,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 24,
+    marginTop: 4,
+  },
+  nickname: { flex: 1, lineHeight: 15, fontSize: 14 },
   listContainer: { flexGrow: 1 },
 
   sheetContent: { paddingBottom: 20 },

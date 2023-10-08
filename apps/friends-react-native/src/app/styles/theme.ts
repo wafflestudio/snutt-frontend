@@ -3,7 +3,7 @@ import { Color, COLORS } from './colors';
 export type ThemeValues = {
   theme: 'light' | 'dark';
   color: {
-    bg: { default: Color };
+    bg: { default: Color; listActiveItem: Color };
     text: {
       default: Color;
       selectLabel: Color;
@@ -27,7 +27,7 @@ export const getThemeValues = (theme: 'dark' | 'light'): ThemeValues => {
 
 const getLightThemeColors = (): ThemeValues['color'] => {
   return {
-    bg: { default: COLORS.white },
+    bg: { default: COLORS.white, listActiveItem: COLORS.gray05 },
     text: {
       default: COLORS.black,
       selectLabel: COLORS.gray60,
@@ -39,7 +39,7 @@ const getLightThemeColors = (): ThemeValues['color'] => {
       hint: COLORS.gray40,
     },
     button: {
-      gray: { text: COLORS.gray40 },
+      gray: { text: COLORS.gray35 },
       text: { disabled: COLORS.gray20 },
       outlined: { primary: COLORS.primary20, gray: COLORS.gray20 },
     },
@@ -51,8 +51,8 @@ const getLightThemeColors = (): ThemeValues['color'] => {
     },
     input: { placeholder: COLORS.gray20, default: { border: COLORS.gray15 }, focused: { border: COLORS.primary10 } },
     tab: {
-      active: { border: COLORS.gray30, text: COLORS.black },
-      inactive: { border: COLORS.gray05, text: COLORS.gray30 },
+      active: { border: COLORS.gray35, text: COLORS.gray40 },
+      inactive: { border: COLORS.gray05, text: COLORS.gray20 },
     },
     carousel: { dots: { active: COLORS.gray40, inactive: COLORS.gray15 } },
   };
@@ -60,7 +60,7 @@ const getLightThemeColors = (): ThemeValues['color'] => {
 
 const getDarkThemeColors = (): ThemeValues['color'] => {
   return {
-    bg: { default: COLORS.gray80 },
+    bg: { default: COLORS.gray80, listActiveItem: COLORS.gray60 },
     text: {
       default: COLORS.white,
       selectLabel: COLORS.gray30,

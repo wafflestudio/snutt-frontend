@@ -74,7 +74,15 @@ const useDeclineFriend = () => {
 };
 
 const styles = StyleSheet.create({
-  item: { height: 40, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 4 },
-  nickname: { flex: 1, lineHeight: 15, fontSize: 13 },
+  item: {
+    height: 40,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 24,
+    marginTop: 4,
+  },
+  nickname: { flex: 1, lineHeight: 15, fontSize: 14 },
   listContainer: { flexGrow: 1 },
 });
