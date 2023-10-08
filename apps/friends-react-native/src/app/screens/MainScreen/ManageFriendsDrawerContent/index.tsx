@@ -121,7 +121,8 @@ const styles = StyleSheet.create({
 
   addFriend: {
     marginHorizontal: 20,
-    paddingHorizontal: 4,
+    paddingLeft: 4,
+    paddingRight: 10,
     borderBottomWidth: 0.5,
     paddingBottom: 9,
     marginBottom: 12,
