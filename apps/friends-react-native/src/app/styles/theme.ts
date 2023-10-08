@@ -3,7 +3,7 @@ import { Color, COLORS } from './colors';
 export type ThemeValues = {
   theme: 'light' | 'dark';
   color: {
-    bg: { default: Color };
+    bg: { default: Color; listActiveItem: Color };
     text: {
       default: Color;
       selectLabel: Color;
@@ -27,7 +27,7 @@ export const getThemeValues = (theme: 'dark' | 'light'): ThemeValues => {
 
 const getLightThemeColors = (): ThemeValues['color'] => {
   return {
-    bg: { default: COLORS.white },
+    bg: { default: COLORS.white, listActiveItem: COLORS.gray05 },
     text: {
       default: COLORS.black,
       selectLabel: COLORS.gray60,
@@ -60,7 +60,7 @@ const getLightThemeColors = (): ThemeValues['color'] => {
 
 const getDarkThemeColors = (): ThemeValues['color'] => {
   return {
-    bg: { default: COLORS.gray80 },
+    bg: { default: COLORS.gray80, listActiveItem: COLORS.gray60 },
     text: {
       default: COLORS.white,
       selectLabel: COLORS.gray30,
