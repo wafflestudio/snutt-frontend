@@ -21,16 +21,17 @@ export const Button = ({ color, children, style = {}, ...props }: Props) => {
 
 const styles = StyleSheet.create({
   button: {
+    width: 40,
     height: 26,
     borderRadius: 3,
     display: 'flex',
     justifyContent: 'center',
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderStyle: 'solid',
   },
 
   text: {
-    paddingHorizontal: 8,
-    fontSize: 11,
+    fontSize: 12,
+    textAlign: 'center',
   },
 });

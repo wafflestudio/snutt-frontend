@@ -92,8 +92,9 @@ export const ManageFriendsDrawerContent = ({ onClose }: Props) => {
 };
 
 const styles = StyleSheet.create({
-  container: { paddingVertical: 22, paddingHorizontal: 20, height: '100%', display: 'flex' },
+  container: { paddingVertical: 22, height: '100%', display: 'flex' },
   header: {
+    marginHorizontal: 20,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -102,8 +103,8 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   snutt: { fontSize: 18, fontWeight: '900', flex: 1 },
-  divider: { marginTop: 20, borderTopWidth: 0.5, marginBottom: 8 },
-  tabs: { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' },
+  divider: { marginTop: 20, marginHorizontal: 8, borderTopWidth: 0.5, marginBottom: 8 },
+  tabs: { marginHorizontal: 20, display: 'flex', flexDirection: 'row', justifyContent: 'space-between' },
   tab: {
     height: 38,
     borderBottomWidth: 2,
@@ -116,9 +117,11 @@ const styles = StyleSheet.create({
   tabText: { textAlign: 'center', fontSize: 16 },
   dot: { position: 'absolute', top: 1, right: -6 },
 
-  tabContent: { paddingLeft: 15, paddingRight: 15, paddingTop: 16, flex: 1 },
+  tabContent: { paddingTop: 16, flex: 1 },
 
   addFriend: {
+    marginHorizontal: 20,
+    paddingHorizontal: 4,
     borderBottomWidth: 0.5,
     paddingBottom: 9,
     marginBottom: 8,
