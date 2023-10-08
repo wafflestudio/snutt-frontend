@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  addFriendText: { fontSize: 12 },
+  addFriendText: { fontSize: 13 },
 });
 
 const tabs: { label: string; value: Tab }[] = [
