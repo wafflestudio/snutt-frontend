@@ -51,8 +51,8 @@ const getLightThemeColors = (): ThemeValues['color'] => {
     },
     input: { placeholder: COLORS.gray20, default: { border: COLORS.gray15 }, focused: { border: COLORS.primary10 } },
     tab: {
-      active: { border: COLORS.gray30, text: COLORS.black },
-      inactive: { border: COLORS.gray05, text: COLORS.gray30 },
+      active: { border: COLORS.gray35, text: COLORS.gray40 },
+      inactive: { border: COLORS.gray05, text: COLORS.gray20 },
     },
     carousel: { dots: { active: COLORS.gray40, inactive: COLORS.gray15 } },
   };

@@ -102,11 +102,11 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   snutt: { fontSize: 18, fontWeight: '900', flex: 1 },
-  divider: { marginTop: 20, borderTopWidth: 0.5, marginBottom: 16 },
+  divider: { marginTop: 20, borderTopWidth: 0.5, marginBottom: 8 },
   tabs: { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' },
   tab: {
-    height: 40,
-    borderBottomWidth: 3,
+    height: 38,
+    borderBottomWidth: 2,
     width: '50%',
     display: 'flex',
     justifyContent: 'center',
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   },
   tabTextWrapper: { position: 'relative' },
   tabText: { textAlign: 'center', fontSize: 16 },
-  dot: { position: 'absolute', top: 0, right: -8 },
+  dot: { position: 'absolute', top: 1, right: -6 },
 
   tabContent: { paddingLeft: 15, paddingRight: 15, paddingTop: 16, flex: 1 },
 
