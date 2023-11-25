@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   labelFont: { fontSize: 12, textAlign: 'center' },
 
   classTitle: { fontSize: 11, fontWeight: '500', textAlign: 'center' },
-  classPlace: { fontSize: 9, fontWeight: '700', textAlign: 'center' },
+  classPlace: { fontSize: 10, fontWeight: '700', textAlign: 'center' },
   classCell: {
     padding: 4,
     position: 'absolute',
