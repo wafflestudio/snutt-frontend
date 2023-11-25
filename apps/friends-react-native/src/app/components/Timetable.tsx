@@ -36,6 +36,7 @@ export const Timetable = memo(({ timetable, style, palette }: Props) => {
               </Typography>
               {currentDayClasses.map((c) => {
                 const { bg, fg } = timetableViewService.getLessonColor(c.lesson, palette);
+                const place = c.place.trim();
                 return (
                   <View
                     key={`${c.day} ${c.startMinute} ${c.endMinute}`}
@@ -47,7 +48,7 @@ export const Timetable = memo(({ timetable, style, palette }: Props) => {
                     }}
                   >
                     <Typography style={{ ...styles.classTitle, color: fg }}>{c.lesson.courseTitle}</Typography>
-                    <Typography style={{ ...styles.classPlace, color: fg }}>{c.place}</Typography>
+                    {place && <Typography style={{ ...styles.classPlace, color: fg }}>{place}</Typography>}
                   </View>
                 );
               })}
