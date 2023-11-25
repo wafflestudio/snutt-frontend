@@ -37,18 +37,24 @@ export const Timetable = memo(({ timetable, style, palette }: Props) => {
               {currentDayClasses.map((c) => {
                 const { bg, fg } = timetableViewService.getLessonColor(c.lesson, palette);
                 const place = c.place.trim();
+                const top = DAY_LABEL_HEIGHT + ((c.startMinute - startHour * 60) / 60) * hourHeight - 1;
+                const cellHeight = ((c.endMinute - c.startMinute) / 60) * hourHeight;
+
+                const classLines = (cellHeight - (place ? 16 : 0)) / 12;
+
                 return (
                   <View
                     key={`${c.day} ${c.startMinute} ${c.endMinute}`}
-                    style={{
-                      ...styles.classCell,
-                      top: DAY_LABEL_HEIGHT + ((c.startMinute - startHour * 60) / 60) * hourHeight - 1,
-                      height: ((c.endMinute - c.startMinute) / 60) * hourHeight,
-                      backgroundColor: bg,
-                    }}
+                    style={{ ...styles.classCell, top, height: cellHeight, backgroundColor: bg }}
                   >
-                    <Typography style={{ ...styles.classTitle, color: fg }}>{c.lesson.courseTitle}</Typography>
-                    {place && <Typography style={{ ...styles.classPlace, color: fg }}>{place}</Typography>}
+                    <Typography numberOfLines={classLines} style={{ ...styles.classTitle, color: fg }}>
+                      {c.lesson.courseTitle}
+                    </Typography>
+                    {place && (
+                      <Typography numberOfLines={1} style={{ ...styles.classPlace, color: fg }}>
+                        {place}
+                      </Typography>
+                    )}
                   </View>
                 );
               })}
@@ -130,8 +136,8 @@ const styles = StyleSheet.create({
 
   labelFont: { fontSize: 12, textAlign: 'center' },
 
-  classTitle: { fontSize: 10, fontWeight: '500', textAlign: 'center' },
-  classPlace: { fontSize: 10, fontWeight: '700', textAlign: 'center' },
+  classTitle: { fontSize: 11, fontWeight: '500', textAlign: 'center' },
+  classPlace: { fontSize: 9, fontWeight: '700', textAlign: 'center' },
   classCell: {
     padding: 4,
     position: 'absolute',
