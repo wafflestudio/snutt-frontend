@@ -173,19 +173,20 @@ const Empty = () => {
 const useDeleteFriend = () => {
   const queryClient = useQueryClient();
   const { friendService } = useServiceContext();
-  return useMutation((friendId: FriendId) => friendService.deleteFriend({ friendId }), {
-    onSuccess: () => queryClient.invalidateQueries(['friends']),
+  return useMutation({
+    mutationFn: (friendId: FriendId) => friendService.deleteFriend({ friendId }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['friends'] }),
   });
 };
 
 const usePatchDisplayName = () => {
   const queryClient = useQueryClient();
   const { friendService } = useServiceContext();
-  return useMutation(
-    ({ friendId, displayName }: { friendId: FriendId; displayName: string }) =>
+  return useMutation({
+    mutationFn: ({ friendId, displayName }: { friendId: FriendId; displayName: string }) =>
       friendService.patchFriendDisplayName({ friendId, displayName }),
-    { onSuccess: () => queryClient.invalidateQueries() },
-  );
+    onSuccess: () => queryClient.invalidateQueries(),
+  });
 };
 
 const styles = StyleSheet.create({

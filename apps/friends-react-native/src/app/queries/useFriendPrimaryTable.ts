@@ -6,9 +6,9 @@ import { useServiceContext } from '../contexts/ServiceContext';
 
 export const useFriendPrimaryTable = (params: { friendId: FriendId; courseBook: CourseBook } | undefined) => {
   const { friendService } = useServiceContext();
-  return useQuery(
-    ['friendPrimaryTable', params] as const,
-    ({ queryKey: [, p] }) => {
+  return useQuery({
+    queryKey: ['friendPrimaryTable', params] as const,
+    queryFn: ({ queryKey: [, p] }) => {
       if (!p) throw new Error();
       return friendService.getFriendPrimaryTable({
         friendId: p.friendId,
@@ -16,6 +16,6 @@ export const useFriendPrimaryTable = (params: { friendId: FriendId; courseBook: 
         year: p.courseBook.year,
       });
     },
-    { enabled: !!params },
-  );
+    enabled: !!params,
+  });
 };

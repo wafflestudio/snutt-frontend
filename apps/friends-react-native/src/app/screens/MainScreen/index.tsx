@@ -206,7 +206,8 @@ const useRequestFriend = () => {
   const { friendService } = useServiceContext();
   const queryClient = useQueryClient();
 
-  return useMutation((nickname: Nickname) => friendService.requestFriend({ nickname }), {
+  return useMutation({
+    mutationFn: (nickname: Nickname) => friendService.requestFriend({ nickname }),
     onSuccess: () => queryClient.invalidateQueries(),
   });
 };

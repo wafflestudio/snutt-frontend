@@ -16,7 +16,7 @@
   "dependencies": {
     "@react-navigation/drawer": "6.6.3",
     "@react-navigation/native": "6.1.7",
-    "@tanstack/react-query": "4.32.0",
+    "@tanstack/react-query": "^5.8.7",
     "react": "18.2.0",
     "react-native": "0.72.3",
     "react-native-gesture-handler": "2.12.0",
