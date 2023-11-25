@@ -60,7 +60,8 @@ const Empty = () => {
 const useAcceptFriend = () => {
   const queryClient = useQueryClient();
   const { friendService } = useServiceContext();
-  return useMutation((friendId: FriendId) => friendService.acceptFriend({ friendId }), {
+  return useMutation({
+    mutationFn: (friendId: FriendId) => friendService.acceptFriend({ friendId }),
     onSuccess: () => queryClient.invalidateQueries(),
   });
 };
@@ -68,7 +69,8 @@ const useAcceptFriend = () => {
 const useDeclineFriend = () => {
   const queryClient = useQueryClient();
   const { friendService } = useServiceContext();
-  return useMutation((friendId: FriendId) => friendService.declineFriend({ friendId }), {
+  return useMutation({
+    mutationFn: (friendId: FriendId) => friendService.declineFriend({ friendId }),
     onSuccess: () => queryClient.invalidateQueries(),
   });
 };

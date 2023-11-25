@@ -4,5 +4,10 @@ import { useServiceContext } from '../contexts/ServiceContext';
 
 export const useColors = () => {
   const { colorService } = useServiceContext();
-  return useQuery(['colors'], () => colorService.getColorPalette(), { staleTime: Infinity, cacheTime: Infinity });
+  return useQuery({
+    queryKey: ['colors'],
+    queryFn: () => colorService.getColorPalette(),
+    staleTime: Infinity,
+    gcTime: Infinity,
+  });
 };

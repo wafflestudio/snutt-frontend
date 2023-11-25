@@ -5,12 +5,12 @@ import { useServiceContext } from '../contexts/ServiceContext';
 
 export const useFriendCourseBooks = (friendId: FriendId | undefined) => {
   const { friendService } = useServiceContext();
-  return useQuery(
-    ['friend', friendId, 'registeredCourseBooks'] as const,
-    ({ queryKey: [, params] }) => {
+  return useQuery({
+    queryKey: ['friend', friendId, 'registeredCourseBooks'] as const,
+    queryFn: ({ queryKey: [, params] }) => {
       if (!params) throw new Error();
       return friendService.getFriendCourseBooks({ friendId: params });
     },
-    { enabled: !!friendId },
-  );
+    enabled: !!friendId,
+  });
 };
