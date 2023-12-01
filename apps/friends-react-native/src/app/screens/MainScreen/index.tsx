@@ -1,6 +1,6 @@
 import { createDrawerNavigator, DrawerContentComponentProps, DrawerHeaderProps } from '@react-navigation/drawer';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createContext, Dispatch, useContext, useMemo, useReducer } from 'react';
+import { createContext, Dispatch, useContext, useEffect, useMemo, useReducer } from 'react';
 import { Alert, TouchableOpacity } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 
@@ -72,6 +72,20 @@ export const MainScreen = () => {
     addFriendModalNickname: '',
     isGuideModalOpen: false,
   });
+
+  useEffect(() => {
+    import('@react-native-async-storage/async-storage')
+      .then((storage) => {
+        if (state.selectedFriendId) {
+          storage.default.setItem('selectedFriendId', state.selectedFriendId);
+        } else {
+          storage.default
+            .getItem('selectedFriendId')
+            .then((item) => item && dispatch({ type: 'setFriend', friendId: item as FriendId }));
+        }
+      })
+      .catch(() => null);
+  }, [state.selectedFriendId]);
 
   const backgroundColor = useThemeContext((data) => data.color.bg.default);
   const { data: friends } = useFriends({ state: 'ACTIVE' });
