@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 
 import { App } from './app/App';
 import { ErrorBoundary } from './app/components/ErrorBoundary';
+import { featureContext } from './app/contexts/FeatureContext';
 import { serviceContext } from './app/contexts/ServiceContext';
 import { textContext } from './app/contexts/TextContext';
 import { themeContext } from './app/contexts/ThemeContext';
@@ -65,7 +66,9 @@ export const Main = ({
       <serviceContext.Provider value={serviceValue}>
         <textContext.Provider value={textValue}>
           <themeContext.Provider value={themeValue}>
-            <App />
+            <featureContext.Provider value={{ clientFeatures: [] }}>
+              <App />
+            </featureContext.Provider>
           </themeContext.Provider>
         </textContext.Provider>
       </serviceContext.Provider>
