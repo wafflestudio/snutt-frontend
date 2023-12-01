@@ -5,6 +5,7 @@ import { Alert, TouchableOpacity } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 
 import { CourseBook } from '../../../entities/courseBook';
+import { ClientFeature } from '../../../entities/feature';
 import { FriendId } from '../../../entities/friend';
 import { Nickname } from '../../../entities/user';
 import { get } from '../../../utils/get';
@@ -17,6 +18,7 @@ import { WarningIcon } from '../../components/Icons/WarningIcon';
 import { Input } from '../../components/Input';
 import { NotificationDot } from '../../components/NotificationDot';
 import { Typography } from '../../components/Typography';
+import { useFeatureContext } from '../../contexts/FeatureContext';
 import { useServiceContext } from '../../contexts/ServiceContext';
 import { useThemeContext } from '../../contexts/ThemeContext';
 import { useFriendCourseBooks } from '../../queries/useFriendCourseBooks';
@@ -73,7 +75,11 @@ export const MainScreen = () => {
     isGuideModalOpen: false,
   });
 
+  const { clientFeatures } = useFeatureContext();
+
   useEffect(() => {
+    if (!clientFeatures.includes(ClientFeature.ASYNC_STORAGE)) return;
+
     import('@react-native-async-storage/async-storage')
       .then((storage) => {
         if (state.selectedFriendId) {
@@ -85,7 +91,7 @@ export const MainScreen = () => {
         }
       })
       .catch(() => null);
-  }, [state.selectedFriendId]);
+  }, [state.selectedFriendId, clientFeatures]);
 
   const backgroundColor = useThemeContext((data) => data.color.bg.default);
   const { data: friends } = useFriends({ state: 'ACTIVE' });

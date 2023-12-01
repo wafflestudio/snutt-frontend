@@ -4,10 +4,12 @@ import { Text, View } from 'react-native';
 
 import { App } from './app/App';
 import { ErrorBoundary } from './app/components/ErrorBoundary';
+import { featureContext } from './app/contexts/FeatureContext';
 import { serviceContext } from './app/contexts/ServiceContext';
 import { textContext } from './app/contexts/TextContext';
 import { themeContext } from './app/contexts/ThemeContext';
 import { getThemeValues } from './app/styles/theme';
+import { ClientFeature } from './entities/feature';
 import { createAssetService } from './infrastructures/createAssetService';
 import { createColorRepository } from './infrastructures/createColorRepository';
 import { createColorService } from './infrastructures/createColorService';
@@ -29,6 +31,7 @@ type ExternalProps = {
   'x-app-version': string;
   theme: 'light' | 'dark';
   allowFontScaling: boolean;
+  features?: ClientFeature[];
 };
 
 export const Main = ({
@@ -36,6 +39,7 @@ export const Main = ({
   'x-access-apikey': xAccessApikey,
   theme,
   allowFontScaling = false,
+  features = [],
 }: ExternalProps) => {
   const fetchClient = createFetchClient(API_URL, xAccessToken, xAccessApikey);
   const friendRepository = createFriendRepository(fetchClient);
@@ -65,7 +69,9 @@ export const Main = ({
       <serviceContext.Provider value={serviceValue}>
         <textContext.Provider value={textValue}>
           <themeContext.Provider value={themeValue}>
-            <App />
+            <featureContext.Provider value={{ clientFeatures: features }}>
+              <App />
+            </featureContext.Provider>
           </themeContext.Provider>
         </textContext.Provider>
       </serviceContext.Provider>
