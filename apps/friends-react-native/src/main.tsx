@@ -31,7 +31,7 @@ type ExternalProps = {
   'x-app-version': string;
   theme: 'light' | 'dark';
   allowFontScaling: boolean;
-  features?: ClientFeature[];
+  feature?: ClientFeature[];
 };
 
 export const Main = ({
@@ -39,7 +39,7 @@ export const Main = ({
   'x-access-apikey': xAccessApikey,
   theme,
   allowFontScaling = false,
-  features = [],
+  feature = [],
 }: ExternalProps) => {
   const fetchClient = createFetchClient(API_URL, xAccessToken, xAccessApikey);
   const friendRepository = createFriendRepository(fetchClient);
@@ -69,7 +69,7 @@ export const Main = ({
       <serviceContext.Provider value={serviceValue}>
         <textContext.Provider value={textValue}>
           <themeContext.Provider value={themeValue}>
-            <featureContext.Provider value={{ clientFeatures: features }}>
+            <featureContext.Provider value={{ clientFeatures: feature }}>
               <App />
             </featureContext.Provider>
           </themeContext.Provider>

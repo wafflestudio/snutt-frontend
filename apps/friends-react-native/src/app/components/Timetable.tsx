@@ -40,7 +40,7 @@ export const Timetable = memo(({ timetable, style, palette }: Props) => {
                 const top = DAY_LABEL_HEIGHT + ((c.startMinute - startHour * 60) / 60) * hourHeight - 1;
                 const cellHeight = ((c.endMinute - c.startMinute) / 60) * hourHeight;
 
-                const classLines = (cellHeight - (place ? 16 : 0)) / 12;
+                const classLines = Math.max(Math.ceil((cellHeight - (place ? 16 : 0)) / 12), 0);
 
                 return (
                   <View
