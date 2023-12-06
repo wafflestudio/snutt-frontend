@@ -77,25 +77,27 @@ export const MainScreen = () => {
 
   const { clientFeatures } = useFeatureContext();
 
+  const { data: friends } = useFriends({ state: 'ACTIVE' });
+
   useEffect(() => {
     if (!clientFeatures.includes(ClientFeature.ASYNC_STORAGE)) return;
 
     import('@react-native-async-storage/async-storage')
       .then((storage) => {
-        if (state.selectedFriendId) {
-          storage.default.setItem('selectedFriendId', state.selectedFriendId);
-        } else {
-          storage.default
-            .getItem('selectedFriendId')
-            .then((item) => item && dispatch({ type: 'setFriend', friendId: item as FriendId }));
+        if (state.selectedFriendId) storage.default.setItem('selectedFriendId', state.selectedFriendId);
+        else {
+          storage.default.getItem('selectedFriendId').then((item) => {
+            if (!friends) return;
+            const selectedFriend = friends.find((f) => f.friendId === item);
+            if (selectedFriend) dispatch({ type: 'setFriend', friendId: selectedFriend.friendId });
+          });
         }
       })
       .catch(() => null);
-  }, [state.selectedFriendId, clientFeatures]);
+  }, [state.selectedFriendId, clientFeatures, friends]);
 
   const backgroundColor = useThemeContext((data) => data.color.bg.default);
-  const { data: friends } = useFriends({ state: 'ACTIVE' });
-  const selectedFriendIdWithDefault = state.selectedFriendId ?? friends?.[0]?.friendId;
+  const selectedFriendIdWithDefault = state.selectedFriendId ?? friends?.at(0)?.friendId;
   const { data: courseBooks } = useFriendCourseBooks(selectedFriendIdWithDefault);
   const selectedCourseBookWithDefault = state.selectedCourseBook ?? courseBooks?.at(0);
 
