@@ -1,10 +1,11 @@
 import { createDrawerNavigator, DrawerContentComponentProps, DrawerHeaderProps } from '@react-navigation/drawer';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createContext, Dispatch, useContext, useMemo, useReducer } from 'react';
+import { createContext, Dispatch, useContext, useEffect, useMemo, useReducer } from 'react';
 import { Alert, TouchableOpacity } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 
 import { CourseBook } from '../../../entities/courseBook';
+import { ClientFeature } from '../../../entities/feature';
 import { FriendId } from '../../../entities/friend';
 import { Nickname } from '../../../entities/user';
 import { get } from '../../../utils/get';
@@ -17,6 +18,7 @@ import { WarningIcon } from '../../components/Icons/WarningIcon';
 import { Input } from '../../components/Input';
 import { NotificationDot } from '../../components/NotificationDot';
 import { Typography } from '../../components/Typography';
+import { useFeatureContext } from '../../contexts/FeatureContext';
 import { useServiceContext } from '../../contexts/ServiceContext';
 import { useThemeContext } from '../../contexts/ThemeContext';
 import { useFriendCourseBooks } from '../../queries/useFriendCourseBooks';
@@ -73,9 +75,29 @@ export const MainScreen = () => {
     isGuideModalOpen: false,
   });
 
-  const backgroundColor = useThemeContext((data) => data.color.bg.default);
+  const { clientFeatures } = useFeatureContext();
+
   const { data: friends } = useFriends({ state: 'ACTIVE' });
-  const selectedFriendIdWithDefault = state.selectedFriendId ?? friends?.[0]?.friendId;
+
+  useEffect(() => {
+    if (!clientFeatures.includes(ClientFeature.ASYNC_STORAGE)) return;
+
+    import('@react-native-async-storage/async-storage')
+      .then((storage) => {
+        if (state.selectedFriendId) storage.default.setItem('selectedFriendId', state.selectedFriendId);
+        else {
+          storage.default.getItem('selectedFriendId').then((item) => {
+            if (!friends) return;
+            const selectedFriend = friends.find((f) => f.friendId === item);
+            if (selectedFriend) dispatch({ type: 'setFriend', friendId: selectedFriend.friendId });
+          });
+        }
+      })
+      .catch(() => null);
+  }, [state.selectedFriendId, clientFeatures, friends]);
+
+  const backgroundColor = useThemeContext((data) => data.color.bg.default);
+  const selectedFriendIdWithDefault = state.selectedFriendId ?? friends?.at(0)?.friendId;
   const { data: courseBooks } = useFriendCourseBooks(selectedFriendIdWithDefault);
   const selectedCourseBookWithDefault = state.selectedCourseBook ?? courseBooks?.at(0);
 
