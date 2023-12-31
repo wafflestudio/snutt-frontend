@@ -1,0 +1,11 @@
+:root[data-theme='light'] {
+  --color-bg-default: var(--palette-white);
+
+  --color-text-default: var(--palette-black);
+}
+
+:root[data-theme='dark'] {
+  --color-bg-default: var(--palette-dark);
+
+  --color-text-default: var(--palette-white);
+}
