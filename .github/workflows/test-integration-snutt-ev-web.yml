@@ -1,0 +1,36 @@
+name: snutt-ev-web
+
+on:
+  pull_request:
+    branches: [main]
+    paths: ["apps/snutt-ev-web-v2/**"]
+
+jobs:
+  build:
+    name: integration test
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./apps/snutt-ev-web-v2
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Install playwright
+        run: yarn playwright install --with-deps
+
+      - name: Build
+        run: yarn build
+
+      - name: Run
+        run: yarn start &
+
+      - name: Test
+        run: yarn e2e
