@@ -1,8 +1,8 @@
 import { expect } from '@playwright/test';
 
-import { BddHelpers } from '../utils/bdd';
+import { BddStepHelpers } from '../utils/bdd';
 
-export const getRouteSteps = ({ page }: BddHelpers) => {
+export const getRouteSteps = ({ page }: BddStepHelpers) => {
   return {
     Given: {},
     When: {
@@ -17,4 +17,10 @@ export const getRouteSteps = ({ page }: BddHelpers) => {
 const getFullPath = (path: string, query?: URLSearchParams) => {
   const fullPath = path + (query?.toString() ? '?' + query.toString() : '');
   return fullPath;
+};
+
+export const PATH = {
+  메인: () => '/main',
+  검색: () => '/search',
+  '최근 강의 목록': () => '/recent',
 };

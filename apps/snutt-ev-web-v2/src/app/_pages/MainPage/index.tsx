@@ -1,8 +1,14 @@
 import Link from 'next/link';
 
 import { AppBar } from '@/app/_components/AppBar';
+import { MainPageRecentSection } from '@/app/_pages/MainPage/MainPageRecentSection';
+import { getServerServices } from '@/app/utils/getServerServices';
 
 export const MainPage = async () => {
+  const { lectureService } = getServerServices();
+
+  const { content: recentLectures } = await lectureService.getRecentSectionLectures();
+
   return (
     <div>
       <AppBar
@@ -14,6 +20,7 @@ export const MainPage = async () => {
           </Link>
         }
       />
+      <MainPageRecentSection lectures={recentLectures} />
     </div>
   );
 };
