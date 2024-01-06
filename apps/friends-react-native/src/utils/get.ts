@@ -1,7 +1,6 @@
 export const get = (obj: unknown, path: string[]) => {
   try {
-    // 의도적으로 ts-ignore을 사용합니다.
-    // @ts-ignore
+    // @ts-expect-error error 가 발생하게 해서 catch 에서 잡습니다.
     return path.reduce((acc, key) => acc[key], obj);
   } catch (err) {
     return undefined;
