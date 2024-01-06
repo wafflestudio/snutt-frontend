@@ -1,9 +1,8 @@
 module.exports = {
   root: true,
-  extends: '@react-native',
-  plugins: ['simple-import-sort', 'jest'],
+  extends: ['@react-native', 'snutt'],
+  plugins: ['jest'],
   rules: {
-    'simple-import-sort/imports': 'error',
     'react/react-in-jsx-scope': 'off',
     curly: 'off',
   },

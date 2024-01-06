@@ -7,7 +7,7 @@ import { createLectureService } from '@/infrastructures/createLectureService';
 export const getServerServices = () => {
   const cookiesStore = cookies();
 
-  const baseUrl = 'https://snutt-api-dev.wafflestudio.com/ev-service';
+  // const baseUrl = 'https://snutt-api-dev.wafflestudio.com/ev-service';
   const mockUrl = 'http://localhost:3000/api/mock-service';
   const token = cookiesStore.get('x-access-token')?.value;
   const apiKey = cookiesStore.get('x-access-apikey')?.value;

@@ -8,9 +8,7 @@ import { Typography } from '../../../../components/Typography';
 import { useServiceContext } from '../../../../contexts/ServiceContext';
 import { useFriends } from '../../../../queries/useFriends';
 
-type Props = {};
-
-export const ManageFriendsDrawerContentRequestedList = ({}: Props) => {
+export const ManageFriendsDrawerContentRequestedList = () => {
   const { friendService } = useServiceContext();
   const { data: requestedFriends } = useFriends({ state: 'REQUESTED' });
 

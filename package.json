@@ -9,9 +9,10 @@
     "tsc": "turbo run tsc"
   },
   "dependencies": {
-    "turbo": "^1.10.12"
+    "turbo": "1.10.12"
   },
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "packages/*"
   ]
 }
