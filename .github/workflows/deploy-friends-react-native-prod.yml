@@ -3,7 +3,7 @@ name: deploy-friends-react-native-prod
 on:
   push:
     tags:
-      - friends-prod-*
+      - friends-react-native-prod-*
 
 jobs:
   deploy:

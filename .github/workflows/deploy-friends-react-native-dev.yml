@@ -3,7 +3,7 @@ name: deploy-friends-react-native-dev
 on:
   push:
     tags:
-      - friends-dev-*
+      - friends-react-native-dev-*
 
 jobs:
   deploy:
