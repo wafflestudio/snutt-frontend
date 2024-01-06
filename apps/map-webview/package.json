@@ -8,7 +8,8 @@
     "build": "tsc && vite build",
     "lint": "eslint src",
     "preview": "vite preview",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "deploy:dev": "scripts/deploy.sh dev"
   },
   "dependencies": {
     "react": "18.2.0",
