@@ -1,4 +1,4 @@
-name: deploy-prod
+name: deploy-friends-react-native-prod
 
 on:
   push:
