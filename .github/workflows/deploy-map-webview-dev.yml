@@ -1,14 +1,18 @@
-name: deploy-snutt-map-webview-dev
+name: deploy-map-webview-dev
 
 on:
   push:
     tags:
-      - snutt-map-webview-dev-*
+      - map-webview-dev-*
 
 jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: apps/snutt-map-webview
 
     steps:
       - name: Checkout
