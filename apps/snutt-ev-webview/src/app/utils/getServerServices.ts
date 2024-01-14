@@ -1,5 +1,7 @@
 import { cookies } from 'next/headers';
 
+import { createEvaluationService } from '@/infrastructures/createEvaluationService';
+import { createEvaluationRepository } from '@/infrastructures/createEvalutionRepository';
 import { createFetchClient } from '@/infrastructures/createFetchClient';
 import { createLectureRepository } from '@/infrastructures/createLectureRepository';
 import { createLectureService } from '@/infrastructures/createLectureService';
@@ -22,5 +24,8 @@ export const getServerServices = () => {
   const lectureRepository = createLectureRepository({ httpClient });
   const lectureService = createLectureService({ lectureRepository });
 
-  return { lectureService };
+  const evaluationRepository = createEvaluationRepository({ httpClient });
+  const evaluationService = createEvaluationService({ evaluationRepository });
+
+  return { lectureService, evaluationService };
 };
