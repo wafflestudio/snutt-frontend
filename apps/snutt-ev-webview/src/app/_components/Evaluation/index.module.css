@@ -1,0 +1,79 @@
+.wrapper {
+  width: 100%;
+  padding: 20px 20px 0px 20px;
+  box-sizing: border-box;
+}
+
+.contents {
+  border-bottom: 1px solid #f2f2f2;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 20px;
+}
+
+.header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+
+.lectureName {
+  padding: 0;
+  margin: 0;
+  font-family: AppleSDGothicNeo;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.instructor {
+  padding: 0;
+  margin: 0;
+  font-family: AppleSDGothicNeo;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 15px;
+  color: rgb(119, 119, 119);
+  max-width: 30%;
+  text-align: right;
+  word-break: keep-all;
+  margin-left: 10px;
+}
+
+.rating {
+  display: flex;
+  flex-direction: row;
+  margin-top: 3px;
+  align-items: center;
+}
+
+.semester {
+  padding: 0;
+  margin: 0;
+  font-family: AppleSDGothicNeo;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 15px;
+  color: rgb(119, 119, 119);
+  text-align: left;
+  font-size: 11px;
+  margin-left: 8px;
+  line-height: 100%;
+}
+
+.likeWrapper {
+  margin-top: 12px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+}
+
+.likeText {
+  margin: 8px 0;
+  font-size: 10px;
+  line-height: 11px;
+}

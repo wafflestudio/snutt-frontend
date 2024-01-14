@@ -19,7 +19,7 @@ export type Evaluation = {
   isHidden: boolean;
   isReportable: boolean;
   year: number;
-  semester: unknown; // todo 바꿀겁니다
+  semester: number;
   isModifiable: boolean;
   fromSnuev: boolean;
 };

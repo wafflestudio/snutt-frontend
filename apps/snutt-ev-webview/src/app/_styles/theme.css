@@ -2,10 +2,14 @@
   --color-bg-default: var(--palette-white);
 
   --color-text-default: var(--palette-black);
+
+  --color-button-primary-default-bg: var(--palette-mint);
 }
 
 :root[data-theme='dark'] {
   --color-bg-default: var(--palette-dark);
 
   --color-text-default: var(--palette-white);
+
+  --color-button-primary-default-bg: var(--palette-dark-mint);
 }

@@ -6,7 +6,6 @@ export const snakeToCamel = <T>(obj: object): T => {
   if (obj !== null && typeof obj === 'object') {
     return Object.entries(obj).reduce((acc, [key, value]) => {
       const camelKey = key.replace(/([-_][a-z])/g, (group) => group.toUpperCase().replace('-', '').replace('_', ''));
-      console.log(camelKey);
       return { ...acc, [camelKey]: snakeToCamel(value) };
     }, {}) as T;
   }

@@ -1,0 +1,33 @@
+.wrapper {
+  width: 55px;
+  height: 28px;
+  display: block;
+  padding: 0;
+  margin: 0;
+  border-radius: 14px;
+  border: none;
+  background-color: var(--color-bg-default);
+
+  color: var(--color-text-default);
+  font-size: 14px;
+  line-height: 30px;
+  font-family: AppleSDGothicNeo;
+}
+
+.wrapper.isLiked {
+  border: 1px solid var(--palette-light-gray);
+  background-color: var(--color-button-primary-default-bg);
+  color: var(--palette-white);
+}
+
+.likeIcon {
+  margin-right: 8px;
+}
+
+.likeIcon path {
+  fill: var(--palette-mint);
+}
+
+.likeIcon.isLiked path {
+  fill: var(--palette-white);
+}
