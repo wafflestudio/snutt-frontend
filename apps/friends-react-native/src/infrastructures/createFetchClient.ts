@@ -1,18 +1,18 @@
-import { ApiClient } from '../clients/apiClient';
+import { HttpClient } from '../clients/HttpClient';
 
-export const createFetchClient = (baseUrl: string, token: string, apiKey: string): ApiClient => {
+export const createFetchClient = (baseUrl: string, token: string, apiKey: string): HttpClient => {
   return {
-    get: async <T>(url: string) => {
+    get: async (url: string) => {
       const response = await fetch(`${baseUrl}${url}`, {
         headers: { 'x-access-apikey': apiKey, 'x-access-token': token, 'Content-Type': 'application/json' },
       });
       const data = await response.text();
 
       if (!response.ok) throw JSON.parse(data);
-      return JSON.parse(data) as T;
+      return JSON.parse(data);
     },
 
-    post: async <T>(url: string, body?: Record<string, unknown>) => {
+    post: async (url: string, body?: Record<string, unknown>) => {
       const response = await fetch(`${baseUrl}${url}`, {
         method: 'POST',
         headers: { 'x-access-apikey': apiKey, 'x-access-token': token, 'Content-Type': 'application/json' },
@@ -21,10 +21,10 @@ export const createFetchClient = (baseUrl: string, token: string, apiKey: string
       const data = await response.text();
 
       if (!response.ok) throw JSON.parse(data);
-      return JSON.parse(data) as T;
+      return JSON.parse(data);
     },
 
-    patch: async <T>(url: string, body?: Record<string, unknown>) => {
+    patch: async (url: string, body?: Record<string, unknown>) => {
       const response = await fetch(`${baseUrl}${url}`, {
         method: 'PATCH',
         headers: { 'x-access-apikey': apiKey, 'x-access-token': token, 'Content-Type': 'application/json' },
@@ -33,10 +33,10 @@ export const createFetchClient = (baseUrl: string, token: string, apiKey: string
       const data = await response.text();
 
       if (!response.ok) throw JSON.parse(data);
-      return JSON.parse(data) as T;
+      return JSON.parse(data);
     },
 
-    delete: async <T>(url: string) => {
+    delete: async (url: string) => {
       const response = await fetch(`${baseUrl}${url}`, {
         method: 'DELETE',
         headers: { 'x-access-apikey': apiKey, 'x-access-token': token, 'Content-Type': 'application/json' },
@@ -44,7 +44,7 @@ export const createFetchClient = (baseUrl: string, token: string, apiKey: string
       const data = await response.text();
 
       if (!response.ok) throw JSON.parse(data);
-      return JSON.parse(data) as T;
+      return JSON.parse(data);
     },
   };
 };

@@ -1,4 +1,4 @@
-import { ApiClient } from '../clients/apiClient';
+import { ApiClient } from '../clients/HttpClient';
 import { Color } from '../entities/color';
 import { ColorRepository } from '../repositories/colorRepository';
 

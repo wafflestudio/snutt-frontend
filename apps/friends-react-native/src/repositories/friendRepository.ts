@@ -15,21 +15,19 @@ export type FriendRepository = {
       nickname: { nickname: Nickname; tag: NicknameTag };
       createdAt: Timestamp;
     }[];
-    totalCount: number;
-    nextPageToken: null; // 현재는 페이징이 없으므로 무조건 null
   }>;
 
-  requestFriend: (req: { nickname: Nickname }) => Promise<void>;
+  requestFriend: (req: { nickname: Nickname }) => Promise<unknown>;
 
-  acceptFriend: (req: { friendId: FriendId }) => Promise<void>;
+  acceptFriend: (req: { friendId: FriendId }) => Promise<unknown>;
 
-  declineFriend: (req: { friendId: FriendId }) => Promise<void>;
+  declineFriend: (req: { friendId: FriendId }) => Promise<unknown>;
 
-  deleteFriend: (req: { friendId: FriendId }) => Promise<void>;
+  deleteFriend: (req: { friendId: FriendId }) => Promise<unknown>;
 
   getFriendPrimaryTable: (req: { friendId: FriendId; semester: Semester; year: Year }) => Promise<FullTimetable>;
 
   getFriendCourseBooks: (req: { friendId: FriendId }) => Promise<CourseBook[]>;
 
-  patchFriendDisplayName: (req: { friendId: FriendId; displayName: DisplayName }) => Promise<void>;
+  patchFriendDisplayName: (req: { friendId: FriendId; displayName: DisplayName }) => Promise<unknown>;
 };
