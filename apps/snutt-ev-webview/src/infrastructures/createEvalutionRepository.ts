@@ -14,5 +14,15 @@ export const createEvaluationRepository = ({ httpClient }: { httpClient: HttpCli
 
       return response;
     },
+    likeEvaluation: async ({ id }) => {
+      const response = await httpClient.post<never>(`/v1/evaluations/${id}/likes`);
+
+      return response;
+    },
+    unlikeEvaluation: async ({ id }) => {
+      const response = await httpClient.delete<never>(`/v1/evaluations/${id}/likes`);
+
+      return response;
+    },
   };
 };

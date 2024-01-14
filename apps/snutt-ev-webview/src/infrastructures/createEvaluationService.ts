@@ -12,5 +12,12 @@ export const createEvaluationService = ({
 
       return response;
     },
+    updateEvalutionLike: async (id, isLiked) => {
+      const response = isLiked
+        ? await evaluationRepository.unlikeEvaluation({ id })
+        : await evaluationRepository.likeEvaluation({ id });
+
+      return response;
+    },
   };
 };
