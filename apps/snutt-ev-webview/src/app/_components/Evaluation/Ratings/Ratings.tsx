@@ -22,7 +22,5 @@ export const Rating = ({ rating, size }: Props) => {
     ...Array(emptyStartCounts).fill(<SvgStarSmallEmpty width={size} height={size} />),
   ];
 
-  stars.forEach((element, i) => (element.key = i));
-
   return <div className={styles.wrapper}>{stars}</div>;
 };

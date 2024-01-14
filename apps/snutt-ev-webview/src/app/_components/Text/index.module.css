@@ -1,3 +1,19 @@
 .box {
   color: var(--color-text-default);
 }
+
+.collpsableText {
+  padding: 0;
+  margin: 0;
+  font-family: AppleSDGothicNeo;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 15px;
+  overflow-wrap: 'break-word';
+  white-space: 'pre-wrap';
+}
+
+.moreLessButton {
+  color: rgb(179, 179, 179);
+  cursor: pointer;
+}
