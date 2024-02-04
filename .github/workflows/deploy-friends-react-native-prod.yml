@@ -67,12 +67,10 @@ jobs:
             --data-raw '{ "data": { "src": { "android": "'"$BUCKET_URL/$TAG_NAME/android.jsbundle"'", "ios": "'"$BUCKET_URL/$TAG_NAME/ios.jsbundle"'" } }, "minVersion": { "android": "3.2.0", "ios": "3.2.0" } }' \
             --compressed
 
-      - name: Slack Notify
-        uses: rtCamp/action-slack-notify@v2.1.2
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_CHANNEL: team-snutt-deploy
-          SLACK_TITLE: Deployed Tag [${{ github.ref_name }}]
-          SLACK_USERNAME: snutt-friends-react-native
-          SLACK_ICON: https://user-images.githubusercontent.com/39977696/191924403-3a26618c-5568-4c22-b592-aedc77323e8d.png
-          SLACK_MESSAGE: Check <https://github.com/wafflestudio/snutt-frontend/releases/tag/${{ github.ref_name }}|Release Note> for updated environment
+  notify:
+    needs: deploy
+    uses: wafflestudio/snutt-internal/.github/workflows/dispatch-github-release-deploy-notifier.yml@main
+    with:
+      title: "친구RN"
+    secrets:
+      PAT: ${{ secrets.GHP_ACCESS_TOKEN }}
