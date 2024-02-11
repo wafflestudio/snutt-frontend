@@ -1,0 +1,7 @@
+.emptySemester {
+  font-family: 'AppleSDGothicNeo';
+  font-weight: normal;
+  font-size: 17px;
+  line-height: 20.5px;
+  color: var(--color-text-default);
+}

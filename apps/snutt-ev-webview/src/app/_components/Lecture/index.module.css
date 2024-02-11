@@ -1,0 +1,93 @@
+.wrapper {
+  padding: 10px 0 12px 0;
+  margin: 0 20px 0 20px;
+  cursor: pointer;
+}
+
+.lectureBasic {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  font-weight: bold;
+}
+
+.lectureTitle {
+  padding: 0;
+  margin: 0;
+  font-family: AppleSDGothicNeo;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 17px;
+  color: var(--color-text-default);
+}
+
+.lectureDetail {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-top: 12px;
+
+  .left {
+    display: flex;
+    height: 39px;
+
+    .icons {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
+
+      padding-top: 1px;
+      padding-bottom: 1px;
+
+      /* to-do svg 내부로 전환 */
+      .tag circle,
+      .tag path {
+        stroke: var(--color-svg-outline-storke);
+      }
+
+      .person circle,
+      .person path {
+        fill: var(--color-svg-filled-fill);
+      }
+    }
+
+    .texts {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-left: 10px;
+      justify-content: space-between;
+    }
+    .info {
+      font-family: AppleSDGothicNeo;
+      font-weight: normal;
+
+      font-size: 12px;
+      line-height: 16.5px;
+
+      color: var(--color-text-default);
+    }
+  }
+
+  .right {
+    .writeButton {
+      width: 30px;
+      height: 30px;
+      z-index: 9999;
+      background: transparent;
+      border: none;
+      padding: 0;
+
+      .pencil path {
+        fill: var(--color-svg-filled-fill);
+      }
+    }
+  }
+}

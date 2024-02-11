@@ -4,6 +4,12 @@
   --color-text-default: var(--palette-black);
 
   --color-button-primary-default-bg: var(--palette-mint);
+
+  --color-svg-filled-fill: var(--palette-black);
+  --color-svg-filled-stroke: var(--palette-white);
+
+  --color-svg-outline-fill: var(--palette-white);
+  --color-svg-outline-storke: var(--palette-black);
 }
 
 :root[data-theme='dark'] {
@@ -12,4 +18,10 @@
   --color-text-default: var(--palette-white);
 
   --color-button-primary-default-bg: var(--palette-dark-mint);
+
+  --color-svg-filled-fill: var(--palette-white);
+  --color-svg-filled-stroke: var(--palette-black);
+
+  --color-svg-outline-fill: var(--palette-black);
+  --color-svg-outline-storke: var(--palette-white);
 }
