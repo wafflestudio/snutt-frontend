@@ -13,3 +13,9 @@ export type Lecture = {
   takenYear: number;
   takenSemester: number;
 };
+
+export type YearSemesteLectureMap = {
+  year: number;
+  semester: number;
+  lectures: Lecture[];
+};

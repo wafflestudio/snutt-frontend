@@ -2,7 +2,9 @@
   --palette-white: #ffffff;
   --palette-dark: #2b2b2b;
   --palette-black: #000000;
+  --palette-black-03: #00000008;
   --palette-mint: #1bd0c8;
   --palette-light-gray: #ededed;
+  --palette-darker-gray: #505050;
   --palette-dark-mint: #58c1b7;
 }

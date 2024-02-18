@@ -1,7 +1,7 @@
 import { HttpClient } from '@/clients/HttpClient';
 import { Evaluation } from '@/entities/Evaluation';
 import { EvaluationRepository } from '@/repositories/EvaluationRepository';
-import { PaginationResponse } from '@/utils/Pagination';
+import { PaginationResponse } from '@/utils/pagination';
 
 export const createEvaluationRepository = ({ httpClient }: { httpClient: HttpClient }): EvaluationRepository => {
   return {

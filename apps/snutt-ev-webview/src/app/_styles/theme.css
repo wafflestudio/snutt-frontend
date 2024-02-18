@@ -1,5 +1,6 @@
 :root[data-theme='light'] {
   --color-bg-default: var(--palette-white);
+  --color-bg-divider: var(--palette-black-03);
 
   --color-text-default: var(--palette-black);
 
@@ -14,6 +15,7 @@
 
 :root[data-theme='dark'] {
   --color-bg-default: var(--palette-dark);
+  --color-bg-divider: var(--palette-darker-gray);
 
   --color-text-default: var(--palette-white);
 
