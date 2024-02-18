@@ -1,0 +1,22 @@
+.emptySemester {
+  font-family: 'AppleSDGothicNeo';
+  font-weight: normal;
+  font-size: 17px;
+  line-height: 20.5px;
+  color: var(--color-text-default);
+}
+
+.semesterTitle {
+  margin: 0;
+  padding: 0;
+  font-family: 'AppleSDGothicNeo';
+  font-weight: bold;
+  font-size: 17px;
+  line-height: 20.5px;
+  color: var(--color-text-default);
+
+  background-color: var(--color-bg-divider);
+  height: 40px;
+  padding-left: 20px;
+  line-height: 40px;
+}

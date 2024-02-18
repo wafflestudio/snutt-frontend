@@ -1,5 +1,5 @@
 import { Evaluation } from '@/entities/Evaluation';
-import { PaginationResponse } from '@/utils/Pagination';
+import { PaginationResponse } from '@/utils/pagination';
 
 export type EvaluationRepository = {
   getMyEvlaluations: (req: { cursor?: string }) => Promise<PaginationResponse<Evaluation>>;
