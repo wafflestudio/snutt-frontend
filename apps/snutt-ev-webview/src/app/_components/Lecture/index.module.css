@@ -44,17 +44,6 @@
 
       padding-top: 1px;
       padding-bottom: 1px;
-
-      /* to-do svg 내부로 전환 */
-      .tag circle,
-      .tag path {
-        stroke: var(--color-svg-outline-storke);
-      }
-
-      .person circle,
-      .person path {
-        fill: var(--color-svg-filled-fill);
-      }
     }
 
     .texts {
@@ -84,10 +73,6 @@
       background: transparent;
       border: none;
       padding: 0;
-
-      .pencil path {
-        fill: var(--color-svg-filled-fill);
-      }
     }
   }
 }

@@ -20,8 +20,8 @@ export const LectureCard = ({ lecture }: Props) => {
       <div className={styles.lectureDetail}>
         <div className={styles.left}>
           <div className={styles.icons}>
-            <SvgTagBlack className={styles.tag} height={15} width={15} />
-            <SvgPersonBlack className={styles.person} height={15} width={15} />
+            <SvgTagBlack height={15} width={15} />
+            <SvgPersonBlack height={15} width={15} />
           </div>
           <div className={styles.texts}>
             <p className={styles.info}>
@@ -33,7 +33,7 @@ export const LectureCard = ({ lecture }: Props) => {
 
         <div className={styles.right}>
           <button className={styles.writeButton}>
-            <SvgWrite className={styles.pencil} height={30} width={30} />
+            <SvgWrite height={30} width={30} />
           </button>
         </div>
       </div>

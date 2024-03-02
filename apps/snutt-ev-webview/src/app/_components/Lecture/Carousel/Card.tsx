@@ -17,14 +17,14 @@ export const CarouselCard = ({ lecture }: Props) => {
       <div className={styles.header}>
         <h2 className={styles.lectureTitle}>{lecture.title}</h2>
         <button className={styles.writeButton}>
-          <SvgWrite className={styles.pencil} height={20} width={20} />
+          <SvgWrite height={20} width={20} />
         </button>
       </div>
 
       <div className={styles.content}>
         <div className={styles.icons}>
-          <SvgTagBlack className={styles.tag} height={15} width={15} />
-          <SvgPersonBlack className={styles.person} height={15} width={15} />
+          <SvgTagBlack height={15} width={15} />
+          <SvgPersonBlack height={15} width={15} />
           <SvgClockBlack height={15} width={15} />
         </div>
         <div className={styles.info}>
