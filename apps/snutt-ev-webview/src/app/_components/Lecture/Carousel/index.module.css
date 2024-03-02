@@ -1,0 +1,83 @@
+.wrapper {
+  min-width: 210px;
+  min-height: 108px;
+  padding: 11px 15px;
+
+  border: 1px solid #c4c4c4;
+  box-sizing: border-box;
+  border-radius: 6px;
+
+  margin: 0px 8px 0px 10px;
+}
+
+.header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  font-weight: bold;
+}
+
+.title {
+  padding: 0;
+  margin: 0;
+  font-family: AppleSDGothicNeo;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 17px;
+  color: var(--color-text-default);
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+}
+
+.writeButton {
+  width: 20px;
+  height: 20px;
+  z-index: 2;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  margin-top: 12px;
+  height: 61px;
+}
+
+.icons {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+.info {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-left: 10px;
+  justify-content: space-between;
+}
+
+.detail {
+  margin: 0;
+  padding: 0;
+
+  font-family: AppleSDGothicNeo;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 15px;
+  color: var(--color-text-default);
+}
