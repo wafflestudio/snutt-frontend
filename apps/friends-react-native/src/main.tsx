@@ -1,6 +1,6 @@
 import { API_URL, ASSET_URL } from '@env';
-import { useMemo } from 'react';
-import { Text, View } from 'react-native';
+import { useEffect, useMemo, useState } from 'react';
+import { NativeEventEmitter, NativeModules, Text, View } from 'react-native';
 
 import { App } from './app/App';
 import { ErrorBoundary } from './app/components/ErrorBoundary';
@@ -34,6 +34,8 @@ type ExternalProps = {
   feature?: ClientFeature[];
 };
 
+const MyEventEmitter = new NativeEventEmitter(NativeModules.RNEventEmitter);
+
 export const Main = ({
   'x-access-token': xAccessToken,
   'x-access-apikey': xAccessApikey,
@@ -49,10 +51,27 @@ export const Main = ({
   const friendService = createFriendService({ repositories: [friendRepository] });
   const courseBookService = createCourseBookService();
 
+  const [events, setEvents] = useState<string[]>([]);
+
   const serviceValue = useMemo(
     () => ({ timetableViewService, colorService, friendService, courseBookService, assetService }),
     [timetableViewService, colorService, friendService, courseBookService, assetService],
   );
+
+  useEffect(() => {
+    // 이벤트 리스너 등록
+    const listener = MyEventEmitter.addListener('add-friend-kakao', (event) => {
+      setEvents((prev) => [...prev, JSON.stringify(event)]);
+    });
+    const parameters = { eventType: 'add-friend-kakao' };
+
+    NativeModules.RNEventEmitter.sendEvent('register', parameters);
+
+    return () => {
+      listener.remove();
+      NativeModules.RNEventEmitter.sendEvent('deregister', parameters);
+    };
+  }, []);
 
   const themeValue = useMemo(() => getThemeValues(theme), [theme]);
 
@@ -70,7 +89,7 @@ export const Main = ({
         <textContext.Provider value={textValue}>
           <themeContext.Provider value={themeValue}>
             <featureContext.Provider value={{ clientFeatures: feature }}>
-              <App />
+              <App eventStr={JSON.stringify(events)} />
             </featureContext.Provider>
           </themeContext.Provider>
         </textContext.Provider>
