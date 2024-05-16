@@ -21,7 +21,7 @@ async function startApp() {
 
   if (ENV.APP_ENV === 'test') {
     const { worker } = await import('@/mocks/browser');
-    worker.start({ onUnhandledRequest: 'bypass' });
+    await worker.start({ onUnhandledRequest: 'bypass' });
   }
 
   import('@/assets/members').then(({ members }) => {
