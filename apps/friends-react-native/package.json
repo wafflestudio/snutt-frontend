@@ -9,9 +9,7 @@
     "start:assets": "serve -s public -l 8082",
     "start": "APP_ENV=local react-native start",
     "build:android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output dist/android.jsbundle --assets-dest android/com/wafflestudio/snutt-staging/src/main/res/",
-    "build:ios": "react-native bundle --dev false --entry-file index.js --bundle-output dist/ios.jsbundle --assets-dest ./ios --platform ios",
-    "deploy:dev": "scripts/deploy.sh dev",
-    "deploy:prod": "echo prod 배포는 github 에서 직접 릴리즈를 생성해 주세요."
+    "build:ios": "react-native bundle --dev false --entry-file index.js --bundle-output dist/ios.jsbundle --assets-dest ./ios --platform ios"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.19.8",
@@ -44,6 +42,7 @@
     "eslint-plugin-jest": "27.6.1",
     "jest": "29.2.1",
     "metro-react-native-babel-preset": "0.76.5",
+    "prettier": "^3.2.5",
     "react-native-dotenv": "3.4.9",
     "react-native-svg-transformer": "1.1.0",
     "react-test-renderer": "18.2.0",

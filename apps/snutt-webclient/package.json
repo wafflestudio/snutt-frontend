@@ -13,9 +13,7 @@
     "preview:test": "vite preview --mode test",
     "test:e2e": "playwright test",
     "test": "jest",
-    "lint": "npx eslint ./src",
-    "deploy:dev": "scripts/deploy.sh dev",
-    "deploy:prod": "echo prod 배포는 github 에서 직접 릴리즈를 생성해 주세요."
+    "lint": "npx eslint ./src"
   },
   "dependencies": {
     "@tanstack/react-query": "5.14.1",
