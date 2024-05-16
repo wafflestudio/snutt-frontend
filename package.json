@@ -11,10 +11,9 @@
     "deploy:snutt-webclient": "./scripts/deploy.sh snutt-webclient"
   },
   "dependencies": {
-    "turbo": "1.10.12"
+    "turbo": "1.13.3"
   },
   "workspaces": [
-    "apps/*",
-    "packages/*"
+    "apps/*"
   ]
 }
