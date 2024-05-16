@@ -33,6 +33,7 @@ type MainScreenState = {
   isAddFriendModalOpen: boolean;
   addFriendModalNickname: string;
   isGuideModalOpen: boolean;
+  eventStr: string;
 };
 type MainScreenAction =
   | { type: 'setFriend'; friendId: FriendId | undefined }
@@ -66,13 +67,14 @@ export const useMainScreenContext = () => {
 };
 const Drawer = createDrawerNavigator();
 
-export const MainScreen = () => {
+export const MainScreen = ({ eventStr }: { eventStr: string }) => {
   const [state, dispatch] = useReducer(mainScreenReducer, {
     selectedFriendId: undefined,
     selectedCourseBook: undefined,
     isAddFriendModalOpen: false,
     addFriendModalNickname: '',
     isGuideModalOpen: false,
+    eventStr: '',
   });
 
   const { clientFeatures } = useFeatureContext();
@@ -110,6 +112,7 @@ export const MainScreen = () => {
           isAddFriendModalOpen: state.isAddFriendModalOpen,
           addFriendModalNickname: state.addFriendModalNickname,
           isGuideModalOpen: state.isGuideModalOpen,
+          eventStr,
           dispatch,
         }),
         [
@@ -118,6 +121,7 @@ export const MainScreen = () => {
           state.isAddFriendModalOpen,
           state.addFriendModalNickname,
           state.isGuideModalOpen,
+          eventStr,
         ],
       )}
     >
@@ -132,7 +136,7 @@ export const MainScreen = () => {
 };
 
 const Header = ({ navigation }: DrawerHeaderProps) => {
-  const { addFriendModalNickname, isAddFriendModalOpen, dispatch } = useMainScreenContext();
+  const { addFriendModalNickname, isAddFriendModalOpen, dispatch, eventStr } = useMainScreenContext();
   const { friendService } = useServiceContext();
   const { mutate: request } = useRequestFriend();
   const guideEnabledColor = useThemeContext((data) => data.color.text.guide);
@@ -151,7 +155,7 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
       <AppBar
         title={
           <TouchableOpacity onPress={openGuideModal} style={styles.questionIconButton}>
-            <AppBar.Title>친구 시간표</AppBar.Title>
+            <AppBar.Title>{eventStr}</AppBar.Title>
 
             <QuestionIcon style={styles.questionIcon} width={16} height={16} />
           </TouchableOpacity>
