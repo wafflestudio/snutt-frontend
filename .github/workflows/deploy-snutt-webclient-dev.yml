@@ -1,14 +1,18 @@
-name: deploy-dev
+name: deploy-snutt-webclient-dev
 
 on:
   push:
     tags:
-      - dev-*
+      - snutt-webclient-dev-*
 
 jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    environment: dev
+    defaults:
+      run:
+        working-directory: ./apps/snutt-webclient
 
     steps:
       - name: Checkout
@@ -25,8 +29,8 @@ jobs:
         run: |
           yarn install
           cp .env.dev .env.production
-          VITE_API_KEY=${{ secrets.API_KEY }} \
-          VITE_TRUFFLE_API_KEY=${{ secrets.TRUFFLE_API_KEY }} \
+          VITE_API_KEY=${{ secrets.BACKEND_API_KEY }} \
+          VITE_TRUFFLE_API_KEY=${{ secrets.SNUTT_WEBCLIENT_TRUFFLE_API_KEY }} \
           VITE_GIT_SHA=$(git rev-parse HEAD) \
           VITE_GIT_TAG=$(git describe --tags) \
             yarn build
@@ -34,8 +38,8 @@ jobs:
       - name: Deploy to S3 and Invalidate Cloudfront
         id: deploy-s3
         env:
-          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET_DEV }}
-          AWS_CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID_DEV }}
+          AWS_S3_BUCKET: ${{ secrets.SNUTT_WEBCLIENT_S3_BUCKET }}
+          AWS_CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.SNUTT_WEBCLIENT_CLOUDFRONT_DISTRIBUTION_ID }}
         run: |
           aws s3 sync ./dist s3://$AWS_S3_BUCKET --delete
           aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
