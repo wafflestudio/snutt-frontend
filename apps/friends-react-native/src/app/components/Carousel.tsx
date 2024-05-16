@@ -26,8 +26,8 @@ export const Carousel = <K extends string>({ items, gap, width, current, setCurr
       newPosition > currentIndex + 0.2
         ? currentIndex + 1
         : newPosition < currentIndex - 0.2
-        ? currentIndex - 1
-        : currentIndex;
+          ? currentIndex - 1
+          : currentIndex;
     setIsScrolling(false);
     setCurrent(items.at(newPage)?.key);
   };

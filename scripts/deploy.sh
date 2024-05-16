@@ -1,7 +1,16 @@
 #!/bin/sh
 
+app=$1
+
+if [ "$app" != "snutt-webclient" ] && [ "$app" != "friends-react-native" ]; then
+  echo
+  echo "\033[31mInvalid app name.\033[0m"
+  echo
+  exit 1
+fi
+
 today=$(date +%y.%m.%d)
-tagFormat="snutt-webclient-dev-${today}-"
+tagFormat="${app}-dev-${today}-"
 
 git fetch --all --tags
 tagCount=$(git tag -l | grep -c $tagFormat)
