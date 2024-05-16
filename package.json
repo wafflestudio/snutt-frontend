@@ -6,7 +6,9 @@
   "scripts": {
     "lint": "turbo run lint",
     "test": "turbo run test",
-    "tsc": "turbo run tsc"
+    "tsc": "turbo run tsc",
+    "deploy:friends-react-native": "./scripts/deploy.sh friends-react-native",
+    "deploy:snutt-webclient": "./scripts/deploy.sh snutt-webclient"
   },
   "dependencies": {
     "turbo": "1.10.12"
