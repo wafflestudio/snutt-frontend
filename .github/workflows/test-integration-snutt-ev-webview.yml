@@ -3,7 +3,7 @@ name: snutt-ev-webview
 on:
   pull_request:
     branches: [main]
-    paths: ["apps/snutt-ev-webview/**", "packages/*"]
+    paths: ["apps/snutt-ev-webview/**", "packages/**"]
 
 jobs:
   build:

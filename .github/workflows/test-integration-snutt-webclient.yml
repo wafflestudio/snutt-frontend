@@ -3,7 +3,7 @@ name: snutt-webclient
 on:
   pull_request:
     branches: [main]
-    paths: ["apps/snutt-webclient/**", "packages/*"]
+    paths: ["apps/snutt-webclient/**", "packages/**"]
 
 jobs:
   build:
