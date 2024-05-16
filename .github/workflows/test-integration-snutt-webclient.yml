@@ -1,0 +1,36 @@
+name: snutt-webclient
+
+on:
+  pull_request:
+    branches: [main]
+    paths: ["apps/snutt-webclient/**", "packages/*"]
+
+jobs:
+  build:
+    name: integration test
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./apps/snutt-webclient
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Install playwright
+        run: yarn playwright install --with-deps
+
+      - name: Build
+        run: yarn build:test
+
+      - name: Run Server
+        run: yarn serve -s dist -l 5173 &
+
+      - name: Run Playwright tests
+        run: yarn test:e2e
