@@ -1,3 +1,5 @@
+import { type SnuttApi } from '@sf/snutt-api';
+
 import { type HttpClient } from '@/clients/HttpClient';
 import type { SignInResponse } from '@/entities/auth';
 
@@ -15,9 +17,15 @@ export interface AuthRepository {
   resetPassword(body: { user_id: string; password: string }): Promise<{ message: 'ok' }>;
 }
 
-export const getAuthRepository = ({ httpClient }: { httpClient: HttpClient }): AuthRepository => {
+export const getAuthRepository = ({
+  httpClient,
+  snuttApi,
+}: {
+  httpClient: HttpClient;
+  snuttApi: SnuttApi;
+}): AuthRepository => {
   return {
-    signInWithIdPassword: async (body) => (await httpClient.post<SignInResponse>(`/v1/auth/login_local`, body)).data,
+    signInWithIdPassword: (body) => snuttApi['POST /v1/login/local'](body),
     signInWithFacebook: async (body) => (await httpClient.post<SignInResponse>(`/auth/login_fb`, body)).data,
     signUpWithIdPassword: async (body) =>
       (await httpClient.post<{ message: 'ok'; token: string; user_id: string }>(`/v1/auth/register_local`, body)).data,

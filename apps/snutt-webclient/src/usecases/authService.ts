@@ -1,4 +1,3 @@
-import { type SignInResponse } from '@/entities/auth';
 import { type AuthRepository } from '@/repositories/authRepository';
 import { type UserRepository } from '@/repositories/userRepository';
 
@@ -7,7 +6,7 @@ export interface AuthService {
   changePassword(body: { old_password: string; new_password: string }): Promise<{ token: string }>;
   signIn(
     params: { type: 'LOCAL'; id: string; password: string } | { type: 'FACEBOOK'; fb_id: string; fb_token: string },
-  ): Promise<SignInResponse>;
+  ): Promise<{ token: string }>;
   signUp(body: { id: string; password: string }): Promise<{ message: 'ok'; token: string; user_id: string }>;
   closeAccount(): Promise<{ message: 'ok' }>;
   findIdByEmail(body: { email: string }): Promise<{ message: 'ok' }>;
