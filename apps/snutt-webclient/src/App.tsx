@@ -1,3 +1,4 @@
+import { implSnuttApi } from '@sf/snutt-api';
 import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { getTruffleClient } from '@wafflestudio/truffle-browser';
@@ -165,7 +166,8 @@ const getUnauthorizedServices = (ENV: { API_BASE_URL: string; API_KEY: string })
     baseURL: ENV.API_BASE_URL,
     headers: { 'x-access-apikey': ENV.API_KEY },
   });
-  const authRepository = getAuthRepository({ httpClient });
+
+  const authRepository = getAuthRepository({ httpClient, snuttApi: getSnuttApi(ENV) });
   const feedbackRepository = getFeedbackRepository({ httpClient });
   const userRepository = getUserRepository({ httpClient });
   const authService = getAuthService({ repositories: [authRepository, userRepository] });
@@ -189,7 +191,7 @@ const getAuthorizedServices = (
   });
 
   const userRepository = getUserRepository({ httpClient });
-  const authRepository = getAuthRepository({ httpClient });
+  const authRepository = getAuthRepository({ httpClient, snuttApi: getSnuttApi(ENV) });
   const timetableRepository = getTimetableRepository({ httpClient });
   const semesterRepository = getSemesterRepository({ httpClient });
   const searchRepository = getSearchRepository({ httpClient });
@@ -222,3 +224,30 @@ const getAuthorizedServices = (
     userService,
   };
 };
+
+const getSnuttApi = (ENV: { API_BASE_URL: string; API_KEY: string }) =>
+  implSnuttApi({
+    httpClient: {
+      call: async <R,>(_: {
+        method: string;
+        path: string;
+        body?: Record<string, unknown>;
+        headers?: Record<string, string>;
+      }) => {
+        const response = await fetch(`${ENV.API_BASE_URL}${_.path}`, {
+          method: _.method,
+          headers: _.headers,
+          ...(!!_.body ? { body: JSON.stringify(_.body) } : {}),
+        });
+
+        const responseBody = await response.json().catch(() => null);
+
+        if (response.ok) {
+          return responseBody as R;
+        } else {
+          throw responseBody;
+        }
+      },
+    },
+    apiKey: ENV.API_KEY,
+  });
