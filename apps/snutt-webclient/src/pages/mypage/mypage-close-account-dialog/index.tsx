@@ -8,7 +8,6 @@ import { Dialog } from '@/components/dialog';
 import { serviceContext } from '@/contexts/ServiceContext';
 import { useTokenContext } from '@/contexts/tokenContext';
 import { useGuardContext } from '@/hooks/useGuardContext';
-import { get } from '@/utils/object/get';
 
 const CONFIRM_TEXT = '탈퇴';
 
@@ -35,7 +34,6 @@ export const MypageCloseAccountDialog = ({ onClose, isOpen }: Props) => {
         close();
         navigate('/');
       },
-      onError: (err) => console.log(get(err, ['errcode'])),
     });
   };
 

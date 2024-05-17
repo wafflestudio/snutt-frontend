@@ -10,7 +10,6 @@ export const implAuthSnuttApiRepository = ({
   return {
     signInWithIdPassword: async (body) => {
       const { status, data } = await snuttApi['POST /v1/auth/login_local']({ body });
-
       if (status === 200) return { type: 'success', data };
       else return { type: 'error', errcode: data.errcode };
     },
