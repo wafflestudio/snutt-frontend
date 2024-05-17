@@ -10,7 +10,7 @@ type Props = { open: boolean; onClose: () => void; authService: AuthService };
 
 export const LoginFindIdDialog = ({ open, onClose, authService }: Props) => {
   const [email, setEmail] = useState('');
-  const { mutate, data, reset, status, isPending } = useFindId(authService);
+  const { mutate, data, reset, status } = useFindId(authService);
 
   const isValid = !!email;
 
@@ -31,7 +31,14 @@ export const LoginFindIdDialog = ({ open, onClose, authService }: Props) => {
       <Dialog.Title>아이디 찾기</Dialog.Title>
       <Content>
         <Info>아래에 이메일을 입력해 주세요.</Info>
-        <EmailInput data-testid="login-find-id-email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <EmailInput
+          data-testid="login-find-id-email"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            reset();
+          }}
+        />
         <Result $status={status} data-testid="login-find-id-result">
           {message}
         </Result>
@@ -42,7 +49,7 @@ export const LoginFindIdDialog = ({ open, onClose, authService }: Props) => {
         </Button>
         <Button
           data-testid="login-find-id-submit"
-          disabled={!isValid || isPending}
+          disabled={!isValid || status === 'success' || status === 'pending'}
           size="small"
           onClick={() => mutate({ email })}
         >

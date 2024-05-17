@@ -24,9 +24,9 @@ type Deps = {
     signUpWithIdPassword(body: { id: string; password: string }): ApiResponse<{ token: string }>;
     findId(body: { email: string }): ApiResponse<void>;
     passwordResetCheckEmail(body: { user_id: string }): ApiResponse<{ email: string }>;
-    sendPasswordResetVerificationEmail(body: { user_email: string }): Promise<{ message: 'ok' }>;
+    sendPasswordResetVerificationEmail(body: { user_email: string }): ApiResponse<{ message: 'ok' }>;
     verifyPasswordResetCode(body: { user_id: string; code: string }): ApiResponse<void>;
-    resetPassword(body: { user_id: string; password: string }): Promise<{ message: 'ok' }>;
+    resetPassword(body: { user_id: string; password: string }): ApiResponse<{ message: 'ok' }>;
   };
   userRepository: UserRepository;
   errorRepository: ErrorRepository;
@@ -63,12 +63,20 @@ export const getAuthService = ({ authRepository, userRepository, errorRepository
       if (data.type === 'success') return { type: 'success', data: data.data };
       else return { type: 'error', message: errorRepository.getErrorMessage(data) };
     },
-    sendPasswordResetVerificationEmail: (body) => authRepository.sendPasswordResetVerificationEmail(body),
+    sendPasswordResetVerificationEmail: async (body) => {
+      const data = await authRepository.sendPasswordResetVerificationEmail(body);
+      if (data.type === 'success') return { message: 'ok' };
+      else throw data;
+    },
     verifyPasswordResetCode: async (body) => {
       const data = await authRepository.verifyPasswordResetCode(body);
       if (data.type === 'success') return { type: 'success' };
       else return { type: 'error', message: errorRepository.getErrorMessage(data) };
     },
-    resetPassword: (body) => authRepository.resetPassword(body),
+    resetPassword: async (body) => {
+      const data = await authRepository.resetPassword(body);
+      if (data.type === 'success') return { message: 'ok' };
+      else throw data;
+    },
   };
 };

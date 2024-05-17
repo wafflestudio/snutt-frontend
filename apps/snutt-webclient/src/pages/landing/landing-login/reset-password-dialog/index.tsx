@@ -68,7 +68,10 @@ export const LoginResetPasswordDialog = ({ open, onClose, authService }: Props) 
                   data-testid="login-reset-password-cta"
                   size="small"
                   onClick={() =>
-                    checkEmailMutation.mutate({ user_id: id }, { onSuccess: () => setStep(Step.EMAIL_CONFIRM) })
+                    checkEmailMutation.mutate(
+                      { user_id: id },
+                      { onSuccess: ({ type }) => type === 'success' && setStep(Step.EMAIL_CONFIRM) },
+                    )
                   }
                 >
                   다음
@@ -118,7 +121,10 @@ export const LoginResetPasswordDialog = ({ open, onClose, authService }: Props) 
                   data-testid="login-reset-password-cta"
                   size="small"
                   onClick={() =>
-                    verifyCodeMutation.mutate({ user_id: id, code }, { onSuccess: () => setStep(Step.RESET_PASSWORD) })
+                    verifyCodeMutation.mutate(
+                      { user_id: id, code },
+                      { onSuccess: ({ type }) => type === 'success' && setStep(Step.RESET_PASSWORD) },
+                    )
                   }
                 >
                   다음
