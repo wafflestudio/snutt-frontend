@@ -2,12 +2,12 @@ import { InternalClient } from '../httpClient';
 import { ErrorResponse, SuccessResponse } from '../response';
 import { LocalLoginRequest, LoginResponse } from './schemas';
 
-type Api = ({ body }: { body: never }) => Promise<{ status: number; data: unknown }>;
+type Api = (_: { body: never; token: string }) => Promise<{ status: number; data: unknown }>;
 
 export const apis = (client: InternalClient) => {
-  // const callWithToken = <R extends { status: number; data: unknown }>(
-  //   p: Parameters<InternalClient['call']>[0] & { token: string },
-  // ) => client.call<R | ErrorResponse<403, 8194>>(p);
+  const callWithToken = <R extends { status: number; data: unknown }>(
+    p: Parameters<InternalClient['call']>[0] & { token: string },
+  ) => client.call<R | ErrorResponse<403, 8194>>(p);
 
   const callWithoutToken = <R extends { status: number; data: unknown }>(
     p: Omit<Parameters<InternalClient['call']>[0], 'token'> & { token?: never },
@@ -61,6 +61,12 @@ export const apis = (client: InternalClient) => {
         method: 'post',
         path: `/v1/auth/password/reset`,
         body,
+      }),
+    'GET /v1/colors/vivid_ios': ({ token }: { token: string }) =>
+      callWithToken<SuccessResponse<{ colors: { bg: string; fg: string }[]; names: string[]; message: 'ok' }>>({
+        method: 'get',
+        path: `/v1/colors/vivid_ios`,
+        token,
       }),
   } satisfies Record<string, Api>;
 };

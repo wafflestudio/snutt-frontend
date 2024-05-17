@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { Button } from '@/components/button';
 import { envContext } from '@/contexts/EnvContext';
-import { useTokenContext } from '@/contexts/tokenContext';
+import { useTokenManageContext } from '@/contexts/TokenManageContext';
 import { useGuardContext } from '@/hooks/useGuardContext';
 import { LoginFindIdDialog } from '@/pages/landing/landing-login/find-id-dialog';
 import { LoginResetPasswordDialog } from '@/pages/landing/landing-login/reset-password-dialog';
@@ -14,7 +14,7 @@ import { type AuthService } from '@/usecases/authService';
 type Props = { className?: string; authService: AuthService; onSignUp: () => void };
 
 export const LandingLogin = ({ className, authService, onSignUp }: Props) => {
-  const { saveToken } = useTokenContext();
+  const { saveToken } = useTokenManageContext();
   const { FACEBOOK_APP_ID } = useGuardContext(envContext);
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');

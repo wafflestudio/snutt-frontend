@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
 
 import { serviceContext } from '@/contexts/ServiceContext';
+import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
 import type { Color } from '@/entities/color';
 import type { WithInternalId } from '@/entities/id';
 import type { ClassTime, Lecture } from '@/entities/lecture';
@@ -95,7 +96,12 @@ export const MainLectureEditForm = ({ draft, defaultState = {}, setDraft }: Prop
 
 const useColorList = () => {
   const { colorService } = useGuardContext(serviceContext);
-  return useQuery({ queryKey: ['colors'], queryFn: () => colorService.getColorList(), staleTime: Infinity });
+  const { token } = useTokenAuthContext();
+  return useQuery({
+    queryKey: ['ColorService', 'getColorList', { token }] as const,
+    queryFn: ({ queryKey: [, , req] }) => colorService.getColorList(req),
+    staleTime: Infinity,
+  });
 };
 
 const Wrapper = styled.div``;

@@ -9,7 +9,7 @@ import { Button } from '@/components/button';
 import { Layout } from '@/components/layout';
 import { envContext } from '@/contexts/EnvContext';
 import { serviceContext } from '@/contexts/ServiceContext';
-import { useTokenContext } from '@/contexts/tokenContext';
+import { useTokenManageContext } from '@/contexts/TokenManageContext';
 import type { CoreServerError } from '@/entities/error';
 import { useGuardContext } from '@/hooks/useGuardContext';
 import { queryKey } from '@/utils/query-key-factory';
@@ -20,7 +20,7 @@ import { MypageRegisterId } from './mypage-register-id';
 
 export const MyPage = () => {
   const [isCloseOpen, setCloseOpen] = useState(false);
-  const { clearToken } = useTokenContext();
+  const { clearToken } = useTokenManageContext();
   const { data: myInfo } = useMyInfo();
   const navigate = useNavigate();
   const { timetableViewService, userService } = useGuardContext(serviceContext);
@@ -122,7 +122,7 @@ const useMyInfo = () => {
 };
 
 const useAttachFacebook = () => {
-  const { saveToken } = useTokenContext();
+  const { saveToken } = useTokenManageContext();
   const { errorService } = useGuardContext(serviceContext);
   const { userService } = useGuardContext(serviceContext);
 
@@ -136,7 +136,7 @@ const useAttachFacebook = () => {
 };
 
 const useDetachFacebook = () => {
-  const { saveToken } = useTokenContext();
+  const { saveToken } = useTokenManageContext();
   const { errorService } = useGuardContext(serviceContext);
   const { userService } = useGuardContext(serviceContext);
 

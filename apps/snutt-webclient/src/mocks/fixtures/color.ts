@@ -1,6 +1,6 @@
-import type { ColorRepository } from '@/repositories/colorRepository';
+import { type SnuttApi } from '@sf/snutt-api';
 
-export const mockVividIos: Awaited<ReturnType<ColorRepository['getColorPalette']>> = {
+export const mockVividIos: (Awaited<ReturnType<SnuttApi['GET /v1/colors/vivid_ios']>> & { status: 200 })['data'] = {
   message: 'ok',
   colors: [
     { fg: '#ffffff', bg: '#e54459' },

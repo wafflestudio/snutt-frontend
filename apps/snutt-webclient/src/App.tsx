@@ -10,16 +10,17 @@ import { Button } from '@/components/button';
 import { Dialog } from '@/components/dialog';
 import { envContext } from '@/contexts/EnvContext';
 import { serviceContext } from '@/contexts/ServiceContext';
-import { tokenContext } from '@/contexts/tokenContext';
+import { TokenAuthContext } from '@/contexts/TokenAuthContext';
+import { TokenManageContext } from '@/contexts/TokenManageContext';
 import { useGuardContext } from '@/hooks/useGuardContext';
 import { createFetchClient } from '@/infrastructures/createFetchClient';
 import { createLocalStorageClient } from '@/infrastructures/createLocalStorageClient';
 import { createSessionStorageClient } from '@/infrastructures/createSessionStorageClient';
 import { implAuthSnuttApiRepository } from '@/infrastructures/implAuthSnuttApiRepository';
+import { implColorSnuttApiRepository } from '@/infrastructures/implColorSnuttApiRepository';
 import { ErrorPage } from '@/pages/error';
 import { Main } from '@/pages/main';
 import { MyPage } from '@/pages/mypage';
-import { getColorRepository } from '@/repositories/colorRepository';
 import { getErrorRepository } from '@/repositories/errorRepository';
 import { getFeedbackRepository } from '@/repositories/feedbackRepository';
 import { getNotificationRepository } from '@/repositories/notificationRepository';
@@ -104,45 +105,47 @@ export const App = () => {
   return (
     <QueryClientProvider key={token} client={queryClient}>
       <GlobalStyles />
-      <tokenContext.Provider value={tokenContextValue}>
+      <TokenManageContext.Provider value={tokenContextValue}>
         {token ? (
-          <serviceContext.Provider
-            value={{
-              ...getAuthorizedServices(token, ENV),
-              errorService,
-              timetableViewService,
-              feedbackService: unauthorizedServices.feedbackService,
-            }}
-          >
-            <RouterProvider
-              router={createBrowserRouter([
-                {
-                  children: [
-                    { path: '/', element: <Main /> },
-                    { path: '/mypage', element: <MyPage /> },
-                    { path: '/*', element: <NotFoundPage /> },
-                  ],
-                  errorElement: <ErrorPage errorService={errorService} />,
-                },
-              ])}
-            />
-            <Dialog open={isWrongTokenDialogOpen}>
-              <Dialog.Title>인증정보가 올바르지 않아요</Dialog.Title>
-              <Dialog.Content>다시 로그인해 주세요</Dialog.Content>
-              <Dialog.Actions>
-                <Button data-testid="wrong-token-dialog-logout" onClick={onClickLogout}>
-                  로그아웃하기
-                </Button>
-              </Dialog.Actions>
-            </Dialog>
-          </serviceContext.Provider>
+          <TokenAuthContext.Provider value={{ token }}>
+            <serviceContext.Provider
+              value={{
+                ...getAuthorizedServices(token, ENV),
+                errorService,
+                timetableViewService,
+                feedbackService: unauthorizedServices.feedbackService,
+              }}
+            >
+              <RouterProvider
+                router={createBrowserRouter([
+                  {
+                    children: [
+                      { path: '/', element: <Main /> },
+                      { path: '/mypage', element: <MyPage /> },
+                      { path: '/*', element: <NotFoundPage /> },
+                    ],
+                    errorElement: <ErrorPage errorService={errorService} />,
+                  },
+                ])}
+              />
+              <Dialog open={isWrongTokenDialogOpen}>
+                <Dialog.Title>인증정보가 올바르지 않아요</Dialog.Title>
+                <Dialog.Content>다시 로그인해 주세요</Dialog.Content>
+                <Dialog.Actions>
+                  <Button data-testid="wrong-token-dialog-logout" onClick={onClickLogout}>
+                    로그아웃하기
+                  </Button>
+                </Dialog.Actions>
+              </Dialog>
+            </serviceContext.Provider>
+          </TokenAuthContext.Provider>
         ) : (
           <Landing
             feedbackService={unauthorizedServices.feedbackService}
             authService={unauthorizedServices.authService}
           />
         )}
-      </tokenContext.Provider>
+      </TokenManageContext.Provider>
       <ReactQueryDevtools />
     </QueryClientProvider>
   );
@@ -190,16 +193,18 @@ const getAuthorizedServices = (
     headers: { 'x-access-apikey': ENV.API_KEY, 'x-access-token': token },
   });
 
+  const snuttApi = getSnuttApi(ENV);
+
   const userRepository = getUserRepository({ httpClient });
-  const authRepository = implAuthSnuttApiRepository({ snuttApi: getSnuttApi(ENV) });
+  const authRepository = implAuthSnuttApiRepository({ snuttApi });
   const timetableRepository = getTimetableRepository({ httpClient });
   const semesterRepository = getSemesterRepository({ httpClient });
   const searchRepository = getSearchRepository({ httpClient });
   const notificationRepository = getNotificationRepository({ httpClient });
-  const colorRepository = getColorRepository({ httpClient });
+  const colorRepository = implColorSnuttApiRepository({ snuttApi });
 
   const userService = getUserService({ repositories: [userRepository] });
-  const colorService = getColorService({ repositories: [colorRepository] });
+  const colorService = getColorService({ colorRepository });
   const notificationService = getNotificationService({ repositories: [notificationRepository] });
   const searchService = getSearchService({ repositories: [searchRepository] });
   const timetableService = getTimetableService({ repositories: [timetableRepository] });

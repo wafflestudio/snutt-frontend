@@ -1,13 +1,16 @@
 import type { Color } from '@/entities/color';
-import type { ColorRepository } from '@/repositories/colorRepository';
 
 export interface ColorService {
-  getColorList(): Promise<Color[]>;
+  getColorList(_: { token: string }): Promise<Color[]>;
 }
 
-type Deps = { repositories: [ColorRepository] };
-export const getColorService = ({ repositories }: Deps): ColorService => {
+type Deps = {
+  colorRepository: {
+    getColorPalette({ token }: { token: string }): Promise<Color[]>;
+  };
+};
+export const getColorService = ({ colorRepository }: Deps): ColorService => {
   return {
-    getColorList: () => repositories[0].getColorPalette().then((res) => res.colors),
+    getColorList: (req: { token: string }) => colorRepository.getColorPalette(req),
   };
 };
