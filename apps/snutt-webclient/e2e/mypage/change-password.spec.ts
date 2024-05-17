@@ -47,7 +47,7 @@ test('비밀번호 변경 기능이 정상 동작한다 (기존 비밀번호 틀
     ),
     page.getByTestId('mypage-change-password-submit').click(),
   ]);
-  await expect(page.getByTestId(testIds['오류 메세지'])).toHaveText('에러가 발생했습니다');
+  await expect(page.getByTestId(testIds['오류 메세지'])).toHaveText('오류가 발생했습니다');
 });
 
 test('비밀번호 변경 기능이 정상 동작한다 (정상 케이스)', async ({ page }) => {

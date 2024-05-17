@@ -6,6 +6,7 @@ import { Button } from '@/components/button';
 import { ErrorDialog } from '@/components/error-dialog';
 import { serviceContext } from '@/contexts/ServiceContext';
 import { useTokenManageContext } from '@/contexts/TokenManageContext';
+import { getErrorMessage } from '@/entities/error';
 import { useErrorDialog } from '@/hooks/useErrorDialog';
 import { useGuardContext } from '@/hooks/useGuardContext';
 import { get } from '@/utils/object/get';
@@ -15,7 +16,7 @@ export const MypageChangePassword = () => {
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
   const { saveToken } = useTokenManageContext();
-  const { authService, errorService } = useGuardContext(serviceContext);
+  const { authService } = useGuardContext(serviceContext);
 
   const { isOpen, message, onClose, open } = useErrorDialog();
 
@@ -42,7 +43,7 @@ export const MypageChangePassword = () => {
           setNewPasswordConfirm('');
           saveToken(token, false);
         },
-        onError: (err) => open(errorService.getErrorMessage(get(err, ['errcode']) as number)),
+        onError: (err) => open(getErrorMessage({ errcode: get(err, ['errcode']) as number })),
       },
     );
   };

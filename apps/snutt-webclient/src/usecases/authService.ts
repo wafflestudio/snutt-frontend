@@ -1,5 +1,5 @@
+import { getErrorMessage } from '@/entities/error';
 import { type ApiResponse, type UsecaseResponse } from '@/entities/response';
-import { type ErrorRepository } from '@/repositories/errorRepository';
 import { type UserRepository } from '@/repositories/userRepository';
 
 export interface AuthService {
@@ -29,9 +29,8 @@ type Deps = {
     resetPassword(body: { user_id: string; password: string }): ApiResponse<{ message: 'ok' }>;
   };
   userRepository: UserRepository;
-  errorRepository: ErrorRepository;
 };
-export const getAuthService = ({ authRepository, userRepository, errorRepository }: Deps): AuthService => {
+export const getAuthService = ({ authRepository, userRepository }: Deps): AuthService => {
   return {
     isValidPassword: (password) =>
       password.split('').some((item) => /[0-9]+/.test(item)) &&
@@ -45,23 +44,23 @@ export const getAuthService = ({ authRepository, userRepository, errorRepository
         : authRepository.signInWithFacebook({ fb_id: params.fb_id, fb_token: params.fb_token }));
 
       if (data.type === 'success') return { type: 'success', data: data.data };
-      else return { type: 'error', message: errorRepository.getErrorMessage(data) };
+      else return { type: 'error', message: getErrorMessage(data) };
     },
     signUp: async (params) => {
       const data = await authRepository.signUpWithIdPassword(params);
       if (data.type === 'success') return { type: 'success', data: data.data };
-      else return { type: 'error', message: errorRepository.getErrorMessage(data) };
+      else return { type: 'error', message: getErrorMessage(data) };
     },
     closeAccount: () => userRepository.deleteUser(),
     findIdByEmail: async (body) => {
       const data = await authRepository.findId(body);
       if (data.type === 'success') return { type: 'success' };
-      else return { type: 'error', message: errorRepository.getErrorMessage(data) };
+      else return { type: 'error', message: getErrorMessage(data) };
     },
     passwordResetCheckEmail: async (body) => {
       const data = await authRepository.passwordResetCheckEmail(body);
       if (data.type === 'success') return { type: 'success', data: data.data };
-      else return { type: 'error', message: errorRepository.getErrorMessage(data) };
+      else return { type: 'error', message: getErrorMessage(data) };
     },
     sendPasswordResetVerificationEmail: async (body) => {
       const data = await authRepository.sendPasswordResetVerificationEmail(body);
@@ -71,7 +70,7 @@ export const getAuthService = ({ authRepository, userRepository, errorRepository
     verifyPasswordResetCode: async (body) => {
       const data = await authRepository.verifyPasswordResetCode(body);
       if (data.type === 'success') return { type: 'success' };
-      else return { type: 'error', message: errorRepository.getErrorMessage(data) };
+      else return { type: 'error', message: getErrorMessage(data) };
     },
     resetPassword: async (body) => {
       const data = await authRepository.resetPassword(body);
