@@ -6,10 +6,8 @@ import { Button } from '@/components/button';
 import { Dialog } from '@/components/dialog';
 import { Progress } from '@/components/progress';
 import { type AuthService } from '@/usecases/authService';
-import { type ErrorService } from '@/usecases/errorService';
-import { get } from '@/utils/object/get';
 
-type Props = { open: boolean; onClose: () => void; errorService: ErrorService; authService: AuthService };
+type Props = { open: boolean; onClose: () => void; authService: AuthService };
 
 enum Step {
   ID_INPUT, //       아이디 입력
@@ -19,7 +17,7 @@ enum Step {
   DONE, //           완료
 }
 
-export const LoginResetPasswordDialog = ({ open, onClose, errorService, authService }: Props) => {
+export const LoginResetPasswordDialog = ({ open, onClose, authService }: Props) => {
   const [id, setId] = useState('');
   const [code, setCode] = useState('');
   const [password, setPassword] = useState('');
@@ -63,9 +61,7 @@ export const LoginResetPasswordDialog = ({ open, onClose, errorService, authServ
                   disabled={checkEmailMutation.isPending}
                 />
                 <Error data-testid="login-reset-password-error">
-                  {checkEmailMutation.error
-                    ? errorService.getErrorMessage(get(checkEmailMutation.error, ['errcode']) as number)
-                    : ''}
+                  {checkEmailMutation.data?.type === 'error' ? checkEmailMutation.data.message : ''}
                 </Error>
                 <NextButton
                   disabled={!id}
@@ -83,15 +79,19 @@ export const LoginResetPasswordDialog = ({ open, onClose, errorService, authServ
               <>
                 <StyledProgress progress={0.4} />
                 <Info data-testid="login-reset-password-info">아래 이메일로 인증코드를 전송합니다.</Info>
-                <Input data-testid="login-reset-password-input" readOnly value={checkEmailMutation.data?.email} />
+                <Input
+                  data-testid="login-reset-password-input"
+                  readOnly
+                  value={checkEmailMutation.data?.type === 'success' ? checkEmailMutation.data.data.email : undefined}
+                />
                 <Error data-testid="login-reset-password-error" />
                 <NextButton
                   data-testid="login-reset-password-cta"
                   size="small"
                   onClick={() => {
-                    if (!checkEmailMutation.data?.email) return;
+                    if (checkEmailMutation.data?.type !== 'success') return;
                     sendCodeEmailMutation.mutate(
-                      { user_email: checkEmailMutation.data?.email },
+                      { user_email: checkEmailMutation.data.data.email },
                       { onSuccess: () => setStep(Step.CODE_INPUT) },
                     );
                   }}
@@ -111,9 +111,7 @@ export const LoginResetPasswordDialog = ({ open, onClose, errorService, authServ
                   disabled={verifyCodeMutation.isPending}
                 />
                 <Error data-testid="login-reset-password-error">
-                  {verifyCodeMutation.error
-                    ? errorService.getErrorMessage(get(verifyCodeMutation.error, ['errcode']) as number)
-                    : ''}
+                  {verifyCodeMutation.data?.type === 'error' ? verifyCodeMutation.data.message : ''}
                 </Error>
                 <NextButton
                   disabled={!code}

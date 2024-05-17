@@ -140,7 +140,6 @@ export const App = () => {
           <Landing
             feedbackService={unauthorizedServices.feedbackService}
             authService={unauthorizedServices.authService}
-            errorService={errorService}
           />
         )}
       </tokenContext.Provider>
@@ -167,10 +166,11 @@ const getUnauthorizedServices = (ENV: { API_BASE_URL: string; API_KEY: string })
     headers: { 'x-access-apikey': ENV.API_KEY },
   });
 
+  const errorRepository = getErrorRepository();
   const authRepository = implAuthSnuttApiRepository({ snuttApi: getSnuttApi(ENV) });
   const feedbackRepository = getFeedbackRepository({ httpClient });
   const userRepository = getUserRepository({ httpClient });
-  const authService = getAuthService({ authRepository, userRepository });
+  const authService = getAuthService({ authRepository, userRepository, errorRepository });
   const feedbackService = getFeedbackService({ repositories: [feedbackRepository] });
 
   return { authService, feedbackService };
@@ -207,7 +207,7 @@ const getAuthorizedServices = (
   const timeMaskService = getTimeMaskService();
   const hourMinuteService = getHourMinuteService();
   const hourMinutePickerService = getHourMinutePickerService({ services: [hourMinuteService] });
-  const authService = getAuthService({ authRepository, userRepository });
+  const authService = getAuthService({ authRepository, userRepository, errorRepository: getErrorRepository() });
   const semesterService = getSemesterService({ repositories: [semesterRepository] });
 
   return {

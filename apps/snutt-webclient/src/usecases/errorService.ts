@@ -13,7 +13,7 @@ export const getErrorService = (args: {
 
   return {
     getErrorMessage: (errorCode: number, useDefaultMessage = true) =>
-      errorRepo.getErrorMessage({ errorCode, useDefaultMessage }),
+      errorRepo.getErrorMessage({ errcode: errorCode, useDefaultMessage }),
     captureError: (error: Error) => args.errorCaptureClient.capture(error),
   };
 };

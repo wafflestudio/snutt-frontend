@@ -8,20 +8,39 @@ export const implAuthSnuttApiRepository = ({
   snuttApi: SnuttApi;
 }): Parameters<typeof getAuthService>[0]['authRepository'] => {
   return {
-    signInWithIdPassword: (body) => snuttApi['POST /v1/auth/login_local']({ body }).then((r) => r.data),
-    signInWithFacebook: async (body) => snuttApi['POST /auth/login_fb']({ body }).then((r) => r.data),
-    signUpWithIdPassword: async (body) => {
-      const response = await snuttApi['POST /v1/auth/register_local']({ body });
-      if (response.status === 403) throw response.data;
-      return response.data;
+    signInWithIdPassword: async (body) => {
+      const { status, data } = await snuttApi['POST /v1/auth/login_local']({ body });
+
+      if (status === 200) return { type: 'success', data };
+      else return { type: 'error', errcode: data.errcode };
     },
-    findId: async (body) => snuttApi['POST /v1/auth/id/find']({ body }).then((r) => r.data),
-    passwordResetCheckEmail: async (body) =>
-      snuttApi['POST /v1/auth/password/reset/email/check']({ body }).then((r) => r.data),
+    signInWithFacebook: async (body) => {
+      const { status, data } = await snuttApi['POST /auth/login_fb']({ body });
+      if (status === 200) return { type: 'success', data };
+      else return { type: 'error', errcode: data.errcode };
+    },
+    signUpWithIdPassword: async (body) => {
+      const { status, data } = await snuttApi['POST /v1/auth/register_local']({ body });
+      if (status === 200) return { type: 'success', data };
+      else return { type: 'error', errcode: data.errcode };
+    },
+    findId: async (body) => {
+      const { status, data } = await snuttApi['POST /v1/auth/id/find']({ body });
+      if (status === 200) return { type: 'success' };
+      else return { type: 'error', errcode: data.errcode };
+    },
+    passwordResetCheckEmail: async (body) => {
+      const { status, data } = await snuttApi['POST /v1/auth/password/reset/email/check']({ body });
+      if (status === 200) return { type: 'success', data };
+      else return { type: 'error', errcode: data.errcode };
+    },
     sendPasswordResetVerificationEmail: async (body) =>
       snuttApi['POST /v1/auth/password/reset/email/send']({ body }).then((r) => r.data),
-    verifyPasswordResetCode: async (body) =>
-      snuttApi['POST /v1/auth/password/reset/verification/code']({ body }).then((r) => r.data),
+    verifyPasswordResetCode: async (body) => {
+      const { status, data } = await snuttApi['POST /v1/auth/password/reset/verification/code']({ body });
+      if (status === 200) return { type: 'success' };
+      else return { type: 'error', errcode: data.errcode };
+    },
     resetPassword: async (body) => snuttApi['POST /v1/auth/password/reset']({ body }).then((r) => r.data),
   };
 };

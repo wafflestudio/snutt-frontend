@@ -3,7 +3,6 @@ import styled, { css } from 'styled-components';
 
 import { LandingSignUp } from '@/pages/landing/landing-signup';
 import { type AuthService } from '@/usecases/authService';
-import { type ErrorService } from '@/usecases/errorService';
 import { type FeedbackService } from '@/usecases/feedbackService';
 
 import { LandingDescription } from './landing-description';
@@ -11,11 +10,9 @@ import { LandingLogin } from './landing-login';
 
 export const Landing = ({
   authService,
-  errorService,
   feedbackService,
 }: {
   authService: AuthService;
-  errorService: ErrorService;
   feedbackService: FeedbackService;
 }) => {
   const [mode, setMode] = useState<'LOGIN' | 'SIGNUP'>('LOGIN');
@@ -25,8 +22,8 @@ export const Landing = ({
       <Left feedbackService={feedbackService} />
       {
         {
-          LOGIN: <Login authService={authService} errorService={errorService} onSignUp={() => setMode('SIGNUP')} />,
-          SIGNUP: <SignUp authService={authService} errorService={errorService} />,
+          LOGIN: <Login authService={authService} onSignUp={() => setMode('SIGNUP')} />,
+          SIGNUP: <SignUp authService={authService} />,
         }[mode]
       }
     </Wrapper>
