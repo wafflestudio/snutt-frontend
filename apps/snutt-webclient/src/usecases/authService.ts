@@ -1,4 +1,4 @@
-import { type AuthRepository } from '@/repositories/authRepository';
+import { type SignInResponse } from '@/entities/auth';
 import { type UserRepository } from '@/repositories/userRepository';
 
 export interface AuthService {
@@ -16,8 +16,23 @@ export interface AuthService {
   resetPassword(body: { user_id: string; password: string }): Promise<{ message: 'ok' }>;
 }
 
-type Deps = { repositories: [AuthRepository, UserRepository] };
-export const getAuthService = ({ repositories: [authRepository, userRepository] }: Deps): AuthService => {
+type Deps = {
+  authRepository: {
+    signInWithIdPassword(args: { id: string; password: string }): Promise<SignInResponse>;
+    signInWithFacebook(args: { fb_id: string; fb_token: string }): Promise<SignInResponse>;
+    signUpWithIdPassword(body: {
+      id: string;
+      password: string;
+    }): Promise<{ message: 'ok'; token: string; user_id: string }>;
+    findId(body: { email: string }): Promise<{ message: 'ok' }>;
+    passwordResetCheckEmail(body: { user_id: string }): Promise<{ email: string }>;
+    sendPasswordResetVerificationEmail(body: { user_email: string }): Promise<{ message: 'ok' }>;
+    verifyPasswordResetCode(body: { user_id: string; code: string }): Promise<{ message: 'ok' }>;
+    resetPassword(body: { user_id: string; password: string }): Promise<{ message: 'ok' }>;
+  };
+  userRepository: UserRepository;
+};
+export const getAuthService = ({ authRepository, userRepository }: Deps): AuthService => {
   return {
     isValidPassword: (password) =>
       password.split('').some((item) => /[0-9]+/.test(item)) &&

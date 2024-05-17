@@ -2,13 +2,17 @@
  * @link https://snu4t-api-dev.wafflestudio.com/webjars/swagger-ui/index.html
  */
 
-import { postV1AuthLoginLocal } from './apis/post-v1-auth-login-local';
-import { InternalClient } from './httpClient';
+import { apis } from './apis';
 
 export const implSnuttApi = ({ httpClient, apiKey }: { httpClient: SnuttBackendHttpClient; apiKey: string }) =>
   apis({
-    call: async <R>(_: { method: string; path: string; body?: Record<string, unknown>; token?: string }) =>
-      httpClient.call<R>({
+    call: async <R extends { status: number; data: unknown }>(_: {
+      method: string;
+      path: string;
+      body?: Record<string, unknown>;
+      token?: string;
+    }) => {
+      const response = await httpClient.call({
         method: _.method,
         path: _.path,
         body: _.body,
@@ -17,20 +21,19 @@ export const implSnuttApi = ({ httpClient, apiKey }: { httpClient: SnuttBackendH
           ...(_.token ? { 'x-access-token': _.token } : {}),
           'x-access-apikey': apiKey,
         },
-      }),
+      });
+
+      return response as R;
+    },
   });
 
 export type SnuttApi = ReturnType<typeof implSnuttApi>;
 
 type SnuttBackendHttpClient = {
-  call: <R>(_: {
+  call: (_: {
     method: string;
     path: string;
     body?: Record<string, unknown>;
     headers?: Record<string, string>;
-  }) => Promise<R>;
+  }) => Promise<{ status: number; data: unknown }>;
 };
-
-const apis = (client: InternalClient) => ({
-  'POST /v1/login/local': postV1AuthLoginLocal(client),
-});
