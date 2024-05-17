@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Button } from '@/components/button';
 import { ErrorDialog } from '@/components/error-dialog';
 import { serviceContext } from '@/contexts/ServiceContext';
-import { useTokenContext } from '@/contexts/tokenContext';
+import { useTokenManageContext } from '@/contexts/TokenManageContext';
 import { useErrorDialog } from '@/hooks/useErrorDialog';
 import { useGuardContext } from '@/hooks/useGuardContext';
 import { get } from '@/utils/object/get';
@@ -67,7 +67,7 @@ export const MypageRegisterId = () => {
 };
 
 const useAddIdPassword = () => {
-  const { saveToken } = useTokenContext();
+  const { saveToken } = useTokenManageContext();
   const queryClient = useQueryClient();
   const { userService } = useGuardContext(serviceContext);
 

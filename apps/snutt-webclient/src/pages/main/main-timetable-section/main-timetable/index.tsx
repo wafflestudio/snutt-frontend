@@ -3,6 +3,7 @@ import styled, { css, keyframes } from 'styled-components';
 
 import { Button } from '@/components/button';
 import { serviceContext } from '@/contexts/ServiceContext';
+import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
 import type { BaseLecture } from '@/entities/lecture';
 import { DAY_LABEL_MAP } from '@/entities/time';
 import type { FullTimetable } from '@/entities/timetable';
@@ -135,7 +136,12 @@ export const MainTimeTable = ({
 
 const useColorList = () => {
   const { colorService } = useGuardContext(serviceContext);
-  return useQuery({ queryKey: ['colors'], queryFn: () => colorService.getColorList(), staleTime: Infinity });
+  const { token } = useTokenAuthContext();
+  return useQuery({
+    queryKey: ['ColorService', 'getColorList', { token }] as const,
+    queryFn: ({ queryKey: [, , req] }) => colorService.getColorList(req),
+    staleTime: Infinity,
+  });
 };
 
 const Wrapper = styled.div<{ $columnCount: number; $rowCount: number }>`

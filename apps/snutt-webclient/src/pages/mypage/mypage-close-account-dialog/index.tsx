@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { Button } from '@/components/button';
 import { Dialog } from '@/components/dialog';
 import { serviceContext } from '@/contexts/ServiceContext';
-import { useTokenContext } from '@/contexts/tokenContext';
+import { useTokenManageContext } from '@/contexts/TokenManageContext';
 import { useGuardContext } from '@/hooks/useGuardContext';
 
 const CONFIRM_TEXT = '탈퇴';
@@ -15,7 +15,7 @@ type Props = { isOpen: boolean; onClose: () => void };
 
 export const MypageCloseAccountDialog = ({ onClose, isOpen }: Props) => {
   const [confirmText, setConfirmText] = useState('');
-  const { clearToken } = useTokenContext();
+  const { clearToken } = useTokenManageContext();
   const { mutate } = useCloseAccount();
   const navigate = useNavigate();
 

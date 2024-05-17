@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { Button } from '@/components/button';
 import { ErrorDialog } from '@/components/error-dialog';
-import { useTokenContext } from '@/contexts/tokenContext';
+import { useTokenManageContext } from '@/contexts/TokenManageContext';
 import { useErrorDialog } from '@/hooks/useErrorDialog';
 import { type AuthService } from '@/usecases/authService';
 
@@ -14,7 +14,7 @@ export const LandingSignUp = ({ authService, className }: { className?: string; 
   const [passwordConfirm, setPasswordConfirm] = useState('');
 
   const { isOpen, message, onClose, open } = useErrorDialog();
-  const { saveToken } = useTokenContext();
+  const { saveToken } = useTokenManageContext();
   const { mutate } = useSignUp(authService);
 
   const onSubmit = async () => {
