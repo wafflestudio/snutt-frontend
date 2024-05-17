@@ -6,51 +6,38 @@ import styled from 'styled-components';
 import { Button } from '@/components/button';
 import { envContext } from '@/contexts/EnvContext';
 import { useTokenContext } from '@/contexts/tokenContext';
-import { type CoreServerError } from '@/entities/error';
 import { useGuardContext } from '@/hooks/useGuardContext';
 import { LoginFindIdDialog } from '@/pages/landing/landing-login/find-id-dialog';
 import { LoginResetPasswordDialog } from '@/pages/landing/landing-login/reset-password-dialog';
 import { type AuthService } from '@/usecases/authService';
-import { type ErrorService } from '@/usecases/errorService';
 
-type Props = { className?: string; authService: AuthService; errorService: ErrorService; onSignUp: () => void };
+type Props = { className?: string; authService: AuthService; onSignUp: () => void };
 
-export const LandingLogin = ({ className, authService, errorService, onSignUp }: Props) => {
+export const LandingLogin = ({ className, authService, onSignUp }: Props) => {
   const { saveToken } = useTokenContext();
   const { FACEBOOK_APP_ID } = useGuardContext(envContext);
-  const [id, setId] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [keepSignIn, setKeepSignIn] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [id, setId] = useState('');
+  const [password, setPassword] = useState('');
+  const [keepSignIn, setKeepSignIn] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [findIdDialogOpen, setFindIdDialogOpen] = useState(false);
   const [resetPasswordDialogOpen, setResetPasswordDialogOpen] = useState(false);
 
   const handleSignIn = async () => {
     setErrorMessage('');
 
-    try {
-      const res = await authService.signIn({ type: 'LOCAL', id, password });
-
-      saveToken(res.token, keepSignIn);
-    } catch (error) {
-      const errorCode = (error as CoreServerError).errcode;
-
-      setErrorMessage(errorService.getErrorMessage(errorCode));
-    }
+    const res = await authService.signIn({ type: 'LOCAL', id, password });
+    if (res.type === 'success') saveToken(res.data.token, keepSignIn);
+    else setErrorMessage(res.message);
   };
 
   const handleFacebookSignIn = async (userInfo: ReactFacebookLoginInfo) => {
     setErrorMessage('');
 
-    try {
-      const res = await authService.signIn({ type: 'FACEBOOK', fb_id: userInfo.id, fb_token: userInfo.accessToken });
+    const res = await authService.signIn({ type: 'FACEBOOK', fb_id: userInfo.id, fb_token: userInfo.accessToken });
 
-      saveToken(res.token, keepSignIn);
-    } catch (error) {
-      const errorCode = (error as CoreServerError).errcode;
-
-      setErrorMessage(errorService.getErrorMessage(errorCode));
-    }
+    if (res.type === 'success') saveToken(res.data.token, keepSignIn);
+    else setErrorMessage(res.message);
   };
 
   return (
@@ -103,15 +90,9 @@ export const LandingLogin = ({ className, authService, errorService, onSignUp }:
           회원가입
         </OtherButton>
       </EtcWrapper>
-      <LoginFindIdDialog
-        authService={authService}
-        errorService={errorService}
-        open={findIdDialogOpen}
-        onClose={() => setFindIdDialogOpen(false)}
-      />
+      <LoginFindIdDialog authService={authService} open={findIdDialogOpen} onClose={() => setFindIdDialogOpen(false)} />
       <LoginResetPasswordDialog
         authService={authService}
-        errorService={errorService}
         open={resetPasswordDialogOpen}
         onClose={() => setResetPasswordDialogOpen(false)}
       />

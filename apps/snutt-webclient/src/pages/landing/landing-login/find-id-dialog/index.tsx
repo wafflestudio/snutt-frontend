@@ -5,14 +5,12 @@ import styled from 'styled-components';
 import { Button } from '@/components/button';
 import { Dialog } from '@/components/dialog';
 import { type AuthService } from '@/usecases/authService';
-import { type ErrorService } from '@/usecases/errorService';
-import { get } from '@/utils/object/get';
 
-type Props = { open: boolean; onClose: () => void; errorService: ErrorService; authService: AuthService };
+type Props = { open: boolean; onClose: () => void; authService: AuthService };
 
-export const LoginFindIdDialog = ({ open, onClose, errorService, authService }: Props) => {
+export const LoginFindIdDialog = ({ open, onClose, authService }: Props) => {
   const [email, setEmail] = useState('');
-  const { mutate, isSuccess, error, reset, status } = useFindId(authService);
+  const { mutate, data, reset, status } = useFindId(authService);
 
   const isValid = !!email;
 
@@ -22,18 +20,27 @@ export const LoginFindIdDialog = ({ open, onClose, errorService, authService }: 
     reset();
   };
 
+  const message = (() => {
+    if (!data) return '';
+    if (data.type === 'success') return '이메일이 전송되었어요';
+    return data.message;
+  })();
+
   return (
     <Dialog open={open} onClose={close}>
       <Dialog.Title>아이디 찾기</Dialog.Title>
       <Content>
         <Info>아래에 이메일을 입력해 주세요.</Info>
-        <EmailInput data-testid="login-find-id-email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <EmailInput
+          data-testid="login-find-id-email"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            reset();
+          }}
+        />
         <Result $status={status} data-testid="login-find-id-result">
-          {isSuccess
-            ? '이메일이 전송되었어요'
-            : error
-              ? errorService.getErrorMessage(get(error, ['errcode']) as number)
-              : ''}
+          {message}
         </Result>
       </Content>
       <Dialog.Actions>
@@ -42,7 +49,7 @@ export const LoginFindIdDialog = ({ open, onClose, errorService, authService }: 
         </Button>
         <Button
           data-testid="login-find-id-submit"
-          disabled={!isValid || isSuccess}
+          disabled={!isValid || status === 'success' || status === 'pending'}
           size="small"
           onClick={() => mutate({ email })}
         >

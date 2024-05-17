@@ -7,18 +7,8 @@ import { ErrorDialog } from '@/components/error-dialog';
 import { useTokenContext } from '@/contexts/tokenContext';
 import { useErrorDialog } from '@/hooks/useErrorDialog';
 import { type AuthService } from '@/usecases/authService';
-import { type ErrorService } from '@/usecases/errorService';
-import { get } from '@/utils/object/get';
 
-export const LandingSignUp = ({
-  authService,
-  errorService,
-  className,
-}: {
-  className?: string;
-  authService: AuthService;
-  errorService: ErrorService;
-}) => {
+export const LandingSignUp = ({ authService, className }: { className?: string; authService: AuthService }) => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
@@ -40,13 +30,7 @@ export const LandingSignUp = ({
 
     mutate(
       { id, password },
-      {
-        onSuccess: ({ token }) => saveToken(token, false),
-        onError: (err) => {
-          const errcode = Number(get(err, ['errcode']));
-          open(errorService.getErrorMessage(errcode, true));
-        },
-      },
+      { onSuccess: (data) => (data.type === 'success' ? saveToken(data.data.token, false) : open(data.message)) },
     );
   };
 

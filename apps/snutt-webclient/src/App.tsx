@@ -15,10 +15,10 @@ import { useGuardContext } from '@/hooks/useGuardContext';
 import { createFetchClient } from '@/infrastructures/createFetchClient';
 import { createLocalStorageClient } from '@/infrastructures/createLocalStorageClient';
 import { createSessionStorageClient } from '@/infrastructures/createSessionStorageClient';
+import { implAuthSnuttApiRepository } from '@/infrastructures/implAuthSnuttApiRepository';
 import { ErrorPage } from '@/pages/error';
 import { Main } from '@/pages/main';
 import { MyPage } from '@/pages/mypage';
-import { getAuthRepository } from '@/repositories/authRepository';
 import { getColorRepository } from '@/repositories/colorRepository';
 import { getErrorRepository } from '@/repositories/errorRepository';
 import { getFeedbackRepository } from '@/repositories/feedbackRepository';
@@ -140,7 +140,6 @@ export const App = () => {
           <Landing
             feedbackService={unauthorizedServices.feedbackService}
             authService={unauthorizedServices.authService}
-            errorService={errorService}
           />
         )}
       </tokenContext.Provider>
@@ -167,10 +166,11 @@ const getUnauthorizedServices = (ENV: { API_BASE_URL: string; API_KEY: string })
     headers: { 'x-access-apikey': ENV.API_KEY },
   });
 
-  const authRepository = getAuthRepository({ httpClient, snuttApi: getSnuttApi(ENV) });
+  const errorRepository = getErrorRepository();
+  const authRepository = implAuthSnuttApiRepository({ snuttApi: getSnuttApi(ENV) });
   const feedbackRepository = getFeedbackRepository({ httpClient });
   const userRepository = getUserRepository({ httpClient });
-  const authService = getAuthService({ repositories: [authRepository, userRepository] });
+  const authService = getAuthService({ authRepository, userRepository, errorRepository });
   const feedbackService = getFeedbackService({ repositories: [feedbackRepository] });
 
   return { authService, feedbackService };
@@ -191,7 +191,7 @@ const getAuthorizedServices = (
   });
 
   const userRepository = getUserRepository({ httpClient });
-  const authRepository = getAuthRepository({ httpClient, snuttApi: getSnuttApi(ENV) });
+  const authRepository = implAuthSnuttApiRepository({ snuttApi: getSnuttApi(ENV) });
   const timetableRepository = getTimetableRepository({ httpClient });
   const semesterRepository = getSemesterRepository({ httpClient });
   const searchRepository = getSearchRepository({ httpClient });
@@ -207,7 +207,7 @@ const getAuthorizedServices = (
   const timeMaskService = getTimeMaskService();
   const hourMinuteService = getHourMinuteService();
   const hourMinutePickerService = getHourMinutePickerService({ services: [hourMinuteService] });
-  const authService = getAuthService({ repositories: [authRepository, userRepository] });
+  const authService = getAuthService({ authRepository, userRepository, errorRepository: getErrorRepository() });
   const semesterService = getSemesterService({ repositories: [semesterRepository] });
 
   return {
@@ -228,7 +228,7 @@ const getAuthorizedServices = (
 const getSnuttApi = (ENV: { API_BASE_URL: string; API_KEY: string }) =>
   implSnuttApi({
     httpClient: {
-      call: async <R,>(_: {
+      call: async (_: {
         method: string;
         path: string;
         body?: Record<string, unknown>;
@@ -240,13 +240,12 @@ const getSnuttApi = (ENV: { API_BASE_URL: string; API_KEY: string }) =>
           ...(!!_.body ? { body: JSON.stringify(_.body) } : {}),
         });
 
-        const responseBody = await response.json().catch(() => null);
+        const responseBody = (await response.json().catch(() => null)) as unknown;
 
-        if (response.ok) {
-          return responseBody as R;
-        } else {
-          throw responseBody;
-        }
+        return {
+          status: response.status,
+          data: responseBody,
+        };
       },
     },
     apiKey: ENV.API_KEY,

@@ -32,6 +32,7 @@ test('아이디 찾기가 잘 동작한다 (실패)', async ({ page }) => {
   await page.getByTestId(testIds['아이디 찾기 이메일 입력창']).type('qwer');
   await page.getByTestId(testIds['아이디 찾기 전송 버튼']).click();
   await expect(page.getByTestId(testIds['아이디 찾기 결과 문구'])).toHaveText('유저를 찾을 수 없습니다');
+  await page.getByTestId(testIds['아이디 찾기 이메일 입력창']).type('asdf');
   await expect(page.getByTestId(testIds['아이디 찾기 전송 버튼'])).toBeEnabled();
 });
 

@@ -52,6 +52,7 @@ const errorTable = [
   { code: 12300, message: '강의 시간이 서로 겹칩니다.' },
   { code: 12301, message: '강의가 custom lecture입니다.' },
   { code: 12302, message: '유저에게 등록된 fcm key가 없습니다.' },
+  { code: 12303, message: '올바른 이메일을 입력해주세요.' },
   { code: 16384, message: 'Tag를 찾을 수 없습니다.' },
   { code: 16385, message: 'Timetable을 찾을 수 없습니다.' },
   { code: 16386, message: 'Lecture를 찾을 수 없습니다.' },
