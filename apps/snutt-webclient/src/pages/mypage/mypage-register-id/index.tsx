@@ -6,6 +6,7 @@ import { Button } from '@/components/button';
 import { ErrorDialog } from '@/components/error-dialog';
 import { serviceContext } from '@/contexts/ServiceContext';
 import { useTokenManageContext } from '@/contexts/TokenManageContext';
+import { getErrorMessage } from '@/entities/error';
 import { useErrorDialog } from '@/hooks/useErrorDialog';
 import { useGuardContext } from '@/hooks/useGuardContext';
 import { get } from '@/utils/object/get';
@@ -14,7 +15,7 @@ export const MypageRegisterId = () => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
-  const { authService, errorService } = useGuardContext(serviceContext);
+  const { authService } = useGuardContext(serviceContext);
 
   const { isOpen, message, onClose, open } = useErrorDialog();
 
@@ -31,7 +32,7 @@ export const MypageRegisterId = () => {
       return;
     }
 
-    mutate({ id, password }, { onError: (err) => open(errorService.getErrorMessage(get(err, ['errcode']) as number)) });
+    mutate({ id, password }, { onError: (err) => open(getErrorMessage({ errcode: get(err, ['errcode']) as number })) });
   };
 
   return (

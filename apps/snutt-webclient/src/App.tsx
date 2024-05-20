@@ -21,7 +21,6 @@ import { implColorSnuttApiRepository } from '@/infrastructures/implColorSnuttApi
 import { ErrorPage } from '@/pages/error';
 import { Main } from '@/pages/main';
 import { MyPage } from '@/pages/mypage';
-import { getErrorRepository } from '@/repositories/errorRepository';
 import { getFeedbackRepository } from '@/repositories/feedbackRepository';
 import { getNotificationRepository } from '@/repositories/notificationRepository';
 import { getSearchRepository } from '@/repositories/searchRepository';
@@ -54,7 +53,6 @@ export const App = () => {
   const ENV = useGuardContext(envContext);
 
   const errorService = getErrorService({
-    repositories: [getErrorRepository()],
     errorCaptureClient: getTruffleClient({
       enabled: ENV.NODE_ENV === 'production' && ENV.APP_ENV !== 'test',
       app: { name: 'snutt-webclient-v2', phase: ENV.APP_ENV },
@@ -169,11 +167,10 @@ const getUnauthorizedServices = (ENV: { API_BASE_URL: string; API_KEY: string })
     headers: { 'x-access-apikey': ENV.API_KEY },
   });
 
-  const errorRepository = getErrorRepository();
   const authRepository = implAuthSnuttApiRepository({ snuttApi: getSnuttApi(ENV) });
   const feedbackRepository = getFeedbackRepository({ httpClient });
   const userRepository = getUserRepository({ httpClient });
-  const authService = getAuthService({ authRepository, userRepository, errorRepository });
+  const authService = getAuthService({ authRepository, userRepository });
   const feedbackService = getFeedbackService({ repositories: [feedbackRepository] });
 
   return { authService, feedbackService };
@@ -212,7 +209,7 @@ const getAuthorizedServices = (
   const timeMaskService = getTimeMaskService();
   const hourMinuteService = getHourMinuteService();
   const hourMinutePickerService = getHourMinutePickerService({ services: [hourMinuteService] });
-  const authService = getAuthService({ authRepository, userRepository, errorRepository: getErrorRepository() });
+  const authService = getAuthService({ authRepository, userRepository });
   const semesterService = getSemesterService({ repositories: [semesterRepository] });
 
   return {

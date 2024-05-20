@@ -10,7 +10,7 @@ import { Layout } from '@/components/layout';
 import { envContext } from '@/contexts/EnvContext';
 import { serviceContext } from '@/contexts/ServiceContext';
 import { useTokenManageContext } from '@/contexts/TokenManageContext';
-import type { CoreServerError } from '@/entities/error';
+import { type CoreServerError, getErrorMessage } from '@/entities/error';
 import { useGuardContext } from '@/hooks/useGuardContext';
 import { queryKey } from '@/utils/query-key-factory';
 
@@ -123,7 +123,6 @@ const useMyInfo = () => {
 
 const useAttachFacebook = () => {
   const { saveToken } = useTokenManageContext();
-  const { errorService } = useGuardContext(serviceContext);
   const { userService } = useGuardContext(serviceContext);
 
   return useMutation({
@@ -131,19 +130,19 @@ const useAttachFacebook = () => {
       return userService.attachFacebookAccount({ fb_id: userInfo.id, fb_token: userInfo.accessToken });
     },
     onSuccess: ({ token }) => saveToken(token, false),
-    onError: (error) => alert(errorService.getErrorMessage((error as unknown as CoreServerError).errcode)),
+    onError: (error) => alert(getErrorMessage(error as unknown as CoreServerError)),
   });
 };
 
 const useDetachFacebook = () => {
   const { saveToken } = useTokenManageContext();
-  const { errorService } = useGuardContext(serviceContext);
+
   const { userService } = useGuardContext(serviceContext);
 
   return useMutation({
     mutationFn: () => userService.detachFacebookAccount(),
     onSuccess: ({ token }) => saveToken(token, false),
-    onError: (error) => alert(errorService.getErrorMessage((error as unknown as CoreServerError).errcode)),
+    onError: (error) => alert(getErrorMessage(error as unknown as CoreServerError)),
   });
 };
 
