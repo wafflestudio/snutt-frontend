@@ -20,11 +20,11 @@ import { implAuthSnuttApiRepository } from '@/infrastructures/implAuthSnuttApiRe
 import { implColorSnuttApiRepository } from '@/infrastructures/implColorSnuttApiRepository';
 import { implFeedbackSnuttApiRepository } from '@/infrastructures/implFeedbackSnuttApiRepository';
 import { getNotificationRepository } from '@/infrastructures/implNotificationSnuttApiRepository';
+import { implSearchSnuttApiRepository } from '@/infrastructures/implSearchSnuttApiRepository';
 import { implSemesterSnuttApiRepository } from '@/infrastructures/implSemesterSnuttApiRepository';
 import { ErrorPage } from '@/pages/error';
 import { Main } from '@/pages/main';
 import { MyPage } from '@/pages/mypage';
-import { getSearchRepository } from '@/repositories/searchRepository';
 import { getStorageRepository } from '@/repositories/storageRepository';
 import { getTimetableRepository } from '@/repositories/timetableRepository';
 import { getUserRepository } from '@/repositories/userRepository';
@@ -198,14 +198,14 @@ const getAuthorizedServices = (
   const authRepository = implAuthSnuttApiRepository({ snuttApi });
   const timetableRepository = getTimetableRepository({ httpClient });
   const semesterRepository = implSemesterSnuttApiRepository({ snuttApi });
-  const searchRepository = getSearchRepository({ httpClient });
+  const searchRepository = implSearchSnuttApiRepository({ snuttApi });
   const notificationRepository = getNotificationRepository({ snuttApi });
   const colorRepository = implColorSnuttApiRepository({ snuttApi });
 
   const userService = getUserService({ repositories: [userRepository] });
   const colorService = getColorService({ colorRepository });
   const notificationService = getNotificationService({ notificationRepository });
-  const searchService = getSearchService({ repositories: [searchRepository] });
+  const searchService = getSearchService({ searchRepository });
   const timetableService = getTimetableService({ repositories: [timetableRepository] });
   const lectureService = getLectureService();
   const timeMaskService = getTimeMaskService();

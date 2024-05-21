@@ -21,7 +21,6 @@ import {
   mockTimeTables,
 } from '@/mocks/fixtures/timetable';
 import { mockUsers } from '@/mocks/fixtures/user';
-import type { SearchRepository } from '@/repositories/searchRepository';
 import type { TimetableRepository } from '@/repositories/timetableRepository';
 import type { UserRepository } from '@/repositories/userRepository';
 
@@ -66,11 +65,7 @@ export const handlers = [
     withValidateAccess(() => ({ type: 'success', body: mockVividIos }), { token: false }),
   ),
 
-  http.get<
-    { year: string; semester: `${1 | 2 | 3 | 4}` },
-    never,
-    Awaited<ReturnType<SearchRepository['getTags']> | CoreServerError>
-  >(
+  http.get<{ year: string; semester: `${1 | 2 | 3 | 4}` }, never>(
     `*/v1/tags/:year/:semester`,
     withValidateAccess(
       ({ params: { year, semester } }) => {

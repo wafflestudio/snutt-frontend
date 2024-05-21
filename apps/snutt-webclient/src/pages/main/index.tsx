@@ -4,10 +4,10 @@ import styled, { css } from 'styled-components';
 
 import { Layout } from '@/components/layout';
 import { serviceContext } from '@/contexts/ServiceContext';
-import type { SearchFilter } from '@/entities/search';
 import { useGuardContext } from '@/hooks/useGuardContext';
 import { useYearSemester } from '@/hooks/useYearSemester';
 import { BREAKPOINT } from '@/styles/constants';
+import { type SearchService } from '@/usecases/searchService';
 import { queryKey } from '@/utils/query-key-factory';
 
 import { MainLectureCreateDialog } from './main-lecture-create-dialog';
@@ -36,12 +36,13 @@ export const Main = () => {
 
   const { mutate, data: searchResult, reset } = useSearchResult();
 
+  const searchResultLectures = searchResult?.type === 'success' ? searchResult.data : undefined;
   const dialogLecture = currentFullTimetable?.lecture_list.find((tt) => tt._id === dialogLectureId);
-  const previewLecture = searchResult?.find((item) => item._id === previewLectureId);
+  const previewLecture = searchResultLectures?.find((item) => item._id === previewLectureId);
 
   const onClickLecture = (id: string) => setDialogLectureId(id);
 
-  const onSearch = async (value: Partial<SearchFilter>) => {
+  const onSearch = async (value: Parameters<SearchService['search']>[0]) => {
     setLectureTab('result');
     mutate(value);
   };
@@ -62,7 +63,7 @@ export const Main = () => {
           hoveredLectureId={hoveredLectureId}
           setHoveredLectureId={setHoveredLectureId}
           onClickLecture={onClickLecture}
-          searchResult={searchResult}
+          searchResult={searchResultLectures}
           setPreviewLectureId={setPreviewLectureId}
         />
         <TimetableSection
@@ -119,7 +120,7 @@ const useSearchResult = () => {
   const { searchService } = useGuardContext(serviceContext);
   return useMutation({
     mutationKey: ['search_query'],
-    mutationFn: (value: Partial<SearchFilter>) => searchService.search(value),
+    mutationFn: (value: Parameters<SearchService['search']>[0]) => searchService.search(value),
   });
 };
 

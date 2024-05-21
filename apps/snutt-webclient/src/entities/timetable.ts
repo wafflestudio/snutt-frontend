@@ -26,8 +26,8 @@ export type CreateLectureRequest = {
   course_title: string;
   instructor: string;
   class_time_json: (
-    | { _id: string; day: Day; start_time: string; end_time: string; place: string }
-    | { day: Day; start_time: string; end_time: string; place: string }
+    | { _id: string; day: Day; start_time: string; end_time: string; place?: string }
+    | { day: Day; start_time: string; end_time: string; place?: string }
   )[];
   remark: string;
   credit: number;

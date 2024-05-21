@@ -9,7 +9,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨터구조',
     credit: 3,
     class_time: '화(7.5-1.5)/목(7.5-1.5)',
-    real_class_time: '화(15:30~16:45)/목(15:30~16:45)',
     class_time_json: [
       {
         day: 1,
@@ -43,7 +42,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨터비전',
     credit: 3,
     class_time: '월(7.5-1.5)/수(7.5-1.5)',
-    real_class_time: '월(15:30~16:45)/수(15:30~16:45)',
     class_time_json: [
       {
         day: 0,
@@ -76,7 +74,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨터 지도학',
     credit: 3,
     class_time: '목(6-2)/목(8-2)',
-    real_class_time: '목(14:00~17:50)',
     class_time_json: [
       {
         day: 6,
@@ -105,7 +102,6 @@ export const mockSearchResult: SearchResultLecture[] = [
       '컴파일러의 기초였지만 강의 제목이 엄청 길어지면 어떻게 되는지 확인하기 위해 희생된 불쌍한 강의이고 새로운 이름은 선풍기',
     credit: 3,
     class_time: '월(6-1.5)/수(6-1.5)',
-    real_class_time: '월(14:00~15:15)/수(14:00~15:15)',
     class_time_json: [
       {
         day: 0,
@@ -139,7 +135,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨터신경과학',
     credit: 3,
     class_time: '수(1-3)',
-    real_class_time: '수(9:00~11:50)',
     class_time_json: [
       {
         day: 2,
@@ -166,7 +161,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '그럼 강의이름이랑 교수님 이름이 둘다 길면 어떻게 될까요',
     credit: 3,
     class_time: '화(3-1.5)/목(3-1.5)',
-    real_class_time: '화(11:00~12:15)/목(11:00~12:15)',
     class_time_json: [
       {
         day: 1,
@@ -199,7 +193,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨터공학세미나',
     credit: 1,
     class_time: '수(5-1)',
-    real_class_time: '수(13:00~13:50)',
     class_time_json: [
       {
         day: 2,
@@ -227,7 +220,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨터조직 및 설계',
     credit: 3,
     class_time: '화(6-1.5)/목(6-1.5)',
-    real_class_time: '화(14:00~15:15)/목(14:00~15:15)',
     class_time_json: [
       {
         day: 1,
@@ -260,7 +252,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨터프로그래밍',
     credit: 4,
     class_time: '화(1.5-1.5)/수(11-2)/목(1.5-1.5)',
-    real_class_time: '화(9:30~10:45)/수(19:00~20:50)/목(9:30~10:45)',
     class_time_json: [
       {
         day: 1,
@@ -300,7 +291,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨터언어학연구 1',
     credit: 3,
     class_time: '월(5-3)',
-    real_class_time: '월(13:00~15:50)',
     class_time_json: [
       {
         day: 0,
@@ -327,7 +317,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨터의 개념 및 실습',
     credit: 3,
     class_time: '화(4.5-2)/목(4.5-2)',
-    real_class_time: '화(12:30~14:20)/목(12:30~14:20)',
     class_time_json: [
       {
         day: 1,
@@ -360,7 +349,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨터의 개념 및 실습',
     credit: 3,
     class_time: '화(8-2)/목(8-2)',
-    real_class_time: '화(16:00~17:50)/목(16:00~17:50)',
     class_time_json: [
       {
         day: 1,
@@ -393,7 +381,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨터의 개념 및 실습',
     credit: 3,
     class_time: '월(2-2)/수(2-2)',
-    real_class_time: '월(10:00~11:50)/수(10:00~11:50)',
     class_time_json: [
       {
         day: 0,
@@ -426,7 +413,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨터의 개념 및 실습',
     credit: 3,
     class_time: '화(6-2)/목(10.5-2)',
-    real_class_time: '화(14:00~15:50)/목(18:30~20:20)',
     class_time_json: [
       {
         day: 1,
@@ -459,7 +445,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨터의 개념 및 실습',
     credit: 3,
     class_time: '화(7-2)/목(7-2)',
-    real_class_time: '화(15:00~16:50)/목(15:00~16:50)',
     class_time_json: [
       {
         day: 1,
@@ -492,7 +477,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨터 및 네트워크 보안',
     credit: 3,
     class_time: '화(3-1.5)/목(3-1.5)',
-    real_class_time: '화(11:00~12:15)/목(11:00~12:15)',
     class_time_json: [
       {
         day: 1,
@@ -525,7 +509,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨터교육의 실무응용',
     credit: 3,
     class_time: '화(5-1)/금(10-4)',
-    real_class_time: '화(13:00~13:50)/금(18:00~21:50)',
     class_time_json: [
       {
         day: 1,
@@ -559,7 +542,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨터프로그래밍개론',
     credit: 3,
     class_time: '금(1-2)/금(3-2)',
-    real_class_time: '금(9:00~12:50)',
     class_time_json: [
       {
         day: 4,
@@ -586,7 +568,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨터매개커뮤니케이션',
     credit: 3,
     class_time: '화(6-3)',
-    real_class_time: '화(14:00~16:50)',
     class_time_json: [
       {
         day: 1,
@@ -613,7 +594,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨팅 기초: 처음 만나는 컴퓨팅',
     credit: 3,
     class_time: '월(8-2)/수(8-2)',
-    real_class_time: '월(16:00~17:50)/수(16:00~17:50)',
     class_time_json: [
       {
         day: 0,
@@ -647,7 +627,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨팅 기초: 처음 만나는 컴퓨팅',
     credit: 3,
     class_time: '월(6-2)/수(6-2)',
-    real_class_time: '월(14:00~15:50)/수(14:00~15:50)',
     class_time_json: [
       {
         day: 0,
@@ -681,7 +660,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨팅 기초: 처음 만나는 컴퓨팅',
     credit: 3,
     class_time: '월(6-2)/수(6-2)',
-    real_class_time: '월(14:00~15:50)/수(14:00~15:50)',
     class_time_json: [
       {
         day: 0,
@@ -715,7 +693,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨팅 기초: 처음 만나는 컴퓨팅',
     credit: 3,
     class_time: '월(4-2)/수(4-2)',
-    real_class_time: '월(12:00~13:50)/수(12:00~13:50)',
     class_time_json: [
       {
         day: 0,
@@ -749,7 +726,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨팅 기초: 처음 만나는 컴퓨팅',
     credit: 3,
     class_time: '화(6-2)/목(6-2)',
-    real_class_time: '화(14:00~15:50)/목(14:00~15:50)',
     class_time_json: [
       {
         day: 1,
@@ -783,7 +759,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨팅 기초: 처음 만나는 컴퓨팅',
     credit: 3,
     class_time: '화(6-2)/목(6-2)',
-    real_class_time: '화(14:00~15:50)/목(14:00~15:50)',
     class_time_json: [
       {
         day: 1,
@@ -817,7 +792,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨팅 기초: 처음 만나는 컴퓨팅',
     credit: 3,
     class_time: '월(4-2)/수(4-2)',
-    real_class_time: '월(12:00~13:50)/수(12:00~13:50)',
     class_time_json: [
       {
         day: 0,
@@ -851,7 +825,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨팅 기초: 처음 만나는 컴퓨팅',
     credit: 3,
     class_time: '월(2-2)/수(2-2)',
-    real_class_time: '월(10:00~11:50)/수(10:00~11:50)',
     class_time_json: [
       {
         day: 0,
@@ -885,7 +858,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨팅 기초: 처음 만나는 컴퓨팅',
     credit: 3,
     class_time: '화(8-2)/목(8-2)',
-    real_class_time: '화(16:00~17:50)/목(16:00~17:50)',
     class_time_json: [
       {
         day: 1,
@@ -919,7 +891,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨팅 기초: 처음 만나는 컴퓨팅',
     credit: 3,
     class_time: '월(8-2)/수(8-2)',
-    real_class_time: '월(16:00~17:50)/수(16:00~17:50)',
     class_time_json: [
       {
         day: 0,
@@ -953,7 +924,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨팅 응용: 자연어처리의 기초',
     credit: 3,
     class_time: '화(3-2)/목(3-2)',
-    real_class_time: '화(11:00~12:50)/목(11:00~12:50)',
     class_time_json: [
       {
         day: 1,
@@ -986,7 +956,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨팅 핵심: 컴퓨터로 생각하기',
     credit: 3,
     class_time: '화(2-2)/목(2-2)',
-    real_class_time: '화(10:00~11:50)/목(10:00~11:50)',
     class_time_json: [
       {
         day: 1,
@@ -1020,7 +989,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨팅 핵심: 컴퓨터로 생각하기',
     credit: 3,
     class_time: '화(4-2)/목(4-2)',
-    real_class_time: '화(12:00~13:50)/목(12:00~13:50)',
     class_time_json: [
       {
         day: 1,
@@ -1054,7 +1022,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨팅 핵심: 컴퓨터로 생각하기',
     credit: 3,
     class_time: '월(2-2)/수(2-2)',
-    real_class_time: '월(10:00~11:50)/수(10:00~11:50)',
     class_time_json: [
       {
         day: 0,
@@ -1088,7 +1055,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨팅 응용: 데이터사이언스의 기초',
     credit: 3,
     class_time: '화(1-2)/목(1-2)',
-    real_class_time: '화(9:00~10:50)/목(9:00~10:50)',
     class_time_json: [
       {
         day: 1,
@@ -1121,7 +1087,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴파일러최적화연구 (딥 러닝 언어 모델)',
     credit: 3,
     class_time: '월(9-1.5)/수(9-1.5)',
-    real_class_time: '월(17:00~18:15)/수(17:00~18:15)',
     class_time_json: [
       {
         day: 0,
@@ -1154,7 +1119,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨터과학 중심의 융합연구 (사물인터넷)',
     credit: 3,
     class_time: '금(5-3)',
-    real_class_time: '화(12:30~13:45)/목(12:30~13:45)',
     class_time_json: [
       {
         day: 1,
@@ -1187,7 +1151,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨터시스템연구 (AI 모델-시스템 최적화)',
     credit: 3,
     class_time: '화(1.5-1.5)/목(1.5-1.5)',
-    real_class_time: '화(9:30~10:45)/목(9:30~10:45)',
     class_time_json: [
       {
         day: 1,
@@ -1220,7 +1183,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨터 및 VLSI특강 (고급 컴퓨터 비전 세미나)',
     credit: 3,
     class_time: '수(7.5-3)',
-    real_class_time: '수(15:30~18:20)',
     class_time_json: [
       {
         day: 2,
@@ -1247,7 +1209,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨터 및 VLSI특강 (최신 컴퓨터구조 세미나)',
     credit: 3,
     class_time: '화(9-1.5)/목(9-1.5)',
-    real_class_time: '화(17:00~18:15)/목(17:00~18:15)',
     class_time_json: [
       {
         day: 1,
@@ -1280,7 +1241,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨터구조연구 (이온트랩 기반 양자컴퓨터 연구)',
     credit: 3,
     class_time: '월(9-1.5)/수(9-1.5)',
-    real_class_time: '월(17:00~18:15)/수(17:00~18:15)',
     class_time_json: [
       {
         day: 0,
@@ -1313,7 +1273,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨터구조특강 (양자컴퓨팅 하드웨어 및 양자 네트워크 특강)',
     credit: 3,
     class_time: '화(9-1.5)/목(9-1.5)',
-    real_class_time: '화(17:00~18:15)/목(17:00~18:15)',
     class_time_json: [
       {
         day: 1,
@@ -1346,7 +1305,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨터네트워크연구 (기계학습 기반의 네트워크 트래픽 관리)',
     credit: 3,
     class_time: '화(3-1.5)/목(3-1.5)',
-    real_class_time: '화(11:00~12:15)/목(11:00~12:15)',
     class_time_json: [
       {
         day: 1,
@@ -1379,7 +1337,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨터 및 VLSI특강 (NUGU 기반 AI 기술 및 상용화 이해)',
     credit: 3,
     class_time: '수(7.5-3)',
-    real_class_time: '수(15:30~18:20)',
     class_time_json: [
       {
         day: 2,
@@ -1406,7 +1363,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨터 및 VLSI특강 (Issues in Computer and VLSI Systems)',
     credit: 3,
     class_time: '화(4.5-1.5)/목(4.5-1.5)',
-    real_class_time: '화(12:30~13:45)/목(12:30~13:45)',
     class_time_json: [
       {
         day: 1,
@@ -1439,7 +1395,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '컴퓨터 및 VLSI특강 (Advanced Issues in Computer and VLSI Systems)',
     credit: 3,
     class_time: '월(10.5-1.5)/수(10.5-1.5)',
-    real_class_time: '월(18:30~19:45)/수(18:30~19:45)',
     class_time_json: [
       {
         day: 0,
@@ -1472,7 +1427,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: 'AI와 법',
     credit: 3,
     class_time: '월(7.5-1.5)/수(7.5-1.5)',
-    real_class_time: '월(15:30~16:45)/수(15:30~16:45)',
     class_time_json: [
       {
         day: 0,
@@ -1506,7 +1460,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '계산이론',
     credit: 3,
     class_time: '화(3-1.5)/목(3-1.5)',
-    real_class_time: '화(11:00~12:15)/목(11:00~12:15)',
     class_time_json: [
       {
         day: 1,
@@ -1539,7 +1492,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '기계학습',
     credit: 3,
     class_time: '화(7.5-1.5)/목(7.5-1.5)',
-    real_class_time: '화(15:30~16:45)/목(15:30~16:45)',
     class_time_json: [
       {
         day: 1,
@@ -1573,7 +1525,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '논리설계',
     credit: 4,
     class_time: '화(6-1.5)/목(6-1.5)/목(11-2)',
-    real_class_time: '화(14:00~15:15)/목(14:00~15:15)/목(19:00~20:50)',
     class_time_json: [
       {
         day: 1,
@@ -1613,7 +1564,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '알고리즘',
     credit: 3,
     class_time: '화(9-1.5)/목(9-1.5)',
-    real_class_time: '화(17:00~18:15)/목(17:00~18:15)',
     class_time_json: [
       {
         day: 1,
@@ -1647,7 +1597,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '알고리즘',
     credit: 3,
     class_time: '월(6-1.5)/수(6-1.5)',
-    real_class_time: '월(14:00~15:15)/수(14:00~15:15)',
     class_time_json: [
       {
         day: 0,
@@ -1681,7 +1630,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '운영체제',
     credit: 3,
     class_time: '화(6-1.5)/목(6-1.5)',
-    real_class_time: '화(14:00~15:15)/목(14:00~15:15)',
     class_time_json: [
       {
         day: 1,
@@ -1714,7 +1662,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '이산수학',
     credit: 3,
     class_time: '화(6-1.5)/목(6-1.5)',
-    real_class_time: '화(14:00~15:15)/목(14:00~15:15)',
     class_time_json: [
       {
         day: 1,
@@ -1748,7 +1695,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '인공지능',
     credit: 3,
     class_time: '월(6-1.5)/수(6-1.5)',
-    real_class_time: '월(14:00~15:15)/수(14:00~15:15)',
     class_time_json: [
       {
         day: 0,
@@ -1781,7 +1727,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '자료구조',
     credit: 3,
     class_time: '월(3-1.5)/수(3-1.5)',
-    real_class_time: '월(11:00~12:15)/수(11:00~12:15)',
     class_time_json: [
       {
         day: 0,
@@ -1815,7 +1760,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '인공신경망',
     credit: 3,
     class_time: '화(3-1.5)/목(3-1.5)',
-    real_class_time: '화(11:00~12:15)/목(11:00~12:15)',
     class_time_json: [
       {
         day: 1,
@@ -1848,7 +1792,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '인터넷 보안',
     credit: 3,
     class_time: '화(6-1.5)/목(6-1.5)',
-    real_class_time: '화(14:00~15:15)/목(14:00~15:15)',
     class_time_json: [
       {
         day: 1,
@@ -1881,7 +1824,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '고급운영체제',
     credit: 3,
     class_time: '화(3-1.5)/목(3-1.5)',
-    real_class_time: '화(11:00~12:15)/목(11:00~12:15)',
     class_time_json: [
       {
         day: 1,
@@ -1914,7 +1856,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '데이터베이스',
     credit: 3,
     class_time: '월(7.5-1.5)/수(7.5-1.5)',
-    real_class_time: '월(15:30~16:45)/수(15:30~16:45)',
     class_time_json: [
       {
         day: 0,
@@ -1947,7 +1888,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '언어와 컴퓨터',
     credit: 3,
     class_time: '화(6-1.5)/목(6-1.5)',
-    real_class_time: '화(14:00~15:15)/목(14:00~15:15)',
     class_time_json: [
       {
         day: 1,
@@ -1980,7 +1920,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '언어와 컴퓨터',
     credit: 3,
     class_time: '화(4.5-1.5)/목(4.5-1.5)',
-    real_class_time: '화(12:30~13:45)/목(12:30~13:45)',
     class_time_json: [
       {
         day: 1,
@@ -2013,7 +1952,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '오토마타이론',
     credit: 3,
     class_time: '화(7.5-1.5)/목(7.5-1.5)',
-    real_class_time: '화(15:30~16:45)/목(15:30~16:45)',
     class_time_json: [
       {
         day: 1,
@@ -2046,7 +1984,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '인공지능 입문',
     credit: 3,
     class_time: '화(6-2)/목(6-2)',
-    real_class_time: '화(14:00~15:50)/목(14:00~15:50)',
     class_time_json: [
       {
         day: 1,
@@ -2079,7 +2016,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '자연언어처리',
     credit: 3,
     class_time: '화(6-1.5)/목(6-1.5)',
-    real_class_time: '화(14:00~15:15)/목(14:00~15:15)',
     class_time_json: [
       {
         day: 1,
@@ -2112,7 +2048,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '전기전자회로',
     credit: 3,
     class_time: '화(3-1.5)/목(3-1.5)',
-    real_class_time: '화(11:00~12:15)/목(11:00~12:15)',
     class_time_json: [
       {
         day: 1,
@@ -2146,7 +2081,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '프로그램분석',
     credit: 3,
     class_time: '화(7.5-1.5)/목(7.5-1.5)',
-    real_class_time: '화(15:30~16:45)/목(15:30~16:45)',
     class_time_json: [
       {
         day: 1,
@@ -2179,7 +2113,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: '강유',
@@ -2199,7 +2132,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: '권태경',
@@ -2219,7 +2151,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: '김건희',
@@ -2239,7 +2170,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: '김선',
@@ -2259,7 +2189,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: '김지홍',
@@ -2279,7 +2208,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: '김진수',
@@ -2299,7 +2227,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: '김태현',
@@ -2319,7 +2246,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: '문병로',
@@ -2339,7 +2265,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: 'Moon Bongki',
@@ -2359,7 +2284,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: '박근수',
@@ -2379,7 +2303,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: '송용수',
@@ -2399,7 +2322,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: '송현오',
@@ -2419,7 +2341,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: '신영길',
@@ -2439,7 +2360,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: '엄현상',
@@ -2459,7 +2379,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: '염헌영',
@@ -2479,7 +2398,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: '유승주',
@@ -2499,7 +2417,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: '이광근',
@@ -2519,7 +2436,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: '이상구',
@@ -2539,7 +2455,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: '이영기',
@@ -2559,7 +2474,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: '이재진',
@@ -2579,7 +2493,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: '장병탁',
@@ -2599,7 +2512,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: '전병곤',
@@ -2619,7 +2531,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: '전화숙',
@@ -2639,7 +2550,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: '주한별',
@@ -2659,7 +2569,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: '하순회',
@@ -2679,7 +2588,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: '허충길',
@@ -2699,7 +2607,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: '황승원',
@@ -2719,7 +2626,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '대학원논문연구',
     credit: 3,
     class_time: '',
-    real_class_time: '',
     class_time_json: [],
     class_time_mask: [0, 0, 0, 0, 0, 0, 0],
     instructor: 'Bernhard Egger',
@@ -2739,7 +2645,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '프로그래밍연습',
     credit: 3,
     class_time: '월(8-2)/수(10.5-2)',
-    real_class_time: '월(16:00~17:50)/수(18:30~20:20)',
     class_time_json: [
       {
         day: 0,
@@ -2773,7 +2678,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '공학연구의 실습 1',
     credit: 1,
     class_time: '금(11-2)',
-    real_class_time: '금(19:00~20:50)',
     class_time_json: [
       {
         day: 4,
@@ -2801,7 +2705,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '창의적통합설계1',
     credit: 3,
     class_time: '금(5-6)',
-    real_class_time: '금(13:00~18:50)',
     class_time_json: [
       {
         day: 4,
@@ -2829,7 +2732,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '고급 데이터마이닝',
     credit: 3,
     class_time: '월(3-1.5)/수(3-1.5)',
-    real_class_time: '월(11:00~12:15)/수(11:00~12:15)',
     class_time_json: [
       {
         day: 0,
@@ -2862,7 +2764,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '데이터마이닝 개론',
     credit: 3,
     class_time: '월(1.5-1.5)/수(1.5-1.5)',
-    real_class_time: '월(9:30~10:45)/수(9:30~10:45)',
     class_time_json: [
       {
         day: 0,
@@ -2895,7 +2796,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '시스템프로그래밍',
     credit: 4,
     class_time: '월(9-1.5)/월(10.5-2)/수(9-1.5)',
-    real_class_time: '월(17:00~18:15)/월(18:30~20:20)/수(17:00~18:15)',
     class_time_json: [
       {
         day: 0,
@@ -2935,7 +2835,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '자연언어처리 개론',
     credit: 3,
     class_time: '화(7.5-1.5)/목(7.5-1.5)',
-    real_class_time: '화(15:30~16:45)/목(15:30~16:45)',
     class_time_json: [
       {
         day: 1,
@@ -2968,7 +2867,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '프로그래밍의 원리',
     credit: 3,
     class_time: '화(9-1.5)/목(9-1.5)',
-    real_class_time: '화(17:00~18:15)/목(17:00~18:15)',
     class_time_json: [
       {
         day: 1,
@@ -3001,7 +2899,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '공학지식의 실무응용',
     credit: 3,
     class_time: '화(11-2)/목(5-1)/목(11-2)',
-    real_class_time: '화(19:00~20:50)/목(13:00~13:50)/목(19:00~20:50)',
     class_time_json: [
       {
         day: 1,
@@ -3041,7 +2938,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '확장형 고성능 컴퓨팅',
     credit: 3,
     class_time: '월(6-1.5)/수(6-1.5)',
-    real_class_time: '월(14:00~15:15)/수(14:00~15:15)',
     class_time_json: [
       {
         day: 0,
@@ -3074,7 +2970,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '인공지능 심화 프로젝트',
     credit: 3,
     class_time: '월(11-3)/수(11-3)',
-    real_class_time: '월(19:00~21:50)/수(19:00~21:50)',
     class_time_json: [
       {
         day: 0,
@@ -3107,7 +3002,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '임베디드시스템과 응용',
     credit: 3,
     class_time: '월(3-1.5)/수(3-1.5)',
-    real_class_time: '월(11:00~12:15)/수(11:00~12:15)',
     class_time_json: [
       {
         day: 0,
@@ -3141,7 +3035,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '인간컴퓨터상호작용연구',
     credit: 3,
     class_time: '수(2-3)',
-    real_class_time: '수(10:00~12:50)',
     class_time_json: [
       {
         day: 2,
@@ -3168,7 +3061,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '인터넷 보안과 프라이버시',
     credit: 3,
     class_time: '화(3-1.5)/목(3-1.5)',
-    real_class_time: '화(11:00~12:15)/목(11:00~12:15)',
     class_time_json: [
       {
         day: 1,
@@ -3201,7 +3093,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '확률기반네트워크모델링',
     credit: 3,
     class_time: '화(6-1.5)/목(6-1.5)',
-    real_class_time: '화(14:00~15:15)/목(14:00~15:15)',
     class_time_json: [
       {
         day: 1,
@@ -3234,7 +3125,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '과학 계산을 위한 컴퓨터 활용',
     credit: 3,
     class_time: '화(5-1)/화(6-1)/목(5-1)/목(6-1)',
-    real_class_time: '화(13:00~14:50)/목(13:00~14:50)',
     class_time_json: [
       {
         day: 1,
@@ -3267,7 +3157,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '인공지능 이론 및 응용 세미나',
     credit: 1,
     class_time: '목(5-1)',
-    real_class_time: '목(13:00~13:50)',
     class_time_json: [
       {
         day: 3,
@@ -3295,7 +3184,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '계산이론연구 (암호학 연구)',
     credit: 3,
     class_time: '화(7.5-1.5)/목(7.5-1.5)',
-    real_class_time: '화(15:30~16:45)/목(15:30~16:45)',
     class_time_json: [
       {
         day: 1,
@@ -3328,7 +3216,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '소프트웨어 개발의 원리와 실습',
     credit: 4,
     class_time: '화(3-1.5)/수(11-2)/목(3-1.5)',
-    real_class_time: '화(11:00~12:15)/수(19:00~20:50)/목(11:00~12:15)',
     class_time_json: [
       {
         day: 1,
@@ -3368,7 +3255,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '데이터사이언스를 위한 컴퓨팅 1',
     credit: 3,
     class_time: '화(6-1.5)/목(6-1.5)',
-    real_class_time: '화(14:00~15:15)/목(14:00~15:15)',
     class_time_json: [
       {
         day: 1,
@@ -3401,7 +3287,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '데이터사이언스를 위한 컴퓨팅 2',
     credit: 3,
     class_time: '월(6-1.5)/수(6-1.5)',
-    real_class_time: '월(14:00~15:15)/수(14:00~15:15)',
     class_time_json: [
       {
         day: 0,
@@ -3434,7 +3319,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '계산이론연구 (최적화 공간 탐구)',
     credit: 3,
     class_time: '월(7.5-1.5)/수(7.5-1.5)',
-    real_class_time: '월(15:30~16:45)/수(15:30~16:45)',
     class_time_json: [
       {
         day: 0,
@@ -3467,7 +3351,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '인공지능연구 (상황인지 개인화)',
     credit: 3,
     class_time: '월(9-1.5)/수(9-1.5)',
-    real_class_time: '월(17:00~18:15)/수(17:00~18:15)',
     class_time_json: [
       {
         day: 0,
@@ -3500,7 +3383,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '내장형시스템특강 (시스템최적화)',
     credit: 3,
     class_time: '화(3-1.5)/목(3-1.5)',
-    real_class_time: '화(11:00~12:15)/목(11:00~12:15)',
     class_time_json: [
       {
         day: 1,
@@ -3533,7 +3415,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '데이터사이언스를 위한 컴퓨팅의 기초',
     credit: 3,
     class_time: '화(7.5-1.5)/목(7.5-1.5)',
-    real_class_time: '화(15:30~16:45)/목(15:30~16:45)',
     class_time_json: [
       {
         day: 1,
@@ -3566,7 +3447,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '내장형시스템연구 (뉴럴 렌더링 기술)',
     credit: 3,
     class_time: '월(9-1.5)/수(9-1.5)',
-    real_class_time: '월(17:00~18:15)/수(17:00~18:15)',
     class_time_json: [
       {
         day: 0,
@@ -3599,7 +3479,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '환경법특수연구 (컴플라이언스연구)',
     credit: 3,
     class_time: '금(11-3)',
-    real_class_time: '금(19:00~21:50)',
     class_time_json: [
       {
         day: 4,
@@ -3626,7 +3505,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '인공지능연구 (화학물의 물성 분석 알고리즘 기법)',
     credit: 3,
     class_time: '화(1.5-1.5)/목(1.5-1.5)',
-    real_class_time: '화(9:30~10:45)/목(9:30~10:45)',
     class_time_json: [
       {
         day: 1,
@@ -3659,7 +3537,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '시스템소프트웨어특강 (초저온 컴퓨터 구조 세미나)',
     credit: 3,
     class_time: '화(7.5-1.5)/목(7.5-1.5)',
-    real_class_time: '화(15:30~16:45)/목(15:30~16:45)',
     class_time_json: [
       {
         day: 1,
@@ -3692,7 +3569,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '음성언어처리연구 2 (컴퓨터 기반 발음교육 및 평가)',
     credit: 3,
     class_time: '월(2-3)',
-    real_class_time: '월(10:00~12:50)',
     class_time_json: [
       {
         day: 0,
@@ -3719,7 +3595,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '고급컴퓨터공학세미나 (새로운 세상을 여는 IT 기술)',
     credit: 1,
     class_time: '수(11-1)',
-    real_class_time: '수(19:00~19:50)',
     class_time_json: [
       {
         day: 2,
@@ -3746,7 +3621,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '인공지능연구 (컴퓨터비전과 자연어처리를 위한 최신 모델 연구)',
     credit: 3,
     class_time: '월(6-1.5)/수(6-1.5)',
-    real_class_time: '월(14:00~15:15)/수(14:00~15:15)',
     class_time_json: [
       {
         day: 0,
@@ -3779,7 +3653,6 @@ export const mockSearchResult: SearchResultLecture[] = [
     course_title: '데이터베이스연구 (스트리밍 데이터를 위한 동적 클러스터링 연구)',
     credit: 3,
     class_time: '월(1.5-1.5)/수(1.5-1.5)',
-    real_class_time: '월(9:30~10:45)/수(9:30~10:45)',
     class_time_json: [
       {
         day: 0,

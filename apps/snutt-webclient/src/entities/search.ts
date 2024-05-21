@@ -4,11 +4,11 @@ import type { Semester } from './semester';
 type BitMask = number;
 
 export type SearchFilter = {
-  time_mask: BitMask[];
+  timeMask: BitMask[];
   title: string;
   year: number;
   semester: Semester;
-  academic_year: string[];
+  academicYear: string[];
   category: string[];
   credit: number[];
   department: string[];
