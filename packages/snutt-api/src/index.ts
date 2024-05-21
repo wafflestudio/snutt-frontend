@@ -4,7 +4,20 @@
 
 import { apis } from './apis';
 
-export const implSnuttApi = ({ httpClient, apiKey }: { httpClient: SnuttBackendHttpClient; apiKey: string }) =>
+export const implSnuttApi = ({
+  httpClient,
+  apiKey,
+}: {
+  httpClient: {
+    call: (_: {
+      method: string;
+      path: string;
+      body?: Record<string, unknown>;
+      headers?: Record<string, string>;
+    }) => Promise<{ status: number; data: unknown }>;
+  };
+  apiKey: string;
+}) =>
   apis({
     call: async <R extends { status: number; data: unknown }>(_: {
       method: string;
@@ -28,15 +41,6 @@ export const implSnuttApi = ({ httpClient, apiKey }: { httpClient: SnuttBackendH
   });
 
 export type SnuttApi = ReturnType<typeof implSnuttApi>;
-
-type SnuttBackendHttpClient = {
-  call: (_: {
-    method: string;
-    path: string;
-    body?: Record<string, unknown>;
-    headers?: Record<string, string>;
-  }) => Promise<{ status: number; data: unknown }>;
-};
 
 export type SnuttApiSuccessResponseData<T extends keyof SnuttApi> = (Awaited<ReturnType<SnuttApi[T]>> & {
   status: 200;

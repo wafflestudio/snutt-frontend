@@ -1,4 +1,4 @@
-import { IntegerInt32, IntegerInt64, NumberDouble, StringDateTime } from './utils';
+import { IntegerInt32, IntegerInt64, NumberDouble, StringDateTime } from './types';
 
 export type LocalLoginRequest = {
   id: string;
