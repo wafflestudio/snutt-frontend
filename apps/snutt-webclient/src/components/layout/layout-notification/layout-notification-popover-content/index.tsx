@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
+import { type ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { IcCalendar } from '@/components/icons/ic-calendar';
@@ -8,45 +9,48 @@ import { IcRecycle } from '@/components/icons/ic-recycle';
 import { IcTrash } from '@/components/icons/ic-trash';
 import { usePopoverContext } from '@/components/popover';
 import { serviceContext } from '@/contexts/ServiceContext';
-import { NotificationType } from '@/entities/notification';
+import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
+import { type Notification } from '@/entities/notification';
 import { useGuardContext } from '@/hooks/useGuardContext';
-import { queryKey } from '@/utils/query-key-factory';
 
 export const LayoutNotificationPopoverContent = () => {
   const { show } = usePopoverContext();
-  const { data: notifications } = useNotificationList(show);
+  const { data } = useNotificationList(show);
 
   return (
     <NotificationList>
-      {notifications?.map((item) => (
-        <NotificationListItem data-testid="layout-notification-listitem" key={item.created_at}>
-          <NotificationListItemIcon>
-            {
-              {
-                [NotificationType.NORMAL]: <IcExclamation />,
-                [NotificationType.COURSEBOOK]: <IcCalendar />,
-                [NotificationType.LECTURE_UPDATE]: <IcRecycle />,
-                [NotificationType.LECTURE_REMOVE]: <IcTrash />,
-                [NotificationType.LINK_ADDR]: <IcExclamation />,
-              }[item.type]
-            }
-          </NotificationListItemIcon>
-          <NotificationListItemContent>
-            <NotificationContent>{item.message}</NotificationContent>{' '}
-            <NotificationDate>{dayjs(item.created_at).format('YYYY년 MM월 DD일')}</NotificationDate>
-          </NotificationListItemContent>
-        </NotificationListItem>
-      ))}
+      {data?.type === 'success' &&
+        data.data.map((notification) => (
+          <NotificationListItem
+            data-testid="layout-notification-listitem"
+            key={notification.type + notification.message + notification.createdAt.toISOString()}
+          >
+            <NotificationListItemIcon>{notificationTypeMap[notification.type]}</NotificationListItemIcon>
+            <NotificationListItemContent>
+              <NotificationContent>{notification.message}</NotificationContent>{' '}
+              <NotificationDate>{dayjs(notification.createdAt).format('YYYY년 MM월 DD일')}</NotificationDate>
+            </NotificationListItemContent>
+          </NotificationListItem>
+        ))}
     </NotificationList>
   );
 };
 
+const notificationTypeMap: Record<Notification['type'], ReactNode> = {
+  NORMAL: <IcExclamation />,
+  COURSEBOOK: <IcCalendar />,
+  LECTURE_UPDATE: <IcRecycle />,
+  LECTURE_REMOVE: <IcTrash />,
+  LINK_ADDR: <IcExclamation />,
+};
+
 const useNotificationList = (show: boolean) => {
   const { notificationService } = useGuardContext(serviceContext);
+  const { token } = useTokenAuthContext();
 
   return useQuery({
-    queryKey: queryKey('notifications'),
-    queryFn: () => notificationService.getList(),
+    queryKey: ['NotificationService', 'getList', { token }] as const,
+    queryFn: ({ queryKey }) => notificationService.getList(queryKey[2]),
     enabled: show,
   });
 };

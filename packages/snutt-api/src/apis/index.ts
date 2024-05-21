@@ -1,6 +1,6 @@
 import { InternalClient } from '../httpClient';
 import { ErrorResponse, SuccessResponse } from '../response';
-import { LocalLoginRequest, LoginResponse } from './schemas';
+import { LocalLoginRequest, LoginResponse, NotificationResponse } from './schemas';
 
 type Api = (_: { body: never; token: string }) => Promise<{ status: number; data: unknown }>;
 
@@ -66,6 +66,18 @@ export const apis = (client: InternalClient) => {
       callWithToken<SuccessResponse<{ colors: { bg: string; fg: string }[]; names: string[]; message: 'ok' }>>({
         method: 'get',
         path: `/v1/colors/vivid_ios`,
+        token,
+      }),
+    'POST /v1/feedback': ({ body }: { body: { email: string; message: string } }) =>
+      callWithoutToken<SuccessResponse<{ message: 'ok' }>>({
+        method: 'post',
+        path: `/v1/feedback`,
+        body,
+      }),
+    'GET /v1/notification': ({ token }: { token: string }) =>
+      callWithToken<SuccessResponse<NotificationResponse[]>>({
+        method: 'get',
+        path: `/v1/notification`,
         token,
       }),
   } satisfies Record<string, Api>;

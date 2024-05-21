@@ -1,15 +1,22 @@
 import type { Notification } from '@/entities/notification';
-import type { NotificationRepository } from '@/repositories/notificationRepository';
+import { type RepositoryResponse, type UsecaseResponse } from '@/entities/response';
 
-export interface NotificationService {
-  getCount(): Promise<{ count: number }>;
-  getList(): Promise<Notification[]>;
-}
+export type NotificationService = {
+  getList(_: { token: string }): UsecaseResponse<Notification[]>;
+};
 
-type Deps = { repositories: [NotificationRepository] };
-export const getNotificationService = ({ repositories: [notificationRepository] }: Deps): NotificationService => {
+export const getNotificationService = ({
+  notificationRepository,
+}: {
+  notificationRepository: {
+    getList: ({ token }: { token: string }) => RepositoryResponse<{ notifications: Notification[] }>;
+  };
+}): NotificationService => {
   return {
-    getCount: () => notificationRepository.getCount(),
-    getList: () => notificationRepository.getList(),
+    getList: async ({ token }) => {
+      const data = await notificationRepository.getList({ token });
+      if (data.type === 'success') return { type: 'success', data: data.data.notifications };
+      else return { type: 'error', message: '오류가 발생했습니다.' };
+    },
   };
 };
