@@ -1,7 +1,7 @@
 export interface CourseBook {
   year: number;
   semester: 1 | 2 | 3 | 4;
-  updated_at: string;
+  updatedAt: Date;
 }
 
 export type Semester = 1 | 2 | 3 | 4;

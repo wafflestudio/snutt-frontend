@@ -16,7 +16,7 @@ export type OkResponse = {
 };
 
 export type NotificationResponse = {
-  _id?: string;
+  _id: string;
   user_id?: string;
   title: string;
   message: string;

@@ -21,10 +21,7 @@ export const LayoutNotificationPopoverContent = () => {
     <NotificationList>
       {data?.type === 'success' &&
         data.data.map((notification) => (
-          <NotificationListItem
-            data-testid="layout-notification-listitem"
-            key={notification.type + notification.message + notification.createdAt.toISOString()}
-          >
+          <NotificationListItem data-testid="layout-notification-listitem" key={notification.id}>
             <NotificationListItemIcon>{notificationTypeMap[notification.type]}</NotificationListItemIcon>
             <NotificationListItemContent>
               <NotificationContent>{notification.message}</NotificationContent>{' '}

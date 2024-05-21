@@ -27,14 +27,13 @@ export const getNotificationRepository = ({
         return {
           type: 'success',
           data: {
-            notifications: data.map((notification) => {
-              return {
-                title: notification.title,
-                message: notification.message,
-                createdAt: new Date(notification.created_at),
-                type: typeMap[notification.type],
-              };
-            }),
+            notifications: data.map((notification) => ({
+              id: notification._id,
+              title: notification.title,
+              message: notification.message,
+              createdAt: new Date(notification.created_at),
+              type: typeMap[notification.type],
+            })),
           },
         };
       }

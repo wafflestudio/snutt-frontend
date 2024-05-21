@@ -12,7 +12,7 @@ type Tags = {
   updated_at: number;
 };
 export interface SearchRepository {
-  getTags(params: Omit<CourseBook, 'updated_at'>): Promise<Tags>;
+  getTags(params: Omit<CourseBook, 'updatedAt'>): Promise<Tags>;
   search(params: Partial<SearchFilter>): Promise<SearchResultLecture[]>;
 }
 

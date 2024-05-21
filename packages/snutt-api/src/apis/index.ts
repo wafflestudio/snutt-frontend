@@ -80,5 +80,11 @@ export const apis = (client: InternalClient) => {
         path: `/v1/notification`,
         token,
       }),
+    'GET /v1/course_books': ({ token }: { token: string }) =>
+      callWithToken<SuccessResponse<{ year: number; semester: number; updated_at: string }[]>>({
+        method: 'get',
+        path: `/v1/course_books`,
+        token,
+      }),
   } satisfies Record<string, Api>;
 };

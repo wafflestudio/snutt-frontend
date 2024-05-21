@@ -20,11 +20,11 @@ import { implAuthSnuttApiRepository } from '@/infrastructures/implAuthSnuttApiRe
 import { implColorSnuttApiRepository } from '@/infrastructures/implColorSnuttApiRepository';
 import { implFeedbackSnuttApiRepository } from '@/infrastructures/implFeedbackSnuttApiRepository';
 import { getNotificationRepository } from '@/infrastructures/implNotificationSnuttApiRepository';
+import { implSemesterSnuttApiRepository } from '@/infrastructures/implSemesterSnuttApiRepository';
 import { ErrorPage } from '@/pages/error';
 import { Main } from '@/pages/main';
 import { MyPage } from '@/pages/mypage';
 import { getSearchRepository } from '@/repositories/searchRepository';
-import { getSemesterRepository } from '@/repositories/semesterRepository';
 import { getStorageRepository } from '@/repositories/storageRepository';
 import { getTimetableRepository } from '@/repositories/timetableRepository';
 import { getUserRepository } from '@/repositories/userRepository';
@@ -197,7 +197,7 @@ const getAuthorizedServices = (
   const userRepository = getUserRepository({ httpClient });
   const authRepository = implAuthSnuttApiRepository({ snuttApi });
   const timetableRepository = getTimetableRepository({ httpClient });
-  const semesterRepository = getSemesterRepository({ httpClient });
+  const semesterRepository = implSemesterSnuttApiRepository({ snuttApi });
   const searchRepository = getSearchRepository({ httpClient });
   const notificationRepository = getNotificationRepository({ snuttApi });
   const colorRepository = implColorSnuttApiRepository({ snuttApi });
@@ -212,7 +212,7 @@ const getAuthorizedServices = (
   const hourMinuteService = getHourMinuteService();
   const hourMinutePickerService = getHourMinutePickerService({ services: [hourMinuteService] });
   const authService = getAuthService({ authRepository, userRepository });
-  const semesterService = getSemesterService({ repositories: [semesterRepository] });
+  const semesterService = getSemesterService({ semesterRepository });
 
   return {
     lectureService,

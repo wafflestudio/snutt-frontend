@@ -6,7 +6,7 @@ import { DAY_LABEL_MAP } from '@/entities/time';
 import { createRandomId } from '@/utils/random-id';
 
 export interface LectureService {
-  getLectureDetailUrl(lecture: BaseLecture, courseBook: Omit<CourseBook, 'updated_at'>): string;
+  getLectureDetailUrl(lecture: BaseLecture, courseBook: Omit<CourseBook, 'updatedAt'>): string;
   getLectureTimeTexts(lecture: BaseLecture): string[];
   getLectureColor(lecture: Pick<Lecture, 'color' | 'colorIndex'>, colorList: Color[]): Color;
   getEmptyClassTime(): WithInternalId<ClassTime>;

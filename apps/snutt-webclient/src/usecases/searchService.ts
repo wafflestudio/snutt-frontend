@@ -3,7 +3,7 @@ import { type CourseBook } from '@/entities/semester';
 import { type SearchRepository } from '@/repositories/searchRepository';
 
 export interface SearchService {
-  getTags(params: Omit<CourseBook, 'updated_at'>): Promise<{
+  getTags(params: Omit<CourseBook, 'updatedAt'>): Promise<{
     academic_year: string[];
     category: string[];
     classification: string[];
