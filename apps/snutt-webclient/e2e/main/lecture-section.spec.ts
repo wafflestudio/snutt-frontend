@@ -88,7 +88,7 @@ test('검색 결과 탭이 정상 동작한다', async ({ page }) => {
         req.postDataJSON().limit === 200 &&
         req.postDataJSON().semester === 1 &&
         req.postDataJSON().year === 1001 &&
-        Object.entries(req.postDataJSON()).length === 4,
+        Object.entries(req.postDataJSON()).length === 6,
     ),
     page.getByTestId('main-searchbar-search').click(),
   ]);
