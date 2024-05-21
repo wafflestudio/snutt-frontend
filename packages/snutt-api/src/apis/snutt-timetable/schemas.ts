@@ -1,4 +1,4 @@
-import { IntegerInt32, IntegerInt64, NumberDouble, StringDateTime } from './types';
+import { Int32, Double, Int64, DateTime } from './types';
 
 export type LocalLoginRequest = {
   id: string;
@@ -18,18 +18,18 @@ export type OkResponse = {
 export type ClassPlaceAndTimeLegacyDto = {
   day: 0 | 1 | 2 | 3 | 4 | 5 | 6;
   place?: string;
-  startMinute: IntegerInt32;
-  endMinute: IntegerInt32;
+  startMinute: Int32;
+  endMinute: Int32;
   start_time: string;
   end_time: string;
-  len: NumberDouble;
-  start: NumberDouble;
+  len: Double;
+  start: Double;
   lectureBuildings: LectureBuilding[];
 };
 
 export type GeoCoordinate = {
-  latitude: NumberDouble;
-  longitude: NumberDouble;
+  latitude: Double;
+  longitude: Double;
 };
 
 export type LectureBuilding = {
@@ -44,33 +44,33 @@ export type LectureBuilding = {
 
 export type SnuttEvLectureSummaryDto = {
   snuttId?: string;
-  evLectureId: IntegerInt64;
-  avgRating: NumberDouble;
+  evLectureId: Int64;
+  avgRating: Double;
 };
 
 export type SearchQueryLegacy = {
-  year: IntegerInt32;
+  year: Int32;
   semester: 1 | 2 | 3 | 4;
   title?: string;
   classification?: string[];
-  credit?: IntegerInt32[];
+  credit?: Int32[];
   course_number?: string[];
   academic_year?: string[];
   department?: string[];
   category?: string[];
-  time_mask?: IntegerInt32[];
+  time_mask?: Int32[];
   times?: SearchTimeDto[];
   timesToExclude?: SearchTimeDto[];
   etc?: string[];
-  page: IntegerInt32;
-  offset: IntegerInt64;
-  limit: IntegerInt32;
+  page: Int32;
+  offset: Int64;
+  limit: Int32;
 };
 
 export type SearchTimeDto = {
   day: 0 | 1 | 2 | 3 | 4 | 5 | 6;
-  startMinute: IntegerInt32;
-  endMinute: IntegerInt32;
+  startMinute: Int32;
+  endMinute: Int32;
 };
 
 export type LectureDto = {
@@ -79,21 +79,21 @@ export type LectureDto = {
   category?: string;
   class_time_json: ClassPlaceAndTimeLegacyDto[];
   classification?: string;
-  credit: IntegerInt64;
+  credit: Int64;
   department?: string;
   instructor: string;
   lecture_number: string;
-  quota?: IntegerInt32;
-  freshmanQuota?: IntegerInt32;
+  quota?: Int32;
+  freshmanQuota?: Int32;
   remark?: string;
   semester: 1 | 2 | 3 | 4;
-  year: IntegerInt32;
+  year: Int32;
   course_number: string;
   course_title: string;
-  registrationCount: IntegerInt32;
+  registrationCount: Int32;
   wasFull: boolean;
   snuttEvLecture: SnuttEvLectureSummaryDto;
-  class_time_mask: IntegerInt32[];
+  class_time_mask: Int32[];
 };
 
 export type NotificationResponse = {
@@ -103,9 +103,9 @@ export type NotificationResponse = {
   message: string;
   type: 0 | 1 | 2 | 3 | 4 | 5 | 6;
   deeplink?: string;
-  created_at: StringDateTime;
+  created_at: DateTime;
 };
 
 export type NotificationCountResponse = {
-  count: IntegerInt64;
+  count: Int64;
 };

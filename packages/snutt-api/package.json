@@ -5,7 +5,8 @@
   "main": "src/index.ts",
   "scripts": {
     "lint": "eslint ./src",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "generate:snutt-timetable": "tsx ./scripts/generate/snutt-timetable.ts"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "7.9.0",
@@ -13,6 +14,8 @@
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-prettier": "5.1.3",
+    "openapi-types": "12.1.3",
+    "tsx": "4.10.5",
     "typescript": "5.4.5"
   }
 }
