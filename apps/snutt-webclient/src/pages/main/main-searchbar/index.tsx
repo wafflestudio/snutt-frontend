@@ -54,9 +54,7 @@ export const MainSearchbar = ({ onSearch, currentFullTimetable, resetSearchResul
   const { data: courseBooks } = useCourseBooks();
   const { timeMaskService } = useGuardContext(serviceContext);
   const currentCourseBook = courseBooks?.find((c) => c.year === year && c.semester === semester);
-  const currentCourseBookUpdatedAt = currentCourseBook
-    ? dayjs(currentCourseBook.updated_at).format('YYYY. MM. DD')
-    : '';
+  const currentCourseBookUpdatedAt = currentCourseBook ? dayjs(currentCourseBook.updatedAt).format('YYYY. MM. DD') : '';
 
   const onSubmit = (e?: FormEvent<HTMLFormElement>) => {
     e?.preventDefault();

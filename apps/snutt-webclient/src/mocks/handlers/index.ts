@@ -5,7 +5,7 @@ import type { SignInResponse } from '@/entities/auth';
 import type { Color } from '@/entities/color';
 import type { CoreServerError } from '@/entities/error';
 import type { SearchFilter, SearchResultLecture } from '@/entities/search';
-import type { CourseBook, Semester } from '@/entities/semester';
+import type { Semester } from '@/entities/semester';
 import type { FullTimetable, Timetable } from '@/entities/timetable';
 import { mockVividIos } from '@/mocks/fixtures/color';
 import { mockCourseBooks } from '@/mocks/fixtures/courseBook';
@@ -28,7 +28,7 @@ import type { UserRepository } from '@/repositories/userRepository';
 import { withValidateAccess } from '../utils/access';
 
 export const handlers = [
-  http.get<never, never, CourseBook[] | CoreServerError>(
+  http.get(
     `*/v1/course_books`,
     withValidateAccess(() => ({ type: 'success', body: mockCourseBooks }), { token: false }),
   ),
