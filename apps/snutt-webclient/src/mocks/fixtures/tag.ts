@@ -1,6 +1,6 @@
-import type { SearchRepository } from '@/repositories/searchRepository';
+import { type SnuttApiSuccessResponseData } from '@sf/snutt-api';
 
-export const mockTags: Awaited<ReturnType<SearchRepository['getTags']>> = {
+export const mockTags: SnuttApiSuccessResponseData<'GET /v1/tags/:year/:semester'> = {
   classification: ['교양', '교직', '논문', '전선', '전필'],
   department: [
     '간호학과',

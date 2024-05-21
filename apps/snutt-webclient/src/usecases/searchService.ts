@@ -1,24 +1,46 @@
+import { type RepositoryResponse, type UsecaseResponse } from '@/entities/response';
 import { type SearchFilter, type SearchResultLecture } from '@/entities/search';
-import { type CourseBook } from '@/entities/semester';
-import { type SearchRepository } from '@/repositories/searchRepository';
+
+type Filter = Partial<SearchFilter> & Pick<SearchFilter, 'year' | 'semester' | 'limit'>;
 
 export interface SearchService {
-  getTags(params: Omit<CourseBook, 'updatedAt'>): Promise<{
-    academic_year: string[];
-    category: string[];
-    classification: string[];
-    credit: string[];
-    department: string[];
-    instructor: string[];
-    updated_at: number;
-  }>;
-  search(params: Partial<SearchFilter>): Promise<SearchResultLecture[]>;
+  getTags(_: {
+    year: number;
+    semester: number;
+    token: string;
+  }): UsecaseResponse<
+    Record<'academicYear' | 'category' | 'classification' | 'credit' | 'department' | 'instructor', string[]>
+  >;
+  search(_: { token: string; params: Filter }): UsecaseResponse<SearchResultLecture[]>;
 }
 
-type Deps = { repositories: [SearchRepository] };
-export const getSearchService = ({ repositories: [searchRepository] }: Deps): SearchService => {
+export const getSearchService = ({
+  searchRepository,
+}: {
+  searchRepository: {
+    getTags(_: {
+      token: string;
+      year: number;
+      semester: number;
+    }): RepositoryResponse<
+      Record<'academicYear' | 'category' | 'classification' | 'credit' | 'department' | 'instructor', string[]>
+    >;
+    search(_: {
+      token: string;
+      filter: Filter & { page: number; offset: number };
+    }): RepositoryResponse<SearchResultLecture[]>;
+  };
+}): SearchService => {
   return {
-    getTags: (yearSemester) => searchRepository.getTags(yearSemester),
-    search: (params) => searchRepository.search(params),
+    getTags: async (yearSemester) => {
+      const data = await searchRepository.getTags(yearSemester);
+      if (data.type === 'error') throw data;
+      return { type: 'success', data: data.data };
+    },
+    search: async ({ token, params }) => {
+      const data = await searchRepository.search({ token, filter: { ...params, page: 1, offset: 0 } });
+      if (data.type === 'error') throw data;
+      return { type: 'success', data: data.data };
+    },
   };
 };

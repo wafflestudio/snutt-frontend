@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { Button } from '@/components/button';
 import { Dialog } from '@/components/dialog';
 import { serviceContext } from '@/contexts/ServiceContext';
+import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
 import { useGuardContext } from '@/hooks/useGuardContext';
 import { useYearSemester } from '@/hooks/useYearSemester';
 import type { ArrayElement } from '@/utils/array-element';
@@ -41,6 +42,8 @@ export const MainSearchbarFilterDialog = ({
   const [isTimeModalOpen, setTimeModalOpen] = useState(false);
   const { data } = useSearchFilterTags();
 
+  const tags = data?.type === 'success' ? data.data : undefined;
+
   return (
     <StyledDialog open={open} onClose={onClose}>
       <StyledDialog.Title style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -66,14 +69,14 @@ export const MainSearchbarFilterDialog = ({
                   value={searchForm.department}
                   onChange={(e) => onChangeDepartment([e.target.value])}
                 />
-                <datalist id="department">{data?.department.map((d) => <option value={d} key={d} />)}</datalist>
+                <datalist id="department">{tags?.department.map((d) => <option value={d} key={d} />)}</datalist>
               </label>
             </RowContent>
           </Row>
           <Row>
             <RowLabel>학년</RowLabel>
             <RowContent>
-              {data?.academic_year.map((y) => (
+              {tags?.academicYear.map((y) => (
                 <Checkbox field="academicYear" key={y} value={y} searchForm={searchForm} onChange={onChangeCheckbox} />
               ))}
             </RowContent>
@@ -81,7 +84,7 @@ export const MainSearchbarFilterDialog = ({
           <Row>
             <RowLabel>학점</RowLabel>
             <RowContent>
-              {data?.credit.map((c) => (
+              {tags?.credit.map((c) => (
                 <Checkbox
                   field="credit"
                   key={c}
@@ -96,7 +99,7 @@ export const MainSearchbarFilterDialog = ({
           <Row>
             <RowLabel>구분</RowLabel>
             <RowContent>
-              {data?.classification.map((c) => (
+              {tags?.classification.map((c) => (
                 <Checkbox
                   field="classification"
                   key={c}
@@ -110,7 +113,7 @@ export const MainSearchbarFilterDialog = ({
           <Row>
             <RowLabel>학문의 기초</RowLabel>
             <RowContent>
-              {data?.category
+              {tags?.category
                 .filter((c) =>
                   ['사고와 표현', '외국어', '수량적 분석과 추론', '과학적 사고와 실험', '컴퓨터와 정보 활용'].includes(
                     c,
@@ -124,7 +127,7 @@ export const MainSearchbarFilterDialog = ({
           <Row>
             <RowLabel>학문의 세계</RowLabel>
             <RowContent>
-              {data?.category
+              {tags?.category
                 .filter((c) =>
                   [
                     '언어와 문학',
@@ -144,7 +147,7 @@ export const MainSearchbarFilterDialog = ({
           <Row>
             <RowLabel>선택 교양</RowLabel>
             <RowContent>
-              {data?.category
+              {tags?.category
                 .filter((c) => ['체육', '예술실기', '대학과 리더십', '창의와 융합', '한국의 이해'].includes(c))
                 .map((c) => (
                   <Checkbox field="category" key={c} value={c} searchForm={searchForm} onChange={onChangeCheckbox} />
@@ -262,16 +265,17 @@ const Checkbox = <F extends 'academicYear' | 'category' | 'classification' | 'cr
 );
 
 const useSearchFilterTags = () => {
-  const { year, semester } = useYearSemester();
+  const ys = useYearSemester();
   const { searchService } = useGuardContext(serviceContext);
+  const { token } = useTokenAuthContext();
 
   return useQuery({
-    queryKey: ['tags', year, semester],
-    queryFn: () => {
-      if (!year || !semester) throw Error('no year or semester');
-      return searchService.getTags({ year, semester });
+    queryKey: ['SearchService', 'getTags', { ...ys, token }] as const,
+    queryFn: ({ queryKey: [, , { token, year, semester }] }) => {
+      if (!year || !semester) throw new Error();
+      return searchService.getTags({ token, year, semester });
     },
-    enabled: !!(year && semester),
+    enabled: !!(ys.year && ys.semester),
     staleTime: Infinity,
   });
 };

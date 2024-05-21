@@ -34,7 +34,6 @@ export const mockTimeTables: Timetable[] = [
     total_credit: 0,
   },
 ];
-
 export const mockTimeTable123: FullTimetable = {
   _id: '123',
   user_id: '5c59377722ac5f0f310df48b',
@@ -51,7 +50,6 @@ export const mockTimeTable123: FullTimetable = {
       course_title: '고급수학 2',
       credit: 2,
       class_time: '월(3-1)/수(3-1)',
-      real_class_time: '월(11:00~11:50)/수(11:00~11:50)',
       class_time_json: [
         {
           day: 0,
@@ -88,7 +86,6 @@ export const mockTimeTable123: FullTimetable = {
       course_title: '컴퓨터프로그래밍',
       credit: 4,
       class_time: '화(3-1.5)/수(10.5-2)/수(10.5-2)/목(3-1.5)',
-      real_class_time: '화(11:00~12:15)/수(18:30~20:20)/목(11:00~12:15)',
       class_time_json: [
         {
           day: 1,
@@ -131,7 +128,6 @@ export const mockTimeTable123: FullTimetable = {
       course_title: '고급수학연습 2',
       credit: 1,
       class_time: '수(7.5-2)',
-      real_class_time: '수(15:30~17:20)',
       class_time_json: [
         {
           day: 2,
@@ -161,7 +157,6 @@ export const mockTimeTable123: FullTimetable = {
       course_title: '생물학실험 2',
       credit: 1,
       class_time: '월(7-2)',
-      real_class_time: '월(15:00~16:50)',
       class_time_json: [
         {
           day: 0,
@@ -191,7 +186,6 @@ export const mockTimeTable123: FullTimetable = {
       course_title: '상상력과 문화',
       credit: 3,
       class_time: '월(4.5-1.5)/수(4.5-1.5)',
-      real_class_time: '화(12:30~13:45)/목(12:30~13:45)',
       class_time_json: [
         {
           day: 1,
@@ -227,7 +221,6 @@ export const mockTimeTable123: FullTimetable = {
       course_title: '진화와 인간사회',
       credit: 3,
       class_time: '화(6-1.5)/목(6-1.5)',
-      real_class_time: '화(14:00~15:15)/목(14:00~15:15)',
       class_time_json: [
         {
           day: 1,
@@ -263,7 +256,6 @@ export const mockTimeTable123: FullTimetable = {
       course_title: '통계학실험',
       credit: 1,
       class_time: '월(5-2)',
-      real_class_time: '월(13:00~14:50)',
       class_time_json: [
         {
           day: 0,
@@ -294,7 +286,6 @@ export const mockTimeTable123: FullTimetable = {
       course_title: '초급중국어 1',
       credit: 3,
       class_time: '화(7.5-1.5)/화(9-1)/화(9-1)/목(7.5-1.5)',
-      real_class_time: '화(15:30~16:45)/화(17:00~17:50)/목(15:30~16:45)',
       class_time_json: [
         {
           day: 1,
@@ -331,7 +322,6 @@ export const mockTimeTable123: FullTimetable = {
       _id: '5d7f26bc3c46177d58afa02e',
       course_title: '복싱',
       credit: 0,
-      real_class_time: '월(17:30~20:00)/목(17:30~20:00)',
       class_time_json: [
         {
           day: 0,
@@ -359,7 +349,6 @@ export const mockTimeTable123: FullTimetable = {
       _id: '5da442da3c46177d58b123f9',
       course_title: '단풍 가을합주',
       credit: 0,
-      real_class_time: '목(21:30~22:00)',
       class_time_json: [
         {
           day: 3,
@@ -381,7 +370,6 @@ export const mockTimeTable123: FullTimetable = {
   theme: 0,
   updated_at: '2020-02-21T10:14:59.802Z',
 };
-
 export const mockTimeTable456: FullTimetable = {
   _id: '456',
   user_id: '5c59377722ac5f0f310df48b',
@@ -398,7 +386,6 @@ export const mockTimeTable456: FullTimetable = {
       course_title: '컴퓨터의 개념 및 실습',
       credit: 3,
       class_time: '월(6.5-2)/수(6.5-2)',
-      real_class_time: '월(14:30~16:20)/수(14:30~16:20)',
       class_time_json: [
         {
           day: 0,
@@ -434,7 +421,6 @@ export const mockTimeTable456: FullTimetable = {
       course_title: '수학 1',
       credit: 2,
       class_time: '월(5-1)/수(5-1)',
-      real_class_time: '월(13:00~13:50)/수(13:00~13:50)',
       class_time_json: [
         {
           day: 0,
@@ -470,7 +456,6 @@ export const mockTimeTable456: FullTimetable = {
       course_title: '대학 글쓰기 1',
       credit: 2,
       class_time: '화(6-1.5)/목(6-1.5)',
-      real_class_time: '화(14:00~15:15)/목(14:00~15:15)',
       class_time_json: [
         {
           day: 1,
@@ -506,7 +491,6 @@ export const mockTimeTable456: FullTimetable = {
       course_title: '대학영어 1',
       credit: 2,
       class_time: '월(3-1.5)/수(3-1.5)/금(3-1)',
-      real_class_time: '월(11:00~12:15)/수(11:00~12:15)/금(11:00~11:50)',
       class_time_json: [
         {
           day: 0,
@@ -548,7 +532,6 @@ export const mockTimeTable456: FullTimetable = {
       course_title: '논리와 비판적 사고',
       credit: 3,
       class_time: '금(6-3)',
-      real_class_time: '금(14:00~16:50)',
       class_time_json: [
         {
           day: 4,
@@ -578,7 +561,6 @@ export const mockTimeTable456: FullTimetable = {
       course_title: '수학연습 1',
       credit: 1,
       class_time: '목(7.5-2)',
-      real_class_time: '목(15:30~17:20)',
       class_time_json: [
         {
           day: 3,
@@ -608,7 +590,6 @@ export const mockTimeTable456: FullTimetable = {
       course_title: '통계학',
       credit: 3,
       class_time: '화(3-1.5)/목(3-1.5)',
-      real_class_time: '화(11:00~12:15)/목(11:00~12:15)',
       class_time_json: [
         {
           day: 1,
@@ -640,7 +621,6 @@ export const mockTimeTable456: FullTimetable = {
       _id: '5ce62274db261b554d559fad',
       course_title: '베이스 과외',
       credit: 0,
-      real_class_time: '월(16:30~17:30)',
       class_time_json: [
         {
           day: 0,
@@ -662,7 +642,6 @@ export const mockTimeTable456: FullTimetable = {
       _id: '5ce62299db261b554d559fb1',
       course_title: '베이스세미나',
       credit: 0,
-      real_class_time: '월(18:00~19:00)',
       class_time_json: [
         {
           day: 0,
@@ -684,7 +663,6 @@ export const mockTimeTable456: FullTimetable = {
       _id: '5ce622d1db261b554d559fbc',
       course_title: '가디언세미나',
       credit: 0,
-      real_class_time: '목(18:30~20:00)',
       class_time_json: [
         {
           day: 3,
@@ -706,7 +684,6 @@ export const mockTimeTable456: FullTimetable = {
   theme: 0,
   updated_at: '2022-04-06T06:18:11.260Z',
 };
-
 export const mockTimeTable789: FullTimetable = {
   _id: '789',
   user_id: '5c59377722ac5f0f310df48b',
@@ -723,7 +700,6 @@ export const mockTimeTable789: FullTimetable = {
       course_title: '물리학실험',
       credit: 1,
       class_time: '',
-      real_class_time: '수(13:00~14:50)',
       class_time_json: [
         {
           day: 2,
@@ -753,7 +729,6 @@ export const mockTimeTable789: FullTimetable = {
       course_title: '생물학 2',
       credit: 3,
       class_time: '월(7-3)/수(7-3)/금(7-3)',
-      real_class_time: '월(15:00~17:50)/수(15:00~17:50)/금(15:00~17:50)',
       class_time_json: [
         {
           day: 0,
@@ -790,7 +765,6 @@ export const mockTimeTable789: FullTimetable = {
       _id: '5d0ca606db261b554d57664e',
       course_title: '단풍 여합',
       credit: 0,
-      real_class_time: '화(18:00~21:00)/금(18:00~21:00)',
       class_time_json: [
         {
           day: 1,
@@ -818,7 +792,6 @@ export const mockTimeTable789: FullTimetable = {
       _id: '5d0ca653db261b554d576652',
       course_title: '프로네시스',
       credit: 0,
-      real_class_time: '수(19:00~21:00)',
       class_time_json: [
         {
           day: 2,
@@ -840,8 +813,6 @@ export const mockTimeTable789: FullTimetable = {
       _id: '5d0ca722db261b554d576663',
       course_title: '헬스',
       credit: 0,
-      real_class_time:
-        '월(8:30~9:30)/화(8:30~9:30)/수(8:30~9:30)/목(8:30~9:30)/금(8:30~9:30)/토(8:30~9:30)/일(8:30~9:30)',
       class_time_json: [
         {
           day: 0,
@@ -899,7 +870,6 @@ export const mockTimeTable789: FullTimetable = {
       _id: '5d141e75db261b554d57f23b',
       course_title: '골든벨 회의',
       credit: 0,
-      real_class_time: '목(15:00~17:00)',
       class_time_json: [
         {
           day: 3,
@@ -921,7 +891,6 @@ export const mockTimeTable789: FullTimetable = {
       _id: '5d14bd96db261b554d5814ed',
       course_title: '면접 회의',
       credit: 0,
-      real_class_time: '목(10:00~12:00)',
       class_time_json: [
         {
           day: 3,
@@ -943,7 +912,6 @@ export const mockTimeTable789: FullTimetable = {
       _id: '5d14bdd0db261b554d5814f7',
       course_title: '수학 회의',
       credit: 0,
-      real_class_time: '금(12:00~14:00)',
       class_time_json: [
         {
           day: 4,
@@ -965,7 +933,6 @@ export const mockTimeTable789: FullTimetable = {
   theme: 0,
   updated_at: '2019-07-17T10:25:50.990Z',
 };
-
 export const mockTimeTable101112: FullTimetable = {
   _id: '101112',
   user_id: '5c59377722ac5f0f310df48b',
@@ -976,7 +943,6 @@ export const mockTimeTable101112: FullTimetable = {
   theme: 0,
   updated_at: '2019-07-17T10:25:50.990Z',
 };
-
 export const mockTimeTable: FullTimetable = {
   _id: '627f3d8881ce530016abb399',
   user_id: '5c59377722ac5f0f310df48b',
@@ -993,7 +959,6 @@ export const mockTimeTable: FullTimetable = {
       course_title: '(공유)AI입문',
       credit: 3,
       class_time: '월(4-3)/수(4-3)/금(4-3)',
-      real_class_time: '월(12:00~14:50)/수(12:00~14:50)/금(12:00~14:50)',
       class_time_json: [
         {
           day: 0,

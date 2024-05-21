@@ -1,8 +1,8 @@
 import { InternalClient } from '../httpClient';
 import { ErrorResponse, SuccessResponse } from '../response';
-import { LocalLoginRequest, LoginResponse, NotificationResponse } from './schemas';
+import { LectureDto, LocalLoginRequest, LoginResponse, NotificationResponse, SearchQueryLegacy } from './schemas';
 
-type Api = (_: { body: never; token: string }) => Promise<{ status: number; data: unknown }>;
+type Api = (_: { body: never; token: string; params: never }) => Promise<{ status: number; data: unknown }>;
 
 export const apis = (client: InternalClient) => {
   const callWithToken = <R extends { status: number; data: unknown }>(
@@ -84,6 +84,35 @@ export const apis = (client: InternalClient) => {
       callWithToken<SuccessResponse<{ year: number; semester: number; updated_at: string }[]>>({
         method: 'get',
         path: `/v1/course_books`,
+        token,
+      }),
+    'GET /v1/tags/:year/:semester': ({
+      token,
+      params,
+    }: {
+      token: string;
+      params: { year: number; semester: number };
+    }) =>
+      callWithToken<
+        SuccessResponse<{
+          academic_year: string[];
+          category: string[];
+          classification: string[];
+          credit: string[];
+          department: string[];
+          instructor: string[];
+          updated_at: number;
+        }>
+      >({
+        method: 'get',
+        path: `/v1/tags/${params.year}/${params.semester}`,
+        token,
+      }),
+    'POST /v1/search_query': ({ body, token }: { body: SearchQueryLegacy; token: string }) =>
+      callWithToken<SuccessResponse<LectureDto[]>>({
+        method: 'post',
+        path: `/v1/search_query`,
+        body,
         token,
       }),
   } satisfies Record<string, Api>;

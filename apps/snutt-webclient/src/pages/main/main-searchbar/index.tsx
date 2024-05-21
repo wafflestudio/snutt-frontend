@@ -5,25 +5,27 @@ import styled from 'styled-components';
 import { IcFilter } from '@/components/icons/ic-filter';
 import { IcSearch } from '@/components/icons/ic-search';
 import { serviceContext } from '@/contexts/ServiceContext';
+import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
 import type { SearchFilter } from '@/entities/search';
 import type { FullTimetable } from '@/entities/timetable';
 import { useCourseBooks } from '@/hooks/useCourseBooks';
 import { useGuardContext } from '@/hooks/useGuardContext';
 import { useYearSemester } from '@/hooks/useYearSemester';
+import { type SearchService } from '@/usecases/searchService';
 import type { ArrayElement } from '@/utils/array-element';
 
 import { MainSearchbarFilterDialog } from './main-searchbar-filter-dialog';
 import { MainSearchbarYearSemesterSelect } from './main-searchbar-year-semester-select';
 
 type Props = {
-  onSearch: (filter: Partial<SearchFilter>) => void;
+  onSearch: (filter: Parameters<SearchService['search']>[0]) => void;
   currentFullTimetable?: FullTimetable;
   resetSearchResult: () => void;
 };
 
 export type SearchForm = {
   title: SearchFilter['title'];
-  academicYear: SearchFilter['academic_year'];
+  academicYear: SearchFilter['academicYear'];
   category: SearchFilter['category'];
   credit: SearchFilter['credit'];
   etc: SearchFilter['etc'];
@@ -55,6 +57,7 @@ export const MainSearchbar = ({ onSearch, currentFullTimetable, resetSearchResul
   const { timeMaskService } = useGuardContext(serviceContext);
   const currentCourseBook = courseBooks?.find((c) => c.year === year && c.semester === semester);
   const currentCourseBookUpdatedAt = currentCourseBook ? dayjs(currentCourseBook.updatedAt).format('YYYY. MM. DD') : '';
+  const { token } = useTokenAuthContext();
 
   const onSubmit = (e?: FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
@@ -64,22 +67,25 @@ export const MainSearchbar = ({ onSearch, currentFullTimetable, resetSearchResul
     const undefinedIfEmpty = <T,>(e: T[]) => (e.length === 0 ? undefined : e);
 
     onSearch({
-      academic_year: undefinedIfEmpty(searchForm.academicYear),
-      category: undefinedIfEmpty(searchForm.category),
-      classification: undefinedIfEmpty(searchForm.classification),
-      credit: undefinedIfEmpty(searchForm.credit),
-      department: undefinedIfEmpty(searchForm.department),
-      etc: undefinedIfEmpty(searchForm.etc),
-      year,
-      semester,
-      title: searchForm.title,
-      time_mask:
-        searchForm.timeType === 'manual'
-          ? searchForm.manualBitmask
-          : searchForm.timeType === 'auto'
-            ? timeMaskService.getTimetableEmptyTimeBitMask(currentFullTimetable)
-            : undefined,
-      limit: 200,
+      token,
+      params: {
+        academicYear: undefinedIfEmpty(searchForm.academicYear),
+        category: undefinedIfEmpty(searchForm.category),
+        classification: undefinedIfEmpty(searchForm.classification),
+        credit: undefinedIfEmpty(searchForm.credit),
+        department: undefinedIfEmpty(searchForm.department),
+        etc: undefinedIfEmpty(searchForm.etc),
+        year,
+        semester,
+        title: searchForm.title,
+        timeMask:
+          searchForm.timeType === 'manual'
+            ? searchForm.manualBitmask
+            : searchForm.timeType === 'auto'
+              ? timeMaskService.getTimetableEmptyTimeBitMask(currentFullTimetable)
+              : undefined,
+        limit: 200,
+      },
     });
   };
 
