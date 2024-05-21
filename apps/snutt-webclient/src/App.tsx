@@ -18,11 +18,11 @@ import { createLocalStorageClient } from '@/infrastructures/createLocalStorageCl
 import { createSessionStorageClient } from '@/infrastructures/createSessionStorageClient';
 import { implAuthSnuttApiRepository } from '@/infrastructures/implAuthSnuttApiRepository';
 import { implColorSnuttApiRepository } from '@/infrastructures/implColorSnuttApiRepository';
+import { implFeedbackSnuttApiRepository } from '@/infrastructures/implFeedbackSnuttApiRepository';
+import { getNotificationRepository } from '@/infrastructures/implNotificationSnuttApiRepository';
 import { ErrorPage } from '@/pages/error';
 import { Main } from '@/pages/main';
 import { MyPage } from '@/pages/mypage';
-import { getFeedbackRepository } from '@/repositories/feedbackRepository';
-import { getNotificationRepository } from '@/repositories/notificationRepository';
 import { getSearchRepository } from '@/repositories/searchRepository';
 import { getSemesterRepository } from '@/repositories/semesterRepository';
 import { getStorageRepository } from '@/repositories/storageRepository';
@@ -167,11 +167,13 @@ const getUnauthorizedServices = (ENV: { API_BASE_URL: string; API_KEY: string })
     headers: { 'x-access-apikey': ENV.API_KEY },
   });
 
-  const authRepository = implAuthSnuttApiRepository({ snuttApi: getSnuttApi(ENV) });
-  const feedbackRepository = getFeedbackRepository({ httpClient });
+  const snuttApi = getSnuttApi(ENV);
+
+  const authRepository = implAuthSnuttApiRepository({ snuttApi });
+  const feedbackRepository = implFeedbackSnuttApiRepository({ snuttApi });
   const userRepository = getUserRepository({ httpClient });
   const authService = getAuthService({ authRepository, userRepository });
-  const feedbackService = getFeedbackService({ repositories: [feedbackRepository] });
+  const feedbackService = getFeedbackService({ feedbackRepository });
 
   return { authService, feedbackService };
 };
@@ -197,12 +199,12 @@ const getAuthorizedServices = (
   const timetableRepository = getTimetableRepository({ httpClient });
   const semesterRepository = getSemesterRepository({ httpClient });
   const searchRepository = getSearchRepository({ httpClient });
-  const notificationRepository = getNotificationRepository({ httpClient });
+  const notificationRepository = getNotificationRepository({ snuttApi });
   const colorRepository = implColorSnuttApiRepository({ snuttApi });
 
   const userService = getUserService({ repositories: [userRepository] });
   const colorService = getColorService({ colorRepository });
-  const notificationService = getNotificationService({ repositories: [notificationRepository] });
+  const notificationService = getNotificationService({ notificationRepository });
   const searchService = getSearchService({ repositories: [searchRepository] });
   const timetableService = getTimetableService({ repositories: [timetableRepository] });
   const lectureService = getLectureService();

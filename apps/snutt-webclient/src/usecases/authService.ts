@@ -1,5 +1,5 @@
 import { getErrorMessage } from '@/entities/error';
-import { type ApiResponse, type UsecaseResponse } from '@/entities/response';
+import { type RepositoryResponse, type UsecaseResponse } from '@/entities/response';
 import { type UserRepository } from '@/repositories/userRepository';
 
 export interface AuthService {
@@ -19,14 +19,14 @@ export interface AuthService {
 
 type Deps = {
   authRepository: {
-    signInWithIdPassword(args: { id: string; password: string }): ApiResponse<{ token: string }>;
-    signInWithFacebook(args: { fb_id: string; fb_token: string }): ApiResponse<{ token: string }>;
-    signUpWithIdPassword(body: { id: string; password: string }): ApiResponse<{ token: string }>;
-    findId(body: { email: string }): ApiResponse<void>;
-    passwordResetCheckEmail(body: { user_id: string }): ApiResponse<{ email: string }>;
-    sendPasswordResetVerificationEmail(body: { user_email: string }): ApiResponse<{ message: 'ok' }>;
-    verifyPasswordResetCode(body: { user_id: string; code: string }): ApiResponse<void>;
-    resetPassword(body: { user_id: string; password: string }): ApiResponse<{ message: 'ok' }>;
+    signInWithIdPassword(args: { id: string; password: string }): RepositoryResponse<{ token: string }>;
+    signInWithFacebook(args: { fb_id: string; fb_token: string }): RepositoryResponse<{ token: string }>;
+    signUpWithIdPassword(body: { id: string; password: string }): RepositoryResponse<{ token: string }>;
+    findId(body: { email: string }): RepositoryResponse<void>;
+    passwordResetCheckEmail(body: { user_id: string }): RepositoryResponse<{ email: string }>;
+    sendPasswordResetVerificationEmail(body: { user_email: string }): RepositoryResponse<{ message: 'ok' }>;
+    verifyPasswordResetCode(body: { user_id: string; code: string }): RepositoryResponse<void>;
+    resetPassword(body: { user_id: string; password: string }): RepositoryResponse<{ message: 'ok' }>;
   };
   userRepository: UserRepository;
 };

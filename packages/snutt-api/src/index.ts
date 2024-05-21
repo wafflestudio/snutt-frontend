@@ -37,3 +37,9 @@ type SnuttBackendHttpClient = {
     headers?: Record<string, string>;
   }) => Promise<{ status: number; data: unknown }>;
 };
+
+export type SnuttApiSuccessResponseData<T extends keyof SnuttApi> = (Awaited<ReturnType<SnuttApi[T]>> & {
+  status: 200;
+})['data'];
+
+export type SnuttApiResponse<T extends keyof SnuttApi> = Awaited<ReturnType<SnuttApi[T]>>;

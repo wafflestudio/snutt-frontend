@@ -4,7 +4,6 @@ import { http } from 'msw';
 import type { SignInResponse } from '@/entities/auth';
 import type { Color } from '@/entities/color';
 import type { CoreServerError } from '@/entities/error';
-import type { Notification } from '@/entities/notification';
 import type { SearchFilter, SearchResultLecture } from '@/entities/search';
 import type { CourseBook, Semester } from '@/entities/semester';
 import type { FullTimetable, Timetable } from '@/entities/timetable';
@@ -100,7 +99,7 @@ export const handlers = [
     withValidateAccess(() => ({ type: 'success', body: { count: 3 } })),
   ),
 
-  http.get<never, never, Notification[] | CoreServerError>(
+  http.get(
     `*/v1/notification`,
     withValidateAccess(() => ({ type: 'success', body: mockNotification })),
   ),

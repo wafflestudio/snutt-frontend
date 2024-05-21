@@ -1,4 +1,4 @@
-export type ApiResponse<T> = Promise<
+export type RepositoryResponse<T> = Promise<
   (T extends void ? { type: 'success' } : { type: 'success'; data: T }) | { type: 'error'; errcode: number }
 >;
 
