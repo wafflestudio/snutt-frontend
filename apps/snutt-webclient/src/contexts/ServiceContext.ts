@@ -1,6 +1,7 @@
 import { createContext } from 'react';
 
 import { type AuthService } from '@/usecases/authService';
+import { type BookmarkService } from '@/usecases/bookmarkService';
 import { type ColorService } from '@/usecases/colorService';
 import { type ErrorService } from '@/usecases/errorService';
 import { type FeedbackService } from '@/usecases/feedbackService';
@@ -30,6 +31,7 @@ export type ServiceContext = {
   errorService: ErrorService;
   colorService: ColorService;
   userService: UserService;
+  bookmarkService: BookmarkService;
 };
 
 export const serviceContext = createContext<ServiceContext | null>(null);

@@ -200,7 +200,7 @@ export type LectureDto = {
 export type BuildingsResponse = { content: LectureBuilding[]; totalCount: Int32; nextPageToken?: string };
 
 export type BookmarkLectureDto = {
-  _id?: string;
+  _id: string;
   academic_year?: string;
   category?: string;
   class_time_json: ClassPlaceAndTimeLegacyDto[];

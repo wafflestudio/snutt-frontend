@@ -25,11 +25,11 @@ test('현재 시간표 탭이 정상 동작한다 (시간표 있을 때)', async
   const lectureItem = page.getByTestId('main-lecture-listitem');
   await expect(lectureItem.nth(0).getByTestId('main-lecture-listitem-title')).toHaveText('고급수학 2');
   await expect(lectureItem.nth(1).getByTestId('main-lecture-listitem-instructor')).toHaveText('이영기 / 4학점');
-  await expect(lectureItem.nth(1).getByTestId('main-lecture-listitem-place')).toHaveText('302-208, -, 302-208');
-  await expect(lectureItem.nth(3).getByTestId('main-lecture-listitem-department')).toHaveText('생명과학부, 1학년');
-  await expect(lectureItem.nth(4).getByTestId('main-lecture-listitem-time')).toHaveText(
+  await expect(lectureItem.nth(3).getByTestId('main-lecture-listitem-detail').nth(0)).toHaveText('생명과학부, 1학년');
+  await expect(lectureItem.nth(4).getByTestId('main-lecture-listitem-detail').nth(1)).toHaveText(
     '화(12:30~13:45), 목(12:30~13:45)',
   );
+  await expect(lectureItem.nth(1).getByTestId('main-lecture-listitem-detail').nth(2)).toHaveText('302-208, -, 302-208');
 });
 
 test('현재 시간표 탭이 정상 동작한다 (강의 없을 때)', async ({ page }) => {
@@ -65,7 +65,7 @@ test('강의 삭제 기능이 정상 동작한다', async ({ page }) => {
   await page.goto('/');
   await givenUser(page);
   const lectureItem = page.getByTestId('main-lecture-listitem');
-  await lectureItem.filter({ hasText: '고급수학 2' }).getByTestId('main-lecture-listitem-delete').click();
+  await lectureItem.filter({ hasText: '고급수학 2' }).getByTestId('main-lecture-listitem-button').click();
   await Promise.all([
     page.waitForRequest(
       (req) => req.method() === 'DELETE' && req.url().includes('/v1/tables/123/lecture/5d1a0132db261b554d5d0078'),
@@ -104,7 +104,7 @@ test('검색 결과 탭이 정상 동작한다 (시간표 없을 때)', async ({
   await page.getByTestId('main-searchbar-input').type('컴');
   await page.getByTestId('main-searchbar-search').click();
   const lectureItem = page.getByTestId('main-lecture-listitem');
-  await expect(lectureItem.nth(0).getByText('추가')).toBeDisabled();
+  await expect(lectureItem.nth(0).getByText('추가')).toHaveCount(0);
 });
 
 test('검색 결과 탭이 정상 동작한다 (검색 전)', async ({ page }) => {
