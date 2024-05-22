@@ -5,6 +5,7 @@ import type { SignInResponse } from '@/entities/auth';
 import type { Color } from '@/entities/color';
 import type { CoreServerError } from '@/entities/error';
 import type { SearchFilter, SearchResultLecture } from '@/entities/search';
+import { mockBookmarks } from '@/mocks/fixtures/bookmark';
 import { mockVividIos } from '@/mocks/fixtures/color';
 import { mockCourseBooks } from '@/mocks/fixtures/courseBook';
 import { mockNotification } from '@/mocks/fixtures/notification';
@@ -381,6 +382,11 @@ export const handlers = [
 
       return { type: 'success', body: { token: 't5' } };
     }),
+  ),
+
+  http.get(
+    `*/v1/bookmarks`,
+    withValidateAccess(() => ({ type: 'success', body: mockBookmarks }), { token: false }),
   ),
 ];
 

@@ -1,7 +1,5 @@
-import { useIsMutating } from '@tanstack/react-query';
-
 import { Loader } from '@/components/loader';
-import type { SearchResultLecture } from '@/entities/search';
+import { type BaseLecture } from '@/entities/lecture';
 import type { FullTimetable } from '@/entities/timetable';
 import { MainLectureListitem } from '@/pages/main/main-lecture-section/common/main-lecture-listitem';
 
@@ -9,7 +7,7 @@ import { MainSectionEmptyWrapper } from '../../main-section-empty-wrapper';
 import { MainLectureList } from '../main-lecture-list';
 
 type Props = {
-  searchResult?: SearchResultLecture[];
+  lectures: BaseLecture[] | undefined;
   currentFullTimetable?: FullTimetable;
   previewLectureId: string | null;
   setPreviewLectureId: (id: string | null) => void;
@@ -19,32 +17,28 @@ type Props = {
   openBookmarkTab: () => void;
 };
 
-export const MainSearchLectureTab = ({
-  searchResult,
+export const MainBookmarkLectureTab = ({
+  lectures,
   currentFullTimetable,
-  setPreviewLectureId,
-  previewLectureId,
   hoveredLectureId,
-  setHoveredLectureId,
   onClickLecture,
+  previewLectureId,
+  setHoveredLectureId,
+  setPreviewLectureId,
   openBookmarkTab,
 }: Props) => {
-  const isSearchResultMutating = useIsMutating({ mutationKey: ['search_query'] });
-
-  if (isSearchResultMutating)
+  if (lectures === undefined)
     return (
       <MainSectionEmptyWrapper>
         <Loader data-testid="ml-search-loader" />
       </MainSectionEmptyWrapper>
     );
 
-  if (!searchResult) return <MainSectionEmptyWrapper>강의를 검색하세요</MainSectionEmptyWrapper>;
-
-  if (searchResult.length === 0) return <MainSectionEmptyWrapper>검색 결과가 없습니다.</MainSectionEmptyWrapper>;
+  if (lectures.length === 0) return <MainSectionEmptyWrapper>관심 강좌가 없습니다.</MainSectionEmptyWrapper>;
 
   return (
     <MainLectureList>
-      {searchResult?.map((l) => (
+      {lectures?.map((l) => (
         <MainLectureListitem
           key={l._id}
           props={{

@@ -14,6 +14,7 @@ import { TokenAuthContext } from '@/contexts/TokenAuthContext';
 import { TokenManageContext } from '@/contexts/TokenManageContext';
 import { useGuardContext } from '@/hooks/useGuardContext';
 import { implAuthSnuttApiRepository } from '@/infrastructures/implAuthSnuttApiRepository';
+import { implBookmarkSnuttApiRepository } from '@/infrastructures/implBookmarkSnuttApiRepository';
 import {
   implTimetableLocalStorageRepository,
   implTokenLocalStorageRepository,
@@ -30,6 +31,7 @@ import { ErrorPage } from '@/pages/error';
 import { Main } from '@/pages/main';
 import { MyPage } from '@/pages/mypage';
 import { getAuthService } from '@/usecases/authService';
+import { getBookmarkService } from '@/usecases/bookmarkService';
 import { getColorService } from '@/usecases/colorService';
 import { getErrorService } from '@/usecases/errorService';
 import { getFeedbackService } from '@/usecases/feedbackService';
@@ -138,6 +140,7 @@ export const App = () => {
       errorService,
       tokenService,
       timetableViewService,
+      bookmarkService: getBookmarkService({ bookmarkRepository: implBookmarkSnuttApiRepository({ snuttApi }) }),
     };
   }, [ENV]);
 
