@@ -2,7 +2,12 @@ import { ErrorResponse } from '../response';
 import { getSnuttApis } from './snutt';
 import { getSnuttTimetableApis } from './snutt-timetable';
 
-export type Api = (_: { body: never; token: string; params: never }) => Promise<{ status: number; data: unknown }>;
+export type Api = (_: {
+  body: never;
+  token: string;
+  params: never;
+  query: never;
+}) => Promise<{ status: number; data: unknown }>;
 
 type InternalClient = {
   call: <R extends { status: number; data: unknown }>(_: {
