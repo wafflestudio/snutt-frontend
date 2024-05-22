@@ -21,7 +21,7 @@ export const Main = () => {
   const [previewLectureId, setPreviewLectureId] = useState<string | null>(null);
   const [dialogLectureId, setDialogLectureId] = useState<string | null>(null);
   const [isCreateLectureDialog, setCreateLectureDialog] = useState(false);
-  const [lectureTab, setLectureTab] = useState<'result' | 'current'>('current');
+  const [lectureTab, setLectureTab] = useState<'result' | 'current' | 'bookmark'>('current');
   const [currentTimetableId, setCurrentTimetableId] = useState<string | null>(null);
   const { year, semester } = useYearSemester();
   const { data: timetables } = useMyTimetables();
@@ -35,10 +35,13 @@ export const Main = () => {
   const { data: currentFullTimetable } = useCurrentFullTimetable(currentTimetable?._id);
 
   const { mutate, data: searchResult, reset } = useSearchResult();
+  const { data: bookmarkLectures } = useBookmarkLectures();
 
   const searchResultLectures = searchResult?.type === 'success' ? searchResult.data : undefined;
   const dialogLecture = currentFullTimetable?.lecture_list.find((tt) => tt._id === dialogLectureId);
-  const previewLecture = searchResultLectures?.find((item) => item._id === previewLectureId);
+  const previewLecture = [...(searchResultLectures ?? []), ...(bookmarkLectures ?? [])]?.find(
+    (item) => item._id === previewLectureId,
+  );
 
   const onClickLecture = (id: string) => setDialogLectureId(id);
 
@@ -65,6 +68,7 @@ export const Main = () => {
           onClickLecture={onClickLecture}
           searchResult={searchResultLectures}
           setPreviewLectureId={setPreviewLectureId}
+          bookmarkLectures={bookmarkLectures}
         />
         <TimetableSection
           currentYearSemesterTimetables={currentYearSemesterTimetables}
@@ -125,6 +129,22 @@ const useSearchResult = () => {
   return useMutation({
     mutationKey: ['search_query'],
     mutationFn: (value: Parameters<SearchService['search']>[0]) => searchService.search(value),
+  });
+};
+
+const useBookmarkLectures = () => {
+  const { bookmarkService } = useGuardContext(serviceContext);
+  const { token } = useTokenAuthContext();
+  const ys = useYearSemester();
+
+  return useQuery({
+    queryKey: ['BookmarkService', 'getBookmarkLectures', { token, ...ys }] as const,
+    queryFn: ({ queryKey: [, , { year, semester, token }] }) => {
+      if (!year || !semester) throw new Error('no year or semester');
+      return bookmarkService.getBookmarkLectures({ year, semester, token });
+    },
+    enabled: !!ys.year && !!ys.semester,
+    select: (data) => (data?.type === 'success' ? data.data : undefined),
   });
 };
 
