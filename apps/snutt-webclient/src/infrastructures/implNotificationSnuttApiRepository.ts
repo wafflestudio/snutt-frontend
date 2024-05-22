@@ -18,10 +18,8 @@ export const getNotificationRepository = ({
           2: 'LECTURE_UPDATE',
           3: 'LECTURE_REMOVE',
           4: 'LINK_ADDR',
-
-          // TODO: 이거 뭔지 확인 필요 https://wafflestudio.slack.com/archives/C0PAVPS5T/p1716291778118299
-          5: 'NORMAL',
-          6: 'NORMAL',
+          5: 'FRIEND',
+          6: 'NEW_FEATURE',
         };
 
         return {

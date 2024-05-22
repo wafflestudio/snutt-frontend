@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import { IcCalendar } from '@/components/icons/ic-calendar';
 import { IcExclamation } from '@/components/icons/ic-exclamation';
+import { IcFriend } from '@/components/icons/ic-friend';
 import { IcRecycle } from '@/components/icons/ic-recycle';
 import { IcTrash } from '@/components/icons/ic-trash';
 import { usePopoverContext } from '@/components/popover';
@@ -39,6 +40,8 @@ const notificationTypeMap: Record<Notification['type'], ReactNode> = {
   LECTURE_UPDATE: <IcRecycle />,
   LECTURE_REMOVE: <IcTrash />,
   LINK_ADDR: <IcExclamation />,
+  FRIEND: <IcFriend />,
+  NEW_FEATURE: <IcExclamation />,
 };
 
 const useNotificationList = (show: boolean) => {

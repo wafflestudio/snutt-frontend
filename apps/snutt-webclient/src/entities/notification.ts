@@ -15,4 +15,8 @@ type NotificationType =
   /** 내 시간표에 있는 강좌가 삭제되었을 때 강의별로 전송되는 개인 알림입니다. */
   | 'LECTURE_REMOVE'
   /** 사용자가 알람을 누르면 특정 링크로 연결되는 알림입니다. */
-  | 'LINK_ADDR';
+  | 'LINK_ADDR'
+  /** 친구기능 관련 알림 */
+  | 'FRIEND'
+  /** 신규 기능 안내 알림 */
+  | 'NEW_FEATURE';
