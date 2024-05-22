@@ -37,7 +37,7 @@ export const MainTimeTable = ({
     .concat(...(previewLecture?.class_time_json ?? []));
   const days = rangeToArray(...timetableViewService.getDayRange(allClassTimes));
   const hours = rangeToArray(...timetableViewService.getHourRange(allClassTimes));
-  const totalCredit = timetable.lecture_list.reduce((acc, cur) => acc + cur.credit, 0);
+  const totalCredit = timetable.lecture_list.reduce((acc, cur) => acc + (cur.credit ?? 0), 0);
 
   return (
     <Wrapper

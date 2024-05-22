@@ -5,10 +5,9 @@ import styled from 'styled-components';
 import { Button } from '@/components/button';
 import { Dialog } from '@/components/dialog';
 import { serviceContext } from '@/contexts/ServiceContext';
+import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
 import { useGuardContext } from '@/hooks/useGuardContext';
 import { useYearSemester } from '@/hooks/useYearSemester';
-import { get } from '@/utils/object/get';
-import { queryKey } from '@/utils/query-key-factory';
 
 type Props = {
   isOpen: boolean;
@@ -21,18 +20,14 @@ export const MainCreateTimetableDialog = ({ isOpen, close, setCurrentTimetable }
 
   const {
     mutate: create,
-    error,
+    data,
     reset,
-  } = useCreateTimetable((createdId?: string) => {
-    if (createdId) setCurrentTimetable(createdId);
+  } = useCreateTimetable((createdId) => {
+    setCurrentTimetable(createdId);
     onClose();
   });
 
-  const errorMessage = error
-    ? get(error, ['errcode']) === 12291
-      ? '동일한 이름의 시간표가 존재합니다'
-      : '오류가 발생했습니다'
-    : null;
+  const errorMessage = data?.type === 'error' ? data.message : null;
 
   const onClose = () => {
     setTitle('');
@@ -59,19 +54,24 @@ export const MainCreateTimetableDialog = ({ isOpen, close, setCurrentTimetable }
   );
 };
 
-const useCreateTimetable = (onSuccess: (createdId?: string) => void) => {
+const useCreateTimetable = (onSuccess: (createdId: string) => void) => {
   const { year, semester } = useYearSemester();
   const queryClient = useQueryClient();
   const { timetableService } = useGuardContext(serviceContext);
+  const { token } = useTokenAuthContext();
 
   return useMutation({
     mutationFn: (title: string) => {
       if (!year || !semester) throw new Error('no year | semester');
-      return timetableService.createTimetable({ year, semester, title });
+      return timetableService.createTimetable({ year, semester, title, token });
     },
     onSuccess: (data, title) => {
-      queryClient.setQueryData(queryKey('tables'), data);
-      onSuccess(data.find((item) => item.year === year && item.semester === semester && item.title === title)?._id);
+      if (data.type === 'error') return;
+      const createdTimetableId = data.data.find(
+        (item) => item.title === title && item.year === year && item.semester === semester,
+      )?._id;
+      if (createdTimetableId) onSuccess(createdTimetableId);
+      queryClient.invalidateQueries();
     },
   });
 };

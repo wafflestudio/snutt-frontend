@@ -3,10 +3,10 @@ import styled from 'styled-components';
 
 import { ErrorDialog } from '@/components/error-dialog';
 import { serviceContext } from '@/contexts/ServiceContext';
+import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
 import type { BaseLecture } from '@/entities/lecture';
 import { useErrorDialog } from '@/hooks/useErrorDialog';
 import { useGuardContext } from '@/hooks/useGuardContext';
-import { get } from '@/utils/object/get';
 
 import { MainLectureListItem } from '../../main-lecture-listitem';
 
@@ -35,21 +35,7 @@ export const MainSearchLectureListItem = ({ lecture, timetableId, setPreviewLect
           <LectureButton
             disabled={!timetableId}
             $color="#0000ff"
-            onClick={() =>
-              mutate(undefined, {
-                onError: (err) => {
-                  const errcode = get(err, ['errcode']);
-                  const message = (() => {
-                    if (errcode === 12292) return '이미 해당 강의가 존재합니다.';
-                    if (errcode === 12300) return '강의 시간이 서로 겹칩니다.';
-                    // TODO: sentry
-                    return '오류가 발생했습니다.';
-                  })();
-
-                  open(message);
-                },
-              })
-            }
+            onClick={() => mutate(undefined, { onSuccess: (data) => data.type === 'error' && open(data.message) })}
           >
             추가
           </LectureButton>
@@ -63,12 +49,13 @@ export const MainSearchLectureListItem = ({ lecture, timetableId, setPreviewLect
 const useAddLecture = (id?: string, lectureId?: string) => {
   const queryClient = useQueryClient();
   const { timetableService } = useGuardContext(serviceContext);
+  const { token } = useTokenAuthContext();
   return useMutation({
     mutationFn: () => {
       if (!id) throw new Error('no id');
       if (!lectureId) throw new Error('no lectureId');
 
-      return timetableService.addLecture({ id, lecture_id: lectureId });
+      return timetableService.addLecture({ id, lecture_id: lectureId, token });
     },
     onSuccess: () => queryClient.invalidateQueries(),
   });

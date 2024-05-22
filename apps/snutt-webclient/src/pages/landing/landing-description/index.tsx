@@ -1,11 +1,10 @@
 import styled from 'styled-components';
 
 import { LayoutFooter } from '@/components/layout/layout-footer';
-import { type FeedbackService } from '@/usecases/feedbackService';
 
-type Props = { className?: string; feedbackService: FeedbackService };
+type Props = { className?: string };
 
-export const LandingDescription = ({ className, feedbackService }: Props) => {
+export const LandingDescription = ({ className }: Props) => {
   return (
     <Wrapper className={className}>
       <HeadSection>
@@ -33,7 +32,7 @@ export const LandingDescription = ({ className, feedbackService }: Props) => {
         </DownloadWrapper>
       </HeadSection>
 
-      <LayoutFooter feedbackService={feedbackService} />
+      <LayoutFooter />
     </Wrapper>
   );
 };

@@ -4,18 +4,20 @@ import styled from 'styled-components';
 
 import { Button } from '@/components/button';
 import { ErrorDialog } from '@/components/error-dialog';
+import { serviceContext } from '@/contexts/ServiceContext';
 import { useTokenManageContext } from '@/contexts/TokenManageContext';
 import { useErrorDialog } from '@/hooks/useErrorDialog';
-import { type AuthService } from '@/usecases/authService';
+import { useGuardContext } from '@/hooks/useGuardContext';
 
-export const LandingSignUp = ({ authService, className }: { className?: string; authService: AuthService }) => {
+export const LandingSignUp = ({ className }: { className?: string }) => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
+  const { authService } = useGuardContext(serviceContext);
 
   const { isOpen, message, onClose, open } = useErrorDialog();
   const { saveToken } = useTokenManageContext();
-  const { mutate } = useSignUp(authService);
+  const { mutate } = useSignUp();
 
   const onSubmit = async () => {
     if (password !== passwordConfirm) {
@@ -70,7 +72,8 @@ export const LandingSignUp = ({ authService, className }: { className?: string; 
   );
 };
 
-const useSignUp = (authService: AuthService) => {
+const useSignUp = () => {
+  const { authService } = useGuardContext(serviceContext);
   return useMutation({ mutationFn: (body: { id: string; password: string }) => authService.signUp(body) });
 };
 

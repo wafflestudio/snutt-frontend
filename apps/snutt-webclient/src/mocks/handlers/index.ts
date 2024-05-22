@@ -5,8 +5,6 @@ import type { SignInResponse } from '@/entities/auth';
 import type { Color } from '@/entities/color';
 import type { CoreServerError } from '@/entities/error';
 import type { SearchFilter, SearchResultLecture } from '@/entities/search';
-import type { Semester } from '@/entities/semester';
-import type { FullTimetable, Timetable } from '@/entities/timetable';
 import { mockVividIos } from '@/mocks/fixtures/color';
 import { mockCourseBooks } from '@/mocks/fixtures/courseBook';
 import { mockNotification } from '@/mocks/fixtures/notification';
@@ -21,7 +19,6 @@ import {
   mockTimeTables,
 } from '@/mocks/fixtures/timetable';
 import { mockUsers } from '@/mocks/fixtures/user';
-import type { TimetableRepository } from '@/repositories/timetableRepository';
 
 import { withValidateAccess } from '../utils/access';
 
@@ -31,14 +28,14 @@ export const handlers = [
     withValidateAccess(() => ({ type: 'success', body: mockCourseBooks }), { token: false }),
   ),
 
-  http.get<never, never, Timetable[] | CoreServerError>(
+  http.get(
     `*/v1/tables`,
     withValidateAccess(() => ({ type: 'success', body: mockTimeTables })),
   ),
 
-  http.get<{ id: string }, never, FullTimetable | CoreServerError>(
+  http.get(
     `*/v1/tables/:id`,
-    withValidateAccess(({ params }) => {
+    withValidateAccess(({ params }: { params: { id: string } }) => {
       const { id } = params;
 
       if (id === '123') return { type: 'success', body: mockTimeTable123 };
@@ -50,9 +47,9 @@ export const handlers = [
     }),
   ),
 
-  http.put<{ id: string }, { title: string }, Timetable[] | CoreServerError>(
+  http.put(
     `*/v1/tables/:id`,
-    withValidateAccess(({ params: { id }, body: { title } }) => {
+    withValidateAccess(({ params: { id }, body: { title } }: { params: { id: string }; body: { title: string } }) => {
       if (mockTimeTables.every((t) => t._id !== id))
         return { type: 'error', body: { ext: {}, errcode: -1, message: '' }, status: 404 };
       return { type: 'success', body: mockTimeTables.map((t) => (t._id === id ? { ...t, title } : t)) };
@@ -103,9 +100,9 @@ export const handlers = [
     withValidateAccess(() => ({ type: 'success', body: mockSearchResult }), { token: false }),
   ),
 
-  http.post<never, { title: string; year: number; semester: Semester }, Timetable[] | CoreServerError>(
+  http.post(
     `*/v1/tables`,
-    withValidateAccess(({ body }) => {
+    withValidateAccess(({ body }: { body: { title: string; year: number; semester: number } }) => {
       try {
         const { title, year, semester } = body;
 
@@ -117,7 +114,16 @@ export const handlers = [
           };
 
         const _id = `${Math.random()}`;
-        const newTimetable = { _id, year, semester, title, total_credit: 0, updated_at: dayjs().format() };
+        const newTimetable = {
+          _id,
+          year,
+          semester,
+          title,
+          total_credit: 0,
+          updated_at: dayjs().format(),
+          lecture_list: [],
+          isPrimary: false,
+        };
 
         return { type: 'success', body: mockTimeTables.concat(newTimetable) };
       } catch (err) {
@@ -126,13 +132,9 @@ export const handlers = [
     }),
   ),
 
-  http.put<
-    Parameters<TimetableRepository['updateLecture']>[0],
-    Parameters<TimetableRepository['updateLecture']>[1],
-    FullTimetable | CoreServerError
-  >(
+  http.put(
     `*/v1/tables/:id/lecture/:lecture_id`,
-    withValidateAccess(({ body: { class_time_json } }) => {
+    withValidateAccess(({ body: { class_time_json } }: { body: { class_time_json: unknown } }) => {
       // TODO: 시간표 validation ?
       if (class_time_json && !Array.isArray(class_time_json))
         return { type: 'error', status: 400, body: { ext: {}, errcode: -1, message: '' } };
@@ -149,13 +151,9 @@ export const handlers = [
     }),
   ),
 
-  http.post<
-    Parameters<TimetableRepository['updateLecture']>[0],
-    Parameters<TimetableRepository['updateLecture']>[1],
-    FullTimetable | CoreServerError
-  >(
+  http.post(
     `*/v1/tables/:id/lecture`,
-    withValidateAccess(({ body: { class_time_json } }) => {
+    withValidateAccess(({ body: { class_time_json } }: { body: { class_time_json: unknown } }) => {
       // TODO: 시간표 validation ?
       if (!class_time_json || !Array.isArray(class_time_json))
         return { type: 'error', status: 400, body: { ext: {}, errcode: -1, message: '' } };
@@ -172,19 +170,19 @@ export const handlers = [
     }),
   ),
 
-  http.delete<{ id: string }, never, Timetable[] | CoreServerError>(
+  http.delete(
     `*/v1/tables/:id`,
     withValidateAccess(() => ({ type: 'success', body: mockTimeTables })),
   ),
 
-  http.delete<{ id: string; lectureId: string }, never, FullTimetable | CoreServerError>(
+  http.delete(
     `*/v1/tables/:id/lecture/:lectureId`,
     withValidateAccess(() => ({ type: 'success', body: mockTimeTable123 }), { token: false }),
   ),
 
-  http.post<{ id: string; lectureId: string }, never, FullTimetable | CoreServerError>(
+  http.post(
     `*/v1/tables/:id/lecture/:lectureId`,
-    withValidateAccess(({ params: { id, lectureId } }) => {
+    withValidateAccess(({ params: { id, lectureId } }: { params: { id: string; lectureId: string } }) => {
       const table = id === '123' ? mockTimeTable123 : id === '456' ? mockTimeTable456 : mockTimeTable789;
       const lecture = mockSearchResult.find((item) => item._id === lectureId);
 

@@ -149,7 +149,7 @@ test('Step 3: 코드 입력이 잘 된다 (인증한적 없음)', async ({ brows
   await page.getByTestId(testIds['버튼']).click();
 
   // test
-  await page.getByTestId(testIds['인풋']).type('코드');
+  await page.getByTestId(testIds['인풋']).type('code');
   await page.getByTestId(testIds['버튼']).click();
   await expect(page.getByTestId(testIds['오류'])).toHaveText('비밀번호 재설정을 다시 시도해주세요.');
 });

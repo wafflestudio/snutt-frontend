@@ -6,6 +6,7 @@ import { Button } from '@/components/button';
 import { Dialog } from '@/components/dialog';
 import { ErrorDialog } from '@/components/error-dialog';
 import { serviceContext } from '@/contexts/ServiceContext';
+import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
 import type { Color } from '@/entities/color';
 import { useErrorDialog } from '@/hooks/useErrorDialog';
 import { useGuardContext } from '@/hooks/useGuardContext';
@@ -36,23 +37,16 @@ export const MainLectureCreateDialog = ({ open, onClose, timetableId }: Props) =
 
     mutate(
       {
-        class_time_json: draft.class_time_json?.map((t) => lectureService.removeInternalId(t)) ?? [],
-        course_title: draft.course_title ?? '',
-        credit: draft.credit ?? 0,
-        instructor: draft.instructor ?? '',
-        remark: draft.remark ?? '',
-        ...color,
-      },
-      {
-        onSuccess: close,
-        onError: (err) => {
-          const message =
-            err && typeof err === 'object' && 'errcode' in err && err.errcode === 12300
-              ? '강의 시간이 서로 겹칩니다.'
-              : '오류가 발생했습니다.';
-          openErrorDialog(message);
+        data: {
+          class_time_json: draft.class_time_json?.map((t) => lectureService.removeInternalId(t)) ?? [],
+          course_title: draft.course_title ?? '',
+          credit: draft.credit ?? 0,
+          instructor: draft.instructor ?? '',
+          remark: draft.remark ?? '',
+          ...color,
         },
       },
+      { onSuccess: (data) => (data.type === 'error' ? openErrorDialog(data.message) : close()) },
     );
   };
 
@@ -85,11 +79,12 @@ export const MainLectureCreateDialog = ({ open, onClose, timetableId }: Props) =
 const useCreateLecture = (id?: string) => {
   const queryClient = useQueryClient();
   const { timetableService } = useGuardContext(serviceContext);
+  const { token } = useTokenAuthContext();
 
   return useMutation({
-    mutationFn: (body: Parameters<(typeof timetableService)['createLecture']>[1]) => {
+    mutationFn: (body: Omit<Parameters<(typeof timetableService)['createLecture']>[0], 'token' | 'id'>) => {
       if (!id) throw new Error('no id');
-      return timetableService.createLecture({ id }, body);
+      return timetableService.createLecture({ ...body, token, id });
     },
     onSuccess: () => queryClient.invalidateQueries(),
   });
