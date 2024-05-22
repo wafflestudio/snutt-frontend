@@ -1,7 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
 
-import type { StorageRepository } from '@/repositories/storageRepository';
-
 import { getTimetableViewService } from './timetableViewService';
 
 describe('getGridPos', () => {
@@ -9,7 +7,7 @@ describe('getGridPos', () => {
 
   test('default mode', () => {
     const timetableViewService = getTimetableViewService({
-      repositories: [{ get: () => null } as unknown as StorageRepository],
+      persistStorageRepository: { getDisplayMode: () => null, setDisplayMode: () => null },
     });
 
     expect(
@@ -36,7 +34,7 @@ describe('getGridPos', () => {
 
   test('real mode', () => {
     const timetableViewService = getTimetableViewService({
-      repositories: [{ get: () => 'real' } as unknown as StorageRepository],
+      persistStorageRepository: { getDisplayMode: () => 'real', setDisplayMode: () => null },
     });
 
     expect(
@@ -63,7 +61,7 @@ describe('getGridPos', () => {
 
   test('full mode', () => {
     const timetableViewService = getTimetableViewService({
-      repositories: [{ get: () => 'full' } as unknown as StorageRepository],
+      persistStorageRepository: { getDisplayMode: () => 'full', setDisplayMode: () => null },
     });
 
     expect(

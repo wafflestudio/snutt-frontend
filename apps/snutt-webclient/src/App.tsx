@@ -14,9 +14,12 @@ import { TokenAuthContext } from '@/contexts/TokenAuthContext';
 import { TokenManageContext } from '@/contexts/TokenManageContext';
 import { useGuardContext } from '@/hooks/useGuardContext';
 import { createFetchClient } from '@/infrastructures/createFetchClient';
-import { createLocalStorageClient } from '@/infrastructures/createLocalStorageClient';
-import { createSessionStorageClient } from '@/infrastructures/createSessionStorageClient';
 import { implAuthSnuttApiRepository } from '@/infrastructures/implAuthSnuttApiRepository';
+import {
+  implTimetableLocalStorageRepository,
+  implTokenLocalStorageRepository,
+  implTokenSessionStorageRepository,
+} from '@/infrastructures/implBrowserStorageRepository';
 import { implColorSnuttApiRepository } from '@/infrastructures/implColorSnuttApiRepository';
 import { implFeedbackSnuttApiRepository } from '@/infrastructures/implFeedbackSnuttApiRepository';
 import { getNotificationRepository } from '@/infrastructures/implNotificationSnuttApiRepository';
@@ -25,7 +28,6 @@ import { implSemesterSnuttApiRepository } from '@/infrastructures/implSemesterSn
 import { ErrorPage } from '@/pages/error';
 import { Main } from '@/pages/main';
 import { MyPage } from '@/pages/mypage';
-import { getStorageRepository } from '@/repositories/storageRepository';
 import { getTimetableRepository } from '@/repositories/timetableRepository';
 import { getUserRepository } from '@/repositories/userRepository';
 import { getAuthService } from '@/usecases/authService';
@@ -60,11 +62,13 @@ export const App = () => {
     }),
   });
 
-  const persistStorage = createLocalStorageClient();
-  const temporaryStorage = createSessionStorageClient();
-  const storageRepository = getStorageRepository({ clients: [persistStorage, temporaryStorage] });
-  const tokenService = getTokenService({ storageRepository });
-  const timetableViewService = getTimetableViewService({ repositories: [storageRepository] });
+  const tokenService = getTokenService({
+    persistStorageRepository: implTokenLocalStorageRepository(),
+    temporaryStorageRepository: implTokenSessionStorageRepository(),
+  });
+  const timetableViewService = getTimetableViewService({
+    persistStorageRepository: implTimetableLocalStorageRepository(),
+  });
 
   const [token, setToken] = useState(tokenService.getToken());
 
