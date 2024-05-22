@@ -1,18 +1,28 @@
-import { type StorageRepository } from '@/repositories/storageRepository';
-
 export type TokenService = {
   getToken(): string | null;
   saveToken(token: string, persist: boolean): void;
   clearToken(): void;
 };
 
-export const getTokenService = ({ storageRepository }: { storageRepository: StorageRepository }): TokenService => {
+type TokenRepository = {
+  getToken: () => string | null;
+  saveToken: (token: string) => void;
+  clearToken: () => void;
+};
+
+export const getTokenService = ({
+  temporaryStorageRepository,
+  persistStorageRepository,
+}: {
+  temporaryStorageRepository: TokenRepository;
+  persistStorageRepository: TokenRepository;
+}): TokenService => {
   return {
-    getToken: () => storageRepository.get('snutt_token', false) ?? storageRepository.get('snutt_token', true),
-    saveToken: (token, persist) => storageRepository.set('snutt_token', token, persist),
+    getToken: () => temporaryStorageRepository.getToken() ?? persistStorageRepository.getToken(),
+    saveToken: (token, persist) => (persist ? persistStorageRepository : temporaryStorageRepository).saveToken(token),
     clearToken: () => {
-      storageRepository.remove('snutt_token', false);
-      storageRepository.remove('snutt_token', true);
+      temporaryStorageRepository.clearToken();
+      persistStorageRepository.clearToken();
     },
   };
 };

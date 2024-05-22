@@ -1,7 +1,6 @@
 import type { BaseLecture } from '@/entities/lecture';
 import type { Day, Hour24, HourMinute24, Minute } from '@/entities/time';
 import type { TimetableDisplayMode } from '@/entities/timetableView';
-import type { StorageRepository } from '@/repositories/storageRepository';
 import type { ArrayElement } from '@/utils/array-element';
 
 type LectureTime = ArrayElement<BaseLecture['class_time_json']>;
@@ -23,11 +22,14 @@ export interface TimetableViewService {
 }
 
 export const getTimetableViewService = ({
-  repositories,
+  persistStorageRepository,
 }: {
-  repositories: [StorageRepository];
+  persistStorageRepository: {
+    getDisplayMode: () => 'full' | 'real' | null;
+    setDisplayMode: (mode: 'full' | 'real') => void;
+  };
 }): TimetableViewService => {
-  const getDisplayMode = () => (repositories[0].get('timetable_display_mode', true) === 'full' ? 'full' : 'real');
+  const getDisplayMode = () => persistStorageRepository.getDisplayMode() ?? 'real';
   const parseTime = (time: string) => ({ hour: +time.split(':')[0] as Hour24, minute: +time.split(':')[1] as Minute });
   const formatTime = ({ hour, minute }: HourMinute24) =>
     `${`${hour}`.padStart(2, '0')}:${`${minute}`.padStart(2, '0')}`;
@@ -40,7 +42,7 @@ export const getTimetableViewService = ({
 
   return {
     getDisplayMode,
-    setDisplayMode: (mode) => repositories[0].set('timetable_display_mode', mode, true),
+    setDisplayMode: (mode) => persistStorageRepository.setDisplayMode(mode),
     getDayRange: (times) => [0, Math.max(4, Math.max(...times.map((item) => item.day))) as Day],
     getHourRange,
     getGridPos: (times, time, isCustomLecture = false) => {
