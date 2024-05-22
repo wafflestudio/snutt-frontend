@@ -79,4 +79,37 @@ export const getSnuttApis = ({ callWithToken, callWithoutToken }: GetApiSpecsPar
         path: `/v1/tags/${params.year}/${params.semester}`,
         token,
       }),
+    'PUT /v1/user/password': ({
+      body,
+      token,
+    }: {
+      body: { old_password: string; new_password: string };
+      token: string;
+    }) =>
+      callWithToken<SuccessResponse<{ token: string }>>({
+        method: 'put',
+        path: `/v1/user/password`,
+        body,
+        token,
+      }),
+    'POST /v1/user/password': ({ body, token }: { body: { id: string; password: string }; token: string }) =>
+      callWithToken<SuccessResponse<{ token: string }>>({
+        method: 'post',
+        path: `/v1/user/password`,
+        body,
+        token,
+      }),
+    'POST /v1/user/facebook': ({ body, token }: { body: { fb_id: string; fb_token: string }; token: string }) =>
+      callWithToken<SuccessResponse<{ token: string }>>({
+        method: 'post',
+        path: `/v1/user/facebook`,
+        body,
+        token,
+      }),
+    'DELETE /v1/user/facebook': ({ token }: { token: string }) =>
+      callWithToken<SuccessResponse<{ token: string }>>({
+        method: 'delete',
+        path: `/v1/user/facebook`,
+        token,
+      }),
   }) satisfies Record<string, Api>;

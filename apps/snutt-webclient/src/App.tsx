@@ -25,11 +25,11 @@ import { implFeedbackSnuttApiRepository } from '@/infrastructures/implFeedbackSn
 import { getNotificationRepository } from '@/infrastructures/implNotificationSnuttApiRepository';
 import { implSearchSnuttApiRepository } from '@/infrastructures/implSearchSnuttApiRepository';
 import { implSemesterSnuttApiRepository } from '@/infrastructures/implSemesterSnuttApiRepository';
+import { implUserSnuttApiRepository } from '@/infrastructures/implUserSnuttApiRepository';
 import { ErrorPage } from '@/pages/error';
 import { Main } from '@/pages/main';
 import { MyPage } from '@/pages/mypage';
 import { getTimetableRepository } from '@/repositories/timetableRepository';
-import { getUserRepository } from '@/repositories/userRepository';
 import { getAuthService } from '@/usecases/authService';
 import { getColorService } from '@/usecases/colorService';
 import { getErrorService } from '@/usecases/errorService';
@@ -166,17 +166,11 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const getUnauthorizedServices = (ENV: { API_BASE_URL: string; API_KEY: string }) => {
-  const httpClient = createFetchClient({
-    baseURL: ENV.API_BASE_URL,
-    headers: { 'x-access-apikey': ENV.API_KEY },
-  });
-
   const snuttApi = getSnuttApi(ENV);
 
   const authRepository = implAuthSnuttApiRepository({ snuttApi });
   const feedbackRepository = implFeedbackSnuttApiRepository({ snuttApi });
-  const userRepository = getUserRepository({ httpClient });
-  const authService = getAuthService({ authRepository, userRepository });
+  const authService = getAuthService({ authRepository });
   const feedbackService = getFeedbackService({ feedbackRepository });
 
   return { authService, feedbackService };
@@ -198,7 +192,7 @@ const getAuthorizedServices = (
 
   const snuttApi = getSnuttApi(ENV);
 
-  const userRepository = getUserRepository({ httpClient });
+  const userRepository = implUserSnuttApiRepository({ snuttApi });
   const authRepository = implAuthSnuttApiRepository({ snuttApi });
   const timetableRepository = getTimetableRepository({ httpClient });
   const semesterRepository = implSemesterSnuttApiRepository({ snuttApi });
@@ -206,7 +200,7 @@ const getAuthorizedServices = (
   const notificationRepository = getNotificationRepository({ snuttApi });
   const colorRepository = implColorSnuttApiRepository({ snuttApi });
 
-  const userService = getUserService({ repositories: [userRepository] });
+  const userService = getUserService({ userRepository });
   const colorService = getColorService({ colorRepository });
   const notificationService = getNotificationService({ notificationRepository });
   const searchService = getSearchService({ searchRepository });
@@ -215,7 +209,7 @@ const getAuthorizedServices = (
   const timeMaskService = getTimeMaskService();
   const hourMinuteService = getHourMinuteService();
   const hourMinutePickerService = getHourMinutePickerService({ services: [hourMinuteService] });
-  const authService = getAuthService({ authRepository, userRepository });
+  const authService = getAuthService({ authRepository });
   const semesterService = getSemesterService({ semesterRepository });
 
   return {

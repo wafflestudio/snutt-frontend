@@ -34,7 +34,11 @@ export const LandingLogin = ({ className, authService, onSignUp }: Props) => {
   const handleFacebookSignIn = async (userInfo: ReactFacebookLoginInfo) => {
     setErrorMessage('');
 
-    const res = await authService.signIn({ type: 'FACEBOOK', fb_id: userInfo.id, fb_token: userInfo.accessToken });
+    const res = await authService.signIn({
+      type: 'FACEBOOK',
+      facebookId: userInfo.id,
+      facebookToken: userInfo.accessToken,
+    });
 
     if (res.type === 'success') saveToken(res.data.token, keepSignIn);
     else setErrorMessage(res.message);

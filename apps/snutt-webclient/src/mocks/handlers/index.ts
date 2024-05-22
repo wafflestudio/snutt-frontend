@@ -22,7 +22,6 @@ import {
 } from '@/mocks/fixtures/timetable';
 import { mockUsers } from '@/mocks/fixtures/user';
 import type { TimetableRepository } from '@/repositories/timetableRepository';
-import type { UserRepository } from '@/repositories/userRepository';
 
 import { withValidateAccess } from '../utils/access';
 
@@ -78,7 +77,7 @@ export const handlers = [
     ),
   ),
 
-  http.get<never, never, Awaited<ReturnType<UserRepository['getUserInfo']> | CoreServerError>>(
+  http.get(
     `*/v1/user/info`,
     withValidateAccess(({ token }) => {
       const user = mockUsers.find((u) => u.auth.token === token);
