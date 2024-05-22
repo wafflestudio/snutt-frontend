@@ -11,7 +11,7 @@ export interface BaseLecture {
   class_time?: string;
   class_time_json: ClassTime[];
   class_time_mask: number[];
-  instructor: string;
+  instructor?: string;
   quota?: number;
   remark?: string;
   category?: string;
