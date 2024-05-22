@@ -4,11 +4,11 @@ import styled, { css } from 'styled-components';
 
 import { Layout } from '@/components/layout';
 import { serviceContext } from '@/contexts/ServiceContext';
+import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
 import { useGuardContext } from '@/hooks/useGuardContext';
 import { useYearSemester } from '@/hooks/useYearSemester';
 import { BREAKPOINT } from '@/styles/constants';
 import { type SearchService } from '@/usecases/searchService';
-import { queryKey } from '@/utils/query-key-factory';
 
 import { MainLectureCreateDialog } from './main-lecture-create-dialog';
 import { MainLectureEditDialog } from './main-lecture-edit-dialog';
@@ -96,23 +96,27 @@ export const Main = () => {
 
 const useMyTimetables = () => {
   const { timetableService } = useGuardContext(serviceContext);
+  const { token } = useTokenAuthContext();
 
   return useQuery({
-    queryKey: queryKey('tables'),
-    queryFn: () => timetableService.getTimetables(),
+    queryKey: ['TimetableService', 'getTimetables', { token }] as const,
+    queryFn: ({ queryKey }) => timetableService.getTimetables(queryKey[2]),
+    select: (data) => (data?.type === 'success' ? data.data : undefined),
   });
 };
 
 const useCurrentFullTimetable = (id: string | undefined) => {
   const { timetableService } = useGuardContext(serviceContext);
+  const { token } = useTokenAuthContext();
 
   return useQuery({
-    queryKey: queryKey(`tables/${id}`),
-    queryFn: () => {
+    queryKey: ['TimetableService', 'getFullTimetable', { id, token }] as const,
+    queryFn: ({ queryKey: [, , { id, token }] }) => {
       if (!id) throw new Error('no id');
-      return timetableService.getFullTimetable(id);
+      return timetableService.getFullTimetable({ id, token });
     },
     enabled: !!id,
+    select: (data) => (data?.type === 'success' ? data.data : undefined),
   });
 };
 

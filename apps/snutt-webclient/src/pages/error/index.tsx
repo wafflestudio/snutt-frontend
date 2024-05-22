@@ -1,10 +1,13 @@
 import { useEffect } from 'react';
 import { useRouteError } from 'react-router-dom';
 
-import { type ErrorService } from '@/usecases/errorService';
+import { serviceContext } from '@/contexts/ServiceContext';
+import { useGuardContext } from '@/hooks/useGuardContext';
 
-export const ErrorPage = ({ errorService }: { errorService: ErrorService }) => {
+export const ErrorPage = () => {
   const error = useRouteError();
+
+  const { errorService } = useGuardContext(serviceContext);
 
   useEffect(() => {
     errorService.captureError(new Error(JSON.stringify(error)));

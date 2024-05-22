@@ -8,6 +8,12 @@ import {
   LectureDto,
   UserLegacyDto,
   OkResponse,
+  TimetableBriefDto,
+  TimetableLegacyDto,
+  TimetableAddRequestDto,
+  TimetableLectureModifyLegacyRequestDto,
+  CustomTimetableLectureAddLegacyRequestDto,
+  TimetableModifyRequestDto,
 } from './schemas';
 
 export const getSnuttTimetableApis = ({ callWithToken, callWithoutToken }: GetApiSpecsParameter) =>
@@ -46,6 +52,100 @@ export const getSnuttTimetableApis = ({ callWithToken, callWithoutToken }: GetAp
       callWithToken<SuccessResponse<LectureDto[]>>({
         method: 'post',
         path: `/v1/search_query`,
+        body,
+        token,
+      }),
+    'GET /v1/tables': ({ token }: { token: string }) =>
+      callWithToken<SuccessResponse<TimetableBriefDto[]>>({
+        method: 'get',
+        path: `/v1/tables`,
+        token,
+      }),
+    'GET /v1/tables/:timetableId': ({ token, params }: { token: string; params: { timetableId: string } }) =>
+      callWithToken<SuccessResponse<TimetableLegacyDto>>({
+        method: 'get',
+        path: `/v1/tables/${params.timetableId}`,
+        token,
+      }),
+    'DELETE /v1/tables/:timetableId': ({ token, params }: { token: string; params: { timetableId: string } }) =>
+      callWithToken<SuccessResponse<TimetableBriefDto[]>>({
+        method: 'delete',
+        path: `/v1/tables/${params.timetableId}`,
+        token,
+      }),
+    'POST /v1/tables': ({ body, token }: { body: TimetableAddRequestDto; token: string }) =>
+      callWithToken<SuccessResponse<TimetableBriefDto[]>>({
+        method: 'post',
+        path: `/v1/tables`,
+        body,
+        token,
+      }),
+    'PUT /v1/tables/:timetableId/lecture/:timetableLectureId': ({
+      body,
+      token,
+      params,
+    }: {
+      body: TimetableLectureModifyLegacyRequestDto;
+      token: string;
+      params: { timetableId: string; timetableLectureId: string };
+    }) =>
+      callWithToken<SuccessResponse<TimetableLegacyDto>>({
+        method: 'put',
+        path: `/v1/tables/${params.timetableId}/lecture/${params.timetableLectureId}`,
+        body,
+        token,
+      }),
+    'POST /v1/tables/:timetableId/lecture': ({
+      body,
+      token,
+      params,
+    }: {
+      body: CustomTimetableLectureAddLegacyRequestDto;
+      token: string;
+      params: { timetableId: string };
+    }) =>
+      callWithToken<SuccessResponse<TimetableLegacyDto>>({
+        method: 'post',
+        path: `/v1/tables/${params.timetableId}/lecture`,
+        body,
+        token,
+      }),
+    'DELETE /v1/tables/:timetableId/lecture/:timetableLectureId': ({
+      token,
+      params,
+    }: {
+      token: string;
+      params: { timetableId: string; timetableLectureId: string };
+    }) =>
+      callWithToken<SuccessResponse<TimetableLegacyDto>>({
+        method: 'delete',
+        path: `/v1/tables/${params.timetableId}/lecture/${params.timetableLectureId}`,
+        token,
+      }),
+    'POST /v1/tables/:timetableId/lecture/:timetableLectureId': ({
+      token,
+      params,
+    }: {
+      token: string;
+      params: { timetableId: string; timetableLectureId: string };
+    }) =>
+      callWithToken<SuccessResponse<TimetableLegacyDto>>({
+        method: 'post',
+        path: `/v1/tables/${params.timetableId}/lecture/${params.timetableLectureId}`,
+        token,
+      }),
+    'PUT /v1/tables/:timetableId': ({
+      body,
+      token,
+      params,
+    }: {
+      body: TimetableModifyRequestDto;
+      token: string;
+      params: { timetableId: string };
+    }) =>
+      callWithToken<SuccessResponse<TimetableBriefDto[]>>({
+        method: 'put',
+        path: `/v1/tables/${params.timetableId}`,
         body,
         token,
       }),

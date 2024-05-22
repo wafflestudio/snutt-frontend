@@ -1,8 +1,8 @@
 import { implSnuttApi } from '@sf/snutt-api';
-import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { getTruffleClient } from '@wafflestudio/truffle-browser';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
 
@@ -13,7 +13,6 @@ import { serviceContext } from '@/contexts/ServiceContext';
 import { TokenAuthContext } from '@/contexts/TokenAuthContext';
 import { TokenManageContext } from '@/contexts/TokenManageContext';
 import { useGuardContext } from '@/hooks/useGuardContext';
-import { createFetchClient } from '@/infrastructures/createFetchClient';
 import { implAuthSnuttApiRepository } from '@/infrastructures/implAuthSnuttApiRepository';
 import {
   implTimetableLocalStorageRepository,
@@ -25,11 +24,11 @@ import { implFeedbackSnuttApiRepository } from '@/infrastructures/implFeedbackSn
 import { getNotificationRepository } from '@/infrastructures/implNotificationSnuttApiRepository';
 import { implSearchSnuttApiRepository } from '@/infrastructures/implSearchSnuttApiRepository';
 import { implSemesterSnuttApiRepository } from '@/infrastructures/implSemesterSnuttApiRepository';
+import { implTimetableSnuttApiRepository } from '@/infrastructures/implTimetableSnuttApiRepository';
 import { implUserSnuttApiRepository } from '@/infrastructures/implUserSnuttApiRepository';
 import { ErrorPage } from '@/pages/error';
 import { Main } from '@/pages/main';
 import { MyPage } from '@/pages/mypage';
-import { getTimetableRepository } from '@/repositories/timetableRepository';
 import { getAuthService } from '@/usecases/authService';
 import { getColorService } from '@/usecases/colorService';
 import { getErrorService } from '@/usecases/errorService';
@@ -50,36 +49,108 @@ import { get } from '@/utils/object/get';
 import { Landing } from './pages/landing';
 import { NotFoundPage } from './pages/not-found';
 
+const queryClient = new QueryClient({ defaultOptions: { queries: { refetchOnWindowFocus: false, retry: false } } });
+
 export const App = () => {
   const [isWrongTokenDialogOpen, setWrongTokenDialogOpen] = useState(false);
   const ENV = useGuardContext(envContext);
 
-  const errorService = getErrorService({
-    errorCaptureClient: getTruffleClient({
-      enabled: ENV.NODE_ENV === 'production' && ENV.APP_ENV !== 'test',
-      app: { name: 'snutt-webclient-v2', phase: ENV.APP_ENV },
-      apiKey: ENV.TRUFFLE_API_KEY,
-    }),
-  });
+  const services = useMemo(() => {
+    const snuttApi = implSnuttApi({
+      httpClient: {
+        call: async (_: {
+          method: string;
+          path: string;
+          body?: Record<string, unknown>;
+          headers?: Record<string, string>;
+        }) => {
+          const response = await fetch(`${ENV.API_BASE_URL}${_.path}`, {
+            method: _.method,
+            headers: _.headers,
+            ...(!!_.body ? { body: JSON.stringify(_.body) } : {}),
+          });
 
-  const tokenService = getTokenService({
-    persistStorageRepository: implTokenLocalStorageRepository(),
-    temporaryStorageRepository: implTokenSessionStorageRepository(),
-  });
-  const timetableViewService = getTimetableViewService({
-    persistStorageRepository: implTimetableLocalStorageRepository(),
-  });
+          const responseBody = (await response.json().catch(() => null)) as unknown;
 
-  const [token, setToken] = useState(tokenService.getToken());
+          if (!response.ok) {
+            if (get(responseBody, ['errcode']) === 8194) setWrongTokenDialogOpen(true);
+            else services.errorService.captureError(new Error(JSON.stringify(responseBody)));
+          }
+
+          return {
+            status: response.status,
+            data: responseBody,
+          };
+        },
+      },
+      apiKey: ENV.API_KEY,
+    });
+
+    const feedbackRepository = implFeedbackSnuttApiRepository({ snuttApi });
+    const userRepository = implUserSnuttApiRepository({ snuttApi });
+    const authRepository = implAuthSnuttApiRepository({ snuttApi });
+    const timetableRepository = implTimetableSnuttApiRepository({ snuttApi });
+    const semesterRepository = implSemesterSnuttApiRepository({ snuttApi });
+    const searchRepository = implSearchSnuttApiRepository({ snuttApi });
+    const notificationRepository = getNotificationRepository({ snuttApi });
+    const colorRepository = implColorSnuttApiRepository({ snuttApi });
+
+    const feedbackService = getFeedbackService({ feedbackRepository });
+    const userService = getUserService({ userRepository });
+    const colorService = getColorService({ colorRepository });
+    const notificationService = getNotificationService({ notificationRepository });
+    const searchService = getSearchService({ searchRepository });
+    const timetableService = getTimetableService({ timetableRepository });
+    const lectureService = getLectureService();
+    const timeMaskService = getTimeMaskService();
+    const hourMinuteService = getHourMinuteService();
+    const hourMinutePickerService = getHourMinutePickerService({ services: [hourMinuteService] });
+    const authService = getAuthService({ authRepository });
+    const semesterService = getSemesterService({ semesterRepository });
+    const errorService = getErrorService({
+      errorCaptureClient: getTruffleClient({
+        enabled: ENV.NODE_ENV === 'production' && ENV.APP_ENV !== 'test',
+        app: { name: 'snutt-webclient-v2', phase: ENV.APP_ENV },
+        apiKey: ENV.TRUFFLE_API_KEY,
+      }),
+    });
+    const tokenService = getTokenService({
+      persistStorageRepository: implTokenLocalStorageRepository(),
+      temporaryStorageRepository: implTokenSessionStorageRepository(),
+    });
+    const timetableViewService = getTimetableViewService({
+      persistStorageRepository: implTimetableLocalStorageRepository(),
+    });
+
+    return {
+      lectureService,
+      timeMaskService,
+      hourMinutePickerService,
+      hourMinuteService,
+      authService,
+      timetableService,
+      semesterService,
+      searchService,
+      notificationService,
+      colorService,
+      userService,
+      feedbackService,
+      errorService,
+      tokenService,
+      timetableViewService,
+    };
+  }, [ENV]);
+
+  const [token, setToken] = useState(services.tokenService.getToken());
 
   const tokenContextValue = {
     saveToken: (newToken: string, permanent: boolean) => {
       setToken(newToken);
-      tokenService.saveToken(newToken, permanent);
+      services.tokenService.saveToken(newToken, permanent);
     },
     clearToken: () => {
       setToken(null);
-      tokenService.clearToken();
+      services.tokenService.clearToken();
       queryClient.resetQueries();
     },
   };
@@ -89,35 +160,13 @@ export const App = () => {
     setWrongTokenDialogOpen(false);
   };
 
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        queryCache: new QueryCache({
-          onError: (error) => {
-            if (get(error, ['errcode']) === 8194) setWrongTokenDialogOpen(true);
-            else errorService.captureError(new Error(JSON.stringify(error)));
-          },
-        }),
-        defaultOptions: { queries: { refetchOnWindowFocus: false, retry: false } },
-      }),
-  );
-
-  const unauthorizedServices = getUnauthorizedServices(ENV);
-
   return (
     <QueryClientProvider key={token} client={queryClient}>
-      <GlobalStyles />
-      <TokenManageContext.Provider value={tokenContextValue}>
-        {token ? (
-          <TokenAuthContext.Provider value={{ token }}>
-            <serviceContext.Provider
-              value={{
-                ...getAuthorizedServices(token, ENV),
-                errorService,
-                timetableViewService,
-                feedbackService: unauthorizedServices.feedbackService,
-              }}
-            >
+      <serviceContext.Provider value={services}>
+        <GlobalStyles />
+        <TokenManageContext.Provider value={tokenContextValue}>
+          {token ? (
+            <TokenAuthContext.Provider value={{ token }}>
               <RouterProvider
                 router={createBrowserRouter([
                   {
@@ -126,7 +175,7 @@ export const App = () => {
                       { path: '/mypage', element: <MyPage /> },
                       { path: '/*', element: <NotFoundPage /> },
                     ],
-                    errorElement: <ErrorPage errorService={errorService} />,
+                    errorElement: <ErrorPage />,
                   },
                 ])}
               />
@@ -139,16 +188,13 @@ export const App = () => {
                   </Button>
                 </Dialog.Actions>
               </Dialog>
-            </serviceContext.Provider>
-          </TokenAuthContext.Provider>
-        ) : (
-          <Landing
-            feedbackService={unauthorizedServices.feedbackService}
-            authService={unauthorizedServices.authService}
-          />
-        )}
-      </TokenManageContext.Provider>
-      <ReactQueryDevtools />
+            </TokenAuthContext.Provider>
+          ) : (
+            <Landing />
+          )}
+        </TokenManageContext.Provider>
+        <ReactQueryDevtools />
+      </serviceContext.Provider>
     </QueryClientProvider>
   );
 };
@@ -164,91 +210,3 @@ const GlobalStyles = createGlobalStyle`
     margin: 0;
   }
 `;
-
-const getUnauthorizedServices = (ENV: { API_BASE_URL: string; API_KEY: string }) => {
-  const snuttApi = getSnuttApi(ENV);
-
-  const authRepository = implAuthSnuttApiRepository({ snuttApi });
-  const feedbackRepository = implFeedbackSnuttApiRepository({ snuttApi });
-  const authService = getAuthService({ authRepository });
-  const feedbackService = getFeedbackService({ feedbackRepository });
-
-  return { authService, feedbackService };
-};
-
-const getAuthorizedServices = (
-  token: string,
-  ENV: {
-    NODE_ENV: 'production' | 'development';
-    APP_ENV: 'prod' | 'dev' | 'test';
-    API_BASE_URL: string;
-    API_KEY: string;
-  },
-) => {
-  const httpClient = createFetchClient({
-    baseURL: ENV.API_BASE_URL,
-    headers: { 'x-access-apikey': ENV.API_KEY, 'x-access-token': token },
-  });
-
-  const snuttApi = getSnuttApi(ENV);
-
-  const userRepository = implUserSnuttApiRepository({ snuttApi });
-  const authRepository = implAuthSnuttApiRepository({ snuttApi });
-  const timetableRepository = getTimetableRepository({ httpClient });
-  const semesterRepository = implSemesterSnuttApiRepository({ snuttApi });
-  const searchRepository = implSearchSnuttApiRepository({ snuttApi });
-  const notificationRepository = getNotificationRepository({ snuttApi });
-  const colorRepository = implColorSnuttApiRepository({ snuttApi });
-
-  const userService = getUserService({ userRepository });
-  const colorService = getColorService({ colorRepository });
-  const notificationService = getNotificationService({ notificationRepository });
-  const searchService = getSearchService({ searchRepository });
-  const timetableService = getTimetableService({ repositories: [timetableRepository] });
-  const lectureService = getLectureService();
-  const timeMaskService = getTimeMaskService();
-  const hourMinuteService = getHourMinuteService();
-  const hourMinutePickerService = getHourMinutePickerService({ services: [hourMinuteService] });
-  const authService = getAuthService({ authRepository });
-  const semesterService = getSemesterService({ semesterRepository });
-
-  return {
-    lectureService,
-    timeMaskService,
-    hourMinutePickerService,
-    hourMinuteService,
-    authService,
-    timetableService,
-    semesterService,
-    searchService,
-    notificationService,
-    colorService,
-    userService,
-  };
-};
-
-const getSnuttApi = (ENV: { API_BASE_URL: string; API_KEY: string }) =>
-  implSnuttApi({
-    httpClient: {
-      call: async (_: {
-        method: string;
-        path: string;
-        body?: Record<string, unknown>;
-        headers?: Record<string, string>;
-      }) => {
-        const response = await fetch(`${ENV.API_BASE_URL}${_.path}`, {
-          method: _.method,
-          headers: _.headers,
-          ...(!!_.body ? { body: JSON.stringify(_.body) } : {}),
-        });
-
-        const responseBody = (await response.json().catch(() => null)) as unknown;
-
-        return {
-          status: response.status,
-          data: responseBody,
-        };
-      },
-    },
-    apiKey: ENV.API_KEY,
-  });

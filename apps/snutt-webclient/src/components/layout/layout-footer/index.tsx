@@ -4,11 +4,10 @@ import styled, { css } from 'styled-components';
 import { envContext } from '@/contexts/EnvContext';
 import { useGuardContext } from '@/hooks/useGuardContext';
 import { BREAKPOINT } from '@/styles/constants';
-import { type FeedbackService } from '@/usecases/feedbackService';
 
 import { LayoutFooterFeedbackDialog } from './layout-footer-feedback-dialog';
 
-export const LayoutFooter = ({ feedbackService }: { feedbackService: FeedbackService }) => {
+export const LayoutFooter = () => {
   const [feedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
 
   const { API_BASE_URL } = useGuardContext(envContext);
@@ -37,11 +36,7 @@ export const LayoutFooter = ({ feedbackService }: { feedbackService: FeedbackSer
           개인정보 처리방침
         </SLinkExternal>
       </Right>
-      <LayoutFooterFeedbackDialog
-        isOpen={feedbackDialogOpen}
-        onClose={() => setFeedbackDialogOpen(false)}
-        feedbackService={feedbackService}
-      />
+      <LayoutFooterFeedbackDialog isOpen={feedbackDialogOpen} onClose={() => setFeedbackDialogOpen(false)} />
     </Wrapper>
   );
 };

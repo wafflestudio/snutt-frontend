@@ -60,7 +60,7 @@ export type ClassPlaceAndTimeLegacyDto = {
   lectureBuildings?: LectureBuilding[];
 };
 
-export type ColorSet = { bg?: string; fg?: string };
+export type ColorSet = { bg: string; fg: string } | Record<string, never>;
 
 export type GeoCoordinate = { latitude: Double; longitude: Double };
 
@@ -77,7 +77,7 @@ export type LectureBuilding = {
 export type SnuttEvLectureSummaryDto = { snuttId?: string; evLectureId: Int64; avgRating?: Double };
 
 export type TimetableLectureLegacyDto = {
-  _id?: string;
+  _id: string;
   academic_year?: string;
   category?: string;
   class_time_json: ClassPlaceAndTimeLegacyDto[];
@@ -91,7 +91,7 @@ export type TimetableLectureLegacyDto = {
   remark?: string;
   course_number?: string;
   course_title: string;
-  color?: ColorSet;
+  color: ColorSet;
   colorIndex: Int32;
   lecture_id?: string;
   snuttEvLecture?: SnuttEvLectureSummaryDto;
@@ -99,7 +99,7 @@ export type TimetableLectureLegacyDto = {
 };
 
 export type TimetableLegacyDto = {
-  _id?: string;
+  _id: string;
   user_id: string;
   year: Int32;
   semester: 1 | 2 | 3 | 4;

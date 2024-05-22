@@ -2,30 +2,17 @@ import { useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { LandingSignUp } from '@/pages/landing/landing-signup';
-import { type AuthService } from '@/usecases/authService';
-import { type FeedbackService } from '@/usecases/feedbackService';
 
 import { LandingDescription } from './landing-description';
 import { LandingLogin } from './landing-login';
 
-export const Landing = ({
-  authService,
-  feedbackService,
-}: {
-  authService: AuthService;
-  feedbackService: FeedbackService;
-}) => {
+export const Landing = () => {
   const [mode, setMode] = useState<'LOGIN' | 'SIGNUP'>('LOGIN');
 
   return (
     <Wrapper data-testid="landing">
-      <Left feedbackService={feedbackService} />
-      {
-        {
-          LOGIN: <Login authService={authService} onSignUp={() => setMode('SIGNUP')} />,
-          SIGNUP: <SignUp authService={authService} />,
-        }[mode]
-      }
+      <Left />
+      {{ LOGIN: <Login onSignUp={() => setMode('SIGNUP')} />, SIGNUP: <SignUp /> }[mode]}
     </Wrapper>
   );
 };
