@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { serviceContext } from '@/contexts/ServiceContext';
+import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
 import { useGuardContext } from '@/hooks/useGuardContext';
-import { queryKey } from '@/utils/query-key-factory';
 
 export const LayoutProfile = () => {
   const { data: myInfo } = useMyInfo();
 
-  const isTempUser = !myInfo?.local_id && !myInfo?.fb_name;
+  const isTempUser = myInfo && myInfo.type === 'success' && !myInfo.data.localId && !myInfo.data.facebookName;
   const isLoginButton = isTempUser;
 
   return isLoginButton ? (
@@ -18,17 +18,18 @@ export const LayoutProfile = () => {
     </ProfileText>
   ) : (
     <ProfileText to="/mypage" data-testid="layout-my-info">
-      {myInfo?.local_id ?? myInfo?.fb_name}님
+      {myInfo?.type === 'success' && `${myInfo.data.localId ?? myInfo.data.facebookName}님`}
     </ProfileText>
   );
 };
 
 const useMyInfo = () => {
   const { userService } = useGuardContext(serviceContext);
+  const { token } = useTokenAuthContext();
 
   return useQuery({
-    queryKey: queryKey('user/info'),
-    queryFn: () => userService.getUserInfo(),
+    queryKey: ['UserService', 'getUserInfo', { token }] as const,
+    queryFn: ({ queryKey }) => userService.getUserInfo(queryKey[2]),
   });
 };
 

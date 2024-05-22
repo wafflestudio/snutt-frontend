@@ -69,7 +69,7 @@ export const LoginResetPasswordDialog = ({ open, onClose, authService }: Props) 
                   size="small"
                   onClick={() =>
                     checkEmailMutation.mutate(
-                      { user_id: id },
+                      { userId: id },
                       { onSuccess: ({ type }) => type === 'success' && setStep(Step.EMAIL_CONFIRM) },
                     )
                   }
@@ -94,7 +94,7 @@ export const LoginResetPasswordDialog = ({ open, onClose, authService }: Props) 
                   onClick={() => {
                     if (checkEmailMutation.data?.type !== 'success') return;
                     sendCodeEmailMutation.mutate(
-                      { user_email: checkEmailMutation.data.data.email },
+                      { userEmail: checkEmailMutation.data.data.email },
                       { onSuccess: () => setStep(Step.CODE_INPUT) },
                     );
                   }}
@@ -122,7 +122,7 @@ export const LoginResetPasswordDialog = ({ open, onClose, authService }: Props) 
                   size="small"
                   onClick={() =>
                     verifyCodeMutation.mutate(
-                      { user_id: id, code },
+                      { userId: id, code },
                       { onSuccess: ({ type }) => type === 'success' && setStep(Step.RESET_PASSWORD) },
                     )
                   }
@@ -148,7 +148,7 @@ export const LoginResetPasswordDialog = ({ open, onClose, authService }: Props) 
                   size="small"
                   disabled={!password}
                   onClick={() =>
-                    resetPasswordMutation.mutate({ user_id: id, password }, { onSuccess: () => setStep(Step.DONE) })
+                    resetPasswordMutation.mutate({ userId: id, password }, { onSuccess: () => setStep(Step.DONE) })
                   }
                 >
                   완료
@@ -174,23 +174,23 @@ export const LoginResetPasswordDialog = ({ open, onClose, authService }: Props) 
 };
 
 const useCheckEmail = (authService: AuthService) => {
-  return useMutation({ mutationFn: (body: { user_id: string }) => authService.passwordResetCheckEmail(body) });
+  return useMutation({ mutationFn: (body: { userId: string }) => authService.passwordResetCheckEmail(body) });
 };
 
 const useSendCodeEmail = (authService: AuthService) => {
   return useMutation({
-    mutationFn: (body: { user_email: string }) => authService.sendPasswordResetVerificationEmail(body),
+    mutationFn: (body: { userEmail: string }) => authService.sendPasswordResetVerificationEmail(body),
   });
 };
 
 const useVerifyCode = (authService: AuthService) => {
   return useMutation({
-    mutationFn: (body: { user_id: string; code: string }) => authService.verifyPasswordResetCode(body),
+    mutationFn: (body: { userId: string; code: string }) => authService.verifyPasswordResetCode(body),
   });
 };
 
 const useResetPassword = (authService: AuthService) => {
-  return useMutation({ mutationFn: (body: { user_id: string; password: string }) => authService.resetPassword(body) });
+  return useMutation({ mutationFn: (body: { userId: string; password: string }) => authService.resetPassword(body) });
 };
 
 const Content = styled(Dialog.Content)`

@@ -9,10 +9,9 @@ import { Button } from '@/components/button';
 import { Layout } from '@/components/layout';
 import { envContext } from '@/contexts/EnvContext';
 import { serviceContext } from '@/contexts/ServiceContext';
+import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
 import { useTokenManageContext } from '@/contexts/TokenManageContext';
-import { type CoreServerError, getErrorMessage } from '@/entities/error';
 import { useGuardContext } from '@/hooks/useGuardContext';
-import { queryKey } from '@/utils/query-key-factory';
 
 import { MypageChangePassword } from './mypage-change-password';
 import { MypageCloseAccountDialog } from './mypage-close-account-dialog';
@@ -30,7 +29,7 @@ export const MyPage = () => {
   const { mutate: attach } = useAttachFacebook();
   const { mutate: detach } = useDetachFacebook();
 
-  const isFbOnlyUser = myInfo && userService.isFbOnlyUser(myInfo);
+  const isFbOnlyUser = myInfo?.type === 'success' ? userService.isFbOnlyUser(myInfo.data) : undefined;
 
   const logout = () => {
     clearToken();
@@ -70,10 +69,10 @@ export const MyPage = () => {
         )}
         <br />
         <br />
-        {myInfo?.local_id && (
+        {myInfo?.type === 'success' && myInfo.data.localId && (
           <Row data-testid="facebook-row">
             <RowLabel>페이스북</RowLabel>
-            {myInfo?.fb_name ? (
+            {myInfo.data.facebookName ? (
               <Button variant="outlined" color="blue" data-testid="facebook-detach-button" onClick={() => detach()}>
                 페이스북 연동 해지하기
               </Button>
@@ -114,35 +113,41 @@ export const MyPage = () => {
 
 const useMyInfo = () => {
   const { userService } = useGuardContext(serviceContext);
+  const { token } = useTokenAuthContext();
 
   return useQuery({
-    queryKey: queryKey('user/info'),
-    queryFn: () => userService.getUserInfo(),
+    queryKey: ['UserService', 'getUserInfo', { token }] as const,
+    queryFn: ({ queryKey }) => userService.getUserInfo(queryKey[2]),
   });
 };
 
 const useAttachFacebook = () => {
   const { saveToken } = useTokenManageContext();
   const { userService } = useGuardContext(serviceContext);
+  const { token } = useTokenAuthContext();
 
   return useMutation({
     mutationFn: (userInfo: ReactFacebookLoginInfo) => {
-      return userService.attachFacebookAccount({ fb_id: userInfo.id, fb_token: userInfo.accessToken });
+      return userService.attachFacebookAccount({ facebookId: userInfo.id, facebookToken: userInfo.accessToken, token });
     },
-    onSuccess: ({ token }) => saveToken(token, false),
-    onError: (error) => alert(getErrorMessage(error as unknown as CoreServerError)),
+    onSuccess: (data) => {
+      if (data.type === 'success') saveToken(data.data.token, false);
+      else alert(data.message);
+    },
   });
 };
 
 const useDetachFacebook = () => {
   const { saveToken } = useTokenManageContext();
-
+  const { token } = useTokenAuthContext();
   const { userService } = useGuardContext(serviceContext);
 
   return useMutation({
-    mutationFn: () => userService.detachFacebookAccount(),
-    onSuccess: ({ token }) => saveToken(token, false),
-    onError: (error) => alert(getErrorMessage(error as unknown as CoreServerError)),
+    mutationFn: () => userService.detachFacebookAccount({ token }),
+    onSuccess: (data) => {
+      if (data.type === 'success') saveToken(data.data.token, false);
+      else alert(data.message);
+    },
   });
 };
 

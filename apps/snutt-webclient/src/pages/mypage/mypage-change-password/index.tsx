@@ -5,11 +5,10 @@ import styled from 'styled-components';
 import { Button } from '@/components/button';
 import { ErrorDialog } from '@/components/error-dialog';
 import { serviceContext } from '@/contexts/ServiceContext';
+import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
 import { useTokenManageContext } from '@/contexts/TokenManageContext';
-import { getErrorMessage } from '@/entities/error';
 import { useErrorDialog } from '@/hooks/useErrorDialog';
 import { useGuardContext } from '@/hooks/useGuardContext';
-import { get } from '@/utils/object/get';
 
 export const MypageChangePassword = () => {
   const [currentPassword, setCurrentPassword] = useState('');
@@ -34,16 +33,19 @@ export const MypageChangePassword = () => {
     }
 
     mutate(
-      { old_password: currentPassword, new_password: newPassword },
+      { oldPassword: currentPassword, newPassword },
       {
-        onSuccess: ({ token }) => {
-          alert('비밀번호가 변경되었습니다.');
-          setCurrentPassword('');
-          setNewPassword('');
-          setNewPasswordConfirm('');
-          saveToken(token, false);
+        onSuccess: (data) => {
+          if (data.type === 'success') {
+            alert('비밀번호가 변경되었습니다.');
+            setCurrentPassword('');
+            setNewPassword('');
+            setNewPasswordConfirm('');
+            saveToken(data.data.token, false);
+          } else {
+            open(data.message);
+          }
         },
-        onError: (err) => open(getErrorMessage({ errcode: get(err, ['errcode']) as number })),
       },
     );
   };
@@ -82,8 +84,9 @@ export const MypageChangePassword = () => {
 
 const useChangePassword = () => {
   const { authService } = useGuardContext(serviceContext);
+  const { token } = useTokenAuthContext();
   return useMutation({
-    mutationFn: (body: { old_password: string; new_password: string }) => authService.changePassword(body),
+    mutationFn: (body: { oldPassword: string; newPassword: string }) => authService.changePassword({ ...body, token }),
   });
 };
 

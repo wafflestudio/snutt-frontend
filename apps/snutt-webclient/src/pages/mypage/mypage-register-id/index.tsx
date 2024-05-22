@@ -5,11 +5,10 @@ import styled from 'styled-components';
 import { Button } from '@/components/button';
 import { ErrorDialog } from '@/components/error-dialog';
 import { serviceContext } from '@/contexts/ServiceContext';
+import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
 import { useTokenManageContext } from '@/contexts/TokenManageContext';
-import { getErrorMessage } from '@/entities/error';
 import { useErrorDialog } from '@/hooks/useErrorDialog';
 import { useGuardContext } from '@/hooks/useGuardContext';
-import { get } from '@/utils/object/get';
 
 export const MypageRegisterId = () => {
   const [id, setId] = useState('');
@@ -32,7 +31,7 @@ export const MypageRegisterId = () => {
       return;
     }
 
-    mutate({ id, password }, { onError: (err) => open(getErrorMessage({ errcode: get(err, ['errcode']) as number })) });
+    mutate({ id, password }, { onSuccess: (data) => data.type === 'error' && open(data.message) });
   };
 
   return (
@@ -71,10 +70,12 @@ const useAddIdPassword = () => {
   const { saveToken } = useTokenManageContext();
   const queryClient = useQueryClient();
   const { userService } = useGuardContext(serviceContext);
+  const { token } = useTokenAuthContext();
 
   return useMutation({
-    mutationFn: (body: { id: string; password: string }) => userService.addIdPassword(body),
-    onSuccess: ({ token }) => {
+    mutationFn: (body: { id: string; password: string }) => userService.addIdPassword({ ...body, token }),
+    onSuccess: (data) => {
+      if (data.type === 'error') return;
       saveToken(token, false);
       return queryClient.invalidateQueries();
     },

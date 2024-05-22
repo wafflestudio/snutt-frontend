@@ -1,8 +1,8 @@
 export interface User {
-  email?: string;
-  fb_name: string | null;
+  email: string | null;
+  facebookName: string | null;
   isAdmin: boolean;
-  local_id: string | null;
+  localId: string | null;
   notificationCheckedAt: string;
   regDate: string;
 }

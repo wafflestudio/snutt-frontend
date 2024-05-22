@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { Button } from '@/components/button';
 import { Dialog } from '@/components/dialog';
 import { serviceContext } from '@/contexts/ServiceContext';
+import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
 import { useTokenManageContext } from '@/contexts/TokenManageContext';
 import { useGuardContext } from '@/hooks/useGuardContext';
 
@@ -63,8 +64,10 @@ export const MypageCloseAccountDialog = ({ onClose, isOpen }: Props) => {
 
 const useCloseAccount = () => {
   const { authService } = useGuardContext(serviceContext);
+  const { token } = useTokenAuthContext();
+
   return useMutation({
-    mutationFn: () => authService.closeAccount(),
+    mutationFn: () => authService.closeAccount({ token }),
   });
 };
 
