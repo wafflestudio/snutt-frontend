@@ -4,7 +4,7 @@ export type EnvContext = {
   API_BASE_URL: string;
   API_KEY: string;
   NODE_ENV: 'production' | 'development';
-  APP_ENV: 'prod' | 'dev' | 'test';
+  APP_ENV: 'prod' | 'dev' | 'mock';
   TRUFFLE_API_KEY: string;
   FACEBOOK_APP_ID: string;
 };

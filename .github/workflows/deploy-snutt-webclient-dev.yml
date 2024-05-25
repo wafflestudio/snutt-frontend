@@ -28,12 +28,11 @@ jobs:
       - name: Build & Export
         run: |
           yarn install
-          cp .env.dev .env.production
           VITE_API_KEY=${{ secrets.BACKEND_API_KEY }} \
           VITE_TRUFFLE_API_KEY=${{ secrets.SNUTT_WEBCLIENT_TRUFFLE_API_KEY }} \
           VITE_GIT_SHA=$(git rev-parse HEAD) \
           VITE_GIT_TAG=$(git describe --tags) \
-            yarn build
+            yarn build:dev
 
       - name: Deploy to S3 and Invalidate Cloudfront
         id: deploy-s3

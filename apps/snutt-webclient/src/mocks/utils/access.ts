@@ -26,7 +26,7 @@ export const withValidateAccess = <
     const xApiKey = args.request.headers.get('x-access-apikey');
     const xToken = args.request.headers.get('x-access-token');
 
-    if (xApiKey !== 'test')
+    if (xApiKey !== 'mock')
       return HttpResponse.json({ ext: {}, message: 'invalid api key', errcode: 8192 }, { status: 403 });
 
     if (isValidateToken && mockUsers.every((u) => u.auth.token !== xToken))

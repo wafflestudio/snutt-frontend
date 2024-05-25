@@ -27,7 +27,7 @@ jobs:
         run: yarn playwright install --with-deps
 
       - name: Build
-        run: yarn build:test
+        run: yarn build:mock
 
       - name: Run Server
         run: yarn serve -s dist -l 5173 &

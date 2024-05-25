@@ -5,10 +5,35 @@
 - dev: https://snutt-dev.wafflestudio.com
 - prod: https://snutt.wafflestudio.com
 
-## Environments
+## Development
 
-|                             public                             |              secret              |
-| :------------------------------------------------------------: | :------------------------------: |
-| <ul><li>`VITE_APP_ENV`</li><li>`VITE_BASE_URL`</li></ul> <br/> | <ul><li>`VITE_API_KEY`</li></ul> |
+### 실제 서버에 붙어서 개발하기
 
-secret 은 github secret 과 .env.local 에 보관해 주세요.
+`.env.local` 에 아래 환경변수를 세팅해 주세요.
+
+```env
+VITE_API_KEY=
+```
+
+그리고 아래 명령어를 실행합니다.
+
+```sh
+yarn workspace snutt-webclient dev:dev # dev 서버에 붙을 경우
+yarn workspace snutt-webclient dev:prod # prod 서버에 붙을 경우
+```
+
+### 목서버에 붙어서 개발하기
+
+```sh
+yarn workspace snutt-webclient dev:mock
+```
+
+<br/><br/>
+
+## Deployment
+
+### dev 서버에 배포하기
+
+```sh
+yarn workspace snutt-webclient deploy:dev
+```

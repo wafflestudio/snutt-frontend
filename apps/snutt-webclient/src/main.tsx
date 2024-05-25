@@ -9,7 +9,7 @@ import { App } from './App';
 
 async function startApp() {
   const ENV = {
-    APP_ENV: import.meta.env.VITE_APP_ENV,
+    APP_ENV: import.meta.env.MODE as 'prod' | 'dev' | 'mock',
     GIT_SHA: import.meta.env.VITE_GIT_SHA,
     GIT_TAG: import.meta.env.VITE_GIT_TAG,
     API_BASE_URL: import.meta.env.VITE_BASE_URL,
@@ -19,7 +19,7 @@ async function startApp() {
     NODE_ENV: process.env.NODE_ENV as 'development' | 'production',
   };
 
-  if (ENV.APP_ENV === 'test') {
+  if (ENV.APP_ENV === 'mock') {
     const { worker } = await import('@/mocks/browser');
     await worker.start({ onUnhandledRequest: 'bypass' });
   }

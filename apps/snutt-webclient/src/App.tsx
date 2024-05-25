@@ -111,7 +111,7 @@ export const App = () => {
     const semesterService = getSemesterService({ semesterRepository });
     const errorService = getErrorService({
       errorCaptureClient: getTruffleClient({
-        enabled: ENV.NODE_ENV === 'production' && ENV.APP_ENV !== 'test',
+        enabled: ENV.NODE_ENV === 'production' && ENV.APP_ENV !== 'mock',
         app: { name: 'snutt-webclient-v2', phase: ENV.APP_ENV },
         apiKey: ENV.TRUFFLE_API_KEY,
       }),

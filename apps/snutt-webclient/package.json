@@ -4,13 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --mode dev",
-    "dev:test": "vite --mode test",
-    "build": "tsc && vite build",
+    "dev:dev": "vite --mode dev",
+    "dev:prod": "vite --mode prod",
+    "dev:mock": "vite --mode mock",
     "build:dev": "tsc && vite build --mode dev",
-    "build:test": "tsc && vite build --mode test",
-    "preview": "vite preview",
-    "preview:test": "vite preview --mode test",
+    "build:prod": "tsc && vite build --mode prod",
+    "build:mock": "tsc && vite build --mode mock",
     "test:e2e": "playwright test",
     "test": "jest",
     "lint": "npx eslint ./src"
