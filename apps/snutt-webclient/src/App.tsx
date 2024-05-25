@@ -66,7 +66,7 @@ export const App = () => {
           body?: Record<string, unknown>;
           headers?: Record<string, string>;
         }) => {
-          const response = await fetch(`${ENV.API_BASE_URL}${_.path}`, {
+          const response = await fetch(`${ENV.NODE_ENV === 'production' ? ENV.API_BASE_URL : '/api'}${_.path}`, {
             method: _.method,
             headers: _.headers,
             ...(!!_.body ? { body: JSON.stringify(_.body) } : {}),
