@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --mode dev",
     "dev:test": "vite --mode test",
     "build": "tsc && vite build",
     "build:dev": "tsc && vite build --mode dev",
@@ -16,16 +16,16 @@
     "lint": "npx eslint ./src"
   },
   "dependencies": {
-    "@tanstack/react-query": "5.36.2",
+    "@sf/snutt-api": "*",
     "@tanstack/react-query-devtools": "5.36.2",
+    "@tanstack/react-query": "5.36.2",
     "@wafflestudio/truffle-browser": "0.2.1",
     "dayjs": "1.11.11",
     "msw": "2.3.0",
-    "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-facebook-login": "4.1.1",
     "react-router-dom": "6.23.1",
-    "@sf/snutt-api": "*",
+    "react": "18.3.1",
     "styled-components": "6.1.11"
   },
   "devDependencies": {
