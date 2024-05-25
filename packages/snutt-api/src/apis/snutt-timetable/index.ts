@@ -14,6 +14,7 @@ import {
   TimetableLectureModifyLegacyRequestDto,
   CustomTimetableLectureAddLegacyRequestDto,
   TimetableModifyRequestDto,
+  BookmarkResponse,
 } from './schemas';
 
 export const getSnuttTimetableApis = ({ callWithToken, callWithoutToken }: GetApiSpecsParameter) =>
@@ -52,6 +53,26 @@ export const getSnuttTimetableApis = ({ callWithToken, callWithoutToken }: GetAp
       callWithToken<SuccessResponse<LectureDto[]>>({
         method: 'post',
         path: `/v1/search_query`,
+        body,
+        token,
+      }),
+    'GET /v1/bookmarks': ({ token, query }: { token: string; query: { year: string; semester: string } }) =>
+      callWithToken<SuccessResponse<BookmarkResponse>>({
+        method: 'get',
+        path: `/v1/bookmarks?${new URLSearchParams(query)}`,
+        token,
+      }),
+    'POST /v1/bookmarks/lecture': ({ token, body }: { token: string; body: { lecture_id: string } }) =>
+      callWithToken<SuccessResponse<never>>({
+        method: 'post',
+        path: `/v1/bookmarks/lecture`,
+        body,
+        token,
+      }),
+    'DELETE /v1/bookmarks/lecture': ({ token, body }: { token: string; body: { lecture_id: string } }) =>
+      callWithToken<SuccessResponse<never>>({
+        method: 'delete',
+        path: `/v1/bookmarks/lecture`,
         body,
         token,
       }),
