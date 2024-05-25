@@ -1,7 +1,5 @@
 import { expect, test } from '@playwright/test';
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import { givenUser } from '../utils/user.ts';
 
 test('버튼을 클릭하면 알림 목록을 보여준다', async ({ page }) => {

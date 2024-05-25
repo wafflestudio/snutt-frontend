@@ -8,9 +8,6 @@ const STROKE_WIDTH = 3.6;
 
 export const Loader = forwardRef<HTMLSpanElement, Props>(({ as, ...props }, ref) => {
   return (
-    // TODO: ref 타입에러
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     <Wrapper ref={ref} {...props}>
       <svg viewBox={`${SIZE / 2} ${SIZE / 2} ${SIZE} ${SIZE}`}>
         <Circle cx={SIZE} cy={SIZE} r={(SIZE - STROKE_WIDTH) / 2} fill="none" strokeWidth={STROKE_WIDTH} />

@@ -1,7 +1,5 @@
 import test, { expect } from '@playwright/test';
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import { givenUser } from '../utils/user.ts';
 
 test('로그인되지 않았을 경우 랜딩 화면이 보인다', async ({ page }) => {

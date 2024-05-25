@@ -50,32 +50,45 @@ export const LandingLogin = ({ className, onSignUp }: Props) => {
     <Wrapper className={className}>
       <h3>시작하기</h3>
 
-      <div style={{ width: '100%', marginTop: '60px' }}>
-        <label style={{ fontSize: '14px' }}>아이디</label>
-        <Input placeholder="아이디" value={id} onChange={(e) => setId(e.target.value)} data-testid="id-input" />
-      </div>
-      <div style={{ width: '100%', marginTop: '20px' }}>
-        <label style={{ fontSize: '14px' }}>비밀번호</label>
-        <Input
-          placeholder="비밀번호"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleSignIn()}
-          data-testid="password-input"
-        />
-      </div>
-      <CheckboxWrapper>
-        <Checkbox id="keepSignIn" checked={keepSignIn} onChange={(e) => setKeepSignIn(e.target.checked)} />
-        <Label htmlFor="keepSignIn">로그인 유지</Label>
-      </CheckboxWrapper>
-      <ErrorMessage data-testid="error-message">{errorMessage}</ErrorMessage>
-      <LocalSignInButton disabled={!(id && password)} onClick={handleSignIn} data-testid="local-signin-button">
-        로그인
-      </LocalSignInButton>
-      {/* TODO: migrate to another library */}
-      {/* eslint-disable-next-line */}
-      {/* @ts-ignore */}
+      <form
+        style={{ width: '100%', marginTop: '60px' }}
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSignIn();
+        }}
+      >
+        <div style={{ marginTop: '60px' }}>
+          <label style={{ fontSize: '14px' }}>아이디</label>
+          <Input
+            autoComplete="id"
+            placeholder="아이디"
+            value={id}
+            onChange={(e) => setId(e.target.value)}
+            data-testid="id-input"
+          />
+        </div>
+        <div style={{ marginTop: '20px' }}>
+          <label style={{ fontSize: '14px' }}>비밀번호</label>
+          <Input
+            autoComplete="current-password"
+            placeholder="비밀번호"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSignIn()}
+            data-testid="password-input"
+          />
+        </div>
+
+        <CheckboxWrapper>
+          <Checkbox id="keepSignIn" checked={keepSignIn} onChange={(e) => setKeepSignIn(e.target.checked)} />
+          <Label htmlFor="keepSignIn">로그인 유지</Label>
+        </CheckboxWrapper>
+        <ErrorMessage data-testid="error-message">{errorMessage}</ErrorMessage>
+        <LocalSignInButton disabled={!(id && password)} type="submit" data-testid="local-signin-button">
+          로그인
+        </LocalSignInButton>
+      </form>
       <FBLogin
         appId={FACEBOOK_APP_ID}
         callback={handleFacebookSignIn}

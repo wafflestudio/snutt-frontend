@@ -1,9 +1,8 @@
 import type { BaseLecture } from '@/entities/lecture';
 import type { Day, Hour24, HourMinute24, Minute } from '@/entities/time';
 import type { TimetableDisplayMode } from '@/entities/timetableView';
-import type { ArrayElement } from '@/utils/array-element';
 
-type LectureTime = ArrayElement<BaseLecture['class_time_json']>;
+type LectureTime = BaseLecture['class_time_json'][number];
 
 export interface TimetableViewService {
   getDisplayMode: () => TimetableDisplayMode;

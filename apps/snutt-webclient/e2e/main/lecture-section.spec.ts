@@ -1,7 +1,5 @@
 import { expect, test } from '@playwright/test';
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import { givenUser } from '../utils/user.js';
 
 test('강의 목록 탭이 정상 동작한다', async ({ page }) => {

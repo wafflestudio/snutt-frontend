@@ -1,7 +1,5 @@
 import { expect, test } from '@playwright/test';
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import { givenUser } from '../utils/user.ts';
 
 test('local_id 가 없으면 facebook 관련 버튼이 노출되지 않는다.', async ({ page }) => {

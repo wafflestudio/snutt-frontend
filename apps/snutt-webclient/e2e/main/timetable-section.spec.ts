@@ -1,10 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import { givenTimetableDisplayMode } from '../utils/timetable.ts';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import { givenUser } from '../utils/user.js';
 
 test('로그인되었을 경우, 시간표 목록 탭이 정상 동작한다 (시간표 2개인 학기)', async ({ page }) => {

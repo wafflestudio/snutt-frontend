@@ -3,7 +3,7 @@
     "plugin:react-hooks/recommended",
     "plugin:prettier/recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:@tanstack/eslint-plugin-query/recommended"
+    "plugin:@tanstack/eslint-plugin-query/recommended",
   ],
   "parser": "@typescript-eslint/parser",
   "plugins": ["react", "@typescript-eslint", "simple-import-sort", "@tanstack/query"],
@@ -17,25 +17,33 @@
     "react/jsx-no-useless-fragment": ["error", { "allowExpressions": true }],
     "@typescript-eslint/consistent-type-imports": ["error", { "fixStyle": "inline-type-imports" }],
     "no-duplicate-imports": "error",
-    "no-restricted-imports": [
-      "error",
-      {
-        "name": "@/constants/environment",
-        "importNames": ["viteEnvironmentVariables"],
-        "message": "\n\nenvironmentService 를 통해 환경변수에 접근해야 합니다.\n\n"
-      }
-    ],
-    "no-restricted-syntax": [
-      "error",
-      {
-        "selector": "MemberExpression[object.name=process][property.name=env]",
-        "message": "process.env 대신 environmentService 를 통해 환경변수에 접근해야 합니다."
+  },
+  "overrides": [
+    {
+      "files": ["src/**/*.ts", "src/**/*.tsx"],
+      "excludedFiles": ["src/main.tsx"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "name": "@/constants/environment",
+            "importNames": ["viteEnvironmentVariables"],
+            "message": "\n\nenvironmentService 를 통해 환경변수에 접근해야 합니다.\n\n",
+          },
+        ],
+        "no-restricted-syntax": [
+          "error",
+          {
+            "selector": "MemberExpression[object.name=process][property.name=env]",
+            "message": "process.env 대신 environmentService 를 통해 환경변수에 접근해야 합니다.",
+          },
+          {
+            // 이 규칙은 vite 를 이용하지 않게 된다면 제거되어야 합니다.
+            "selector": "MemberExpression[object.meta.name=import][object.property.name=meta][property.name=env]",
+            "message": "import.meta.env 대신 environmentService 를 통해 환경변수에 접근해야 합니다.",
+          },
+        ],
       },
-      {
-        // 이 규칙은 vite 를 이용하지 않게 된다면 제거되어야 합니다.
-        "selector": "MemberExpression[object.meta.name=import][object.property.name=meta][property.name=env]",
-        "message": "import.meta.env 대신 environmentService 를 통해 환경변수에 접근해야 합니다."
-      }
-    ]
-  }
+    },
+  ],
 }

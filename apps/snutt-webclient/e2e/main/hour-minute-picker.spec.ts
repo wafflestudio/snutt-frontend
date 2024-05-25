@@ -1,7 +1,5 @@
 import { expect, test } from '@playwright/test';
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import { givenUser } from '../utils/user.ts';
 
 test('강의 시간 수정 선택 기능이 엄청 잘 동작한다 (컴프)', async ({ page }) => {

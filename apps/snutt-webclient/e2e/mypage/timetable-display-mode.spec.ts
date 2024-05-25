@@ -1,10 +1,7 @@
 import { expect, test } from '@playwright/test';
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import { givenTimetableDisplayMode } from '../utils/timetable.ts';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
+
 import { givenUser } from '../utils/user.ts';
 
 test('꽉 찬 시간표 -> 실제시간 시간표 변경이 잘 동작한다', async ({ page }) => {
