@@ -107,7 +107,7 @@ export const mainLectureListitemPresenter = {
         title: lecture.course_title,
         description: `${lecture.instructor} / ${lecture.credit}학점`,
         bookmark:
-          timetable.currentTimetableId === null || timetable.isCurrentTimetableLecture
+          timetable.currentTimetableId !== null && timetable.isCurrentTimetableLecture
             ? { isShow: false }
             : {
                 isShow: true,
