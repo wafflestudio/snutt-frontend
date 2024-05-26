@@ -22,10 +22,6 @@ async function startApp() {
     await worker.start({ onUnhandledRequest: 'bypass' });
   }
 
-  import('@/assets/members').then(({ members }) => {
-    console.log(members[Math.floor(Math.random() * members.length)]);
-  });
-
   window.git = { sha: ENV.GIT_SHA, tag: ENV.GIT_TAG };
 
   ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
