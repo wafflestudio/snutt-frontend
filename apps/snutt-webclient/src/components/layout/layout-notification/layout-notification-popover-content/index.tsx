@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import dayjs from 'dayjs';
 import { type ReactNode } from 'react';
 import styled from 'styled-components';
 
@@ -13,6 +12,7 @@ import { serviceContext } from '@/contexts/ServiceContext';
 import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
 import { type Notification } from '@/entities/notification';
 import { useGuardContext } from '@/hooks/useGuardContext';
+import { formatDate } from '@/utils/formatDate';
 
 export const LayoutNotificationPopoverContent = () => {
   const { show } = usePopoverContext();
@@ -26,7 +26,9 @@ export const LayoutNotificationPopoverContent = () => {
             <NotificationListItemIcon>{notificationTypeMap[notification.type]}</NotificationListItemIcon>
             <NotificationListItemContent>
               <NotificationContent>{notification.message}</NotificationContent>{' '}
-              <NotificationDate>{dayjs(notification.createdAt).format('YYYY년 MM월 DD일')}</NotificationDate>
+              <NotificationDate>
+                {formatDate(notification.createdAt, ({ YYYY, MM, DD }) => `${YYYY}년 ${MM}월 ${DD}일`)}
+              </NotificationDate>
             </NotificationListItemContent>
           </NotificationListItem>
         ))}
