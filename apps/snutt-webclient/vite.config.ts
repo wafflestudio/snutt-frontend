@@ -8,9 +8,7 @@ export default ({ mode }) => {
 
   return defineConfig({
     plugins: [react()],
-    resolve: {
-      alias: [{ find: '@', replacement: resolve(__dirname, 'src/') }],
-    },
+    resolve: { alias: [{ find: '@', replacement: resolve(__dirname, 'src/') }] },
     server: {
       proxy: {
         '/api': {
