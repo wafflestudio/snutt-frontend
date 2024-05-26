@@ -5,8 +5,9 @@ import styled, { css } from 'styled-components';
 import { Layout } from '@/components/layout';
 import { serviceContext } from '@/contexts/ServiceContext';
 import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
+import { YearSemesterContext } from '@/contexts/YearSemesterContext';
+import { type CourseBook } from '@/entities/semester';
 import { useGuardContext } from '@/hooks/useGuardContext';
-import { useYearSemester } from '@/hooks/useYearSemester';
 import { BREAKPOINT } from '@/styles/constants';
 import { type SearchService } from '@/usecases/searchService';
 
@@ -16,18 +17,17 @@ import { MainLectureSection } from './main-lecture-section';
 import { MainSearchbar } from './main-searchbar';
 import { MainTimetableSection } from './main-timetable-section';
 
-export const Main = () => {
+export const Main = ({ courseBooks }: { courseBooks: CourseBook[] }) => {
   const [hoveredLectureId, setHoveredLectureId] = useState<string | null>(null);
   const [previewLectureId, setPreviewLectureId] = useState<string | null>(null);
   const [dialogLectureId, setDialogLectureId] = useState<string | null>(null);
   const [isCreateLectureDialog, setCreateLectureDialog] = useState(false);
   const [lectureTab, setLectureTab] = useState<'result' | 'current' | 'bookmark'>('current');
   const [currentTimetableId, setCurrentTimetableId] = useState<string | null>(null);
-  const { year, semester } = useYearSemester();
+  const { year, semester } = useGuardContext(YearSemesterContext);
   const { data: timetables } = useMyTimetables();
 
-  const currentYearSemesterTimetables =
-    year && semester ? timetables?.filter((tt) => tt.year === year && tt.semester === semester) : undefined;
+  const currentYearSemesterTimetables = timetables?.filter((tt) => tt.year === year && tt.semester === semester);
   const currentTimetable = currentTimetableId
     ? currentYearSemesterTimetables?.find((tt) => tt._id === currentTimetableId)
     : currentYearSemesterTimetables?.[0];
@@ -53,7 +53,12 @@ export const Main = () => {
   return (
     <Layout
       headerChildren={
-        <MainSearchbar onSearch={onSearch} currentFullTimetable={currentFullTimetable} resetSearchResult={reset} />
+        <MainSearchbar
+          onSearch={onSearch}
+          currentFullTimetable={currentFullTimetable}
+          resetSearchResult={reset}
+          courseBooks={courseBooks}
+        />
       }
     >
       <Wrapper>
@@ -135,15 +140,11 @@ const useSearchResult = () => {
 const useBookmarkLectures = () => {
   const { bookmarkService } = useGuardContext(serviceContext);
   const { token } = useTokenAuthContext();
-  const ys = useYearSemester();
+  const ys = useGuardContext(YearSemesterContext);
 
   return useQuery({
     queryKey: ['BookmarkService', 'getBookmarkLectures', { token, ...ys }] as const,
-    queryFn: ({ queryKey: [, , { year, semester, token }] }) => {
-      if (!year || !semester) throw new Error('no year or semester');
-      return bookmarkService.getBookmarkLectures({ year, semester, token });
-    },
-    enabled: !!ys.year && !!ys.semester,
+    queryFn: ({ queryKey }) => bookmarkService.getBookmarkLectures(queryKey[2]),
     select: (data) => (data?.type === 'success' ? data.data : undefined),
   });
 };

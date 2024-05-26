@@ -6,8 +6,8 @@ import { Button } from '@/components/button';
 import { Dialog } from '@/components/dialog';
 import { serviceContext } from '@/contexts/ServiceContext';
 import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
+import { YearSemesterContext } from '@/contexts/YearSemesterContext';
 import { useGuardContext } from '@/hooks/useGuardContext';
-import { useYearSemester } from '@/hooks/useYearSemester';
 
 type Props = {
   isOpen: boolean;
@@ -55,16 +55,13 @@ export const MainCreateTimetableDialog = ({ isOpen, close, setCurrentTimetable }
 };
 
 const useCreateTimetable = (onSuccess: (createdId: string) => void) => {
-  const { year, semester } = useYearSemester();
+  const { year, semester } = useGuardContext(YearSemesterContext);
   const queryClient = useQueryClient();
   const { timetableService } = useGuardContext(serviceContext);
   const { token } = useTokenAuthContext();
 
   return useMutation({
-    mutationFn: (title: string) => {
-      if (!year || !semester) throw new Error('no year | semester');
-      return timetableService.createTimetable({ year, semester, title, token });
-    },
+    mutationFn: (title: string) => timetableService.createTimetable({ year, semester, title, token }),
     onSuccess: (data, title) => {
       if (data.type === 'error') return;
       const createdTimetableId = data.data.find(

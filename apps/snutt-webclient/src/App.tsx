@@ -1,17 +1,20 @@
 import { implSnuttApi } from '@sf/snutt-api';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { getTruffleClient } from '@wafflestudio/truffle-browser';
 import { useMemo, useState } from 'react';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useSearchParams } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
 
 import { Button } from '@/components/button';
 import { Dialog } from '@/components/dialog';
+import { Layout } from '@/components/layout';
+import { Loader } from '@/components/loader';
 import { envContext } from '@/contexts/EnvContext';
 import { serviceContext } from '@/contexts/ServiceContext';
 import { TokenAuthContext } from '@/contexts/TokenAuthContext';
 import { TokenManageContext } from '@/contexts/TokenManageContext';
+import { YearSemesterContext } from '@/contexts/YearSemesterContext';
 import { useGuardContext } from '@/hooks/useGuardContext';
 import { implAuthSnuttApiRepository } from '@/infrastructures/implAuthSnuttApiRepository';
 import { implBookmarkSnuttApiRepository } from '@/infrastructures/implBookmarkSnuttApiRepository';
@@ -27,7 +30,6 @@ import { implSearchSnuttApiRepository } from '@/infrastructures/implSearchSnuttA
 import { implSemesterSnuttApiRepository } from '@/infrastructures/implSemesterSnuttApiRepository';
 import { implTimetableSnuttApiRepository } from '@/infrastructures/implTimetableSnuttApiRepository';
 import { implUserSnuttApiRepository } from '@/infrastructures/implUserSnuttApiRepository';
-import { ErrorPage } from '@/pages/error';
 import { Main } from '@/pages/main';
 import { MyPage } from '@/pages/mypage';
 import { getAuthService } from '@/usecases/authService';
@@ -163,40 +165,19 @@ export const App = () => {
     },
   };
 
-  const onClickLogout = () => {
-    tokenContextValue.clearToken();
-    setWrongTokenDialogOpen(false);
-  };
-
   return (
     <QueryClientProvider key={token} client={queryClient}>
       <serviceContext.Provider value={services}>
         <GlobalStyles />
         <TokenManageContext.Provider value={tokenContextValue}>
           {token ? (
-            <TokenAuthContext.Provider value={{ token }}>
-              <RouterProvider
-                router={createBrowserRouter([
-                  {
-                    children: [
-                      { path: '/', element: <Main /> },
-                      { path: '/mypage', element: <MyPage /> },
-                      { path: '/*', element: <NotFoundPage /> },
-                    ],
-                    errorElement: <ErrorPage />,
-                  },
-                ])}
+            <BrowserRouter>
+              <AuthorizedApp
+                token={token}
+                isLogoutDialogOpen={isWrongTokenDialogOpen}
+                closeLogoutDialog={() => setWrongTokenDialogOpen(false)}
               />
-              <Dialog open={isWrongTokenDialogOpen}>
-                <Dialog.Title>인증정보가 올바르지 않아요</Dialog.Title>
-                <Dialog.Content>다시 로그인해 주세요</Dialog.Content>
-                <Dialog.Actions>
-                  <Button data-testid="wrong-token-dialog-logout" onClick={onClickLogout}>
-                    로그아웃하기
-                  </Button>
-                </Dialog.Actions>
-              </Dialog>
-            </TokenAuthContext.Provider>
+            </BrowserRouter>
           ) : (
             <Landing />
           )}
@@ -204,6 +185,69 @@ export const App = () => {
         <ReactQueryDevtools />
       </serviceContext.Provider>
     </QueryClientProvider>
+  );
+};
+
+const AuthorizedApp = ({
+  token,
+  isLogoutDialogOpen,
+  closeLogoutDialog,
+}: {
+  token: string;
+  isLogoutDialogOpen: boolean;
+  closeLogoutDialog: () => void;
+}) => {
+  const { clearToken } = useGuardContext(TokenManageContext);
+  const [searchParams] = useSearchParams();
+
+  const onClickLogout = () => {
+    clearToken();
+    closeLogoutDialog();
+  };
+
+  const { semesterService } = useGuardContext(serviceContext);
+
+  const { data: courseBooks } = useQuery({
+    queryKey: ['SemesterService', 'getCourseBooks', { token }] as const,
+    queryFn: ({ queryKey }) => semesterService.getCourseBooks(queryKey[2]),
+    staleTime: Infinity,
+  });
+
+  const year = getIfNumber(searchParams.get('year'));
+  const semester = getIfNumber(searchParams.get('semester'));
+
+  const currentCourseBook = courseBooks?.find((cb) => cb.year === year && cb.semester === semester) ?? courseBooks?.[0];
+
+  if (!currentCourseBook || !courseBooks)
+    return (
+      <TokenAuthContext.Provider value={{ token }}>
+        <Layout>
+          <div style={{ width: 40, height: 40, margin: '300px auto' }}>
+            <Loader />
+          </div>
+        </Layout>
+      </TokenAuthContext.Provider>
+    );
+
+  return (
+    <TokenAuthContext.Provider value={{ token }}>
+      <YearSemesterContext.Provider value={{ year: currentCourseBook.year, semester: currentCourseBook.semester }}>
+        <Routes>
+          <Route path="/" element={<Main courseBooks={courseBooks} />} />
+          <Route path="/mypage" element={<MyPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+        <Dialog open={isLogoutDialogOpen}>
+          <Dialog.Title>인증정보가 올바르지 않아요</Dialog.Title>
+          <Dialog.Content>다시 로그인해 주세요</Dialog.Content>
+          <Dialog.Actions>
+            <Button data-testid="wrong-token-dialog-logout" onClick={onClickLogout}>
+              로그아웃하기
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </YearSemesterContext.Provider>
+    </TokenAuthContext.Provider>
   );
 };
 
@@ -218,3 +262,10 @@ const GlobalStyles = createGlobalStyle`
     margin: 0;
   }
 `;
+
+const getIfNumber = (value: string | null): number | null => {
+  if (!value) return null;
+
+  const number = Number(value);
+  return isNaN(number) ? null : number;
+};

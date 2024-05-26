@@ -3,11 +3,11 @@ import { type MouseEvent, useState } from 'react';
 
 import { serviceContext } from '@/contexts/ServiceContext';
 import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
+import { YearSemesterContext } from '@/contexts/YearSemesterContext';
 import { type BaseLecture } from '@/entities/lecture';
 import { type Timetable } from '@/entities/timetable';
 import { useErrorDialog } from '@/hooks/useErrorDialog';
 import { useGuardContext } from '@/hooks/useGuardContext';
-import { useYearSemester } from '@/hooks/useYearSemester';
 
 type Props = {
   lecture: BaseLecture;
@@ -60,7 +60,7 @@ type ViewModel = {
 export const mainLectureListitemPresenter = {
   useViewModel: ({ lecture, timetable, openBookmarkTab }: Props): ViewModel => {
     const { lectureService } = useGuardContext(serviceContext);
-    const { year, semester } = useYearSemester();
+    const { year, semester } = useGuardContext(YearSemesterContext);
 
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [isDeleteBookmarkDialogOpen, setDeleteBookmarkDialogOpen] = useState(false);
@@ -75,10 +75,7 @@ export const mainLectureListitemPresenter = {
     const department = [lecture.department, lecture.academic_year];
     const times = lectureService.getLectureTimeTexts(lecture);
     const places = lecture.class_time_json.map((t) => t.place);
-    const detailUrl =
-      lecture.course_number && year && semester
-        ? lectureService.getLectureDetailUrl(lecture, { year, semester })
-        : null;
+    const detailUrl = lecture.course_number ? lectureService.getLectureDetailUrl(lecture, { year, semester }) : null;
 
     const isBookmarked = bookmarkLectures?.some((l) => l._id === lecture._id);
 
@@ -237,15 +234,11 @@ const useDeleteBookmark = (lectureId: string) => {
 const useBookmarkLectures = () => {
   const { bookmarkService } = useGuardContext(serviceContext);
   const { token } = useTokenAuthContext();
-  const ys = useYearSemester();
+  const ys = useGuardContext(YearSemesterContext);
 
   return useQuery({
     queryKey: ['BookmarkService', 'getBookmarkLectures', { token, ...ys }] as const,
-    queryFn: ({ queryKey: [, , { year, semester, token }] }) => {
-      if (!year || !semester) throw new Error('no year or semester');
-      return bookmarkService.getBookmarkLectures({ year, semester, token });
-    },
-    enabled: !!ys.year && !!ys.semester,
+    queryFn: ({ queryKey }) => bookmarkService.getBookmarkLectures(queryKey[2]),
     select: (data) => (data?.type === 'success' ? data.data : undefined),
   });
 };
