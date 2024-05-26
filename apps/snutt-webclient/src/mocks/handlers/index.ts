@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import { http } from 'msw';
 
 import type { SignInResponse } from '@/entities/auth';
@@ -121,7 +120,7 @@ export const handlers = [
           semester,
           title,
           total_credit: 0,
-          updated_at: dayjs().format(),
+          updated_at: new Date().toISOString(),
           lecture_list: [],
           isPrimary: false,
         };
