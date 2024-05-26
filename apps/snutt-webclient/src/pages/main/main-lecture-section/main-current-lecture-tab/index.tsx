@@ -41,6 +41,7 @@ export const MainCurrentLectureTab = ({
     <MainLectureList>
       {currentFullTimetable.lecture_list.map((l) => (
         <MainLectureListitem
+          key={l._id}
           props={{
             lecture: l,
             openBookmarkTab,
