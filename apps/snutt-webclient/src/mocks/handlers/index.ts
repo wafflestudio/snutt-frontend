@@ -385,7 +385,17 @@ export const handlers = [
 
   http.get(
     `*/v1/bookmarks`,
-    withValidateAccess(() => ({ type: 'success', body: mockBookmarks }), { token: false }),
+    withValidateAccess(() => ({ type: 'success', body: mockBookmarks })),
+  ),
+
+  http.post(
+    `*/v1/bookmarks/lecture`,
+    withValidateAccess(() => ({ type: 'success', body: {} })),
+  ),
+
+  http.delete(
+    `*/v1/bookmarks/lecture`,
+    withValidateAccess(() => ({ type: 'success', body: {} })),
   ),
 ];
 

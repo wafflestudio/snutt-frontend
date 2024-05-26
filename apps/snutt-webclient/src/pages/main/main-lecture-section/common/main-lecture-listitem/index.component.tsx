@@ -44,7 +44,11 @@ export const MainLectureListitem = ({
           </div>
           <div className={styles.bookmarkWrapper}>
             {vm.header.bookmark.isShow && (
-              <button onClick={vm.header.bookmark.onClick} className={styles.bookmarkButton}>
+              <button
+                onClick={vm.header.bookmark.onClick}
+                className={styles.bookmarkButton}
+                data-testid="main-lecture-listitem-bookmark"
+              >
                 {
                   {
                     'bookmark-fill': <IcBookmarkFill className={styles.bookmarkIcon} />,
@@ -118,7 +122,12 @@ export const MainLectureListitem = ({
           <Button color="gray" size="small" onClick={vm.deleteBookmarkDialog.onClose}>
             취소
           </Button>
-          <Button color="red" size="small" onClick={vm.deleteBookmarkDialog.onClick}>
+          <Button
+            color="red"
+            size="small"
+            onClick={vm.deleteBookmarkDialog.onClick}
+            data-testid="bookmark-delete-confirm"
+          >
             제거하기
           </Button>
         </Dialog.Actions>
