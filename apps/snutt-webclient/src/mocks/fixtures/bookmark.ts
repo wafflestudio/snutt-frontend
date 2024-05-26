@@ -5,7 +5,7 @@ export const mockBookmarks: SnuttApiSuccessResponseData<'GET /v1/bookmarks'> = {
   semester: 1,
   lectures: [
     {
-      _id: '60b3b3b3b3b3b3b3b3b3b3b3',
+      _id: '6329ab4ecb360c002b6eec57',
       course_title: '관심강의1',
       class_time_json: [],
       class_time_mask: [],
