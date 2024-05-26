@@ -3,8 +3,8 @@ import { useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { Layout } from '@/components/layout';
-import { serviceContext } from '@/contexts/ServiceContext';
-import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
+import { ServiceContext } from '@/contexts/ServiceContext';
+import { TokenAuthContext } from '@/contexts/TokenAuthContext';
 import { YearSemesterContext } from '@/contexts/YearSemesterContext';
 import { type CourseBook } from '@/entities/semester';
 import { useGuardContext } from '@/hooks/useGuardContext';
@@ -104,8 +104,8 @@ export const Main = ({ courseBooks }: { courseBooks: CourseBook[] }) => {
 };
 
 const useMyTimetables = () => {
-  const { timetableService } = useGuardContext(serviceContext);
-  const { token } = useTokenAuthContext();
+  const { timetableService } = useGuardContext(ServiceContext);
+  const { token } = useGuardContext(TokenAuthContext);
 
   return useQuery({
     queryKey: ['TimetableService', 'getTimetables', { token }] as const,
@@ -115,8 +115,8 @@ const useMyTimetables = () => {
 };
 
 const useCurrentFullTimetable = (id: string | undefined) => {
-  const { timetableService } = useGuardContext(serviceContext);
-  const { token } = useTokenAuthContext();
+  const { timetableService } = useGuardContext(ServiceContext);
+  const { token } = useGuardContext(TokenAuthContext);
 
   return useQuery({
     queryKey: ['TimetableService', 'getFullTimetable', { id, token }] as const,
@@ -130,7 +130,7 @@ const useCurrentFullTimetable = (id: string | undefined) => {
 };
 
 const useSearchResult = () => {
-  const { searchService } = useGuardContext(serviceContext);
+  const { searchService } = useGuardContext(ServiceContext);
   return useMutation({
     mutationKey: ['search_query'],
     mutationFn: (value: Parameters<SearchService['search']>[0]) => searchService.search(value),
@@ -138,8 +138,8 @@ const useSearchResult = () => {
 };
 
 const useBookmarkLectures = () => {
-  const { bookmarkService } = useGuardContext(serviceContext);
-  const { token } = useTokenAuthContext();
+  const { bookmarkService } = useGuardContext(ServiceContext);
+  const { token } = useGuardContext(TokenAuthContext);
   const ys = useGuardContext(YearSemesterContext);
 
   return useQuery({

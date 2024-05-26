@@ -5,9 +5,9 @@ import styled from 'styled-components';
 
 import { Button } from '@/components/button';
 import { Dialog } from '@/components/dialog';
-import { serviceContext } from '@/contexts/ServiceContext';
-import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
-import { useTokenManageContext } from '@/contexts/TokenManageContext';
+import { ServiceContext } from '@/contexts/ServiceContext';
+import { TokenAuthContext } from '@/contexts/TokenAuthContext';
+import { TokenManageContext } from '@/contexts/TokenManageContext';
 import { useGuardContext } from '@/hooks/useGuardContext';
 
 const CONFIRM_TEXT = '탈퇴';
@@ -16,7 +16,7 @@ type Props = { isOpen: boolean; onClose: () => void };
 
 export const MypageCloseAccountDialog = ({ onClose, isOpen }: Props) => {
   const [confirmText, setConfirmText] = useState('');
-  const { clearToken } = useTokenManageContext();
+  const { clearToken } = useGuardContext(TokenManageContext);
   const { mutate } = useCloseAccount();
   const navigate = useNavigate();
 
@@ -63,8 +63,8 @@ export const MypageCloseAccountDialog = ({ onClose, isOpen }: Props) => {
 };
 
 const useCloseAccount = () => {
-  const { authService } = useGuardContext(serviceContext);
-  const { token } = useTokenAuthContext();
+  const { authService } = useGuardContext(ServiceContext);
+  const { token } = useGuardContext(TokenAuthContext);
 
   return useMutation({
     mutationFn: () => authService.closeAccount({ token }),

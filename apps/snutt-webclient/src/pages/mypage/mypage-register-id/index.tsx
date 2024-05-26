@@ -4,9 +4,9 @@ import styled from 'styled-components';
 
 import { Button } from '@/components/button';
 import { ErrorDialog } from '@/components/error-dialog';
-import { serviceContext } from '@/contexts/ServiceContext';
-import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
-import { useTokenManageContext } from '@/contexts/TokenManageContext';
+import { ServiceContext } from '@/contexts/ServiceContext';
+import { TokenAuthContext } from '@/contexts/TokenAuthContext';
+import { TokenManageContext } from '@/contexts/TokenManageContext';
 import { useErrorDialog } from '@/hooks/useErrorDialog';
 import { useGuardContext } from '@/hooks/useGuardContext';
 
@@ -14,7 +14,7 @@ export const MypageRegisterId = () => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
-  const { authService } = useGuardContext(serviceContext);
+  const { authService } = useGuardContext(ServiceContext);
 
   const { isOpen, message, onClose, open } = useErrorDialog();
 
@@ -67,10 +67,10 @@ export const MypageRegisterId = () => {
 };
 
 const useAddIdPassword = () => {
-  const { saveToken } = useTokenManageContext();
+  const { saveToken } = useGuardContext(TokenManageContext);
   const queryClient = useQueryClient();
-  const { userService } = useGuardContext(serviceContext);
-  const { token } = useTokenAuthContext();
+  const { userService } = useGuardContext(ServiceContext);
+  const { token } = useGuardContext(TokenAuthContext);
 
   return useMutation({
     mutationFn: (body: { id: string; password: string }) => userService.addIdPassword({ ...body, token }),

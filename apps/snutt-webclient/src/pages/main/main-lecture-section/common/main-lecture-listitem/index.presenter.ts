@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { type MouseEvent, useState } from 'react';
 
-import { serviceContext } from '@/contexts/ServiceContext';
-import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
+import { ServiceContext } from '@/contexts/ServiceContext';
+import { TokenAuthContext } from '@/contexts/TokenAuthContext';
 import { YearSemesterContext } from '@/contexts/YearSemesterContext';
 import { type BaseLecture } from '@/entities/lecture';
 import { type Timetable } from '@/entities/timetable';
@@ -59,7 +59,7 @@ type ViewModel = {
 
 export const mainLectureListitemPresenter = {
   useViewModel: ({ lecture, timetable, openBookmarkTab }: Props): ViewModel => {
-    const { lectureService } = useGuardContext(serviceContext);
+    const { lectureService } = useGuardContext(ServiceContext);
     const { year, semester } = useGuardContext(YearSemesterContext);
 
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -182,8 +182,8 @@ const emptyText = '-';
 
 const useDeleteLecture = (id?: string, lecture_id?: string) => {
   const queryClient = useQueryClient();
-  const { timetableService } = useGuardContext(serviceContext);
-  const { token } = useTokenAuthContext();
+  const { timetableService } = useGuardContext(ServiceContext);
+  const { token } = useGuardContext(TokenAuthContext);
 
   return useMutation({
     mutationFn: () => {
@@ -198,8 +198,8 @@ const useDeleteLecture = (id?: string, lecture_id?: string) => {
 
 const useAddLecture = (id?: string, lectureId?: string) => {
   const queryClient = useQueryClient();
-  const { timetableService } = useGuardContext(serviceContext);
-  const { token } = useTokenAuthContext();
+  const { timetableService } = useGuardContext(ServiceContext);
+  const { token } = useGuardContext(TokenAuthContext);
   return useMutation({
     mutationFn: () => {
       if (!id) throw new Error('no id');
@@ -213,8 +213,8 @@ const useAddLecture = (id?: string, lectureId?: string) => {
 
 const useAddBookmark = (lectureId: string) => {
   const queryClient = useQueryClient();
-  const { bookmarkService } = useGuardContext(serviceContext);
-  const { token } = useTokenAuthContext();
+  const { bookmarkService } = useGuardContext(ServiceContext);
+  const { token } = useGuardContext(TokenAuthContext);
   return useMutation({
     mutationFn: () => bookmarkService.addBookmark({ lectureId, token }),
     onSuccess: (data) => data.type === 'success' && queryClient.invalidateQueries(),
@@ -223,8 +223,8 @@ const useAddBookmark = (lectureId: string) => {
 
 const useDeleteBookmark = (lectureId: string) => {
   const queryClient = useQueryClient();
-  const { bookmarkService } = useGuardContext(serviceContext);
-  const { token } = useTokenAuthContext();
+  const { bookmarkService } = useGuardContext(ServiceContext);
+  const { token } = useGuardContext(TokenAuthContext);
   return useMutation({
     mutationFn: () => bookmarkService.removeBookmark({ lectureId, token }),
     onSuccess: (data) => data.type === 'success' && queryClient.invalidateQueries(),
@@ -232,8 +232,8 @@ const useDeleteBookmark = (lectureId: string) => {
 };
 
 const useBookmarkLectures = () => {
-  const { bookmarkService } = useGuardContext(serviceContext);
-  const { token } = useTokenAuthContext();
+  const { bookmarkService } = useGuardContext(ServiceContext);
+  const { token } = useGuardContext(TokenAuthContext);
   const ys = useGuardContext(YearSemesterContext);
 
   return useQuery({

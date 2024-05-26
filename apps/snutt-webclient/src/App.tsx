@@ -10,8 +10,8 @@ import { Button } from '@/components/button';
 import { Dialog } from '@/components/dialog';
 import { Layout } from '@/components/layout';
 import { Loader } from '@/components/loader';
-import { envContext } from '@/contexts/EnvContext';
-import { serviceContext } from '@/contexts/ServiceContext';
+import { EnvContext } from '@/contexts/EnvContext';
+import { ServiceContext } from '@/contexts/ServiceContext';
 import { TokenAuthContext } from '@/contexts/TokenAuthContext';
 import { TokenManageContext } from '@/contexts/TokenManageContext';
 import { YearSemesterContext } from '@/contexts/YearSemesterContext';
@@ -56,7 +56,7 @@ const queryClient = new QueryClient({ defaultOptions: { queries: { refetchOnWind
 
 export const App = () => {
   const [isWrongTokenDialogOpen, setWrongTokenDialogOpen] = useState(false);
-  const ENV = useGuardContext(envContext);
+  const ENV = useGuardContext(EnvContext);
 
   const services = useMemo(() => {
     const snuttApi = implSnuttApi({
@@ -167,7 +167,7 @@ export const App = () => {
 
   return (
     <QueryClientProvider key={token} client={queryClient}>
-      <serviceContext.Provider value={services}>
+      <ServiceContext.Provider value={services}>
         <GlobalStyles />
         <TokenManageContext.Provider value={tokenContextValue}>
           {token ? (
@@ -183,7 +183,7 @@ export const App = () => {
           )}
         </TokenManageContext.Provider>
         <ReactQueryDevtools />
-      </serviceContext.Provider>
+      </ServiceContext.Provider>
     </QueryClientProvider>
   );
 };
@@ -205,7 +205,7 @@ const AuthorizedApp = ({
     closeLogoutDialog();
   };
 
-  const { semesterService } = useGuardContext(serviceContext);
+  const { semesterService } = useGuardContext(ServiceContext);
 
   const { data: courseBooks } = useQuery({
     queryKey: ['SemesterService', 'getCourseBooks', { token }] as const,

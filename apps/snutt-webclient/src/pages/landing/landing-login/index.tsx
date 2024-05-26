@@ -4,9 +4,9 @@ import FBLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import styled from 'styled-components';
 
 import { Button } from '@/components/button';
-import { envContext } from '@/contexts/EnvContext';
-import { serviceContext } from '@/contexts/ServiceContext';
-import { useTokenManageContext } from '@/contexts/TokenManageContext';
+import { EnvContext } from '@/contexts/EnvContext';
+import { ServiceContext } from '@/contexts/ServiceContext';
+import { TokenManageContext } from '@/contexts/TokenManageContext';
 import { useGuardContext } from '@/hooks/useGuardContext';
 import { LoginFindIdDialog } from '@/pages/landing/landing-login/find-id-dialog';
 import { LoginResetPasswordDialog } from '@/pages/landing/landing-login/reset-password-dialog';
@@ -14,8 +14,8 @@ import { LoginResetPasswordDialog } from '@/pages/landing/landing-login/reset-pa
 type Props = { className?: string; onSignUp: () => void };
 
 export const LandingLogin = ({ className, onSignUp }: Props) => {
-  const { saveToken } = useTokenManageContext();
-  const { FACEBOOK_APP_ID } = useGuardContext(envContext);
+  const { saveToken } = useGuardContext(TokenManageContext);
+  const { FACEBOOK_APP_ID } = useGuardContext(EnvContext);
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [keepSignIn, setKeepSignIn] = useState(false);
@@ -23,7 +23,7 @@ export const LandingLogin = ({ className, onSignUp }: Props) => {
   const [findIdDialogOpen, setFindIdDialogOpen] = useState(false);
   const [resetPasswordDialogOpen, setResetPasswordDialogOpen] = useState(false);
 
-  const { authService } = useGuardContext(serviceContext);
+  const { authService } = useGuardContext(ServiceContext);
 
   const handleSignIn = async () => {
     setErrorMessage('');

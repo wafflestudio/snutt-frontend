@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
 
-import { serviceContext } from '@/contexts/ServiceContext';
-import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
+import { ServiceContext } from '@/contexts/ServiceContext';
+import { TokenAuthContext } from '@/contexts/TokenAuthContext';
 import type { Color } from '@/entities/color';
 import type { WithInternalId } from '@/entities/id';
 import type { ClassTime, Lecture } from '@/entities/lecture';
@@ -29,7 +29,7 @@ type Props = {
 
 export const MainLectureEditForm = ({ draft, defaultState = {}, setDraft }: Props) => {
   const { data: colorList } = useColorList();
-  const { lectureService } = useGuardContext(serviceContext);
+  const { lectureService } = useGuardContext(ServiceContext);
 
   const currentColor =
     draft.color ??
@@ -95,8 +95,8 @@ export const MainLectureEditForm = ({ draft, defaultState = {}, setDraft }: Prop
 };
 
 const useColorList = () => {
-  const { colorService } = useGuardContext(serviceContext);
-  const { token } = useTokenAuthContext();
+  const { colorService } = useGuardContext(ServiceContext);
+  const { token } = useGuardContext(TokenAuthContext);
   return useQuery({
     queryKey: ['ColorService', 'getColorList', { token }] as const,
     queryFn: ({ queryKey: [, , req] }) => colorService.getColorList(req),

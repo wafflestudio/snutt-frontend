@@ -4,8 +4,8 @@ import styled from 'styled-components';
 
 import { Button } from '@/components/button';
 import { Dialog } from '@/components/dialog';
-import { serviceContext } from '@/contexts/ServiceContext';
-import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
+import { ServiceContext } from '@/contexts/ServiceContext';
+import { TokenAuthContext } from '@/contexts/TokenAuthContext';
 import { YearSemesterContext } from '@/contexts/YearSemesterContext';
 import { useGuardContext } from '@/hooks/useGuardContext';
 
@@ -265,8 +265,8 @@ const Checkbox = <F extends 'academicYear' | 'category' | 'classification' | 'cr
 
 const useSearchFilterTags = () => {
   const ys = useGuardContext(YearSemesterContext);
-  const { searchService } = useGuardContext(serviceContext);
-  const { token } = useTokenAuthContext();
+  const { searchService } = useGuardContext(ServiceContext);
+  const { token } = useGuardContext(TokenAuthContext);
 
   return useQuery({
     queryKey: ['SearchService', 'getTags', { ...ys, token }] as const,
