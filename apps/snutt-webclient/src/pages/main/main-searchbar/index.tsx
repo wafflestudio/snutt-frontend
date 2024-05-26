@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import { type FormEvent, useState } from 'react';
 import styled from 'styled-components';
 
@@ -12,6 +11,7 @@ import { type CourseBook } from '@/entities/semester';
 import type { FullTimetable } from '@/entities/timetable';
 import { useGuardContext } from '@/hooks/useGuardContext';
 import { type SearchService } from '@/usecases/searchService';
+import { formatDate } from '@/utils/formatDate';
 
 import { MainSearchbarFilterDialog } from './main-searchbar-filter-dialog';
 import { MainSearchbarYearSemesterSelect } from './main-searchbar-year-semester-select';
@@ -55,7 +55,12 @@ export const MainSearchbar = ({ onSearch, currentFullTimetable, resetSearchResul
   const { year, semester } = useGuardContext(YearSemesterContext);
   const { timeMaskService } = useGuardContext(serviceContext);
   const currentCourseBook = courseBooks?.find((c) => c.year === year && c.semester === semester);
-  const currentCourseBookUpdatedAt = currentCourseBook ? dayjs(currentCourseBook.updatedAt).format('YYYY. MM. DD') : '';
+  if (!currentCourseBook) throw new Error('currentCourseBook is not found');
+  const currentCourseBookUpdatedAt = formatDate(
+    currentCourseBook.updatedAt,
+    ({ YYYY, MM, DD }) => `${YYYY}. ${MM}. ${DD}`,
+  );
+
   const { token } = useTokenAuthContext();
 
   const onSubmit = (e?: FormEvent<HTMLFormElement>) => {
