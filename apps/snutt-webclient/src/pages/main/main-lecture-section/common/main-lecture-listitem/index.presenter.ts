@@ -171,7 +171,12 @@ export const mainLectureListitemPresenter = {
         onClose: () => setDeleteBookmarkDialogOpen(false),
         onClick: () =>
           deleteBookmarkMutation.mutate(undefined, {
-            onSuccess: (data) => data.type === 'success' && onMouseLeave?.(),
+            onSuccess: (data) => {
+              if (data.type === 'success') {
+                onMouseLeave?.();
+                setDeleteBookmarkDialogOpen(false);
+              }
+            },
           }),
       },
     };

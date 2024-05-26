@@ -149,3 +149,36 @@ test('검색 결과 탭에서 추가 기능이 정상 동작한다 (실패)', as
   await page.getByTestId('main-lecture-listitem').nth(0).getByText('추가').click();
   await expect(page.getByTestId('error-dialog-message')).toHaveText('강의 시간이 서로 겹칩니다.');
 });
+
+test('검색 결과 탭에서 관심강좌를 제거할 수 있다', async ({ page }) => {
+  await page.goto('/');
+  await givenUser(page, { login: true });
+  await page.getByTestId('main-searchbar-search').click();
+  await page.getByTestId('main-lecture-listitem').nth(0).getByTestId('main-lecture-listitem-bookmark').click();
+  await Promise.all([
+    page.waitForRequest(
+      (req) =>
+        req.method() === 'DELETE' &&
+        req.url().includes('/v1/bookmarks/lecture') &&
+        req.postDataJSON().lecture_id === '6329ab4ecb360c002b6eec57',
+    ),
+    await page.getByTestId('bookmark-delete-confirm').click(),
+  ]);
+  await expect(page.getByTestId('bookmark-delete-confirm')).toHaveCount(0);
+});
+
+test('검색 결과 탭에서 관심강좌를 추가할 수 있다', async ({ page }) => {
+  await page.goto('/');
+  await givenUser(page, { login: true });
+  await page.getByTestId('main-searchbar-search').click();
+
+  await Promise.all([
+    page.waitForRequest(
+      (req) =>
+        req.method() === 'POST' &&
+        req.url().includes('/v1/bookmarks/lecture') &&
+        req.postDataJSON().lecture_id === '6329ab4ecb360c002b6ee9b6',
+    ),
+    await page.getByTestId('main-lecture-listitem').nth(1).getByTestId('main-lecture-listitem-bookmark').click(),
+  ]);
+});
