@@ -24,7 +24,11 @@ export const MainLectureListitem = ({
 
   return (
     <div
-      className={clsx(styles.wrapper, vm.wrapper.isClickableStyle && styles.clickable)}
+      className={clsx(
+        styles.wrapper,
+        vm.wrapper.isClickableStyle && styles.clickable,
+        vm.wrapper.isHoveredStyle && styles.hovered,
+      )}
       onMouseEnter={vm.wrapper.onMouseEnter}
       onMouseLeave={vm.wrapper.onMouseLeave}
       onClick={vm.wrapper.onClick}

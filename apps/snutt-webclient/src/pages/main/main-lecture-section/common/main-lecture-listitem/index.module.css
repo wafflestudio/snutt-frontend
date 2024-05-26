@@ -4,7 +4,7 @@
   flex-direction: column;
   transition: background-color 0.1s;
 }
-.wrapper:hover {
+.wrapper.hovered {
   background-color: #ddd;
 }
 .wrapper.clickable {
