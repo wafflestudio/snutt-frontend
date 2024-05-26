@@ -15,29 +15,23 @@ import { MainTimeTable } from './main-timetable';
 
 type Props = {
   className?: string;
-  currentYearSemesterTimetables: Timetable[];
-  currentFullTimetable: FullTimetable | undefined;
-  currentTimetable: Timetable | undefined;
-  changeCurrentTimetable: (id: string) => void;
+  timetableData: { isEmpty: true } | { isEmpty: false; timetables: Timetable[]; currentTimetable: FullTimetable };
+  changeCurrentTimetable: (id: string | null) => void;
   hoveredLectureId: string | null;
   setHoveredLectureId: (id: string | null) => void;
   onClickLecture: (id: string) => void;
-  setCurrentTimetable: (id: string | null) => void;
   previewLecture?: BaseLecture;
   openCreateLectureDialog: () => void;
 };
 
 export const MainTimetableSection = ({
   className,
-  currentTimetable,
-  currentFullTimetable,
-  currentYearSemesterTimetables,
+  timetableData,
   changeCurrentTimetable,
   hoveredLectureId,
   setHoveredLectureId,
   onClickLecture,
   previewLecture,
-  setCurrentTimetable,
   openCreateLectureDialog,
 }: Props) => {
   const [isCreateTimetableDialogOpen, setCreateTimetableDialogOpen] = useState(false);
@@ -48,9 +42,9 @@ export const MainTimetableSection = ({
 
   return (
     <Wrapper className={className}>
-      <TTTabs value={currentTimetable?._id}>
-        {currentYearSemesterTimetables.map(({ _id: id, title }) => {
-          const isActive = id === currentTimetable?._id;
+      <TTTabs value={timetableData.isEmpty ? undefined : timetableData.currentTimetable._id}>
+        {(timetableData.isEmpty ? [] : timetableData.timetables).map(({ _id: id, title }) => {
+          const isActive = timetableData.isEmpty === false && timetableData.currentTimetable._id === id;
           return (
             <TTTab
               data-testid="mt-tab"
@@ -68,17 +62,15 @@ export const MainTimetableSection = ({
         <AddIcon data-testid="mt-create-timetable" onClick={onClickCreate} />
       </TTTabs>
       <Content>
-        {currentYearSemesterTimetables.length > 0 ? (
-          currentFullTimetable && (
-            <MainTimeTable
-              timetable={currentFullTimetable}
-              previewLecture={previewLecture}
-              hoveredLectureId={hoveredLectureId}
-              setHoveredLectureId={setHoveredLectureId}
-              onClickLecture={onClickLecture}
-              openCreateLectureDialog={openCreateLectureDialog}
-            />
-          )
+        {timetableData.isEmpty === false ? (
+          <MainTimeTable
+            timetable={timetableData.currentTimetable}
+            previewLecture={previewLecture}
+            hoveredLectureId={hoveredLectureId}
+            setHoveredLectureId={setHoveredLectureId}
+            onClickLecture={onClickLecture}
+            openCreateLectureDialog={openCreateLectureDialog}
+          />
         ) : (
           <NoTimetable onClickCreate={() => setCreateTimetableDialogOpen(true)} />
         )}
@@ -86,19 +78,23 @@ export const MainTimetableSection = ({
       <MainCreateTimetableDialog
         isOpen={isCreateTimetableDialogOpen}
         close={() => setCreateTimetableDialogOpen(false)}
-        setCurrentTimetable={setCurrentTimetable}
+        setCurrentTimetable={changeCurrentTimetable}
       />
-      <MainDeleteTimetableDialog
-        isOpen={deleteTimetableDialogId !== null}
-        close={() => setDeleteTimetableDialogId(null)}
-        timetable={currentFullTimetable}
-        onDelete={() => setCurrentTimetable(null)}
-      />
-      <MainRenameTimetableDialog
-        isOpen={renameTimetableDialogId !== null}
-        close={() => setRenameTimetableDialogId(null)}
-        timetable={currentFullTimetable}
-      />
+      {timetableData.isEmpty === false && (
+        <>
+          <MainDeleteTimetableDialog
+            isOpen={deleteTimetableDialogId !== null}
+            close={() => setDeleteTimetableDialogId(null)}
+            timetable={timetableData.currentTimetable}
+            onDelete={() => changeCurrentTimetable(null)}
+          />
+          <MainRenameTimetableDialog
+            isOpen={renameTimetableDialogId !== null}
+            close={() => setRenameTimetableDialogId(null)}
+            timetable={timetableData.currentTimetable}
+          />
+        </>
+      )}
     </Wrapper>
   );
 };

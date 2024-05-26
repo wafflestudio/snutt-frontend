@@ -12,8 +12,7 @@ type Props = {
   className?: string;
   tab: 'current' | 'result' | 'bookmark';
   changeTab: (tab: 'current' | 'result' | 'bookmark') => void;
-  currentFullTimetable: FullTimetable | undefined;
-  currentYearSemesterTimetables: Timetable[];
+  timetableData: { isEmpty: true } | { isEmpty: false; timetables: Timetable[]; currentTimetable: FullTimetable };
   hoveredLectureId: string | null;
   setHoveredLectureId: (id: string | null) => void;
   onClickLecture: (id: string) => void;
@@ -27,9 +26,8 @@ export const MainLectureSection = ({
   tab,
   previewLectureId,
   changeTab,
-  currentYearSemesterTimetables,
+  timetableData,
   className,
-  currentFullTimetable,
   hoveredLectureId,
   setHoveredLectureId,
   onClickLecture,
@@ -37,6 +35,12 @@ export const MainLectureSection = ({
   searchResult,
   bookmarkLectures,
 }: Props) => {
+  const currentTimetable = timetableData.isEmpty
+    ? null
+    : {
+        id: timetableData.currentTimetable._id,
+        lectureIds: timetableData.currentTimetable.lecture_list.map((l) => l._id),
+      };
   return (
     <Wrapper className={className}>
       <Tabs value={tab}>
@@ -61,18 +65,17 @@ export const MainLectureSection = ({
       <Content>
         {tab === 'current' && (
           <MainCurrentLectureTab
-            currentYearSemesterTimetables={currentYearSemesterTimetables}
             hoveredLectureId={hoveredLectureId}
             setHoveredLectureId={setHoveredLectureId}
             onClickLecture={onClickLecture}
-            currentFullTimetable={currentFullTimetable}
             openBookmarkTab={() => changeTab('bookmark')}
+            timetableData={timetableData}
           />
         )}
         {tab === 'result' && (
           <MainSearchLectureTab
             previewLectureId={previewLectureId}
-            currentFullTimetable={currentFullTimetable}
+            currentTimetable={currentTimetable}
             searchResult={searchResult}
             setPreviewLectureId={setPreviewLectureId}
             hoveredLectureId={hoveredLectureId}
@@ -84,7 +87,7 @@ export const MainLectureSection = ({
         {tab === 'bookmark' && (
           <MainBookmarkLectureTab
             previewLectureId={previewLectureId}
-            currentFullTimetable={currentFullTimetable}
+            currentTimetable={currentTimetable}
             lectures={bookmarkLectures}
             setPreviewLectureId={setPreviewLectureId}
             hoveredLectureId={hoveredLectureId}

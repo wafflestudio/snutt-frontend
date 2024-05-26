@@ -12,13 +12,13 @@ import { useGuardContext } from '@/hooks/useGuardContext';
 type Props = {
   isOpen: boolean;
   close: () => void;
-  timetable?: FullTimetable;
+  timetable: FullTimetable;
 };
 
 export const MainRenameTimetableDialog = ({ isOpen, close, timetable }: Props) => {
   const [draft, setDraft] = useState<string>();
 
-  const { mutate: rename } = useRenameTimetable(timetable?._id);
+  const { mutate: rename } = useRenameTimetable(timetable._id);
 
   const onClose = () => {
     setDraft(undefined);
@@ -33,9 +33,9 @@ export const MainRenameTimetableDialog = ({ isOpen, close, timetable }: Props) =
         <Text>변경할 이름을 아래에 입력해 주세요.</Text>
         <Input
           data-testid="mt-tt-change-name-input"
-          value={draft ?? timetable?.title ?? ''}
+          value={draft ?? timetable.title}
           onChange={(e) => setDraft(e.target.value)}
-          placeholder={timetable?.title}
+          placeholder={timetable.title}
         />
       </Dialog.Content>
 
@@ -59,16 +59,13 @@ export const MainRenameTimetableDialog = ({ isOpen, close, timetable }: Props) =
   );
 };
 
-const useRenameTimetable = (id?: string) => {
+const useRenameTimetable = (id: string) => {
   const queryClient = useQueryClient();
   const { timetableService } = useGuardContext(ServiceContext);
   const { token } = useGuardContext(TokenAuthContext);
 
   return useMutation({
-    mutationFn: (title: string) => {
-      if (!id) throw new Error('no tt');
-      return timetableService.renameTimetable({ id, title, token });
-    },
+    mutationFn: (title: string) => timetableService.renameTimetable({ id, title, token }),
     onSuccess: () => queryClient.invalidateQueries(),
   });
 };

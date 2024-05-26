@@ -24,6 +24,7 @@ export const Main = ({ courseBooks }: { courseBooks: CourseBook[] }) => {
   const { token } = useGuardContext(TokenAuthContext);
   const { year, semester } = useGuardContext(YearSemesterContext);
   const [currentTimetableId, setCurrentTimetableId] = useState<string | null>(null);
+  const [lectureTab, setLectureTab] = useState<'result' | 'current' | 'bookmark'>('current');
 
   const { data: timetablesAndCurrentTimetableId } = useQuery({
     queryKey: ['TimetableService', 'getTimetables', { token }] as const,
@@ -32,13 +33,15 @@ export const Main = ({ courseBooks }: { courseBooks: CourseBook[] }) => {
       data,
     ): undefined | { isEmpty: true } | { isEmpty: false; timetables: Timetable[]; currentTimetableId: string } => {
       if (data.type === 'error') return undefined;
-      if (data.data.length === 0) return { isEmpty: true };
-      const fallbackId = data.data.at(0)?._id;
+      const currentYearSemesterTimetables = data.data.filter((tt) => tt.year === year && tt.semester === semester);
+      if (currentYearSemesterTimetables.length === 0) return { isEmpty: true };
+      const fallbackId = currentYearSemesterTimetables.at(0)?._id;
       if (!fallbackId) throw new Error('cannot reach here');
       return {
         isEmpty: false,
-        timetables: data.data,
-        currentTimetableId: data.data.find((tt) => tt._id === currentTimetableId)?._id ?? fallbackId,
+        timetables: currentYearSemesterTimetables,
+        currentTimetableId:
+          currentYearSemesterTimetables.find((tt) => tt._id === currentTimetableId)?._id ?? fallbackId,
       };
     },
   });
@@ -49,39 +52,67 @@ export const Main = ({ courseBooks }: { courseBooks: CourseBook[] }) => {
       : undefined,
   );
 
-  const currentYearSemesterTimetables = timetables?.filter((tt) => tt.year === year && tt.semester === semester);
-  const availableCurrentTimetableId = currentYearSemesterTimetables?.find((tt) => tt._id === currentTimetableId)?._id;
+  if (!timetablesAndCurrentTimetableId) return <LoadingPage />;
 
-  if (!timetables) return <LoadingPage />;
+  if (timetablesAndCurrentTimetableId.isEmpty)
+    return (
+      <MainWithCurrentYearSemesterTimetablesAndCurrentTimetable
+        courseBooks={courseBooks}
+        timetableData={{ isEmpty: true }}
+        onChangeTimetable={setCurrentTimetableId}
+        lectureTab={lectureTab}
+        onChangeLectureTab={setLectureTab}
+      />
+    );
 
-  return <MainWithCurrentYearSemesterTimetablesAndCurrentTimetable courseBooks={courseBooks} timetables={} />;
+  if (!currentFullTimetable) return <LoadingPage />;
+
+  return (
+    <MainWithCurrentYearSemesterTimetablesAndCurrentTimetable
+      courseBooks={courseBooks}
+      timetableData={{
+        isEmpty: false,
+        timetables: timetablesAndCurrentTimetableId.timetables,
+        currentTimetable: currentFullTimetable,
+      }}
+      onChangeTimetable={setCurrentTimetableId}
+      lectureTab={lectureTab}
+      onChangeLectureTab={setLectureTab}
+    />
+  );
 };
 
 const MainWithCurrentYearSemesterTimetablesAndCurrentTimetable = ({
   courseBooks,
   timetableData,
+  onChangeTimetable,
+  lectureTab,
+  onChangeLectureTab,
 }: {
   courseBooks: CourseBook[];
-  timetableData: { isEmpty: true } | { isEmpty: false; timetables: Timetable[]; currentTimetable: FullTimetable };
+  timetableData:
+    | { isEmpty: true }
+    | {
+        isEmpty: false;
+        timetables: Timetable[];
+        currentTimetable: FullTimetable;
+      };
+  onChangeTimetable: (timetableId: Timetable['_id'] | null) => void;
+  lectureTab: 'result' | 'current' | 'bookmark';
+  onChangeLectureTab: (tab: 'result' | 'current' | 'bookmark') => void;
 }) => {
   const [hoveredLectureId, setHoveredLectureId] = useState<string | null>(null);
   const [previewLectureId, setPreviewLectureId] = useState<string | null>(null);
   const [dialogLectureId, setDialogLectureId] = useState<string | null>(null);
   const [isCreateLectureDialog, setCreateLectureDialog] = useState(false);
-  const [lectureTab, setLectureTab] = useState<'result' | 'current' | 'bookmark'>('current');
-
-  const { year, semester } = useGuardContext(YearSemesterContext);
-
-  const currentYearSemesterTimetables = timetables.filter((tt) => tt.year === year && tt.semester === semester);
-  const currentTimetable = currentTimetableId
-    ? currentYearSemesterTimetables.find((tt) => tt._id === currentTimetableId)
-    : currentYearSemesterTimetables[0];
 
   const { mutate, data: searchResult, reset } = useSearchResult();
   const { data: bookmarkLectures } = useBookmarkLectures();
 
   const searchResultLectures = searchResult?.type === 'success' ? searchResult.data : undefined;
-  const dialogLecture = currentFullTimetable?.lecture_list.find((tt) => tt._id === dialogLectureId);
+  const dialogLecture = timetableData.isEmpty
+    ? null
+    : timetableData.currentTimetable.lecture_list.find((tt) => tt._id === dialogLectureId);
   const previewLecture = [...(searchResultLectures ?? []), ...(bookmarkLectures ?? [])]?.find(
     (item) => item._id === previewLectureId,
   );
@@ -89,7 +120,7 @@ const MainWithCurrentYearSemesterTimetablesAndCurrentTimetable = ({
   const onClickLecture = (id: string) => setDialogLectureId(id);
 
   const onSearch = async (value: Parameters<SearchService['search']>[0]) => {
-    setLectureTab('result');
+    onChangeLectureTab('result');
     mutate(value);
   };
 
@@ -98,7 +129,7 @@ const MainWithCurrentYearSemesterTimetablesAndCurrentTimetable = ({
       headerChildren={
         <MainSearchbar
           onSearch={onSearch}
-          currentFullTimetable={currentFullTimetable}
+          currentFullTimetable={timetableData.isEmpty ? null : timetableData.currentTimetable}
           resetSearchResult={reset}
           courseBooks={courseBooks}
         />
@@ -106,11 +137,10 @@ const MainWithCurrentYearSemesterTimetablesAndCurrentTimetable = ({
     >
       <Wrapper>
         <LectureSection
-          currentYearSemesterTimetables={currentYearSemesterTimetables}
           tab={lectureTab}
-          changeTab={setLectureTab}
+          changeTab={onChangeLectureTab}
           previewLectureId={previewLectureId}
-          currentFullTimetable={currentFullTimetable}
+          timetableData={timetableData}
           hoveredLectureId={hoveredLectureId}
           setHoveredLectureId={setHoveredLectureId}
           onClickLecture={onClickLecture}
@@ -119,29 +149,32 @@ const MainWithCurrentYearSemesterTimetablesAndCurrentTimetable = ({
           bookmarkLectures={bookmarkLectures}
         />
         <TimetableSection
-          currentYearSemesterTimetables={currentYearSemesterTimetables}
-          currentTimetable={currentTimetable}
-          currentFullTimetable={currentFullTimetable}
+          timetableData={timetableData}
           previewLecture={previewLecture}
-          changeCurrentTimetable={(id) => setCurrentTimetableId(id)}
+          changeCurrentTimetable={onChangeTimetable}
           hoveredLectureId={hoveredLectureId}
           setHoveredLectureId={setHoveredLectureId}
           onClickLecture={onClickLecture}
-          setCurrentTimetable={(id) => setCurrentTimetableId(id)}
           openCreateLectureDialog={() => setCreateLectureDialog(true)}
         />
       </Wrapper>
-      <MainLectureEditDialog
-        timetableId={currentFullTimetable?._id}
-        open={dialogLectureId !== null}
-        onClose={() => setDialogLectureId(null)}
-        lecture={dialogLecture}
-      />
-      <MainLectureCreateDialog
-        open={isCreateLectureDialog}
-        onClose={() => setCreateLectureDialog(false)}
-        timetableId={currentFullTimetable?._id}
-      />
+
+      {!timetableData.isEmpty && dialogLecture && (
+        <MainLectureEditDialog
+          timetableId={timetableData.currentTimetable._id}
+          open={dialogLectureId !== null}
+          onClose={() => setDialogLectureId(null)}
+          lecture={dialogLecture}
+        />
+      )}
+
+      {!timetableData.isEmpty && (
+        <MainLectureCreateDialog
+          open={isCreateLectureDialog}
+          onClose={() => setCreateLectureDialog(false)}
+          timetableId={timetableData.currentTimetable._id}
+        />
+      )}
     </Layout>
   );
 };
