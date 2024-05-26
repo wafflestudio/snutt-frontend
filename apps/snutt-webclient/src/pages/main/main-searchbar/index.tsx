@@ -3,8 +3,8 @@ import styled from 'styled-components';
 
 import { IcFilter } from '@/components/icons/ic-filter';
 import { IcSearch } from '@/components/icons/ic-search';
-import { serviceContext } from '@/contexts/ServiceContext';
-import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
+import { ServiceContext } from '@/contexts/ServiceContext';
+import { TokenAuthContext } from '@/contexts/TokenAuthContext';
 import { YearSemesterContext } from '@/contexts/YearSemesterContext';
 import type { SearchFilter } from '@/entities/search';
 import { type CourseBook } from '@/entities/semester';
@@ -53,7 +53,7 @@ export const MainSearchbar = ({ onSearch, currentFullTimetable, resetSearchResul
   const [open, setOpen] = useState(false);
   const [searchForm, setSearchForm] = useState<SearchForm>(initialForm);
   const { year, semester } = useGuardContext(YearSemesterContext);
-  const { timeMaskService } = useGuardContext(serviceContext);
+  const { timeMaskService } = useGuardContext(ServiceContext);
   const currentCourseBook = courseBooks?.find((c) => c.year === year && c.semester === semester);
   if (!currentCourseBook) throw new Error('currentCourseBook is not found');
   const currentCourseBookUpdatedAt = formatDate(
@@ -61,7 +61,7 @@ export const MainSearchbar = ({ onSearch, currentFullTimetable, resetSearchResul
     ({ YYYY, MM, DD }) => `${YYYY}. ${MM}. ${DD}`,
   );
 
-  const { token } = useTokenAuthContext();
+  const { token } = useGuardContext(TokenAuthContext);
 
   const onSubmit = (e?: FormEvent<HTMLFormElement>) => {
     e?.preventDefault();

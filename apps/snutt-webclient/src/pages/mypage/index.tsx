@@ -7,10 +7,10 @@ import styled from 'styled-components';
 
 import { Button } from '@/components/button';
 import { Layout } from '@/components/layout';
-import { envContext } from '@/contexts/EnvContext';
-import { serviceContext } from '@/contexts/ServiceContext';
-import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
-import { useTokenManageContext } from '@/contexts/TokenManageContext';
+import { EnvContext } from '@/contexts/EnvContext';
+import { ServiceContext } from '@/contexts/ServiceContext';
+import { TokenAuthContext } from '@/contexts/TokenAuthContext';
+import { TokenManageContext } from '@/contexts/TokenManageContext';
 import { useGuardContext } from '@/hooks/useGuardContext';
 
 import { MypageChangePassword } from './mypage-change-password';
@@ -19,11 +19,11 @@ import { MypageRegisterId } from './mypage-register-id';
 
 export const MyPage = () => {
   const [isCloseOpen, setCloseOpen] = useState(false);
-  const { clearToken } = useTokenManageContext();
+  const { clearToken } = useGuardContext(TokenManageContext);
   const { data: myInfo } = useMyInfo();
   const navigate = useNavigate();
-  const { timetableViewService, userService } = useGuardContext(serviceContext);
-  const { FACEBOOK_APP_ID } = useGuardContext(envContext);
+  const { timetableViewService, userService } = useGuardContext(ServiceContext);
+  const { FACEBOOK_APP_ID } = useGuardContext(EnvContext);
   const [displayMode, setDisplayMode] = useState(timetableViewService.getDisplayMode());
 
   const { mutate: attach } = useAttachFacebook();
@@ -109,8 +109,8 @@ export const MyPage = () => {
 };
 
 const useMyInfo = () => {
-  const { userService } = useGuardContext(serviceContext);
-  const { token } = useTokenAuthContext();
+  const { userService } = useGuardContext(ServiceContext);
+  const { token } = useGuardContext(TokenAuthContext);
 
   return useQuery({
     queryKey: ['UserService', 'getUserInfo', { token }] as const,
@@ -119,9 +119,9 @@ const useMyInfo = () => {
 };
 
 const useAttachFacebook = () => {
-  const { saveToken } = useTokenManageContext();
-  const { userService } = useGuardContext(serviceContext);
-  const { token } = useTokenAuthContext();
+  const { saveToken } = useGuardContext(TokenManageContext);
+  const { userService } = useGuardContext(ServiceContext);
+  const { token } = useGuardContext(TokenAuthContext);
 
   return useMutation({
     mutationFn: (userInfo: ReactFacebookLoginInfo) => {
@@ -135,9 +135,9 @@ const useAttachFacebook = () => {
 };
 
 const useDetachFacebook = () => {
-  const { saveToken } = useTokenManageContext();
-  const { token } = useTokenAuthContext();
-  const { userService } = useGuardContext(serviceContext);
+  const { saveToken } = useGuardContext(TokenManageContext);
+  const { token } = useGuardContext(TokenAuthContext);
+  const { userService } = useGuardContext(ServiceContext);
 
   return useMutation({
     mutationFn: () => userService.detachFacebookAccount({ token }),

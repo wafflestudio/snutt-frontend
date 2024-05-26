@@ -34,5 +34,4 @@ export type ServiceContext = {
   bookmarkService: BookmarkService;
 };
 
-export const serviceContext = createContext<ServiceContext | null>(null);
-serviceContext.displayName = 'ServiceContext';
+export const ServiceContext = createContext<ServiceContext | null>(null);

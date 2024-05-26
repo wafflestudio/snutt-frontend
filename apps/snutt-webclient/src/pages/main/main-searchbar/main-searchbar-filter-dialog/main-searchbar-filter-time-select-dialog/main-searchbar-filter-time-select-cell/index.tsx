@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { serviceContext } from '@/contexts/ServiceContext';
+import { ServiceContext } from '@/contexts/ServiceContext';
 import type { Position } from '@/entities/timeMask';
 import { useGuardContext } from '@/hooks/useGuardContext';
 
@@ -25,7 +25,7 @@ export const MainSearchbarFilterTimeSelectCell = ({
   i,
   j,
 }: Props) => {
-  const { timeMaskService } = useGuardContext(serviceContext);
+  const { timeMaskService } = useGuardContext(ServiceContext);
   const isDragging = dragStart !== null;
   const dragMode = dragStart && timeMaskService.getDragMode(cellStatus, dragStart);
   const isInArea = dragStart && currentDrag && timeMaskService.checkIsInArea({ i, j }, dragStart, currentDrag);
