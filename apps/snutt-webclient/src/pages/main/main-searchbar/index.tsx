@@ -6,11 +6,11 @@ import { IcFilter } from '@/components/icons/ic-filter';
 import { IcSearch } from '@/components/icons/ic-search';
 import { serviceContext } from '@/contexts/ServiceContext';
 import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
+import { YearSemesterContext } from '@/contexts/YearSemesterContext';
 import type { SearchFilter } from '@/entities/search';
+import { type CourseBook } from '@/entities/semester';
 import type { FullTimetable } from '@/entities/timetable';
-import { useCourseBooks } from '@/hooks/useCourseBooks';
 import { useGuardContext } from '@/hooks/useGuardContext';
-import { useYearSemester } from '@/hooks/useYearSemester';
 import { type SearchService } from '@/usecases/searchService';
 
 import { MainSearchbarFilterDialog } from './main-searchbar-filter-dialog';
@@ -20,6 +20,7 @@ type Props = {
   onSearch: (filter: Parameters<SearchService['search']>[0]) => void;
   currentFullTimetable?: FullTimetable;
   resetSearchResult: () => void;
+  courseBooks: CourseBook[];
 };
 
 export type SearchForm = {
@@ -48,11 +49,10 @@ const initialForm = {
 
 const isInitialForm = (form: SearchForm) => JSON.stringify(initialForm) === JSON.stringify(form);
 
-export const MainSearchbar = ({ onSearch, currentFullTimetable, resetSearchResult }: Props) => {
+export const MainSearchbar = ({ onSearch, currentFullTimetable, resetSearchResult, courseBooks }: Props) => {
   const [open, setOpen] = useState(false);
   const [searchForm, setSearchForm] = useState<SearchForm>(initialForm);
-  const { year, semester } = useYearSemester();
-  const { data: courseBooks } = useCourseBooks();
+  const { year, semester } = useGuardContext(YearSemesterContext);
   const { timeMaskService } = useGuardContext(serviceContext);
   const currentCourseBook = courseBooks?.find((c) => c.year === year && c.semester === semester);
   const currentCourseBookUpdatedAt = currentCourseBook ? dayjs(currentCourseBook.updatedAt).format('YYYY. MM. DD') : '';
@@ -60,8 +60,6 @@ export const MainSearchbar = ({ onSearch, currentFullTimetable, resetSearchResul
 
   const onSubmit = (e?: FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
-
-    if (!year || !semester) return;
 
     const undefinedIfEmpty = <T,>(e: T[]) => (e.length === 0 ? undefined : e);
 
@@ -105,7 +103,7 @@ export const MainSearchbar = ({ onSearch, currentFullTimetable, resetSearchResul
 
   return (
     <Wrapper>
-      <MainSearchbarYearSemesterSelect resetSearchResult={resetSearchResult} />
+      <MainSearchbarYearSemesterSelect resetSearchResult={resetSearchResult} courseBooks={courseBooks} />
       <Form onSubmit={onSubmit}>
         <Input
           data-testid="main-searchbar-input"

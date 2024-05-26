@@ -6,8 +6,8 @@ import { Button } from '@/components/button';
 import { Dialog } from '@/components/dialog';
 import { serviceContext } from '@/contexts/ServiceContext';
 import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
+import { YearSemesterContext } from '@/contexts/YearSemesterContext';
 import { useGuardContext } from '@/hooks/useGuardContext';
-import { useYearSemester } from '@/hooks/useYearSemester';
 
 import type { SearchForm } from '..';
 import { MainSearchbarFilterTimeSelectDialog } from './main-searchbar-filter-time-select-dialog';
@@ -264,17 +264,13 @@ const Checkbox = <F extends 'academicYear' | 'category' | 'classification' | 'cr
 );
 
 const useSearchFilterTags = () => {
-  const ys = useYearSemester();
+  const ys = useGuardContext(YearSemesterContext);
   const { searchService } = useGuardContext(serviceContext);
   const { token } = useTokenAuthContext();
 
   return useQuery({
     queryKey: ['SearchService', 'getTags', { ...ys, token }] as const,
-    queryFn: ({ queryKey: [, , { token, year, semester }] }) => {
-      if (!year || !semester) throw new Error();
-      return searchService.getTags({ token, year, semester });
-    },
-    enabled: !!(ys.year && ys.semester),
+    queryFn: ({ queryKey }) => searchService.getTags(queryKey[2]),
     staleTime: Infinity,
   });
 };
