@@ -7,7 +7,9 @@ import { ServiceContext } from '@/contexts/ServiceContext';
 import { TokenAuthContext } from '@/contexts/TokenAuthContext';
 import { YearSemesterContext } from '@/contexts/YearSemesterContext';
 import { type CourseBook } from '@/entities/semester';
+import { type FullTimetable, type Timetable } from '@/entities/timetable';
 import { useGuardContext } from '@/hooks/useGuardContext';
+import { LoadingPage } from '@/pages/loading';
 import { BREAKPOINT } from '@/styles/constants';
 import { type SearchService } from '@/usecases/searchService';
 
@@ -18,21 +20,62 @@ import { MainSearchbar } from './main-searchbar';
 import { MainTimetableSection } from './main-timetable-section';
 
 export const Main = ({ courseBooks }: { courseBooks: CourseBook[] }) => {
+  const { timetableService } = useGuardContext(ServiceContext);
+  const { token } = useGuardContext(TokenAuthContext);
+  const { year, semester } = useGuardContext(YearSemesterContext);
+  const [currentTimetableId, setCurrentTimetableId] = useState<string | null>(null);
+
+  const { data: timetablesAndCurrentTimetableId } = useQuery({
+    queryKey: ['TimetableService', 'getTimetables', { token }] as const,
+    queryFn: ({ queryKey }) => timetableService.getTimetables(queryKey[2]),
+    select: (
+      data,
+    ): undefined | { isEmpty: true } | { isEmpty: false; timetables: Timetable[]; currentTimetableId: string } => {
+      if (data.type === 'error') return undefined;
+      if (data.data.length === 0) return { isEmpty: true };
+      const fallbackId = data.data.at(0)?._id;
+      if (!fallbackId) throw new Error('cannot reach here');
+      return {
+        isEmpty: false,
+        timetables: data.data,
+        currentTimetableId: data.data.find((tt) => tt._id === currentTimetableId)?._id ?? fallbackId,
+      };
+    },
+  });
+
+  const { data: currentFullTimetable } = useCurrentFullTimetable(
+    timetablesAndCurrentTimetableId && !timetablesAndCurrentTimetableId.isEmpty
+      ? timetablesAndCurrentTimetableId.currentTimetableId
+      : undefined,
+  );
+
+  const currentYearSemesterTimetables = timetables?.filter((tt) => tt.year === year && tt.semester === semester);
+  const availableCurrentTimetableId = currentYearSemesterTimetables?.find((tt) => tt._id === currentTimetableId)?._id;
+
+  if (!timetables) return <LoadingPage />;
+
+  return <MainWithCurrentYearSemesterTimetablesAndCurrentTimetable courseBooks={courseBooks} timetables={} />;
+};
+
+const MainWithCurrentYearSemesterTimetablesAndCurrentTimetable = ({
+  courseBooks,
+  timetableData,
+}: {
+  courseBooks: CourseBook[];
+  timetableData: { isEmpty: true } | { isEmpty: false; timetables: Timetable[]; currentTimetable: FullTimetable };
+}) => {
   const [hoveredLectureId, setHoveredLectureId] = useState<string | null>(null);
   const [previewLectureId, setPreviewLectureId] = useState<string | null>(null);
   const [dialogLectureId, setDialogLectureId] = useState<string | null>(null);
   const [isCreateLectureDialog, setCreateLectureDialog] = useState(false);
   const [lectureTab, setLectureTab] = useState<'result' | 'current' | 'bookmark'>('current');
-  const [currentTimetableId, setCurrentTimetableId] = useState<string | null>(null);
+
   const { year, semester } = useGuardContext(YearSemesterContext);
-  const { data: timetables } = useMyTimetables();
 
-  const currentYearSemesterTimetables = timetables?.filter((tt) => tt.year === year && tt.semester === semester);
+  const currentYearSemesterTimetables = timetables.filter((tt) => tt.year === year && tt.semester === semester);
   const currentTimetable = currentTimetableId
-    ? currentYearSemesterTimetables?.find((tt) => tt._id === currentTimetableId)
-    : currentYearSemesterTimetables?.[0];
-
-  const { data: currentFullTimetable } = useCurrentFullTimetable(currentTimetable?._id);
+    ? currentYearSemesterTimetables.find((tt) => tt._id === currentTimetableId)
+    : currentYearSemesterTimetables[0];
 
   const { mutate, data: searchResult, reset } = useSearchResult();
   const { data: bookmarkLectures } = useBookmarkLectures();
@@ -101,17 +144,6 @@ export const Main = ({ courseBooks }: { courseBooks: CourseBook[] }) => {
       />
     </Layout>
   );
-};
-
-const useMyTimetables = () => {
-  const { timetableService } = useGuardContext(ServiceContext);
-  const { token } = useGuardContext(TokenAuthContext);
-
-  return useQuery({
-    queryKey: ['TimetableService', 'getTimetables', { token }] as const,
-    queryFn: ({ queryKey }) => timetableService.getTimetables(queryKey[2]),
-    select: (data) => (data?.type === 'success' ? data.data : undefined),
-  });
 };
 
 const useCurrentFullTimetable = (id: string | undefined) => {

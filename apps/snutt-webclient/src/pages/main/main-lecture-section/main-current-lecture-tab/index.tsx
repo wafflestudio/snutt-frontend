@@ -6,7 +6,7 @@ import { MainSectionEmptyWrapper } from '../../main-section-empty-wrapper';
 import { MainLectureList } from '../common/main-lecture-list';
 
 type Props = {
-  currentYearSemesterTimetables?: Timetable[];
+  currentYearSemesterTimetables: Timetable[];
   currentFullTimetable: FullTimetable | undefined;
   hoveredLectureId: string | null;
   setHoveredLectureId: (id: string | null) => void;
@@ -22,10 +22,10 @@ export const MainCurrentLectureTab = ({
   openBookmarkTab,
   setHoveredLectureId,
 }: Props) => {
-  if (currentYearSemesterTimetables && currentYearSemesterTimetables.length === 0)
+  if (currentYearSemesterTimetables.length === 0)
     return <MainSectionEmptyWrapper data-testid="ml-current-no-timetable">시간표가 없습니다.</MainSectionEmptyWrapper>;
 
-  if (!currentFullTimetable || !currentYearSemesterTimetables)
+  if (!currentFullTimetable)
     return (
       <MainSectionEmptyWrapper>
         <Loader />

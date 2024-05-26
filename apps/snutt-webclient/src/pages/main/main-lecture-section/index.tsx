@@ -13,7 +13,7 @@ type Props = {
   tab: 'current' | 'result' | 'bookmark';
   changeTab: (tab: 'current' | 'result' | 'bookmark') => void;
   currentFullTimetable: FullTimetable | undefined;
-  currentYearSemesterTimetables?: Timetable[];
+  currentYearSemesterTimetables: Timetable[];
   hoveredLectureId: string | null;
   setHoveredLectureId: (id: string | null) => void;
   onClickLecture: (id: string) => void;

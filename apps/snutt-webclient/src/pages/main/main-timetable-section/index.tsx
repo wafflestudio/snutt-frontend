@@ -15,7 +15,7 @@ import { MainTimeTable } from './main-timetable';
 
 type Props = {
   className?: string;
-  currentYearSemesterTimetables: Timetable[] | undefined;
+  currentYearSemesterTimetables: Timetable[];
   currentFullTimetable: FullTimetable | undefined;
   currentTimetable: Timetable | undefined;
   changeCurrentTimetable: (id: string) => void;
@@ -49,7 +49,7 @@ export const MainTimetableSection = ({
   return (
     <Wrapper className={className}>
       <TTTabs value={currentTimetable?._id}>
-        {currentYearSemesterTimetables?.map(({ _id: id, title }) => {
+        {currentYearSemesterTimetables.map(({ _id: id, title }) => {
           const isActive = id === currentTimetable?._id;
           return (
             <TTTab
@@ -68,21 +68,20 @@ export const MainTimetableSection = ({
         <AddIcon data-testid="mt-create-timetable" onClick={onClickCreate} />
       </TTTabs>
       <Content>
-        {currentYearSemesterTimetables &&
-          (currentYearSemesterTimetables.length > 0 ? (
-            currentFullTimetable && (
-              <MainTimeTable
-                timetable={currentFullTimetable}
-                previewLecture={previewLecture}
-                hoveredLectureId={hoveredLectureId}
-                setHoveredLectureId={setHoveredLectureId}
-                onClickLecture={onClickLecture}
-                openCreateLectureDialog={openCreateLectureDialog}
-              />
-            )
-          ) : (
-            <NoTimetable onClickCreate={() => setCreateTimetableDialogOpen(true)} />
-          ))}
+        {currentYearSemesterTimetables.length > 0 ? (
+          currentFullTimetable && (
+            <MainTimeTable
+              timetable={currentFullTimetable}
+              previewLecture={previewLecture}
+              hoveredLectureId={hoveredLectureId}
+              setHoveredLectureId={setHoveredLectureId}
+              onClickLecture={onClickLecture}
+              openCreateLectureDialog={openCreateLectureDialog}
+            />
+          )
+        ) : (
+          <NoTimetable onClickCreate={() => setCreateTimetableDialogOpen(true)} />
+        )}
       </Content>
       <MainCreateTimetableDialog
         isOpen={isCreateTimetableDialogOpen}
