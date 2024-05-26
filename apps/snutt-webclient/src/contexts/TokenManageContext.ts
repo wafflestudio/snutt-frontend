@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import { createContext } from 'react';
 
 export type TokenManageContext = {
   saveToken: (token: string, permanent: boolean) => void;
@@ -6,9 +6,3 @@ export type TokenManageContext = {
 };
 
 export const TokenManageContext = createContext<TokenManageContext | null>(null);
-
-export const useTokenManageContext = () => {
-  const value = useContext(TokenManageContext);
-  if (value === null) throw new Error('TokenManageContext not provided');
-  return value;
-};

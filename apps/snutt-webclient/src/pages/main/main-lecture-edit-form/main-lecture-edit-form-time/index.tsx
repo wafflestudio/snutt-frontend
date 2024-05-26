@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Button } from '@/components/button';
 import { HourMinutePickDialog } from '@/components/hour-minute-pick-dialog';
 import { IcClose } from '@/components/icons/ic-close';
-import { serviceContext } from '@/contexts/ServiceContext';
+import { ServiceContext } from '@/contexts/ServiceContext';
 import type { WithInternalId } from '@/entities/id';
 import type { ClassTime } from '@/entities/lecture';
 import { type Day, DAY_LABEL_MAP, type HourMinute24 } from '@/entities/time';
@@ -21,7 +21,7 @@ export const MainLectureEditFormTime = ({ lectureTime, onChangeLectureTime }: Pr
     type: 'start' | 'end';
     defaultTime: HourMinute24;
   } | null>(null);
-  const { lectureService, hourMinuteService, timetableViewService } = useGuardContext(serviceContext);
+  const { lectureService, hourMinuteService, timetableViewService } = useGuardContext(ServiceContext);
   const handleAddTime = () => onChangeLectureTime([...lectureTime, lectureService.getEmptyClassTime()]);
 
   const handleDeleteLectureTime = (__id__: string) =>

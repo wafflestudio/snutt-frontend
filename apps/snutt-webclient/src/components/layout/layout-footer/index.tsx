@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { envContext } from '@/contexts/EnvContext';
+import { EnvContext } from '@/contexts/EnvContext';
 import { useGuardContext } from '@/hooks/useGuardContext';
 import { BREAKPOINT } from '@/styles/constants';
 
@@ -10,7 +10,7 @@ import { LayoutFooterFeedbackDialog } from './layout-footer-feedback-dialog';
 export const LayoutFooter = () => {
   const [feedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
 
-  const { API_BASE_URL } = useGuardContext(envContext);
+  const { API_BASE_URL } = useGuardContext(EnvContext);
 
   return (
     <Wrapper>

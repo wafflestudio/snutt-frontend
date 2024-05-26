@@ -7,15 +7,15 @@ import { IcExclamation } from '@/components/icons/ic-exclamation';
 import { IcFriend } from '@/components/icons/ic-friend';
 import { IcRecycle } from '@/components/icons/ic-recycle';
 import { IcTrash } from '@/components/icons/ic-trash';
-import { usePopoverContext } from '@/components/popover';
-import { serviceContext } from '@/contexts/ServiceContext';
-import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
+import { usePopover } from '@/components/popover';
+import { ServiceContext } from '@/contexts/ServiceContext';
+import { TokenAuthContext } from '@/contexts/TokenAuthContext';
 import { type Notification } from '@/entities/notification';
 import { useGuardContext } from '@/hooks/useGuardContext';
 import { formatDate } from '@/utils/formatDate';
 
 export const LayoutNotificationPopoverContent = () => {
-  const { show } = usePopoverContext();
+  const { show } = usePopover();
   const { data } = useNotificationList(show);
 
   return (
@@ -47,8 +47,8 @@ const notificationTypeMap: Record<Notification['type'], ReactNode> = {
 };
 
 const useNotificationList = (show: boolean) => {
-  const { notificationService } = useGuardContext(serviceContext);
-  const { token } = useTokenAuthContext();
+  const { notificationService } = useGuardContext(ServiceContext);
+  const { token } = useGuardContext(TokenAuthContext);
 
   return useQuery({
     queryKey: ['NotificationService', 'getList', { token }] as const,

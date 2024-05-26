@@ -4,8 +4,8 @@ import styled from 'styled-components';
 
 import { Button } from '@/components/button';
 import { ErrorDialog } from '@/components/error-dialog';
-import { serviceContext } from '@/contexts/ServiceContext';
-import { useTokenManageContext } from '@/contexts/TokenManageContext';
+import { ServiceContext } from '@/contexts/ServiceContext';
+import { TokenManageContext } from '@/contexts/TokenManageContext';
 import { useErrorDialog } from '@/hooks/useErrorDialog';
 import { useGuardContext } from '@/hooks/useGuardContext';
 
@@ -13,10 +13,10 @@ export const LandingSignUp = ({ className }: { className?: string }) => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
-  const { authService } = useGuardContext(serviceContext);
+  const { authService } = useGuardContext(ServiceContext);
 
   const { isOpen, message, onClose, open } = useErrorDialog();
-  const { saveToken } = useTokenManageContext();
+  const { saveToken } = useGuardContext(TokenManageContext);
   const { mutate } = useSignUp();
 
   const onSubmit = async () => {
@@ -73,7 +73,7 @@ export const LandingSignUp = ({ className }: { className?: string }) => {
 };
 
 const useSignUp = () => {
-  const { authService } = useGuardContext(serviceContext);
+  const { authService } = useGuardContext(ServiceContext);
   return useMutation({ mutationFn: (body: { id: string; password: string }) => authService.signUp(body) });
 };
 

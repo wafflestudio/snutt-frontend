@@ -6,7 +6,7 @@ import useOnClickOutside from '@/hooks/useOnClickOutside';
 type Context = { show: boolean };
 const context = createContext<Context | null>(null);
 const Provider = context.Provider;
-export const usePopoverContext = () => {
+export const usePopover = () => {
   const value = useContext(context);
 
   if (value === null) throw new Error('provider not provided');
@@ -37,7 +37,7 @@ export const Popover = ({
 };
 
 const Pop = ({ children, ...props }: PropsWithChildren<{ className?: string }>) => {
-  const { show } = usePopoverContext();
+  const { show } = usePopover();
 
   if (!show) return null;
 

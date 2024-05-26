@@ -9,5 +9,4 @@ export type EnvContext = {
   FACEBOOK_APP_ID: string;
 };
 
-export const envContext = createContext<EnvContext | null>(null);
-envContext.displayName = 'EnvContext';
+export const EnvContext = createContext<EnvContext | null>(null);

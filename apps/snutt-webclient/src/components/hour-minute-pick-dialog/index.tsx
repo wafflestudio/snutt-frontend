@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { Button } from '@/components/button';
-import { serviceContext } from '@/contexts/ServiceContext';
+import { ServiceContext } from '@/contexts/ServiceContext';
 import type { Hour12, Hour24, HourMinute12, HourMinute24, Minute } from '@/entities/time';
 import { useGuardContext } from '@/hooks/useGuardContext';
 
@@ -25,7 +25,7 @@ enum Step {
 export const HourMinutePickDialog = ({ isOpen, onClose, onSubmit, defaultHourMinute, range }: Props) => {
   const [step, setStep] = useState(Step.HOUR);
   const [state, setState] = useState<Partial<HourMinute12>>({});
-  const { hourMinutePickerService, errorService } = useGuardContext(serviceContext);
+  const { hourMinutePickerService, errorService } = useGuardContext(ServiceContext);
 
   const { amPm, hour, minute } = state;
   const ampmWithDefault = hourMinutePickerService.getAmPmWithDefault(amPm, defaultHourMinute);

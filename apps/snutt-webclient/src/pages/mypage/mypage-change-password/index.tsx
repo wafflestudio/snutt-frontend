@@ -4,9 +4,9 @@ import styled from 'styled-components';
 
 import { Button } from '@/components/button';
 import { ErrorDialog } from '@/components/error-dialog';
-import { serviceContext } from '@/contexts/ServiceContext';
-import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
-import { useTokenManageContext } from '@/contexts/TokenManageContext';
+import { ServiceContext } from '@/contexts/ServiceContext';
+import { TokenAuthContext } from '@/contexts/TokenAuthContext';
+import { TokenManageContext } from '@/contexts/TokenManageContext';
 import { useErrorDialog } from '@/hooks/useErrorDialog';
 import { useGuardContext } from '@/hooks/useGuardContext';
 
@@ -14,8 +14,8 @@ export const MypageChangePassword = () => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
-  const { saveToken } = useTokenManageContext();
-  const { authService } = useGuardContext(serviceContext);
+  const { saveToken } = useGuardContext(TokenManageContext);
+  const { authService } = useGuardContext(ServiceContext);
 
   const { isOpen, message, onClose, open } = useErrorDialog();
 
@@ -83,8 +83,8 @@ export const MypageChangePassword = () => {
 };
 
 const useChangePassword = () => {
-  const { authService } = useGuardContext(serviceContext);
-  const { token } = useTokenAuthContext();
+  const { authService } = useGuardContext(ServiceContext);
+  const { token } = useGuardContext(TokenAuthContext);
   return useMutation({
     mutationFn: (body: { oldPassword: string; newPassword: string }) => authService.changePassword({ ...body, token }),
   });

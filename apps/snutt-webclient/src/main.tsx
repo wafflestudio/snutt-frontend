@@ -2,7 +2,7 @@ import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 
 import { ErrorBoundary } from '@/components/error-boundary';
-import { envContext } from '@/contexts/EnvContext';
+import { EnvContext } from '@/contexts/EnvContext';
 import { ErrorPage } from '@/pages/error';
 
 import { App } from './App';
@@ -28,11 +28,11 @@ async function startApp() {
 
   ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <StrictMode>
-      <envContext.Provider value={ENV}>
+      <EnvContext.Provider value={ENV}>
         <ErrorBoundary fallback={<ErrorPage />}>
           <App />
         </ErrorBoundary>
-      </envContext.Provider>
+      </EnvContext.Provider>
     </StrictMode>,
   );
 }

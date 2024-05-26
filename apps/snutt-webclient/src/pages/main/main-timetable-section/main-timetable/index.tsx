@@ -2,8 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import styled, { css, keyframes } from 'styled-components';
 
 import { Button } from '@/components/button';
-import { serviceContext } from '@/contexts/ServiceContext';
-import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
+import { ServiceContext } from '@/contexts/ServiceContext';
+import { TokenAuthContext } from '@/contexts/TokenAuthContext';
 import type { BaseLecture } from '@/entities/lecture';
 import { DAY_LABEL_MAP } from '@/entities/time';
 import type { FullTimetable } from '@/entities/timetable';
@@ -30,7 +30,7 @@ export const MainTimeTable = ({
   openCreateLectureDialog,
 }: Props) => {
   const { data: colorList } = useColorList();
-  const { lectureService, timetableViewService } = useGuardContext(serviceContext);
+  const { lectureService, timetableViewService } = useGuardContext(ServiceContext);
 
   const allClassTimes = timetable.lecture_list
     .flatMap((l) => l.class_time_json)
@@ -135,8 +135,8 @@ export const MainTimeTable = ({
 };
 
 const useColorList = () => {
-  const { colorService } = useGuardContext(serviceContext);
-  const { token } = useTokenAuthContext();
+  const { colorService } = useGuardContext(ServiceContext);
+  const { token } = useGuardContext(TokenAuthContext);
   return useQuery({
     queryKey: ['ColorService', 'getColorList', { token }] as const,
     queryFn: ({ queryKey: [, , req] }) => colorService.getColorList(req),
