@@ -10,10 +10,10 @@ import { IcClock } from '@/components/icons/ic-clock';
 import { IcDots } from '@/components/icons/ic-dots';
 import { IcLabel } from '@/components/icons/ic-label';
 import { IcMap } from '@/components/icons/ic-map';
-import { mainLectureListitemPresenter } from '@/pages/main/main-lecture-section/common/main-lecture-listitem/index.presenter';
-import { classNames } from '@/utils/classNames';
+import { clsx } from '@/utils/clsx';
 
 import styles from './index.module.css';
+import { mainLectureListitemPresenter } from './index.presenter';
 
 export const MainLectureListitem = ({
   props,
@@ -24,7 +24,7 @@ export const MainLectureListitem = ({
 
   return (
     <div
-      className={classNames(styles.wrapper, vm.wrapper.isClickableStyle && styles.clickable)}
+      className={clsx(styles.wrapper, vm.wrapper.isClickableStyle && styles.clickable)}
       onMouseEnter={vm.wrapper.onMouseEnter}
       onMouseLeave={vm.wrapper.onMouseLeave}
       onClick={vm.wrapper.onClick}

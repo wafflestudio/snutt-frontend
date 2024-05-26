@@ -1,5 +1,3 @@
-/* eslint-disable no-restricted-syntax */
-
 import { devices, type PlaywrightTestConfig } from '@playwright/test';
 
 const PORT = 5173;

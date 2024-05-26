@@ -8,7 +8,6 @@ import { serviceContext } from '@/contexts/ServiceContext';
 import { useTokenAuthContext } from '@/contexts/TokenAuthContext';
 import { useGuardContext } from '@/hooks/useGuardContext';
 import { useYearSemester } from '@/hooks/useYearSemester';
-import type { ArrayElement } from '@/utils/array-element';
 
 import type { SearchForm } from '..';
 import { MainSearchbarFilterTimeSelectDialog } from './main-searchbar-filter-time-select-dialog';
@@ -21,7 +20,7 @@ type Props = {
   searchForm: SearchForm;
   onChangeCheckbox: <F extends 'academicYear' | 'category' | 'classification' | 'credit' | 'department' | 'etc'>(
     field: F,
-    e: ArrayElement<SearchForm[F]>,
+    e: SearchForm[F][number],
   ) => void;
   onChangeTimeRadio: (value: 'auto' | 'manual' | null) => void;
   onChangeDepartment: (value: string[]) => void;
@@ -249,9 +248,9 @@ const Checkbox = <F extends 'academicYear' | 'category' | 'classification' | 'cr
   field: F;
   'data-testid'?: string;
   label?: string;
-  value: ArrayElement<SearchForm[F]>;
+  value: SearchForm[F][number];
   searchForm: SearchForm;
-  onChange: (field: F, value: ArrayElement<SearchForm[F]>) => void;
+  onChange: (field: F, value: SearchForm[F][number]) => void;
 }) => (
   <label>
     {label ?? value}

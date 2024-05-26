@@ -1,7 +1,5 @@
 import { expect, test } from '@playwright/test';
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import { givenUser } from '../utils/user.js';
 
 test('로고가 잘 보여진다', async ({ page }) => {

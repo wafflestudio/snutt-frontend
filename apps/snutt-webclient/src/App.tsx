@@ -46,7 +46,6 @@ import { getTimetableService } from '@/usecases/timetableService';
 import { getTimetableViewService } from '@/usecases/timetableViewService';
 import { getTokenService } from '@/usecases/tokenService';
 import { getUserService } from '@/usecases/userService';
-import { get } from '@/utils/object/get';
 
 import { Landing } from './pages/landing';
 import { NotFoundPage } from './pages/not-found';
@@ -75,7 +74,13 @@ export const App = () => {
           const responseBody = (await response.json().catch(() => null)) as unknown;
 
           if (!response.ok) {
-            if (get(responseBody, ['errcode']) === 8194) setWrongTokenDialogOpen(true);
+            if (
+              responseBody !== null &&
+              typeof responseBody === 'object' &&
+              'errcode' in responseBody &&
+              responseBody.errcode === 8194
+            )
+              setWrongTokenDialogOpen(true);
             else services.errorService.captureError(new Error(JSON.stringify(responseBody)));
           }
 

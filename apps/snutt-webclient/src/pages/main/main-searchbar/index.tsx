@@ -12,7 +12,6 @@ import { useCourseBooks } from '@/hooks/useCourseBooks';
 import { useGuardContext } from '@/hooks/useGuardContext';
 import { useYearSemester } from '@/hooks/useYearSemester';
 import { type SearchService } from '@/usecases/searchService';
-import type { ArrayElement } from '@/utils/array-element';
 
 import { MainSearchbarFilterDialog } from './main-searchbar-filter-dialog';
 import { MainSearchbarYearSemesterSelect } from './main-searchbar-year-semester-select';
@@ -93,7 +92,7 @@ export const MainSearchbar = ({ onSearch, currentFullTimetable, resetSearchResul
 
   const onChangeCheckbox = <F extends 'academicYear' | 'category' | 'classification' | 'credit' | 'department' | 'etc'>(
     field: F,
-    e: ArrayElement<SearchForm[F]>,
+    e: SearchForm[F][number],
   ) => {
     setSearchForm((sf) => {
       const org = sf[field] as (typeof e)[];

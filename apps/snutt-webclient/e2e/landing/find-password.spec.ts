@@ -1,7 +1,5 @@
 import test, { expect } from '@playwright/test';
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import { givenUser } from '../utils/user.ts';
 
 const testIds = {

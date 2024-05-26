@@ -1,7 +1,5 @@
 import { expect, test } from '@playwright/test';
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import { givenUser } from '../utils/user.ts';
 
 test('올바른 토큰이면 관련 모달이 안 보인다', async ({ page }) => {

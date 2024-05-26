@@ -1,7 +1,5 @@
 import { expect, test } from '@playwright/test';
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import { givenUser } from '../utils/user.ts';
 
 test('회원가입이 잘 실패된다 (비밀번호 확인 일치하지 않는 케이스)', async ({ page }) => {

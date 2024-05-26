@@ -1,5 +1,3 @@
-/* eslint-disable no-restricted-syntax */
-
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 
