@@ -13,15 +13,15 @@ type Props = {
   isOpen: boolean;
   close: () => void;
   onDelete: () => void;
-  timetable?: FullTimetable;
+  timetable: FullTimetable;
 };
 
 export const MainDeleteTimetableDialog = ({ isOpen, close, onDelete, timetable }: Props) => {
   const [title, setTitle] = useState('');
 
-  const { mutate } = useDeleteTimetable(timetable?._id);
+  const { mutate } = useDeleteTimetable(timetable._id);
 
-  const isDeletable = title === timetable?.title;
+  const isDeletable = title === timetable.title;
 
   const onClose = () => {
     setTitle('');
@@ -38,7 +38,7 @@ export const MainDeleteTimetableDialog = ({ isOpen, close, onDelete, timetable }
           data-testid="mt-tt-delete-input"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder={timetable?.title}
+          placeholder={timetable.title}
         />
       </Dialog.Content>
 
@@ -64,16 +64,13 @@ export const MainDeleteTimetableDialog = ({ isOpen, close, onDelete, timetable }
   );
 };
 
-const useDeleteTimetable = (id?: string) => {
+const useDeleteTimetable = (id: string) => {
   const queryClient = useQueryClient();
   const { timetableService } = useGuardContext(ServiceContext);
   const { token } = useGuardContext(TokenAuthContext);
 
   return useMutation({
-    mutationFn: () => {
-      if (!id) throw new Error('no tt');
-      return timetableService.deleteTimetable({ id, token });
-    },
+    mutationFn: () => timetableService.deleteTimetable({ id, token }),
     onSuccess: () => queryClient.invalidateQueries(),
   });
 };

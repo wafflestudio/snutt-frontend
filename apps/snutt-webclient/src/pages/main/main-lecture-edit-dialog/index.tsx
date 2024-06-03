@@ -18,8 +18,8 @@ import { MainLectureDeleteDialog } from './main-lecture-delete-dialog';
 type Props = {
   open: boolean;
   onClose: () => void;
-  lecture?: Lecture;
-  timetableId?: string;
+  lecture: Lecture;
+  timetableId: string;
 };
 
 export const MainLectureEditDialog = ({ open, onClose, timetableId, lecture }: Props) => {
@@ -110,17 +110,14 @@ export const MainLectureEditDialog = ({ open, onClose, timetableId, lecture }: P
   );
 };
 
-const useUpdateLecture = (id?: string, lectureId?: string) => {
+const useUpdateLecture = (timetableId: string, lectureId: string) => {
   const queryClient = useQueryClient();
   const { timetableService } = useGuardContext(ServiceContext);
   const { token } = useGuardContext(TokenAuthContext);
 
   return useMutation({
-    mutationFn: (body: Parameters<typeof timetableService.updateLecture>[0]['data']) => {
-      if (!id) throw new Error('no id');
-      if (!lectureId) throw new Error('no lectureId');
-      return timetableService.updateLecture({ id, lecture_id: lectureId, data: body, token });
-    },
+    mutationFn: (body: Parameters<typeof timetableService.updateLecture>[0]['data']) =>
+      timetableService.updateLecture({ id: timetableId, lecture_id: lectureId, data: body, token }),
     onSuccess: () => queryClient.invalidateQueries(),
   });
 };

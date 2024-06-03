@@ -8,8 +8,6 @@ import { createGlobalStyle } from 'styled-components';
 
 import { Button } from '@/components/button';
 import { Dialog } from '@/components/dialog';
-import { Layout } from '@/components/layout';
-import { Loader } from '@/components/loader';
 import { EnvContext } from '@/contexts/EnvContext';
 import { ServiceContext } from '@/contexts/ServiceContext';
 import { TokenAuthContext } from '@/contexts/TokenAuthContext';
@@ -30,6 +28,7 @@ import { implSearchSnuttApiRepository } from '@/infrastructures/implSearchSnuttA
 import { implSemesterSnuttApiRepository } from '@/infrastructures/implSemesterSnuttApiRepository';
 import { implTimetableSnuttApiRepository } from '@/infrastructures/implTimetableSnuttApiRepository';
 import { implUserSnuttApiRepository } from '@/infrastructures/implUserSnuttApiRepository';
+import { LoadingPage } from '@/pages/loading';
 import { Main } from '@/pages/main';
 import { MyPage } from '@/pages/mypage';
 import { getAuthService } from '@/usecases/authService';
@@ -221,11 +220,7 @@ const AuthorizedApp = ({
   if (!currentCourseBook || !courseBooks)
     return (
       <TokenAuthContext.Provider value={{ token }}>
-        <Layout>
-          <div style={{ width: 40, height: 40, margin: '300px auto' }}>
-            <Loader />
-          </div>
-        </Layout>
+        <LoadingPage />
       </TokenAuthContext.Provider>
     );
 

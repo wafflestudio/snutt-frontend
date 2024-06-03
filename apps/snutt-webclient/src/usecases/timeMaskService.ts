@@ -7,7 +7,7 @@ export interface TimeMaskService {
   checkIsInArea(target: Position, from: Position, to: Position): boolean;
   getDragMode(cellStatus: CellStatus, dragStart: Position): DragMode;
   getBitMask(cellStatus: CellStatus): TimeMask;
-  getTimetableEmptyTimeBitMask(timetable?: FullTimetable): TimeMask;
+  getTimetableEmptyTimeBitMask(timetable: FullTimetable): TimeMask;
 }
 
 export const getTimeMaskService = (): TimeMaskService => {

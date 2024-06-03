@@ -10,7 +10,7 @@ import { MainLectureList } from '../common/main-lecture-list';
 
 type Props = {
   searchResult?: SearchResultLecture[];
-  currentFullTimetable?: FullTimetable;
+  currentTimetable: { id: FullTimetable['_id']; lectureIds: FullTimetable['lecture_list'][number]['_id'][] } | null;
   previewLectureId: string | null;
   setPreviewLectureId: (id: string | null) => void;
   hoveredLectureId: string | null;
@@ -21,7 +21,7 @@ type Props = {
 
 export const MainSearchLectureTab = ({
   searchResult,
-  currentFullTimetable,
+  currentTimetable,
   setPreviewLectureId,
   previewLectureId,
   hoveredLectureId,
@@ -50,17 +50,17 @@ export const MainSearchLectureTab = ({
           props={{
             lecture: l,
             openBookmarkTab,
-            timetable: currentFullTimetable
-              ? currentFullTimetable.lecture_list.some((ll) => ll._id === l._id)
+            timetable: currentTimetable
+              ? currentTimetable.lectureIds.includes(l._id)
                 ? {
-                    currentTimetableId: currentFullTimetable._id,
+                    currentTimetableId: currentTimetable.id,
                     isCurrentTimetableLecture: true,
                     isHovered: hoveredLectureId === l._id,
                     setHovered: (isHovered: boolean) => setHoveredLectureId(isHovered ? l._id : null),
                     openDetail: () => onClickLecture(l._id),
                   }
                 : {
-                    currentTimetableId: currentFullTimetable._id,
+                    currentTimetableId: currentTimetable.id,
                     isCurrentTimetableLecture: false,
                     isPreview: previewLectureId === l._id,
                     setPreview: (isPreview: boolean) => setPreviewLectureId(isPreview ? l._id : null),
