@@ -8,16 +8,13 @@ import { ErrorDialog } from '@/components/error-dialog';
 import { ServiceContext } from '@/contexts/ServiceContext';
 import { TokenAuthContext } from '@/contexts/TokenAuthContext';
 import type { Color } from '@/entities/color';
+import { type FullTimetable } from '@/entities/timetable';
 import { useErrorDialog } from '@/hooks/useErrorDialog';
 import { useGuardContext } from '@/hooks/useGuardContext';
 
 import { type LectureEditForm, MainLectureEditForm } from '../main-lecture-edit-form';
 
-type Props = {
-  open: boolean;
-  onClose: () => void;
-  timetableId: string | undefined;
-};
+type Props = { open: boolean; onClose: () => void; timetableId: FullTimetable['_id'] };
 
 export const MainLectureCreateDialog = ({ open, onClose, timetableId }: Props) => {
   const [draft, setDraft] = useState<Partial<LectureEditForm>>({});
@@ -76,16 +73,14 @@ export const MainLectureCreateDialog = ({ open, onClose, timetableId }: Props) =
   );
 };
 
-const useCreateLecture = (id?: string) => {
+const useCreateLecture = (timetableId: FullTimetable['_id']) => {
   const queryClient = useQueryClient();
   const { timetableService } = useGuardContext(ServiceContext);
   const { token } = useGuardContext(TokenAuthContext);
 
   return useMutation({
-    mutationFn: (body: Omit<Parameters<(typeof timetableService)['createLecture']>[0], 'token' | 'id'>) => {
-      if (!id) throw new Error('no id');
-      return timetableService.createLecture({ ...body, token, id });
-    },
+    mutationFn: (body: Omit<Parameters<(typeof timetableService)['createLecture']>[0], 'token' | 'id'>) =>
+      timetableService.createLecture({ ...body, token, id: timetableId }),
     onSuccess: () => queryClient.invalidateQueries(),
   });
 };

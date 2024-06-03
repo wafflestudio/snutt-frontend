@@ -4,13 +4,15 @@ import { Button } from '@/components/button';
 import { Dialog } from '@/components/dialog';
 import { ServiceContext } from '@/contexts/ServiceContext';
 import { TokenAuthContext } from '@/contexts/TokenAuthContext';
+import { type Lecture } from '@/entities/lecture';
+import { type Timetable } from '@/entities/timetable';
 import { useGuardContext } from '@/hooks/useGuardContext';
 
 type Props = {
   open: boolean;
   onClose: () => void;
-  timetableId?: string;
-  lectureId?: string;
+  timetableId: string;
+  lectureId: string;
   closeEditModal: () => void;
 };
 
@@ -44,18 +46,13 @@ export const MainLectureDeleteDialog = ({ open, onClose, timetableId, lectureId,
   );
 };
 
-const useDeleteLecture = (id?: string, lecture_id?: string) => {
+const useDeleteLecture = (id: Timetable['_id'], lecture_id: Lecture['_id']) => {
   const queryClient = useQueryClient();
   const { timetableService } = useGuardContext(ServiceContext);
   const { token } = useGuardContext(TokenAuthContext);
 
   return useMutation({
-    mutationFn: () => {
-      if (!id) throw new Error('no tt id');
-      if (!lecture_id) throw new Error('no lecture_id');
-
-      return timetableService.deleteLecture({ id, lecture_id, token });
-    },
+    mutationFn: () => timetableService.deleteLecture({ id, lecture_id, token }),
     onSuccess: () => queryClient.invalidateQueries(),
   });
 };

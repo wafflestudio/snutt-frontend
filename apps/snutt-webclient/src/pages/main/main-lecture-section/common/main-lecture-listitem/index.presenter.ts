@@ -64,8 +64,14 @@ export const mainLectureListitemPresenter = {
 
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [isDeleteBookmarkDialogOpen, setDeleteBookmarkDialogOpen] = useState(false);
-    const addMutation = useAddLecture(timetable.currentTimetableId ?? undefined, lecture._id);
-    const deleteMutation = useDeleteLecture(timetable.currentTimetableId ?? undefined, lecture._id);
+    const addMutation = useAddLecture({
+      timetableId: timetable.currentTimetableId ?? undefined,
+      lectureId: lecture._id,
+    });
+    const deleteMutation = useDeleteLecture({
+      timetableId: timetable.currentTimetableId ?? undefined,
+      lectureId: lecture._id,
+    });
     const addBookmarkMutation = useAddBookmark(lecture._id);
     const deleteBookmarkMutation = useDeleteBookmark(lecture._id);
     const { data: bookmarkLectures } = useBookmarkLectures();
@@ -185,32 +191,30 @@ export const mainLectureListitemPresenter = {
 
 const emptyText = '-';
 
-const useDeleteLecture = (id?: string, lecture_id?: string) => {
+const useDeleteLecture = ({ timetableId, lectureId }: { timetableId?: string; lectureId: string }) => {
   const queryClient = useQueryClient();
   const { timetableService } = useGuardContext(ServiceContext);
   const { token } = useGuardContext(TokenAuthContext);
 
   return useMutation({
     mutationFn: () => {
-      if (!id) throw new Error('no tt id');
-      if (!lecture_id) throw new Error('no lecture_id');
+      if (!timetableId) throw new Error('no tt id');
 
-      return timetableService.deleteLecture({ id, lecture_id, token });
+      return timetableService.deleteLecture({ id: timetableId, lecture_id: lectureId, token });
     },
     onSuccess: (data) => data.type === 'success' && queryClient.invalidateQueries(),
   });
 };
 
-const useAddLecture = (id?: string, lectureId?: string) => {
+const useAddLecture = ({ timetableId, lectureId }: { timetableId?: string; lectureId: string }) => {
   const queryClient = useQueryClient();
   const { timetableService } = useGuardContext(ServiceContext);
   const { token } = useGuardContext(TokenAuthContext);
   return useMutation({
     mutationFn: () => {
-      if (!id) throw new Error('no id');
-      if (!lectureId) throw new Error('no lectureId');
+      if (!timetableId) throw new Error('no id');
 
-      return timetableService.addLecture({ id, lecture_id: lectureId, token });
+      return timetableService.addLecture({ id: timetableId, lecture_id: lectureId, token });
     },
     onSuccess: (data) => data.type === 'success' && queryClient.invalidateQueries(),
   });

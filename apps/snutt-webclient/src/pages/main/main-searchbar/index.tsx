@@ -18,7 +18,7 @@ import { MainSearchbarYearSemesterSelect } from './main-searchbar-year-semester-
 
 type Props = {
   onSearch: (filter: Parameters<SearchService['search']>[0]) => void;
-  currentFullTimetable?: FullTimetable;
+  currentFullTimetable: FullTimetable | null;
   resetSearchResult: () => void;
   courseBooks: CourseBook[];
 };
@@ -84,7 +84,9 @@ export const MainSearchbar = ({ onSearch, currentFullTimetable, resetSearchResul
           searchForm.timeType === 'manual'
             ? searchForm.manualBitmask
             : searchForm.timeType === 'auto'
-              ? timeMaskService.getTimetableEmptyTimeBitMask(currentFullTimetable)
+              ? currentFullTimetable
+                ? timeMaskService.getTimetableEmptyTimeBitMask(currentFullTimetable)
+                : undefined
               : undefined,
         limit: 200,
       },
