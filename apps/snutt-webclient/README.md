@@ -9,7 +9,7 @@
 
 ### 실제 서버에 붙어서 개발하기
 
-`.env.local` 에 아래 환경변수를 세팅해 주세요.
+`apps/snutt-webclient/.env.local` 에 아래 환경변수를 세팅해 주세요.
 
 ```env
 VITE_API_KEY=
