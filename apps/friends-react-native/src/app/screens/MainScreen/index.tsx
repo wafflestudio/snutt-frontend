@@ -1,23 +1,19 @@
 import { createDrawerNavigator, DrawerContentComponentProps, DrawerHeaderProps } from '@react-navigation/drawer';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createContext, Dispatch, useContext, useEffect, useMemo, useReducer } from 'react';
-import { Alert, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 
 import { CourseBook } from '../../../entities/courseBook';
 import { ClientFeature } from '../../../entities/feature';
 import { FriendId } from '../../../entities/friend';
 import { Nickname } from '../../../entities/user';
-import { get } from '../../../utils/get';
 import { AppBar } from '../../components/Appbar';
 import { BottomSheet } from '../../components/BottomSheet';
 import { HamburgerIcon } from '../../components/Icons/HamburgerIcon';
 import { QuestionIcon } from '../../components/Icons/QuestionIcon';
 import { UserPlusIcon } from '../../components/Icons/UserPlusIcon';
-import { WarningIcon } from '../../components/Icons/WarningIcon';
-import { Input } from '../../components/Input';
 import { NotificationDot } from '../../components/NotificationDot';
-import { Typography } from '../../components/Typography';
 import { useFeatureContext } from '../../contexts/FeatureContext';
 import { useServiceContext } from '../../contexts/ServiceContext';
 import { useThemeContext } from '../../contexts/ThemeContext';
@@ -26,6 +22,7 @@ import { useFriends } from '../../queries/useFriends';
 import { COLORS } from '../../styles/colors';
 import { FriendTimetable } from './FriendTimetable';
 import { ManageFriendsDrawerContent } from './ManageFriendsDrawerContent';
+import { RequestFriendsWithNickname } from './RequestFriendsBottomSheetContent/RequestFriendsWithNickname';
 
 type MainScreenState = {
   selectedFriendId: FriendId | undefined;
@@ -136,15 +133,10 @@ export const MainScreen = ({ eventStr }: { eventStr: string }) => {
 };
 
 const Header = ({ navigation }: DrawerHeaderProps) => {
-  const { addFriendModalNickname, isAddFriendModalOpen, dispatch, eventStr } = useMainScreenContext();
-  const { friendService } = useServiceContext();
-  const { mutate: request } = useRequestFriend();
-  const guideEnabledColor = useThemeContext((data) => data.color.text.guide);
+  const { isAddFriendModalOpen, dispatch, eventStr } = useMainScreenContext();
   const { data: requestedFriends } = useFriends({ state: 'REQUESTED' });
 
   const isRequestedFriendExist = requestedFriends && requestedFriends.length !== 0;
-  const isValid = friendService.isValidNicknameTag(addFriendModalNickname);
-  const guideMessageState = addFriendModalNickname === '' ? 'disabled' : isValid ? 'hidden' : 'enabled';
 
   const openAddFriendModal = () => dispatch({ type: 'setAddFriendModalOpen', isOpen: true });
   const closeAddFriendModal = () => dispatch({ type: 'setAddFriendModalOpen', isOpen: false });
@@ -175,50 +167,7 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
         }
       />
       <BottomSheet isOpen={isAddFriendModalOpen} onClose={closeAddFriendModal}>
-        <View style={styles.modalContent}>
-          <BottomSheet.Header
-            left={{ text: '취소', onPress: closeAddFriendModal }}
-            right={{
-              text: '요청 보내기',
-              onPress: () =>
-                request(addFriendModalNickname, {
-                  onSuccess: () => {
-                    Alert.alert('친구에게 요청을 보냈습니다.');
-                    closeAddFriendModal();
-                  },
-                  onError: (err) => {
-                    const displayMessage = get(err, ['displayMessage']);
-                    Alert.alert(displayMessage ? `${displayMessage}` : '오류가 발생했습니다.');
-                  },
-                }),
-              disabled: !isValid,
-            }}
-          />
-          <Typography variant="description" style={styles.inputDescription}>
-            추가하고 싶은 친구의 닉네임
-          </Typography>
-          <Input
-            style={styles.input}
-            autoFocus
-            value={addFriendModalNickname}
-            onChange={(e) => dispatch({ type: 'setAddFriendModalNickname', nickname: e })}
-            placeholder="예) 홍길동#1234"
-          />
-          <View style={styles.guide}>
-            {guideMessageState !== 'hidden' &&
-              (() => {
-                const color = { enabled: guideEnabledColor, disabled: COLORS.gray40 }[guideMessageState];
-                return (
-                  <>
-                    <WarningIcon width={18} height={18} style={{ color }} />
-                    <Typography variant="description" style={{ ...styles.guideText, color }}>
-                      닉네임 전체를 입력하세요
-                    </Typography>
-                  </>
-                );
-              })()}
-          </View>
-        </View>
+        <RequestFriendsWithNickname />
       </BottomSheet>
     </>
   );
@@ -228,7 +177,7 @@ const DrawerContent = ({ navigation }: DrawerContentComponentProps) => {
   return <ManageFriendsDrawerContent onClose={() => navigation.closeDrawer()} />;
 };
 
-const useRequestFriend = () => {
+export const useRequestFriend = () => {
   const { friendService } = useServiceContext();
   const queryClient = useQueryClient();
 
