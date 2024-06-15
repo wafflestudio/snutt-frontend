@@ -1,0 +1,60 @@
+import { StyleSheet, View } from 'react-native';
+
+import { Typography } from '../../../../components/Typography';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { UserHashtagIcon } from '../../../../components/Icons/UserHashtagIcon';
+import { useThemeContext } from '../../../../contexts/ThemeContext';
+import { KakaotalkIcon } from '../../../../components/Icons/Kakaotalk';
+import { RequestFriendModalStep, useMainScreenContext } from '../..';
+
+export const RequestFriendsMethodList = () => {
+  const { dispatch } = useMainScreenContext();
+  const iconColor = useThemeContext((data) => data.color.text.default);
+
+  const setRequestFriendModalStep = (step: RequestFriendModalStep) =>
+    dispatch({
+      type: 'setRequestFriendModalStep',
+      requestFriendModalStep: step,
+    });
+
+  return (
+    <>
+      <View style={styles.sheetContent}>
+        <TouchableOpacity style={styles.sheetItem}>
+          <KakaotalkIcon
+            width={30}
+            height={30}
+            style={{
+              color: iconColor,
+            }}
+          />
+          <Typography>카카오톡으로 친구 초대</Typography>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.sheetContent}>
+        <TouchableOpacity style={styles.sheetItem} onPress={() => setRequestFriendModalStep('REQUEST_WITH_NICKNAME')}>
+          <UserHashtagIcon
+            width={30}
+            height={30}
+            style={{
+              color: iconColor,
+            }}
+          />
+          <Typography>닉네임으로 친구 초대</Typography>
+        </TouchableOpacity>
+      </View>
+    </>
+  );
+};
+
+const styles = StyleSheet.create({
+  sheetContent: { paddingBottom: 20 },
+  sheetItem: {
+    height: 50,
+    paddingVertical: 10,
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 25,
+    alignItems: 'center',
+  },
+});
