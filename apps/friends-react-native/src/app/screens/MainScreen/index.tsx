@@ -9,7 +9,6 @@ import { ClientFeature } from '../../../entities/feature';
 import { FriendId } from '../../../entities/friend';
 import { Nickname } from '../../../entities/user';
 import { AppBar } from '../../components/Appbar';
-import { BottomSheet } from '../../components/BottomSheet';
 import { HamburgerIcon } from '../../components/Icons/HamburgerIcon';
 import { QuestionIcon } from '../../components/Icons/QuestionIcon';
 import { UserPlusIcon } from '../../components/Icons/UserPlusIcon';
@@ -22,21 +21,25 @@ import { useFriends } from '../../queries/useFriends';
 import { COLORS } from '../../styles/colors';
 import { FriendTimetable } from './FriendTimetable';
 import { ManageFriendsDrawerContent } from './ManageFriendsDrawerContent';
-import { RequestFriendsWithNickname } from './RequestFriendsBottomSheetContent/RequestFriendsWithNickname';
+import { RequestFriendsBottomSheetContent } from './RequestFriendsBottomSheetContent';
+
+export type RequestFriendModalStep = 'METHOD_LIST' | 'REQUEST_WITH_NICKNAME';
 
 type MainScreenState = {
   selectedFriendId: FriendId | undefined;
   selectedCourseBook: CourseBook | undefined;
-  isAddFriendModalOpen: boolean;
-  addFriendModalNickname: string;
+  isRequestFriendModalOpen: boolean;
+  requestFriendModalStep: RequestFriendModalStep;
+  requestFriendModalNickname: string;
   isGuideModalOpen: boolean;
   eventStr: string;
 };
 type MainScreenAction =
   | { type: 'setFriend'; friendId: FriendId | undefined }
   | { type: 'setCourseBook'; courseBook: CourseBook }
-  | { type: 'setAddFriendModalOpen'; isOpen: boolean }
-  | { type: 'setAddFriendModalNickname'; nickname: string }
+  | { type: 'setRequestFriendModalOpen'; isOpen: boolean }
+  | { type: 'setRequestFriendModalStep'; requestFriendModalStep: RequestFriendModalStep }
+  | { type: 'setRequestFriendModalNickname'; nickname: string }
   | { type: 'setGuideModalOpen'; isOpen: boolean };
 type MainScreenContext = MainScreenState & { dispatch: Dispatch<MainScreenAction> };
 const mainScreenReducer = (state: MainScreenState, action: MainScreenAction): MainScreenState => {
@@ -45,15 +48,22 @@ const mainScreenReducer = (state: MainScreenState, action: MainScreenAction): Ma
       return { ...state, selectedFriendId: action.friendId, selectedCourseBook: undefined };
     case 'setCourseBook':
       return { ...state, selectedCourseBook: action.courseBook };
-    case 'setAddFriendModalOpen':
+    case 'setRequestFriendModalOpen':
       return action.isOpen
-        ? { ...state, isAddFriendModalOpen: true }
-        : { ...state, isAddFriendModalOpen: false, addFriendModalNickname: '' };
-    case 'setAddFriendModalNickname':
-      if (!state.isAddFriendModalOpen) throw new Error();
-      return { ...state, addFriendModalNickname: action.nickname };
+        ? { ...state, isRequestFriendModalOpen: true }
+        : {
+            ...state,
+            isRequestFriendModalOpen: false,
+            requestFriendModalNickname: '',
+            requestFriendModalStep: 'METHOD_LIST',
+          };
+    case 'setRequestFriendModalNickname':
+      if (!state.isRequestFriendModalOpen) throw new Error();
+      return { ...state, requestFriendModalNickname: action.nickname };
     case 'setGuideModalOpen':
       return { ...state, isGuideModalOpen: action.isOpen };
+    case 'setRequestFriendModalStep':
+      return { ...state, requestFriendModalStep: action.requestFriendModalStep };
   }
 };
 const mainScreenContext = createContext<MainScreenContext | null>(null);
@@ -68,8 +78,9 @@ export const MainScreen = ({ eventStr }: { eventStr: string }) => {
   const [state, dispatch] = useReducer(mainScreenReducer, {
     selectedFriendId: undefined,
     selectedCourseBook: undefined,
-    isAddFriendModalOpen: false,
-    addFriendModalNickname: '',
+    isRequestFriendModalOpen: false,
+    requestFriendModalStep: 'METHOD_LIST',
+    requestFriendModalNickname: '',
     isGuideModalOpen: false,
     eventStr: '',
   });
@@ -106,8 +117,9 @@ export const MainScreen = ({ eventStr }: { eventStr: string }) => {
         () => ({
           selectedFriendId: selectedFriendIdWithDefault,
           selectedCourseBook: selectedCourseBookWithDefault,
-          isAddFriendModalOpen: state.isAddFriendModalOpen,
-          addFriendModalNickname: state.addFriendModalNickname,
+          isRequestFriendModalOpen: state.isRequestFriendModalOpen,
+          requestFriendModalStep: state.requestFriendModalStep,
+          requestFriendModalNickname: state.requestFriendModalNickname,
           isGuideModalOpen: state.isGuideModalOpen,
           eventStr,
           dispatch,
@@ -115,8 +127,9 @@ export const MainScreen = ({ eventStr }: { eventStr: string }) => {
         [
           selectedFriendIdWithDefault,
           selectedCourseBookWithDefault,
-          state.isAddFriendModalOpen,
-          state.addFriendModalNickname,
+          state.isRequestFriendModalOpen,
+          state.requestFriendModalStep,
+          state.requestFriendModalNickname,
           state.isGuideModalOpen,
           eventStr,
         ],
@@ -133,13 +146,12 @@ export const MainScreen = ({ eventStr }: { eventStr: string }) => {
 };
 
 const Header = ({ navigation }: DrawerHeaderProps) => {
-  const { isAddFriendModalOpen, dispatch, eventStr } = useMainScreenContext();
+  const { dispatch, eventStr } = useMainScreenContext();
   const { data: requestedFriends } = useFriends({ state: 'REQUESTED' });
 
   const isRequestedFriendExist = requestedFriends && requestedFriends.length !== 0;
 
-  const openAddFriendModal = () => dispatch({ type: 'setAddFriendModalOpen', isOpen: true });
-  const closeAddFriendModal = () => dispatch({ type: 'setAddFriendModalOpen', isOpen: false });
+  const openAddFriendModal = () => dispatch({ type: 'setRequestFriendModalOpen', isOpen: true });
   const openGuideModal = () => dispatch({ type: 'setGuideModalOpen', isOpen: true });
 
   return (
@@ -166,9 +178,7 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
           </TouchableOpacity>
         }
       />
-      <BottomSheet isOpen={isAddFriendModalOpen} onClose={closeAddFriendModal}>
-        <RequestFriendsWithNickname />
-      </BottomSheet>
+      <RequestFriendsBottomSheetContent />
     </>
   );
 };

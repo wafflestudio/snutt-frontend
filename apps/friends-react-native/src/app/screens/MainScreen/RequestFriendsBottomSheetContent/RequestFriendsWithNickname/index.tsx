@@ -12,15 +12,15 @@ import { useServiceContext } from '../../../../contexts/ServiceContext';
 import { useThemeContext } from '../../../../contexts/ThemeContext';
 
 export const RequestFriendsWithNickname = () => {
-  const { addFriendModalNickname, dispatch } = useMainScreenContext();
+  const { requestFriendModalNickname, dispatch } = useMainScreenContext();
   const { friendService } = useServiceContext();
   const guideEnabledColor = useThemeContext((data) => data.color.text.guide);
   const { mutate: request } = useRequestFriend();
 
-  const isValid = friendService.isValidNicknameTag(addFriendModalNickname);
-  const guideMessageState = addFriendModalNickname === '' ? 'disabled' : isValid ? 'hidden' : 'enabled';
+  const isValid = friendService.isValidNicknameTag(requestFriendModalNickname);
+  const guideMessageState = requestFriendModalNickname === '' ? 'disabled' : isValid ? 'hidden' : 'enabled';
 
-  const closeAddFriendModal = () => dispatch({ type: 'setAddFriendModalOpen', isOpen: false });
+  const closeAddFriendModal = () => dispatch({ type: 'setRequestFriendModalOpen', isOpen: false });
 
   return (
     <View style={styles.modalContent}>
@@ -29,7 +29,7 @@ export const RequestFriendsWithNickname = () => {
         right={{
           text: '요청 보내기',
           onPress: () =>
-            request(addFriendModalNickname, {
+            request(requestFriendModalNickname, {
               onSuccess: () => {
                 Alert.alert('친구에게 요청을 보냈습니다.');
                 closeAddFriendModal();
@@ -48,8 +48,8 @@ export const RequestFriendsWithNickname = () => {
       <Input
         style={styles.input}
         autoFocus
-        value={addFriendModalNickname}
-        onChange={(e) => dispatch({ type: 'setAddFriendModalNickname', nickname: e })}
+        value={requestFriendModalNickname}
+        onChange={(e) => dispatch({ type: 'setRequestFriendModalNickname', nickname: e })}
         placeholder="예) 홍길동#1234"
       />
       <View style={styles.guide}>
