@@ -7,6 +7,7 @@ export type EnvContext = {
   APP_ENV: 'prod' | 'dev' | 'mock';
   TRUFFLE_API_KEY: string;
   FACEBOOK_APP_ID: string;
+  GOOGLE_APP_ID: string;
 };
 
 export const EnvContext = createContext<EnvContext | null>(null);
