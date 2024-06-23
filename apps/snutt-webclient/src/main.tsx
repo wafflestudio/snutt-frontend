@@ -16,6 +16,7 @@ async function startApp() {
     API_KEY: import.meta.env.VITE_API_KEY,
     FACEBOOK_APP_ID: import.meta.env.VITE_FACEBOOK_APP_ID,
     TRUFFLE_API_KEY: import.meta.env.VITE_TRUFFLE_API_KEY,
+    GOOGLE_APP_ID: import.meta.env.VITE_GOOGLE_APP_ID,
     NODE_ENV: process.env.NODE_ENV as 'development' | 'production',
   };
 

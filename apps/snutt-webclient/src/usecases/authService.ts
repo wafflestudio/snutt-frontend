@@ -7,7 +7,8 @@ export interface AuthService {
   signIn(
     params:
       | { type: 'LOCAL'; id: string; password: string }
-      | { type: 'FACEBOOK'; facebookId: string; facebookToken: string },
+      | { type: 'FACEBOOK'; facebookId: string; facebookToken: string }
+      | { type: 'GOOGLE'; token: string },
   ): UsecaseResponse<{ token: string }>;
   signUp(body: { id: string; password: string }): UsecaseResponse<{ token: string }>;
   closeAccount(_: { token: string }): UsecaseResponse<void>;
@@ -24,6 +25,7 @@ export const getAuthService = ({
   authRepository: {
     signInWithIdPassword(args: { id: string; password: string }): RepositoryResponse<{ token: string }>;
     signInWithFacebook(args: { facebookId: string; facebookToken: string }): RepositoryResponse<{ token: string }>;
+    signInWithGoogle(args: { token: string }): RepositoryResponse<{ token: string }>;
     signUpWithIdPassword(body: { id: string; password: string }): RepositoryResponse<{ token: string }>;
     findId(body: { email: string }): RepositoryResponse<void>;
     passwordResetCheckEmail(body: { userId: string }): RepositoryResponse<{ email: string }>;
@@ -50,9 +52,20 @@ export const getAuthService = ({
       else return { type: 'error', message: getErrorMessage(data) };
     },
     signIn: async (params) => {
-      const data = await (params.type === 'LOCAL'
-        ? authRepository.signInWithIdPassword({ id: params.id, password: params.password })
-        : authRepository.signInWithFacebook({ facebookId: params.facebookId, facebookToken: params.facebookToken }));
+      const data = await (async () => {
+        switch (params.type) {
+          case 'FACEBOOK':
+            return await authRepository.signInWithFacebook({
+              facebookId: params.facebookId,
+              facebookToken: params.facebookToken,
+            });
+          case 'GOOGLE':
+            return await authRepository.signInWithGoogle({ token: params.token });
+          case 'LOCAL':
+          default:
+            return await authRepository.signInWithIdPassword({ id: params.id, password: params.password });
+        }
+      })();
 
       if (data.type === 'success') return { type: 'success', data: data.data };
       else return { type: 'error', message: getErrorMessage(data) };
