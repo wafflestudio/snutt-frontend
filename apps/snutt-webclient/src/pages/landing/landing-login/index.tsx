@@ -1,3 +1,4 @@
+import { type TokenResponse, useGoogleLogin } from '@react-oauth/google';
 import { useState } from 'react';
 import { type ReactFacebookFailureResponse, type ReactFacebookLoginInfo } from 'react-facebook-login';
 import FBLogin from 'react-facebook-login/dist/facebook-login-render-props';
@@ -16,6 +17,7 @@ type Props = { className?: string; onSignUp: () => void };
 export const LandingLogin = ({ className, onSignUp }: Props) => {
   const { saveToken } = useGuardContext(TokenManageContext);
   const { FACEBOOK_APP_ID } = useGuardContext(EnvContext);
+
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [keepSignIn, setKeepSignIn] = useState(false);
@@ -45,6 +47,22 @@ export const LandingLogin = ({ className, onSignUp }: Props) => {
     if (res.type === 'success') saveToken(res.data.token, keepSignIn);
     else setErrorMessage(res.message);
   };
+
+  const handleGoogleSignin = async (tokenReponse: TokenResponse) => {
+    setErrorMessage('');
+
+    const res = await authService.signIn({
+      type: 'GOOGLE',
+      token: tokenReponse.access_token,
+    });
+
+    if (res.type === 'success') saveToken(res.data.token, keepSignIn);
+    else setErrorMessage(res.message);
+  };
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: (tokenResponse: TokenResponse) => handleGoogleSignin(tokenResponse),
+  });
 
   return (
     <Wrapper className={className}>
@@ -95,6 +113,7 @@ export const LandingLogin = ({ className, onSignUp }: Props) => {
         onFailure={({ status }: ReactFacebookFailureResponse) => setErrorMessage(status || '')}
         render={({ onClick }) => <FBSignInButton onClick={onClick}>facebook으로 로그인</FBSignInButton>}
       />
+      <FBSignInButton onClick={() => googleLogin()}>구글로 로그인</FBSignInButton>
       <EtcWrapper>
         <FindWrapper>
           <OtherButton data-testid="login-find-id" onClick={() => setFindIdDialogOpen(true)}>

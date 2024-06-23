@@ -1,3 +1,4 @@
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { implSnuttApi } from '@sf/snutt-api';
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -180,7 +181,9 @@ export const App = () => {
               />
             </BrowserRouter>
           ) : (
-            <Landing />
+            <GoogleOAuthProvider clientId="test">
+              <Landing />
+            </GoogleOAuthProvider>
           )}
         </TokenManageContext.Provider>
         <ReactQueryDevtools />
