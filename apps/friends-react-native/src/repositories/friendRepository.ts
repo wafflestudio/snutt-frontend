@@ -32,4 +32,6 @@ export type FriendRepository = {
   getFriendCourseBooks: (req: { friendId: FriendId }) => Promise<CourseBook[]>;
 
   patchFriendDisplayName: (req: { friendId: FriendId; displayName: DisplayName }) => Promise<void>;
+
+  generateToken: () => Promise<{ requestToken: string }>;
 };

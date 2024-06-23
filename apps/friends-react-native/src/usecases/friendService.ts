@@ -16,6 +16,7 @@ export type FriendService = {
   getFriendPrimaryTable: (req: { friendId: FriendId; semester: Semester; year: Year }) => Promise<FullTimetable>;
   getFriendCourseBooks: (req: { friendId: FriendId }) => Promise<CourseBook[]>;
   patchFriendDisplayName: (req: { friendId: FriendId; displayName: DisplayName }) => Promise<void>;
+  generateToken: () => Promise<{ requestToken: string }>;
 
   formatNickname: (
     req: { nickname: Nickname; tag: NicknameTag; displayName?: DisplayName },

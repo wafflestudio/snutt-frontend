@@ -16,5 +16,6 @@ export const createFriendRepository = (apiClient: ApiClient): FriendRepository =
     getFriendCourseBooks: ({ friendId }) => apiClient.get<CourseBook[]>(`/v1/friends/${friendId}/coursebooks`),
     patchFriendDisplayName: ({ friendId, displayName }) =>
       apiClient.patch(`/v1/friends/${friendId}/display-name`, { displayName }),
+    generateToken: () => apiClient.get<{ requestToken: string }>('/v1/friends/generate-link'),
   };
 };
