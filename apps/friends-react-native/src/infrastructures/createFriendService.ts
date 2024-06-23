@@ -18,6 +18,7 @@ export const createFriendService = ({
     getFriendPrimaryTable: (req) => friendRepository.getFriendPrimaryTable(req),
     getFriendCourseBooks: (req) => friendRepository.getFriendCourseBooks(req),
     patchFriendDisplayName: (req) => friendRepository.patchFriendDisplayName(req),
+    generateToken: () => friendRepository.generateToken(),
 
     formatNickname: (req, options = { type: 'default' }) => {
       const displayName = req.displayName;

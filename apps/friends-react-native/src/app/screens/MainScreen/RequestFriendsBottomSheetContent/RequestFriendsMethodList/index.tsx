@@ -6,10 +6,12 @@ import { UserHashtagIcon } from '../../../../components/Icons/UserHashtagIcon';
 import { useThemeContext } from '../../../../contexts/ThemeContext';
 import { KakaotalkIcon } from '../../../../components/Icons/Kakaotalk';
 import { RequestFriendModalStep, useMainScreenContext } from '../..';
+import { useRequestFriendToken } from '../../../../queries/useRequestFriendToken';
 
 export const RequestFriendsMethodList = () => {
   const { dispatch } = useMainScreenContext();
-  const iconColor = useThemeContext((data) => data.color.text.default);
+  const { data } = useRequestFriendToken();
+  const iconColor = useThemeContext((theme) => theme.color.text.default);
 
   const setRequestFriendModalStep = (step: RequestFriendModalStep) =>
     dispatch({
