@@ -11,7 +11,10 @@ export const createFriendService = ({
       friendRepository
         .listFriends(req)
         .then((res) => res.content.map((c) => ({ friendId: c.id, ...c.nickname, displayName: c.displayName }))),
-    acceptFriend: (req) => friendRepository.acceptFriend(req),
+    acceptFriend: (req) =>
+      req.type === 'NICKNAME'
+        ? friendRepository.acceptFriend({ friendId: req.friendId })
+        : friendRepository.acceptFriendWithKakao({ requestToken: req.requestToken }),
     declineFriend: (req) => friendRepository.declineFriend(req),
     deleteFriend: (req) => friendRepository.deleteFriend(req),
     requestFriend: (req) => friendRepository.requestFriend(req),

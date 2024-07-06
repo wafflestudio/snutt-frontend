@@ -9,6 +9,7 @@ export const createFriendRepository = (apiClient: ApiClient): FriendRepository =
       apiClient.get<Awaited<ReturnType<FriendRepository['listFriends']>>>(`/v1/friends?state=${state}`),
     requestFriend: ({ nickname }) => apiClient.post<void>('/v1/friends', { nickname }),
     acceptFriend: ({ friendId }) => apiClient.post<void>(`/v1/friends/${friendId}/accept`),
+    acceptFriendWithKakao: ({ requestToken }) => apiClient.post<void>(`/v1/friends/accept-link/${requestToken}`),
     declineFriend: ({ friendId }) => apiClient.post<void>(`/v1/friends/${friendId}/decline`),
     deleteFriend: ({ friendId }) => apiClient.delete<void>(`/v1/friends/${friendId}`),
     getFriendPrimaryTable: ({ friendId, semester, year }) =>

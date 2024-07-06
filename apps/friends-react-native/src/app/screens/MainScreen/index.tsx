@@ -17,7 +17,7 @@ import { useFeatureContext } from '../../contexts/FeatureContext';
 import { useServiceContext } from '../../contexts/ServiceContext';
 import { useThemeContext } from '../../contexts/ThemeContext';
 import { useFriendCourseBooks } from '../../queries/useFriendCourseBooks';
-import { useFriends } from '../../queries/useFriends';
+import { useAcceptFriend, useFriends } from '../../queries/useFriends';
 import { COLORS } from '../../styles/colors';
 import { FriendTimetable } from './FriendTimetable';
 import { ManageFriendsDrawerContent } from './ManageFriendsDrawerContent';
@@ -87,6 +87,7 @@ export const MainScreen = () => {
   const { clientFeatures } = useFeatureContext();
 
   const { data: friends } = useFriends({ state: 'ACTIVE' });
+  const { mutate: acceptFriend } = useAcceptFriend();
 
   const eventEmitter = nativeEventService.getEventEmitter();
 
@@ -111,7 +112,10 @@ export const MainScreen = () => {
     const parameters = { eventType: 'add-friend-kakao' };
 
     const listener = eventEmitter.addListener('add-friend-kakao', (event) => {
-      console.log(event.test);
+      acceptFriend({
+        type: 'KAKAO',
+        requestToken: event.requstToken,
+      });
     });
 
     nativeEventService.sendEventToNative({
@@ -127,7 +131,7 @@ export const MainScreen = () => {
         parameters,
       });
     };
-  }, [eventEmitter, nativeEventService]);
+  }, [eventEmitter, nativeEventService, acceptFriend]);
 
   const backgroundColor = useThemeContext((data) => data.color.bg.default);
   const selectedFriendIdWithDefault = state.selectedFriendId ?? friends?.at(0)?.friendId;
