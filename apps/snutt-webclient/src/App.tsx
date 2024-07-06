@@ -82,7 +82,9 @@ export const App = () => {
               responseBody.errcode === 8194
             )
               setWrongTokenDialogOpen(true);
-            else services.errorService.captureError(new Error(JSON.stringify(responseBody)));
+            else if (response.status >= 500) {
+              services.errorService.captureError(new Error(JSON.stringify(responseBody)));
+            }
           }
 
           return {
