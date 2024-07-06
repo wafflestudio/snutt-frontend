@@ -1,44 +1,44 @@
 import { createDrawerNavigator, DrawerContentComponentProps, DrawerHeaderProps } from '@react-navigation/drawer';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createContext, Dispatch, useContext, useEffect, useMemo, useReducer } from 'react';
-import { Alert, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 
 import { CourseBook } from '../../../entities/courseBook';
 import { ClientFeature } from '../../../entities/feature';
 import { FriendId } from '../../../entities/friend';
 import { Nickname } from '../../../entities/user';
-import { get } from '../../../utils/get';
 import { AppBar } from '../../components/Appbar';
-import { BottomSheet } from '../../components/BottomSheet';
 import { HamburgerIcon } from '../../components/Icons/HamburgerIcon';
 import { QuestionIcon } from '../../components/Icons/QuestionIcon';
 import { UserPlusIcon } from '../../components/Icons/UserPlusIcon';
-import { WarningIcon } from '../../components/Icons/WarningIcon';
-import { Input } from '../../components/Input';
 import { NotificationDot } from '../../components/NotificationDot';
-import { Typography } from '../../components/Typography';
 import { useFeatureContext } from '../../contexts/FeatureContext';
 import { useServiceContext } from '../../contexts/ServiceContext';
 import { useThemeContext } from '../../contexts/ThemeContext';
 import { useFriendCourseBooks } from '../../queries/useFriendCourseBooks';
-import { useFriends } from '../../queries/useFriends';
+import { useAcceptFriend, useFriends } from '../../queries/useFriends';
 import { COLORS } from '../../styles/colors';
 import { FriendTimetable } from './FriendTimetable';
 import { ManageFriendsDrawerContent } from './ManageFriendsDrawerContent';
+import { RequestFriendsBottomSheetContent } from './RequestFriendsBottomSheetContent';
+
+export type RequestFriendModalStep = 'METHOD_LIST' | 'REQUEST_WITH_NICKNAME';
 
 type MainScreenState = {
   selectedFriendId: FriendId | undefined;
   selectedCourseBook: CourseBook | undefined;
-  isAddFriendModalOpen: boolean;
-  addFriendModalNickname: string;
+  isRequestFriendModalOpen: boolean;
+  requestFriendModalStep: RequestFriendModalStep;
+  requestFriendModalNickname: string;
   isGuideModalOpen: boolean;
 };
 type MainScreenAction =
   | { type: 'setFriend'; friendId: FriendId | undefined }
   | { type: 'setCourseBook'; courseBook: CourseBook }
-  | { type: 'setAddFriendModalOpen'; isOpen: boolean }
-  | { type: 'setAddFriendModalNickname'; nickname: string }
+  | { type: 'setRequestFriendModalOpen'; isOpen: boolean }
+  | { type: 'setRequestFriendModalStep'; requestFriendModalStep: RequestFriendModalStep }
+  | { type: 'setRequestFriendModalNickname'; nickname: string }
   | { type: 'setGuideModalOpen'; isOpen: boolean };
 type MainScreenContext = MainScreenState & { dispatch: Dispatch<MainScreenAction> };
 const mainScreenReducer = (state: MainScreenState, action: MainScreenAction): MainScreenState => {
@@ -47,15 +47,22 @@ const mainScreenReducer = (state: MainScreenState, action: MainScreenAction): Ma
       return { ...state, selectedFriendId: action.friendId, selectedCourseBook: undefined };
     case 'setCourseBook':
       return { ...state, selectedCourseBook: action.courseBook };
-    case 'setAddFriendModalOpen':
+    case 'setRequestFriendModalOpen':
       return action.isOpen
-        ? { ...state, isAddFriendModalOpen: true }
-        : { ...state, isAddFriendModalOpen: false, addFriendModalNickname: '' };
-    case 'setAddFriendModalNickname':
-      if (!state.isAddFriendModalOpen) throw new Error();
-      return { ...state, addFriendModalNickname: action.nickname };
+        ? { ...state, isRequestFriendModalOpen: true }
+        : {
+            ...state,
+            isRequestFriendModalOpen: false,
+            requestFriendModalNickname: '',
+            requestFriendModalStep: 'METHOD_LIST',
+          };
+    case 'setRequestFriendModalNickname':
+      if (!state.isRequestFriendModalOpen) throw new Error();
+      return { ...state, requestFriendModalNickname: action.nickname };
     case 'setGuideModalOpen':
       return { ...state, isGuideModalOpen: action.isOpen };
+    case 'setRequestFriendModalStep':
+      return { ...state, requestFriendModalStep: action.requestFriendModalStep };
   }
 };
 const mainScreenContext = createContext<MainScreenContext | null>(null);
@@ -70,14 +77,19 @@ export const MainScreen = () => {
   const [state, dispatch] = useReducer(mainScreenReducer, {
     selectedFriendId: undefined,
     selectedCourseBook: undefined,
-    isAddFriendModalOpen: false,
-    addFriendModalNickname: '',
+    isRequestFriendModalOpen: false,
+    requestFriendModalStep: 'METHOD_LIST',
+    requestFriendModalNickname: '',
     isGuideModalOpen: false,
   });
 
+  const { nativeEventService } = useServiceContext();
   const { clientFeatures } = useFeatureContext();
 
   const { data: friends } = useFriends({ state: 'ACTIVE' });
+  const { mutate: acceptFriend } = useAcceptFriend();
+
+  const eventEmitter = nativeEventService.getEventEmitter();
 
   useEffect(() => {
     if (!clientFeatures.includes(ClientFeature.ASYNC_STORAGE)) return;
@@ -96,6 +108,31 @@ export const MainScreen = () => {
       .catch(() => null);
   }, [state.selectedFriendId, clientFeatures, friends]);
 
+  useEffect(() => {
+    const parameters = { eventType: 'add-friend-kakao' };
+
+    const listener = eventEmitter.addListener('add-friend-kakao', (event) => {
+      acceptFriend({
+        type: 'KAKAO',
+        requestToken: event.requstToken,
+      });
+    });
+
+    nativeEventService.sendEventToNative({
+      type: 'register',
+      parameters,
+    });
+
+    return () => {
+      listener.remove();
+
+      nativeEventService.sendEventToNative({
+        type: 'deregister',
+        parameters,
+      });
+    };
+  }, [eventEmitter, nativeEventService, acceptFriend]);
+
   const backgroundColor = useThemeContext((data) => data.color.bg.default);
   const selectedFriendIdWithDefault = state.selectedFriendId ?? friends?.at(0)?.friendId;
   const { data: courseBooks } = useFriendCourseBooks(selectedFriendIdWithDefault);
@@ -107,16 +144,18 @@ export const MainScreen = () => {
         () => ({
           selectedFriendId: selectedFriendIdWithDefault,
           selectedCourseBook: selectedCourseBookWithDefault,
-          isAddFriendModalOpen: state.isAddFriendModalOpen,
-          addFriendModalNickname: state.addFriendModalNickname,
+          isRequestFriendModalOpen: state.isRequestFriendModalOpen,
+          requestFriendModalStep: state.requestFriendModalStep,
+          requestFriendModalNickname: state.requestFriendModalNickname,
           isGuideModalOpen: state.isGuideModalOpen,
           dispatch,
         }),
         [
           selectedFriendIdWithDefault,
           selectedCourseBookWithDefault,
-          state.isAddFriendModalOpen,
-          state.addFriendModalNickname,
+          state.isRequestFriendModalOpen,
+          state.requestFriendModalStep,
+          state.requestFriendModalNickname,
           state.isGuideModalOpen,
         ],
       )}
@@ -132,18 +171,12 @@ export const MainScreen = () => {
 };
 
 const Header = ({ navigation }: DrawerHeaderProps) => {
-  const { addFriendModalNickname, isAddFriendModalOpen, dispatch } = useMainScreenContext();
-  const { friendService } = useServiceContext();
-  const { mutate: request } = useRequestFriend();
-  const guideEnabledColor = useThemeContext((data) => data.color.text.guide);
+  const { dispatch } = useMainScreenContext();
   const { data: requestedFriends } = useFriends({ state: 'REQUESTED' });
 
   const isRequestedFriendExist = requestedFriends && requestedFriends.length !== 0;
-  const isValid = friendService.isValidNicknameTag(addFriendModalNickname);
-  const guideMessageState = addFriendModalNickname === '' ? 'disabled' : isValid ? 'hidden' : 'enabled';
 
-  const openAddFriendModal = () => dispatch({ type: 'setAddFriendModalOpen', isOpen: true });
-  const closeAddFriendModal = () => dispatch({ type: 'setAddFriendModalOpen', isOpen: false });
+  const openAddFriendModal = () => dispatch({ type: 'setRequestFriendModalOpen', isOpen: true });
   const openGuideModal = () => dispatch({ type: 'setGuideModalOpen', isOpen: true });
 
   return (
@@ -170,52 +203,7 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
           </TouchableOpacity>
         }
       />
-      <BottomSheet isOpen={isAddFriendModalOpen} onClose={closeAddFriendModal}>
-        <View style={styles.modalContent}>
-          <BottomSheet.Header
-            left={{ text: '취소', onPress: closeAddFriendModal }}
-            right={{
-              text: '요청 보내기',
-              onPress: () =>
-                request(addFriendModalNickname, {
-                  onSuccess: () => {
-                    Alert.alert('친구에게 요청을 보냈습니다.');
-                    closeAddFriendModal();
-                  },
-                  onError: (err) => {
-                    const displayMessage = get(err, ['displayMessage']);
-                    Alert.alert(displayMessage ? `${displayMessage}` : '오류가 발생했습니다.');
-                  },
-                }),
-              disabled: !isValid,
-            }}
-          />
-          <Typography variant="description" style={styles.inputDescription}>
-            추가하고 싶은 친구의 닉네임
-          </Typography>
-          <Input
-            style={styles.input}
-            autoFocus
-            value={addFriendModalNickname}
-            onChange={(e) => dispatch({ type: 'setAddFriendModalNickname', nickname: e })}
-            placeholder="예) 홍길동#1234"
-          />
-          <View style={styles.guide}>
-            {guideMessageState !== 'hidden' &&
-              (() => {
-                const color = { enabled: guideEnabledColor, disabled: COLORS.gray40 }[guideMessageState];
-                return (
-                  <>
-                    <WarningIcon width={18} height={18} style={{ color }} />
-                    <Typography variant="description" style={{ ...styles.guideText, color }}>
-                      닉네임 전체를 입력하세요
-                    </Typography>
-                  </>
-                );
-              })()}
-          </View>
-        </View>
-      </BottomSheet>
+      <RequestFriendsBottomSheetContent />
     </>
   );
 };
@@ -224,7 +212,7 @@ const DrawerContent = ({ navigation }: DrawerContentComponentProps) => {
   return <ManageFriendsDrawerContent onClose={() => navigation.closeDrawer()} />;
 };
 
-const useRequestFriend = () => {
+export const useRequestFriend = () => {
   const { friendService } = useServiceContext();
   const queryClient = useQueryClient();
 

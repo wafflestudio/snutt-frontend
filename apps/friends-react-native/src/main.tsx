@@ -18,6 +18,7 @@ import { createFetchClient } from './infrastructures/createFetchClient';
 import { createFriendRepository } from './infrastructures/createFriendRepository';
 import { createFriendService } from './infrastructures/createFriendService';
 import { createTimetableViewService } from './infrastructures/createTimetableViewService';
+import { createNativeEventService } from './infrastructures/createNativeEventService';
 
 type ExternalProps = {
   'x-access-token': string;
@@ -48,10 +49,11 @@ export const Main = ({
   const colorService = createColorService({ repositories: [createColorRepository({ clients: [fetchClient] })] });
   const friendService = createFriendService({ repositories: [friendRepository] });
   const courseBookService = createCourseBookService();
+  const nativeEventService = createNativeEventService();
 
   const serviceValue = useMemo(
-    () => ({ timetableViewService, colorService, friendService, courseBookService, assetService }),
-    [timetableViewService, colorService, friendService, courseBookService, assetService],
+    () => ({ timetableViewService, colorService, friendService, courseBookService, assetService, nativeEventService }),
+    [timetableViewService, colorService, friendService, courseBookService, assetService, nativeEventService],
   );
 
   const themeValue = useMemo(() => getThemeValues(theme), [theme]);

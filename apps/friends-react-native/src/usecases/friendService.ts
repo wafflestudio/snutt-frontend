@@ -10,12 +10,15 @@ export type FriendService = {
     state: 'ACTIVE' | 'REQUESTED' | 'REQUESTING';
   }) => Promise<{ friendId: FriendId; nickname: Nickname; tag: NicknameTag; displayName?: DisplayName }[]>;
   requestFriend: (req: { nickname: Nickname }) => Promise<void>;
-  acceptFriend: (req: { friendId: FriendId }) => Promise<void>;
+  acceptFriend: (
+    req: { type: 'NICKNAME'; friendId: FriendId } | { type: 'KAKAO'; requestToken: string },
+  ) => Promise<void>;
   declineFriend: (req: { friendId: FriendId }) => Promise<void>;
   deleteFriend: (req: { friendId: FriendId }) => Promise<void>;
   getFriendPrimaryTable: (req: { friendId: FriendId; semester: Semester; year: Year }) => Promise<FullTimetable>;
   getFriendCourseBooks: (req: { friendId: FriendId }) => Promise<CourseBook[]>;
   patchFriendDisplayName: (req: { friendId: FriendId; displayName: DisplayName }) => Promise<void>;
+  generateToken: () => Promise<{ requestToken: string }>;
 
   formatNickname: (
     req: { nickname: Nickname; tag: NicknameTag; displayName?: DisplayName },

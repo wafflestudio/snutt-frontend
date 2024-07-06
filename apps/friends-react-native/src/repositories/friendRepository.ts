@@ -23,6 +23,8 @@ export type FriendRepository = {
 
   acceptFriend: (req: { friendId: FriendId }) => Promise<void>;
 
+  acceptFriendWithKakao: (req: { requestToken: string }) => Promise<void>;
+
   declineFriend: (req: { friendId: FriendId }) => Promise<void>;
 
   deleteFriend: (req: { friendId: FriendId }) => Promise<void>;
@@ -32,4 +34,6 @@ export type FriendRepository = {
   getFriendCourseBooks: (req: { friendId: FriendId }) => Promise<CourseBook[]>;
 
   patchFriendDisplayName: (req: { friendId: FriendId; displayName: DisplayName }) => Promise<void>;
+
+  generateToken: () => Promise<{ requestToken: string }>;
 };
