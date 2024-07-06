@@ -7,9 +7,11 @@ import { useThemeContext } from '../../../../contexts/ThemeContext';
 import { KakaotalkIcon } from '../../../../components/Icons/Kakaotalk';
 import { RequestFriendModalStep, useMainScreenContext } from '../..';
 import { useRequestFriendToken } from '../../../../queries/useRequestFriendToken';
+import { useServiceContext } from '../../../../contexts/ServiceContext';
 
 export const RequestFriendsMethodList = () => {
   const { dispatch } = useMainScreenContext();
+  const { nativeEventService } = useServiceContext();
   const { data } = useRequestFriendToken();
   const iconColor = useThemeContext((theme) => theme.color.text.default);
 
@@ -19,10 +21,26 @@ export const RequestFriendsMethodList = () => {
       requestFriendModalStep: step,
     });
 
+  const requestFriendWithKakao = () => {
+    const parameters = {
+      requestToken: data!.requestToken,
+    };
+
+    nativeEventService.sendEventToNative({
+      type: 'add-friend-kakao',
+      parameters,
+    });
+
+    dispatch({
+      type: 'setRequestFriendModalOpen',
+      isOpen: false,
+    });
+  };
+
   return (
     <>
       <View style={styles.sheetContent}>
-        <TouchableOpacity style={styles.sheetItem}>
+        <TouchableOpacity style={styles.sheetItem} onPress={requestFriendWithKakao}>
           <KakaotalkIcon
             width={30}
             height={30}
