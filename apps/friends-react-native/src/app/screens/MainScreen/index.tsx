@@ -32,7 +32,6 @@ type MainScreenState = {
   requestFriendModalStep: RequestFriendModalStep;
   requestFriendModalNickname: string;
   isGuideModalOpen: boolean;
-  eventStr: string;
 };
 type MainScreenAction =
   | { type: 'setFriend'; friendId: FriendId | undefined }
@@ -74,7 +73,7 @@ export const useMainScreenContext = () => {
 };
 const Drawer = createDrawerNavigator();
 
-export const MainScreen = ({ eventStr }: { eventStr: string }) => {
+export const MainScreen = () => {
   const [state, dispatch] = useReducer(mainScreenReducer, {
     selectedFriendId: undefined,
     selectedCourseBook: undefined,
@@ -82,12 +81,14 @@ export const MainScreen = ({ eventStr }: { eventStr: string }) => {
     requestFriendModalStep: 'METHOD_LIST',
     requestFriendModalNickname: '',
     isGuideModalOpen: false,
-    eventStr: '',
   });
 
+  const { nativeEventService } = useServiceContext();
   const { clientFeatures } = useFeatureContext();
 
   const { data: friends } = useFriends({ state: 'ACTIVE' });
+
+  const eventEmitter = nativeEventService.getEventEmitter();
 
   useEffect(() => {
     if (!clientFeatures.includes(ClientFeature.ASYNC_STORAGE)) return;
@@ -106,6 +107,28 @@ export const MainScreen = ({ eventStr }: { eventStr: string }) => {
       .catch(() => null);
   }, [state.selectedFriendId, clientFeatures, friends]);
 
+  useEffect(() => {
+    const parameters = { eventType: 'add-friend-kakao' };
+
+    const listener = eventEmitter.addListener('add-friend-kakao', (event) => {
+      console.log(event.test);
+    });
+
+    nativeEventService.sendEventToNative({
+      type: 'register',
+      parameters,
+    });
+
+    return () => {
+      listener.remove();
+
+      nativeEventService.sendEventToNative({
+        type: 'deregister',
+        parameters,
+      });
+    };
+  }, [eventEmitter, nativeEventService]);
+
   const backgroundColor = useThemeContext((data) => data.color.bg.default);
   const selectedFriendIdWithDefault = state.selectedFriendId ?? friends?.at(0)?.friendId;
   const { data: courseBooks } = useFriendCourseBooks(selectedFriendIdWithDefault);
@@ -121,7 +144,6 @@ export const MainScreen = ({ eventStr }: { eventStr: string }) => {
           requestFriendModalStep: state.requestFriendModalStep,
           requestFriendModalNickname: state.requestFriendModalNickname,
           isGuideModalOpen: state.isGuideModalOpen,
-          eventStr,
           dispatch,
         }),
         [
@@ -131,7 +153,6 @@ export const MainScreen = ({ eventStr }: { eventStr: string }) => {
           state.requestFriendModalStep,
           state.requestFriendModalNickname,
           state.isGuideModalOpen,
-          eventStr,
         ],
       )}
     >
@@ -146,7 +167,7 @@ export const MainScreen = ({ eventStr }: { eventStr: string }) => {
 };
 
 const Header = ({ navigation }: DrawerHeaderProps) => {
-  const { dispatch, eventStr } = useMainScreenContext();
+  const { dispatch } = useMainScreenContext();
   const { data: requestedFriends } = useFriends({ state: 'REQUESTED' });
 
   const isRequestedFriendExist = requestedFriends && requestedFriends.length !== 0;
@@ -159,7 +180,7 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
       <AppBar
         title={
           <TouchableOpacity onPress={openGuideModal} style={styles.questionIconButton}>
-            <AppBar.Title>{eventStr}</AppBar.Title>
+            <AppBar.Title>친구 시간표</AppBar.Title>
 
             <QuestionIcon style={styles.questionIcon} width={16} height={16} />
           </TouchableOpacity>

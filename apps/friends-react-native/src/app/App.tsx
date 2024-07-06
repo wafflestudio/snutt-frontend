@@ -9,7 +9,7 @@ import { MainScreen } from './screens/MainScreen';
 
 const queryClient = new QueryClient();
 
-export const App = ({ eventStr }: { eventStr: string }) => {
+export const App = () => {
   const background = useThemeContext().color.bg.default;
 
   return (
@@ -17,7 +17,7 @@ export const App = ({ eventStr }: { eventStr: string }) => {
       <NavigationContainer
         theme={useMemo(() => ({ ...DefaultTheme, colors: { ...DefaultTheme.colors, background } }), [background])}
       >
-        <MainScreen eventStr={eventStr} />
+        <MainScreen />
       </NavigationContainer>
     </QueryClientProvider>
   );

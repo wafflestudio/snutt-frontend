@@ -1,6 +1,6 @@
 import { API_URL, ASSET_URL } from '@env';
-import { useEffect, useMemo, useState } from 'react';
-import { NativeEventEmitter, NativeModules, Text, View } from 'react-native';
+import { useMemo } from 'react';
+import { Text, View } from 'react-native';
 
 import { App } from './app/App';
 import { ErrorBoundary } from './app/components/ErrorBoundary';
@@ -18,6 +18,7 @@ import { createFetchClient } from './infrastructures/createFetchClient';
 import { createFriendRepository } from './infrastructures/createFriendRepository';
 import { createFriendService } from './infrastructures/createFriendService';
 import { createTimetableViewService } from './infrastructures/createTimetableViewService';
+import { createNativeEventService } from './infrastructures/createNativeEventService';
 
 type ExternalProps = {
   'x-access-token': string;
@@ -34,8 +35,6 @@ type ExternalProps = {
   feature?: ClientFeature[];
 };
 
-const MyEventEmitter = new NativeEventEmitter(NativeModules.RNEventEmitter);
-
 export const Main = ({
   'x-access-token': xAccessToken,
   'x-access-apikey': xAccessApikey,
@@ -50,29 +49,12 @@ export const Main = ({
   const colorService = createColorService({ repositories: [createColorRepository({ clients: [fetchClient] })] });
   const friendService = createFriendService({ repositories: [friendRepository] });
   const courseBookService = createCourseBookService();
-
-  const [events, setEvents] = useState<string[]>([]);
+  const nativeEventService = createNativeEventService();
 
   const serviceValue = useMemo(
-    () => ({ timetableViewService, colorService, friendService, courseBookService, assetService }),
-    [timetableViewService, colorService, friendService, courseBookService, assetService],
+    () => ({ timetableViewService, colorService, friendService, courseBookService, assetService, nativeEventService }),
+    [timetableViewService, colorService, friendService, courseBookService, assetService, nativeEventService],
   );
-
-  useEffect(() => {
-    const parameters = { eventType: 'add-friend-kakao' };
-
-    // 이벤트 리스너 등록
-    const listener = MyEventEmitter.addListener('add-friend-kakao', (event) => {
-      setEvents((prev) => [...prev, JSON.stringify(event)]);
-    });
-
-    NativeModules.RNEventEmitter.sendEventToNative('register', parameters);
-
-    return () => {
-      listener.remove();
-      NativeModules.RNEventEmitter.sendEventToNative('deregister', parameters);
-    };
-  }, []);
 
   const themeValue = useMemo(() => getThemeValues(theme), [theme]);
 
@@ -90,7 +72,7 @@ export const Main = ({
         <textContext.Provider value={textValue}>
           <themeContext.Provider value={themeValue}>
             <featureContext.Provider value={{ clientFeatures: feature }}>
-              <App eventStr={JSON.stringify(events)} />
+              <App />
             </featureContext.Provider>
           </themeContext.Provider>
         </textContext.Provider>
