@@ -181,7 +181,7 @@ export const App = () => {
               />
             </BrowserRouter>
           ) : (
-            <GoogleOAuthProvider clientId="test">
+            <GoogleOAuthProvider clientId={ENV.GOOGLE_APP_ID}>
               <Landing />
             </GoogleOAuthProvider>
           )}
