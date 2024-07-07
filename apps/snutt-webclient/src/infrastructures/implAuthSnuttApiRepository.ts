@@ -23,6 +23,15 @@ export const implAuthSnuttApiRepository = ({
       if (status === 200) return { type: 'success', data };
       else return { type: 'error', errcode: data.errcode };
     },
+    signInWithGoogle: async (body) => {
+      const { status, data } = await snuttApi['POST /auth/login_google']({
+        body: {
+          token: body.token,
+        },
+      });
+      if (status === 200) return { type: 'success', data };
+      else return { type: 'error', errcode: data.errcode };
+    },
     signUpWithIdPassword: async (body) => {
       const { status, data } = await snuttApi['POST /v1/auth/register_local']({ body });
       if (status === 200) return { type: 'success', data };

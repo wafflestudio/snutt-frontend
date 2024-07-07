@@ -1,16 +1,18 @@
 import { Int32, Double, Int64, DateTime } from './types';
 
-export type LocalLoginRequest = { id: string; password: string };
+export type FacebookLoginRequest = { fb_id?: string; fb_token: string };
 
 export type LoginResponse = { user_id: string; token: string; message: string };
+
+export type GoogleLoginRequest = { token: string };
+
+export type LocalLoginRequest = { id: string; password: string };
 
 export type LogoutRequest = { registration_id: string };
 
 export type OkResponse = { message: string };
 
 export type LocalRegisterRequest = { id: string; password: string; email?: string };
-
-export type FriendRequestLinkResponse = { requestToken: string };
 
 export type UserLegacyDto = {
   isAdmin: boolean;
@@ -60,7 +62,7 @@ export type ClassPlaceAndTimeLegacyDto = {
   lectureBuildings?: LectureBuilding[];
 };
 
-export type ColorSet = { bg: string; fg: string } | Record<string, never>;
+export type ColorSet = { bg?: string; fg?: string };
 
 export type GeoCoordinate = { latitude: Double; longitude: Double };
 
@@ -74,10 +76,10 @@ export type LectureBuilding = {
   campus: 'GWANAK' | 'YEONGEON' | 'PYEONGCHANG';
 };
 
-export type SnuttEvLectureSummaryDto = { snuttId?: string; evLectureId: Int64; avgRating?: Double };
+export type SnuttEvLectureIdDto = { snuttId?: string; evLectureId: Int64 };
 
 export type TimetableLectureLegacyDto = {
-  _id: string;
+  _id?: string;
   academic_year?: string;
   category?: string;
   class_time_json: ClassPlaceAndTimeLegacyDto[];
@@ -91,15 +93,15 @@ export type TimetableLectureLegacyDto = {
   remark?: string;
   course_number?: string;
   course_title: string;
-  color: ColorSet;
+  color?: ColorSet;
   colorIndex: Int32;
   lecture_id?: string;
-  snuttEvLecture?: SnuttEvLectureSummaryDto;
+  snuttEvLecture?: SnuttEvLectureIdDto;
   class_time_mask: Int32[];
 };
 
 export type TimetableLegacyDto = {
-  _id: string;
+  _id?: string;
   user_id: string;
   year: Int32;
   semester: 1 | 2 | 3 | 4;
@@ -175,7 +177,7 @@ export type SearchQueryLegacy = {
 export type SearchTimeDto = { day: 0 | 1 | 2 | 3 | 4 | 5 | 6; startMinute: Int32; endMinute: Int32 };
 
 export type LectureDto = {
-  _id: string;
+  _id?: string;
   academic_year?: string;
   category?: string;
   class_time_json: ClassPlaceAndTimeLegacyDto[];
@@ -197,10 +199,17 @@ export type LectureDto = {
   class_time_mask: Int32[];
 };
 
-export type BuildingsResponse = { content: LectureBuilding[]; totalCount: Int32; nextPageToken?: string };
+export type SnuttEvLectureSummaryDto = {
+  snuttId?: string;
+  evLectureId: Int64;
+  avgRating?: Double;
+  evaluationCount: Int64;
+};
+
+export type BuildingsResponse = { content: LectureBuilding[]; totalCount: Int32 };
 
 export type BookmarkLectureDto = {
-  _id: string;
+  _id?: string;
   academic_year?: string;
   category?: string;
   class_time_json: ClassPlaceAndTimeLegacyDto[];
@@ -224,7 +233,7 @@ export type BookmarkLectureModifyRequest = { lecture_id: string };
 export type ExistenceResponse = { exists: boolean };
 
 export type NotificationResponse = {
-  _id: string;
+  _id?: string;
   user_id?: string;
   title: string;
   message: string;
@@ -274,7 +283,7 @@ export type PopupResponse = {
 
 export type VacancyNotificationLecturesResponse = { lectures: LectureDto[] };
 
-export type PopupsResponse = { content: PopupResponse[]; totalCount: Int32; nextPageToken?: string };
+export type PopupsResponse = { content: PopupResponse[]; totalCount: Int32 };
 
 export type FriendResponse = {
   id: string;
@@ -284,9 +293,11 @@ export type FriendResponse = {
   createdAt: DateTime;
 };
 
-export type FriendsResponse = { content: FriendResponse[]; totalCount: Int32; nextPageToken?: string };
+export type FriendsResponse = { content: FriendResponse[]; totalCount: Int32 };
 
 export type FriendRequest = { nickname: string };
+
+export type FriendRequestLinkResponse = { requestToken: string };
 
 export type CoursebookDto = { year: Int32; semester: 1 | 2 | 3 | 4 };
 
@@ -328,7 +339,7 @@ export type TimetableLectureDto = {
   color?: ColorSet;
   colorIndex: Int32;
   lectureId?: string;
-  snuttEvLecture?: SnuttEvLectureSummaryDto;
+  snuttEvLecture?: SnuttEvLectureIdDto;
 };
 
 export type UpdateFriendDisplayNameRequest = { displayName: string };
