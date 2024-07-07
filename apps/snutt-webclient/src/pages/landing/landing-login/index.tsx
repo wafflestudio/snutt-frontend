@@ -113,7 +113,7 @@ export const LandingLogin = ({ className, onSignUp }: Props) => {
         onFailure={({ status }: ReactFacebookFailureResponse) => setErrorMessage(status || '')}
         render={({ onClick }) => <FBSignInButton onClick={onClick}>facebook으로 로그인</FBSignInButton>}
       />
-      <FBSignInButton onClick={() => googleLogin()}>구글로 로그인</FBSignInButton>
+      <GoogleSignInButton onClick={() => googleLogin()}>google로 로그인</GoogleSignInButton>
       <EtcWrapper>
         <FindWrapper>
           <OtherButton data-testid="login-find-id" onClick={() => setFindIdDialogOpen(true)}>
@@ -258,6 +258,22 @@ const FBSignInButton = styled(Button)`
   background-color: transparent;
   color: #3c5dd4;
   border: 1px solid #3c5dd4;
+
+  &:hover {
+    background-color: rgba(60, 93, 212, 0.1);
+  }
+`;
+
+const GoogleSignInButton = styled(Button)`
+  border-radius: 21px;
+  border: none;
+  width: 100%;
+  margin-top: 10px;
+  height: 34px;
+  font-size: 13px;
+  background-color: transparent;
+  color: #6e6e6e;
+  border: 1px solid #6e6e6e;
 
   &:hover {
     background-color: rgba(60, 93, 212, 0.1);
