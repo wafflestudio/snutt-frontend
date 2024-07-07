@@ -6,13 +6,13 @@ export const getSnuttApis = ({ callWithToken, callWithoutToken }: GetApiSpecsPar
     'POST /auth/login_fb': ({ body }: { body: { fb_id: string; fb_token: string } }) =>
       callWithoutToken<SuccessResponse<{ token: string; user_id: string }> | ErrorResponse<403, 4097>>({
         method: 'post',
-        path: `/auth/login_fb`,
+        path: `/v1/auth/login_fb`,
         body,
       }),
     'POST /auth/login_google': ({ body }: { body: { token: string } }) =>
       callWithoutToken<SuccessResponse<{ token: string; user_id: string }> | ErrorResponse<403, 4097>>({
         method: 'post',
-        path: `/auth/login_google`,
+        path: `/v1/auth/login_google`,
         body,
       }),
     'POST /v1/auth/id/find': ({ body }: { body: { email: string } }) =>
