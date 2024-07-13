@@ -21,6 +21,7 @@ import { useAcceptFriend, useFriends } from '../../queries/useFriends';
 import { COLORS } from '../../styles/colors';
 import { FriendTimetable } from './FriendTimetable';
 import { ManageFriendsDrawerContent } from './ManageFriendsDrawerContent';
+import { RequestFriendsBottomSheetContent } from './RequestFriendsBottomSheetContent';
 
 export type RequestFriendModalStep = 'METHOD_LIST' | 'REQUEST_WITH_NICKNAME';
 
@@ -202,6 +203,7 @@ const Header = ({ navigation }: DrawerHeaderProps) => {
           </TouchableOpacity>
         }
       />
+      <RequestFriendsBottomSheetContent />
     </>
   );
 };

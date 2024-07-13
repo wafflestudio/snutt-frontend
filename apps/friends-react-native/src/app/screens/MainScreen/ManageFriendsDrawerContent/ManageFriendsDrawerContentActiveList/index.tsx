@@ -16,7 +16,6 @@ import { useServiceContext } from '../../../../contexts/ServiceContext';
 import { useThemeContext } from '../../../../contexts/ThemeContext';
 import { useFriends } from '../../../../queries/useFriends';
 import { useMainScreenContext } from '../..';
-import { RequestFriendsBottomSheetContent } from '../../RequestFriendsBottomSheetContent';
 
 type Props = { onClickFriend: (friendId: FriendId) => void };
 
@@ -67,7 +66,6 @@ export const ManageFriendsDrawerContentActiveList = ({ onClickFriend }: Props) =
           </TouchableOpacity>
         )}
       />
-      <RequestFriendsBottomSheetContent />
       <BottomSheet isOpen={bottomSheetState.isOpen} onClose={() => setBottomSheetState({ isOpen: false })}>
         {!bottomSheetState.isOpen ? null : bottomSheetState.type === 'detail' ? (
           <View style={styles.sheetContent}>
