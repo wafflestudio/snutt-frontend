@@ -1,6 +1,6 @@
 import { createDrawerNavigator, DrawerContentComponentProps, DrawerHeaderProps } from '@react-navigation/drawer';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createContext, Dispatch, useContext, useEffect, useMemo, useReducer } from 'react';
+import { createContext, Dispatch, useContext, useEffect, useMemo, useReducer, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 
@@ -83,6 +83,7 @@ export const MainScreen = () => {
     isGuideModalOpen: false,
   });
 
+  const [a, setA] = useState('hihi');
   const { nativeEventService } = useServiceContext();
   const { clientFeatures } = useFeatureContext();
 
@@ -112,6 +113,7 @@ export const MainScreen = () => {
     const parameters = { eventType: 'add-friend-kakao' };
 
     const listener = eventEmitter.addListener('add-friend-kakao', (event) => {
+      setA('hihi');
       acceptFriend({
         type: 'KAKAO',
         requestToken: event.requstToken,
@@ -166,6 +168,7 @@ export const MainScreen = () => {
       >
         <Drawer.Screen name="Main" component={FriendTimetable} />
       </Drawer.Navigator>
+      {a}
     </mainScreenContext.Provider>
   );
 };
