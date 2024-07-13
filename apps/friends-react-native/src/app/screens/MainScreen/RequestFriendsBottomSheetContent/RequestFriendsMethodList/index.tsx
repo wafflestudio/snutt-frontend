@@ -1,7 +1,6 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 
 import { Typography } from '../../../../components/Typography';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { UserHashtagIcon } from '../../../../components/Icons/UserHashtagIcon';
 import { useThemeContext } from '../../../../contexts/ThemeContext';
 import { KakaotalkIcon } from '../../../../components/Icons/Kakaotalk';
