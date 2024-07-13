@@ -1,4 +1,3 @@
-import { View } from 'react-native';
 import { useMainScreenContext } from '..';
 import { BottomSheet } from '../../../components/BottomSheet';
 import { RequestFriendsMethodList } from './RequestFriendsMethodList';
@@ -10,10 +9,8 @@ export const RequestFriendsBottomSheetContent = () => {
   const closeAddFriendModal = () => dispatch({ type: 'setRequestFriendModalOpen', isOpen: false });
 
   return (
-    <View>
-      <BottomSheet isOpen={isRequestFriendModalOpen} onClose={closeAddFriendModal}>
-        {requestFriendModalStep === 'METHOD_LIST' ? <RequestFriendsMethodList /> : <RequestFriendsWithNickname />}
-      </BottomSheet>
-    </View>
+    <BottomSheet isOpen={isRequestFriendModalOpen} onClose={closeAddFriendModal}>
+      {requestFriendModalStep === 'METHOD_LIST' ? <RequestFriendsMethodList /> : <RequestFriendsWithNickname />}
+    </BottomSheet>
   );
 };

@@ -12,7 +12,6 @@ import { useFriends } from '../../../queries/useFriends';
 import { useMainScreenContext } from '..';
 import { ManageFriendsDrawerContentActiveList } from './ManageFriendsDrawerContentActiveList';
 import { ManageFriendsDrawerContentRequestedList } from './ManageFriendsDrawerContentRequestedList';
-import { RequestFriendsBottomSheetContent } from '../RequestFriendsBottomSheetContent';
 
 type Tab = 'ACTIVE' | 'REQUESTED';
 
@@ -88,7 +87,6 @@ export const ManageFriendsDrawerContent = ({ onClose }: Props) => {
           }[tab]
         }
       </View>
-      <RequestFriendsBottomSheetContent />
     </View>
   );
 };
