@@ -1,7 +1,7 @@
 import { createDrawerNavigator, DrawerContentComponentProps, DrawerHeaderProps } from '@react-navigation/drawer';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createContext, Dispatch, useContext, useEffect, useMemo, useReducer } from 'react';
-import { TouchableOpacity } from 'react-native';
+import { Alert, TouchableOpacity } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 
 import { CourseBook } from '../../../entities/courseBook';
@@ -112,10 +112,13 @@ export const MainScreen = () => {
     const parameters = { eventType: 'add-friend-kakao' };
 
     const listener = eventEmitter.addListener('add-friend-kakao', (event) => {
-      acceptFriend({
-        type: 'KAKAO',
-        requestToken: event.requstToken,
-      });
+      acceptFriend(
+        {
+          type: 'KAKAO',
+          requestToken: event.requstToken,
+        },
+        { onSuccess: () => Alert.alert('친구 요청을 수락했습니다.') },
+      );
     });
 
     nativeEventService.sendEventToNative({
