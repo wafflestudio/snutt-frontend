@@ -22,6 +22,7 @@ import { COLORS } from '../../styles/colors';
 import { FriendTimetable } from './FriendTimetable';
 import { ManageFriendsDrawerContent } from './ManageFriendsDrawerContent';
 import { RequestFriendsBottomSheetContent } from './RequestFriendsBottomSheetContent';
+import { get } from '../../../utils/get';
 
 export type RequestFriendModalStep = 'METHOD_LIST' | 'REQUEST_WITH_NICKNAME';
 
@@ -117,7 +118,13 @@ export const MainScreen = () => {
           type: 'KAKAO',
           requestToken: event.requstToken,
         },
-        { onSuccess: () => Alert.alert('친구 요청을 수락했습니다.') },
+        {
+          onSuccess: () => Alert.alert('친구 요청을 수락했습니다.'),
+          onError: (err) => {
+            const message = get(err, ['displayMessage']);
+            Alert.alert(message ? `${message}` : '오류가 발생했습니다.');
+          },
+        },
       );
     });
 
