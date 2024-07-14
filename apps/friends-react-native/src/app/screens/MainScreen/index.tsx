@@ -116,7 +116,7 @@ export const MainScreen = () => {
       acceptFriend(
         {
           type: 'KAKAO',
-          requestToken: event.requstToken,
+          requestToken: event.requestToken,
         },
         {
           onSuccess: () => Alert.alert('친구 요청을 수락했습니다.'),
