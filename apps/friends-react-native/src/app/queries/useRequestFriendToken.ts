@@ -8,5 +8,6 @@ export const useRequestFriendToken = () => {
   return useQuery({
     queryKey: ['requestFriendToken'] as const,
     queryFn: () => friendService.generateToken(),
+    staleTime: Infinity,
   });
 };
