@@ -124,7 +124,7 @@ export const MainScreen = () => {
             const displayName = response.displayName;
             Alert.alert(`${displayName}님과 친구가 되었습니다.`);
 
-            dispatch({ type: 'setFriend', friendId: response.userId });
+            dispatch({ type: 'setFriend', friendId: response.id });
           },
         },
       );
