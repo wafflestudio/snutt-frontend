@@ -9040,6 +9040,11 @@ react-is@^18.2.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.3.1.tgz#e83557dc12eae63a99e003a46388b1dcbb44db7e"
   integrity sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==
 
+react-kakao-login@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/react-kakao-login/-/react-kakao-login-2.1.1.tgz#00e9f534d18ce500e31c02ef1d751a1c93dfefbd"
+  integrity sha512-t9htk41/i0zUY7q92mtqdqVZZ018BPi1DgbSVVrPCmuMKhZGJOnZ9OfaKLVPu3sn8QXbJc3dPwqKOiElpb44hQ==
+
 react-native-animatable@1.3.3:
   version "1.3.3"
   resolved "https://registry.yarnpkg.com/react-native-animatable/-/react-native-animatable-1.3.3.tgz#a13a4af8258e3bb14d0a9d839917e9bb9274ec8a"
