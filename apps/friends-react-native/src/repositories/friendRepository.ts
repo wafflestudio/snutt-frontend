@@ -5,6 +5,7 @@ import { Timestamp } from '../entities/time';
 import { FullTimetable } from '../entities/timetable';
 import { DisplayName, Nickname, NicknameTag, UserId } from '../entities/user';
 import { Year } from '../entities/year';
+import { AcceptFriendWithKakaoResponse } from './responses/Friend';
 
 export type FriendRepository = {
   listFriends: (req: { state: 'ACTIVE' | 'REQUESTED' | 'REQUESTING' }) => Promise<{
@@ -23,7 +24,7 @@ export type FriendRepository = {
 
   acceptFriend: (req: { friendId: FriendId }) => Promise<void>;
 
-  acceptFriendWithKakao: (req: { requestToken: string }) => Promise<void>;
+  acceptFriendWithKakao: (req: { requestToken: string }) => Promise<AcceptFriendWithKakaoResponse>;
 
   declineFriend: (req: { friendId: FriendId }) => Promise<void>;
 

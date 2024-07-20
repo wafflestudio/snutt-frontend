@@ -2,6 +2,7 @@ import { ApiClient } from '../clients/apiClient';
 import { CourseBook } from '../entities/courseBook';
 import { FullTimetable } from '../entities/timetable';
 import { FriendRepository } from '../repositories/friendRepository';
+import { AcceptFriendWithKakaoResponse } from '../repositories/responses/Friend';
 
 export const createFriendRepository = (apiClient: ApiClient): FriendRepository => {
   return {
@@ -9,7 +10,8 @@ export const createFriendRepository = (apiClient: ApiClient): FriendRepository =
       apiClient.get<Awaited<ReturnType<FriendRepository['listFriends']>>>(`/v1/friends?state=${state}`),
     requestFriend: ({ nickname }) => apiClient.post<void>('/v1/friends', { nickname }),
     acceptFriend: ({ friendId }) => apiClient.post<void>(`/v1/friends/${friendId}/accept`),
-    acceptFriendWithKakao: ({ requestToken }) => apiClient.post<void>(`/v1/friends/accept-link/${requestToken}`),
+    acceptFriendWithKakao: ({ requestToken }) =>
+      apiClient.post<AcceptFriendWithKakaoResponse>(`/v1/friends/accept-link/${requestToken}`),
     declineFriend: ({ friendId }) => apiClient.post<void>(`/v1/friends/${friendId}/decline`),
     deleteFriend: ({ friendId }) => apiClient.delete<void>(`/v1/friends/${friendId}`),
     getFriendPrimaryTable: ({ friendId, semester, year }) =>
