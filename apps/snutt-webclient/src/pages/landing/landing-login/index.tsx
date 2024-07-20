@@ -2,6 +2,7 @@ import { type TokenResponse, useGoogleLogin } from '@react-oauth/google';
 import { useState } from 'react';
 import { type ReactFacebookFailureResponse, type ReactFacebookLoginInfo } from 'react-facebook-login';
 import FBLogin from 'react-facebook-login/dist/facebook-login-render-props';
+import KakaoLogin from 'react-kakao-login';
 import styled from 'styled-components';
 
 import { Button } from '@/components/button';
@@ -16,7 +17,7 @@ type Props = { className?: string; onSignUp: () => void };
 
 export const LandingLogin = ({ className, onSignUp }: Props) => {
   const { saveToken } = useGuardContext(TokenManageContext);
-  const { FACEBOOK_APP_ID } = useGuardContext(EnvContext);
+  const { FACEBOOK_APP_ID, KAKAO_APP_ID } = useGuardContext(EnvContext);
 
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
@@ -35,24 +36,12 @@ export const LandingLogin = ({ className, onSignUp }: Props) => {
     else setErrorMessage(res.message);
   };
 
-  const handleFacebookSignIn = async (userInfo: ReactFacebookLoginInfo) => {
+  const handleSocialLogin = async (provider: 'FACEBOOK' | 'KAKAO' | 'GOOGLE', token: string) => {
     setErrorMessage('');
 
     const res = await authService.signIn({
-      type: 'FACEBOOK',
-      token: userInfo.accessToken,
-    });
-
-    if (res.type === 'success') saveToken(res.data.token, keepSignIn);
-    else setErrorMessage(res.message);
-  };
-
-  const handleGoogleSignin = async (tokenReponse: TokenResponse) => {
-    setErrorMessage('');
-
-    const res = await authService.signIn({
-      type: 'GOOGLE',
-      token: tokenReponse.access_token,
+      type: provider,
+      token: token,
     });
 
     if (res.type === 'success') saveToken(res.data.token, keepSignIn);
@@ -60,7 +49,7 @@ export const LandingLogin = ({ className, onSignUp }: Props) => {
   };
 
   const googleLogin = useGoogleLogin({
-    onSuccess: (tokenResponse: TokenResponse) => handleGoogleSignin(tokenResponse),
+    onSuccess: (tokenResponse: TokenResponse) => handleSocialLogin('GOOGLE', tokenResponse.access_token),
   });
 
   return (
@@ -108,9 +97,15 @@ export const LandingLogin = ({ className, onSignUp }: Props) => {
       </form>
       <FBLogin
         appId={FACEBOOK_APP_ID}
-        callback={handleFacebookSignIn}
+        callback={(userInfo: ReactFacebookLoginInfo) => handleSocialLogin('FACEBOOK', userInfo.accessToken)}
         onFailure={({ status }: ReactFacebookFailureResponse) => setErrorMessage(status || '')}
         render={({ onClick }) => <FBSignInButton onClick={onClick}>facebook으로 로그인</FBSignInButton>}
+      />
+      <KakaoLogin
+        token={KAKAO_APP_ID}
+        onSuccess={({ response }) => handleSocialLogin('KAKAO', response.access_token)}
+        onFail={(e) => console.log(e)}
+        render={({ onClick }) => <KakaoSignInButton onClick={onClick}>카카오로 로그인</KakaoSignInButton>}
       />
       <GoogleSignInButton onClick={() => googleLogin()}>google로 로그인</GoogleSignInButton>
       <EtcWrapper>
@@ -257,6 +252,22 @@ const FBSignInButton = styled(Button)`
   background-color: transparent;
   color: #3c5dd4;
   border: 1px solid #3c5dd4;
+
+  &:hover {
+    background-color: rgba(60, 93, 212, 0.1);
+  }
+`;
+
+const KakaoSignInButton = styled(Button)`
+  border-radius: 21px;
+  border: none;
+  width: 100%;
+  margin-top: 10px;
+  height: 34px;
+  font-size: 13px;
+  background-color: transparent;
+  color: #d5b045;
+  border: 1px solid #d5b045;
 
   &:hover {
     background-color: rgba(60, 93, 212, 0.1);
