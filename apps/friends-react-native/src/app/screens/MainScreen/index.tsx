@@ -1,7 +1,7 @@
 import { createDrawerNavigator, DrawerContentComponentProps, DrawerHeaderProps } from '@react-navigation/drawer';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createContext, Dispatch, useContext, useEffect, useMemo, useReducer } from 'react';
-import { TouchableOpacity } from 'react-native';
+import { Alert, TouchableOpacity } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 
 import { CourseBook } from '../../../entities/courseBook';
@@ -22,6 +22,7 @@ import { COLORS } from '../../styles/colors';
 import { FriendTimetable } from './FriendTimetable';
 import { ManageFriendsDrawerContent } from './ManageFriendsDrawerContent';
 import { RequestFriendsBottomSheetContent } from './RequestFriendsBottomSheetContent';
+import { AcceptFriendWithKakaoResponse } from '../../../repositories/responses/Friend';
 
 export type RequestFriendModalStep = 'METHOD_LIST' | 'REQUEST_WITH_NICKNAME';
 
@@ -112,10 +113,21 @@ export const MainScreen = () => {
     const parameters = { eventType: 'add-friend-kakao' };
 
     const listener = eventEmitter.addListener('add-friend-kakao', (event) => {
-      acceptFriend({
-        type: 'KAKAO',
-        requestToken: event.requstToken,
-      });
+      acceptFriend(
+        {
+          type: 'KAKAO',
+          requestToken: event.requstToken,
+        },
+        {
+          onSuccess: (data) => {
+            const response = data as AcceptFriendWithKakaoResponse;
+            const displayName = response.displayName;
+            Alert.alert(`${displayName}님과 친구가 되었습니다.`);
+
+            dispatch({ type: 'setFriend', friendId: response.userId });
+          },
+        },
+      );
     });
 
     nativeEventService.sendEventToNative({
