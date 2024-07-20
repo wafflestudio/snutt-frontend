@@ -14,17 +14,25 @@ export const implAuthSnuttApiRepository = ({
       else return { type: 'error', errcode: data.errcode };
     },
     signInWithFacebook: async (body) => {
-      const { status, data } = await snuttApi['POST /auth/login_fb']({
+      const { status, data } = await snuttApi['POST /auth/login/facebook']({
         body: {
-          fb_id: body.facebookId,
-          fb_token: body.facebookToken,
+          token: body.token,
         },
       });
       if (status === 200) return { type: 'success', data };
       else return { type: 'error', errcode: data.errcode };
     },
     signInWithGoogle: async (body) => {
-      const { status, data } = await snuttApi['POST /auth/login_google']({
+      const { status, data } = await snuttApi['POST /auth/login/google']({
+        body: {
+          token: body.token,
+        },
+      });
+      if (status === 200) return { type: 'success', data };
+      else return { type: 'error', errcode: data.errcode };
+    },
+    signInWithKakao: async (body) => {
+      const { status, data } = await snuttApi['POST /auth/login/kakao']({
         body: {
           token: body.token,
         },
