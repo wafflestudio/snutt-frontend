@@ -3,18 +3,31 @@ import { SuccessResponse, ErrorResponse } from '../../response';
 
 export const getSnuttApis = ({ callWithToken, callWithoutToken }: GetApiSpecsParameter) =>
   ({
+    'POST /auth/login/facebook': ({ body }: { body: { token: string } }) =>
+      callWithoutToken<SuccessResponse<{ token: string; user_id: string }> | ErrorResponse<403, 4097>>({
+        method: 'post',
+        path: `/v1/auth/facebook`,
+        body,
+      }),
+    'POST /auth/login/google': ({ body }: { body: { token: string } }) =>
+      callWithoutToken<SuccessResponse<{ token: string; user_id: string }> | ErrorResponse<403, 4097>>({
+        method: 'post',
+        path: `/v1/auth/login/google`,
+        body,
+      }),
+    'POST /auth/login/kakao': ({ body }: { body: { token: string } }) =>
+      callWithoutToken<SuccessResponse<{ token: string; user_id: string }> | ErrorResponse<403, 4097>>({
+        method: 'post',
+        path: `/v1/auth/login/kakao`,
+        body,
+      }),
     'POST /auth/login_fb': ({ body }: { body: { fb_id: string; fb_token: string } }) =>
       callWithoutToken<SuccessResponse<{ token: string; user_id: string }> | ErrorResponse<403, 4097>>({
         method: 'post',
         path: `/v1/auth/login_fb`,
         body,
       }),
-    'POST /auth/login_google': ({ body }: { body: { token: string } }) =>
-      callWithoutToken<SuccessResponse<{ token: string; user_id: string }> | ErrorResponse<403, 4097>>({
-        method: 'post',
-        path: `/v1/auth/login_google`,
-        body,
-      }),
+
     'POST /v1/auth/id/find': ({ body }: { body: { email: string } }) =>
       callWithoutToken<SuccessResponse<{ message: 'ok' }> | ErrorResponse<400, 12303>>({
         method: 'post',

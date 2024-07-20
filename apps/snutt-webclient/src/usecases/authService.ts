@@ -7,8 +7,9 @@ export interface AuthService {
   signIn(
     params:
       | { type: 'LOCAL'; id: string; password: string }
-      | { type: 'FACEBOOK'; facebookId: string; facebookToken: string }
-      | { type: 'GOOGLE'; token: string },
+      | { type: 'FACEBOOK'; token: string }
+      | { type: 'GOOGLE'; token: string }
+      | { type: 'KAKAO'; token: string },
   ): UsecaseResponse<{ token: string }>;
   signUp(body: { id: string; password: string }): UsecaseResponse<{ token: string }>;
   closeAccount(_: { token: string }): UsecaseResponse<void>;
@@ -24,8 +25,9 @@ export const getAuthService = ({
 }: {
   authRepository: {
     signInWithIdPassword(args: { id: string; password: string }): RepositoryResponse<{ token: string }>;
-    signInWithFacebook(args: { facebookId: string; facebookToken: string }): RepositoryResponse<{ token: string }>;
+    signInWithFacebook(args: { token: string }): RepositoryResponse<{ token: string }>;
     signInWithGoogle(args: { token: string }): RepositoryResponse<{ token: string }>;
+    signInWithKakao(args: { token: string }): RepositoryResponse<{ token: string }>;
     signUpWithIdPassword(body: { id: string; password: string }): RepositoryResponse<{ token: string }>;
     findId(body: { email: string }): RepositoryResponse<void>;
     passwordResetCheckEmail(body: { userId: string }): RepositoryResponse<{ email: string }>;
@@ -56,11 +58,12 @@ export const getAuthService = ({
         switch (params.type) {
           case 'FACEBOOK':
             return await authRepository.signInWithFacebook({
-              facebookId: params.facebookId,
-              facebookToken: params.facebookToken,
+              token: params.token,
             });
           case 'GOOGLE':
             return await authRepository.signInWithGoogle({ token: params.token });
+          case 'KAKAO':
+            return await authRepository.signInWithKakao({ token: params.token });
           case 'LOCAL':
           default:
             return await authRepository.signInWithIdPassword({ id: params.id, password: params.password });

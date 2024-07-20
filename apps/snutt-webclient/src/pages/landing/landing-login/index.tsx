@@ -40,8 +40,7 @@ export const LandingLogin = ({ className, onSignUp }: Props) => {
 
     const res = await authService.signIn({
       type: 'FACEBOOK',
-      facebookId: userInfo.id,
-      facebookToken: userInfo.accessToken,
+      token: userInfo.accessToken,
     });
 
     if (res.type === 'success') saveToken(res.data.token, keepSignIn);
