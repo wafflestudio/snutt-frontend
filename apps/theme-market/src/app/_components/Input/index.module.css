@@ -1,0 +1,20 @@
+.input {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 18px;
+
+  background-color: var(--palette-gray);
+
+  border: 1px;
+  border-radius: 6px;
+}
+
+.input::placeholder {
+  color: var(--palette-gray-20);
+}
+
+.input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  content: url("/static/icons/svgCancel.svg");
+  cursor: pointer;
+}
