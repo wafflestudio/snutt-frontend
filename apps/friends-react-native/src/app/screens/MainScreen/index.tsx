@@ -116,7 +116,7 @@ export const MainScreen = () => {
       acceptFriend(
         {
           type: 'KAKAO',
-          requestToken: event.requstToken,
+          requestToken: event.requestToken,
         },
         {
           onSuccess: (data) => {
