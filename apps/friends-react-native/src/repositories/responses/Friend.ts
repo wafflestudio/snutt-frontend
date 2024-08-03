@@ -4,5 +4,8 @@ import { UserId } from '../../entities/user';
 export type AcceptFriendWithKakaoResponse = {
   id: FriendId;
   userId: UserId;
-  displayName: string;
+  nickname: {
+    nickname: string;
+    tag: string;
+  };
 };
