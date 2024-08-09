@@ -5,7 +5,7 @@ import SvgDownload from "@/assets/icons/svgDownload.svg";
 
 export const Theme = () => {
   return (
-    <section className={styles.wrapper}>
+    <article className={styles.wrapper}>
       <div className={styles.metadata}>
         <div className={styles.info}>
           <h2 className={styles.title}>SNUTT</h2>
@@ -22,6 +22,6 @@ export const Theme = () => {
         <div className={styles.color} style={{ backgroundColor: "#AA395D" }} />
         <div className={styles.color} style={{ backgroundColor: "#D44A7A" }} />
       </div>
-    </section>
+    </article>
   );
 };

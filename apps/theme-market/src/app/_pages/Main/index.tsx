@@ -4,6 +4,7 @@ import { TabContent } from "@/app/_components/Tab/TabContent";
 
 import styles from "./index.module.css";
 import { ThemeList } from "@/app/_components/ThemeList";
+import { BottomSheet } from "@/app/_components/BottomSheet";
 
 export const MainPage = () => {
   return (
@@ -24,6 +25,7 @@ export const MainPage = () => {
       <section className={styles.main}>
         <ThemeList title="Best" />
       </section>
+      <BottomSheet />
     </>
   );
 };
