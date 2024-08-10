@@ -1,4 +1,5 @@
 import styles from "./index.module.css";
+import { Preview } from "./Preview";
 
 interface Props {
   title: string;
@@ -41,6 +42,7 @@ export const Theme = ({ title }: Props) => {
           </div>
         </div>
       </div>
+      <Preview />
     </section>
   );
 };
