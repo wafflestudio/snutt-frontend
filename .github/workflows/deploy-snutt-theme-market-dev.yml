@@ -23,6 +23,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: copy yarn.lock
+        run: cp ../../yarn.lock ./yarn.lock
+
       - name: Login to ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
