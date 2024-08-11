@@ -8,7 +8,8 @@
     "test": "turbo run test",
     "tsc": "turbo run tsc",
     "deploy:friends-react-native": "./scripts/deploy.sh friends-react-native",
-    "deploy:snutt-webclient": "./scripts/deploy.sh snutt-webclient"
+    "deploy:snutt-webclient": "./scripts/deploy.sh snutt-webclient",
+    "deploy:theme-market": "./scripts/deploy.sh theme-market"
   },
   "dependencies": {
     "turbo": "1.13.3"
