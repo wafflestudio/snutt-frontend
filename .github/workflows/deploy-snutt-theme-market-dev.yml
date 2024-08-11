@@ -27,8 +27,7 @@ jobs:
 
       - name: Build & Export
         run: |
-          yarn install \
-            yarn build
+          yarn && yarn build
 
       - name: Deploy to S3 and Invalidate Cloudfront
         id: deploy-s3
