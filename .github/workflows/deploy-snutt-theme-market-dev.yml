@@ -3,7 +3,7 @@ name: deploy-snutt-theme-market-dev
 on:
   push:
     tags:
-      - snutt-theme-market-dev-*
+      - theme-market-dev-*
 
 jobs:
   deploy:
