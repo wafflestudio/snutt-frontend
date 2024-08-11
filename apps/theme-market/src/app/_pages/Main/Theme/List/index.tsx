@@ -10,7 +10,7 @@ interface Props {
 
 export const ThemeList = ({ title }: Props) => {
   return (
-    <section className={styles.wrapper}>
+    <div className={styles.wrapper}>
       <span className={styles.title}>{title}</span>
       <div className={styles.themeList}>
         <Theme />
@@ -21,6 +21,6 @@ export const ThemeList = ({ title }: Props) => {
         <span>전체 보기</span>
         <Image src={SvgChevronLeft} alt=">" />
       </div>
-    </section>
+    </div>
   );
 };
