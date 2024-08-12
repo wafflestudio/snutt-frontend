@@ -1,4 +1,4 @@
-import { SVGProps, useMemo } from "react";
+import { SVGProps } from "react";
 
 interface Props extends SVGProps<SVGSVGElement> {
   timetableColors?: string[];
@@ -6,8 +6,6 @@ interface Props extends SVGProps<SVGSVGElement> {
 
 export const Timetable = ({ timetableColors = [], ...props }: Props) => {
   const [firstColor, secondColor] = timetableColors;
-
-  console.log(secondColor);
 
   return (
     <svg
