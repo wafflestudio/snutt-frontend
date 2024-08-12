@@ -16,7 +16,7 @@
 .timetable {
   width: 100%;
   margin-top: 8px;
-  padding: 20px 16px;
+  padding: 23px 13px 18px;
 
   background-color: var(--color-bg-default);
 }
@@ -25,6 +25,6 @@
   width: 100%;
   height: auto;
 
-  border: 0.8px solid var(--palette-gray-10);
-  border-radius: 18px;
+  border: 1px solid var(--palette-gray);
+  border-radius: 12px;
 }
