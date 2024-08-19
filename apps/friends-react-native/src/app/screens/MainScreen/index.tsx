@@ -122,7 +122,7 @@ export const MainScreen = () => {
           onSuccess: (data) => {
             const response = data as AcceptFriendWithKakaoResponse;
             const nickname = response.nickname;
-            Alert.alert(`${nickname.nickname}#${nickname.tag}님과 친구가 되었습니다.`);
+            Alert.alert(`${nickname.nickname}#${nickname.tag}님과\n친구가 되었습니다.`);
 
             dispatch({ type: 'setFriend', friendId: response.id });
           },
