@@ -1,3 +1,23 @@
+@keyframes slideIn {
+  0% {
+    transform: translateY(100%);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideOut {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(100%);
+  }
+}
+
 .wrapper {
   width: 100vw;
   height: 100vh;
@@ -14,6 +34,9 @@
   position: absolute;
   bottom: 0;
   overflow-y: scroll;
+
+  animation: 0.5s ease-out 0s 1 slideIn;
+  /* animation: 0.5s ease-out 0s 1 slideOut; */
 
   border-radius: 10px 10px 0px 0px;
   background-color: var(--palette-gray);

@@ -1,11 +1,19 @@
+"use client";
+
 import Image from "next/image";
 import styles from "./index.module.css";
 
 import SvgDownload from "@/assets/icons/svgDownload.svg";
+import { useRouter } from "next/navigation";
 
 export const Theme = () => {
+  const router = useRouter();
+
   return (
-    <article className={styles.wrapper}>
+    <article
+      className={styles.wrapper}
+      onClick={() => router.push("/theme/123")}
+    >
       <div className={styles.metadata}>
         <div className={styles.info}>
           <h2 className={styles.title}>SNUTT</h2>
