@@ -8,6 +8,16 @@
   }
 }
 
+@keyframes slideOut {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(100%);
+  }
+}
+
 .wrapper {
   width: 100vw;
   height: 100vh;
@@ -25,9 +35,8 @@
   bottom: 0;
   overflow-y: scroll;
 
-  /* transform: translateY(100%); */
-  /* animation: slideIn 0.5s; */
   animation: 0.5s ease-out 0s 1 slideIn;
+  /* animation: 0.5s ease-out 0s 1 slideOut; */
 
   border-radius: 10px 10px 0px 0px;
   background-color: var(--palette-gray);

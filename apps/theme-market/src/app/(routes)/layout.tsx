@@ -13,15 +13,19 @@ export const metadata: Metadata = {
 };
 
 interface Props {
+  bottomsheet: ReactNode;
   children: ReactNode;
 }
 
-export default function RootLayout({ children }: Props) {
-  const theme = cookies().get("theme")?.value ?? "light";
+export default function RootLayout({ children, bottomsheet }: Props) {
+  const themeMode = cookies().get("theme")?.value ?? "light";
 
   return (
-    <html lang="ko" data-theme={theme}>
-      <body className={styles.layout}>{children}</body>
+    <html lang="ko" data-theme={themeMode}>
+      <body className={styles.layout}>
+        {children}
+        {bottomsheet}
+      </body>
     </html>
   );
 }
