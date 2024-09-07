@@ -19,7 +19,6 @@ export const ThemeList = ({ title, noTheme }: Props) => {
           <NotFound message="친구가 올린 테마가 아직 없어요" />
         </div>
       ) : (
-        // </div>
         <>
           <div className={styles.themeList}>
             <Theme />
