@@ -1,4 +1,4 @@
-import { ThemeList } from "../Theme/List";
+import { ThemeList } from "./ThemeList";
 
 export const ThemeDownload = () => {
   return (

@@ -1,0 +1,21 @@
+.wrapper {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 9.5px;
+}
+
+.preview {
+  width: 80px;
+  height: 78px;
+
+  border-radius: 6px;
+  background-color: bisque;
+}
+
+.title {
+  text-align: center;
+}
