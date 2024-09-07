@@ -64,5 +64,5 @@ jobs:
             -H 'Content-Type: application/json' \
             -H "x-access-apikey: $SNUTT_APIKEY" \
             -H "x-access-token: $SNUTT_TOKEN" \
-            --data-raw '{ "data": { "src": { "android": "'"$BUCKET_URL/$TAG_NAME/android.jsbundle"'", "ios": "'"$BUCKET_URL/$TAG_NAME/ios.jsbundle"'" } }, "minVersion": { "android": "3.2.0", "ios": "3.2.0" } }' \
+            --data-raw '{ "data": { "src": { "android": "'"$BUCKET_URL/$TAG_NAME/android.jsbundle"'", "ios": "'"$BUCKET_URL/$TAG_NAME/ios.jsbundle"'" } }, "minVersion": { "android": "3.8.0", "ios": "3.8.0" } }' \
             --compressed
