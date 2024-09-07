@@ -32,3 +32,8 @@
 
   color: var(--palette-gray-2);
 }
+
+.notFound {
+  width: 100%;
+  margin-top: 15px;
+}
