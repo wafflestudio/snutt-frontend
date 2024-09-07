@@ -15,9 +15,9 @@
 .box {
   width: 100%;
   height: 134px;
-  background-color: var(--color-bg-default);
   margin-top: 8px;
 
+  background-color: var(--color-bg-default);
   border-radius: 10px;
 }
 
