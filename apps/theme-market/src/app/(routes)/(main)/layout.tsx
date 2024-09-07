@@ -13,8 +13,8 @@ export const metadata: Metadata = {
 };
 
 interface Props {
-  bottomsheet: ReactNode;
   children: ReactNode;
+  bottomsheet: ReactNode;
 }
 
 export default function RootLayout({ children, bottomsheet }: Props) {

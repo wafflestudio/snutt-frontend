@@ -1,7 +1,3 @@
-"use client";
-
-import { useState } from "react";
-
 import { Input } from "@/app/_components/Input";
 import { Tab } from "@/app/_components/Tab";
 import { TabContent } from "@/app/_components/Tab/TabContent";
@@ -11,10 +7,13 @@ import { ThemeDownload } from "./ThemeDownload";
 import { MyTheme } from "./MyTheme";
 
 import styles from "./index.module.css";
+import Link from "next/link";
 
-export const MainPage = () => {
-  const [currentMenu, setCurrentMenu] = useState<MENU>("DOWNLOAD");
+interface Props {
+  menu: MENU;
+}
 
+export const MainPage = ({ menu }: Props) => {
   return (
     <>
       <section className={styles.header}>
@@ -26,20 +25,20 @@ export const MainPage = () => {
           />
         </div>
         <Tab>
-          <TabContent
-            content="테마 다운로드"
-            selected={currentMenu === "DOWNLOAD"}
-            onClick={() => setCurrentMenu("DOWNLOAD")}
-          />
-          <TabContent
-            content="내 테마 올리기"
-            selected={currentMenu === "MY_THEME"}
-            onClick={() => setCurrentMenu("MY_THEME")}
-          />
+          <TabContent selected={menu === "DOWNLOAD"}>
+            <Link href="/download" replace>
+              테마 다운로드
+            </Link>
+          </TabContent>
+          <TabContent selected={menu === "MY_THEME"}>
+            <Link href="/my" replace>
+              내 테마 올리기
+            </Link>
+          </TabContent>
         </Tab>
       </section>
       <section className={styles.main}>
-        {currentMenu === "DOWNLOAD" ? <ThemeDownload /> : <MyTheme />}
+        {menu === "DOWNLOAD" ? <ThemeDownload /> : <MyTheme />}
       </section>
       {/* <BottomSheet>
         <Theme title="pastel" />

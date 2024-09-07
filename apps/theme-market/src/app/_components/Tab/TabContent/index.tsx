@@ -1,14 +1,14 @@
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, ReactNode } from "react";
 
 import styles from "./index.module.css";
 import classNames from "classnames";
 
 export const TabContent = ({
-  content,
+  children,
   selected,
   onClick,
 }: {
-  content: String;
+  children: ReactNode;
   selected: Boolean;
   onClick?: MouseEventHandler<HTMLDivElement>;
 }) => {
@@ -17,7 +17,7 @@ export const TabContent = ({
       className={classNames(styles.content, { [styles.selected]: selected })}
       onClick={onClick}
     >
-      <span>{content}</span>
+      {children}
     </div>
   );
 };
