@@ -23,6 +23,7 @@ export const MainPage = () => {
       </section>
       <section className={styles.main}>
         <ThemeList title="Best" />
+        <ThemeList title="친구가 쓰고있어요." noTheme={true} />
       </section>
       {/* <BottomSheet>
         <Theme title="pastel" />
