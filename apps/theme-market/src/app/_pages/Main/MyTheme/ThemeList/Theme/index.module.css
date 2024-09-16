@@ -11,9 +11,63 @@
 .preview {
   width: 80px;
   height: 78px;
+  display: flex;
 
   border-radius: 6px;
-  background-color: bisque;
+  overflow: hidden;
+}
+
+.flex_c {
+  display: flex;
+  flex-direction: column;
+}
+
+.w_full {
+  width: 100%;
+}
+
+.w_half {
+  width: 50%;
+}
+
+.w_27 {
+  width: 27px;
+}
+
+.w_20 {
+  width: 20px;
+}
+
+.h_full {
+  height: 100%;
+}
+
+.h_half {
+  height: 50%;
+}
+
+.h_33 {
+  height: 33px;
+}
+
+.h_28 {
+  height: 28px;
+}
+
+.h_27 {
+  height: 27px;
+}
+
+.h_26 {
+  height: 26px;
+}
+
+.h_24 {
+  height: 24px;
+}
+
+.h_18 {
+  height: 18px;
 }
 
 .title {
