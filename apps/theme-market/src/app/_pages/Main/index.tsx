@@ -1,7 +1,7 @@
 import { Input } from "@/app/_components/Input";
 import { Tab } from "@/app/_components/Tab";
 import { TabContent } from "@/app/_components/Tab/TabContent";
-import { MENU } from "@/entities/menu";
+import { MENU } from "@/entities/Menu";
 
 import { ThemeDownload } from "./ThemeDownload";
 import { MyTheme } from "./MyTheme";
