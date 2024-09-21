@@ -20,7 +20,7 @@ export const MainPage = ({ menu }: Props) => {
         <div className={styles.inputWrapper}>
           <Input
             className={styles.input}
-            placeholder="테마를 검색해보세요"
+            placeholder="테마를 검색해보세요."
             type="search"
           />
         </div>
