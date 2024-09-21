@@ -1,6 +1,7 @@
 import "@/app/_styles/reset.css";
 import "@/app/_styles/palette.css";
 import "@/app/_styles/theme.css";
+import "@/app/_styles/font.css";
 
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
