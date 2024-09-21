@@ -40,7 +40,8 @@ type MainScreenAction =
   | { type: 'setRequestFriendModalOpen'; isOpen: boolean }
   | { type: 'setRequestFriendModalStep'; requestFriendModalStep: RequestFriendModalStep }
   | { type: 'setRequestFriendModalNickname'; nickname: string }
-  | { type: 'setGuideModalOpen'; isOpen: boolean };
+  | { type: 'setGuideModalOpen'; isOpen: boolean }
+  | { type: 'closeModals' };
 type MainScreenContext = MainScreenState & { dispatch: Dispatch<MainScreenAction> };
 const mainScreenReducer = (state: MainScreenState, action: MainScreenAction): MainScreenState => {
   switch (action.type) {
@@ -64,6 +65,8 @@ const mainScreenReducer = (state: MainScreenState, action: MainScreenAction): Ma
       return { ...state, isGuideModalOpen: action.isOpen };
     case 'setRequestFriendModalStep':
       return { ...state, requestFriendModalStep: action.requestFriendModalStep };
+    case 'closeModals':
+      return { ...state, isGuideModalOpen: false, isRequestFriendModalOpen: false };
   }
 };
 const mainScreenContext = createContext<MainScreenContext | null>(null);
@@ -108,6 +111,28 @@ export const MainScreen = () => {
       })
       .catch(() => null);
   }, [state.selectedFriendId, clientFeatures, friends]);
+
+  useEffect(() => {
+    const parameters = { eventType: 'close-modal' };
+
+    const listener = eventEmitter.addListener('close-modal', () => {
+      dispatch({ type: 'closeModals' });
+    });
+
+    nativeEventService.sendEventToNative({
+      type: 'register',
+      parameters,
+    });
+
+    return () => {
+      listener.remove();
+
+      nativeEventService.sendEventToNative({
+        type: 'deregister',
+        parameters,
+      });
+    };
+  }, [eventEmitter, nativeEventService]);
 
   useEffect(() => {
     const parameters = { eventType: 'add-friend-kakao' };
