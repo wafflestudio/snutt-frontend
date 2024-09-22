@@ -1,7 +1,7 @@
 import { Input } from "@/app/_components/Input";
 import { Tab } from "@/app/_components/Tab";
 import { TabContent } from "@/app/_components/Tab/TabContent";
-import { MENU } from "@/entities/menu";
+import { MENU } from "@/entities/Menu";
 
 import { ThemeDownload } from "./ThemeDownload";
 import { MyTheme } from "./MyTheme";
@@ -20,7 +20,7 @@ export const MainPage = ({ menu }: Props) => {
         <div className={styles.inputWrapper}>
           <Input
             className={styles.input}
-            placeholder="테마를 검색해보세요."
+            placeholder="테마를 검색해보세요"
             type="search"
           />
         </div>

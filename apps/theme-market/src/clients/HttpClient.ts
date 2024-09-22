@@ -1,24 +1,48 @@
 type HttpClient = {
-  get: <T = unknown>(url: string) => Promise<T>;
-  post: <T = unknown, B = unknown>(url: string, body?: B) => Promise<T>;
+  get: <T = unknown>(url: string, accessToken?: string) => Promise<T>;
+  post: <T = unknown, B = unknown>(
+    url: string,
+    body?: B,
+    accessToken?: string
+  ) => Promise<T>;
 };
 
-// TODO env 따라감
-const baseUrl = "https://snutt-api-dev.wafflestudio.coom";
+const baseUrl =
+  process.env.SERVER_SIDE_API_URL || process.env.NEXT_PUBLIC_API_URL;
+const apiKey = process.env.NEXT_PUBLIC_API_KEY || "";
+
+const BASE_HEADER = {
+  "content-type": "application/json;charset=UTF-8",
+  "x-access-apikey": apiKey,
+};
+
+export const ACCESS_TOKEN_KEY = "x-access-token";
 
 export const httpClient: HttpClient = {
-  get: async (url) => {
-    const response = await fetch(baseUrl + url);
+  get: async (url, accessToken) => {
+    const headers = {
+      ...BASE_HEADER,
+      ...(accessToken ? { [ACCESS_TOKEN_KEY]: accessToken } : {}),
+    };
+
+    const response = await fetch(baseUrl + url, {
+      headers,
+    });
     const data = await response.json().catch(() => null);
 
     if (response.ok) return data;
     else throw data;
   },
-  post: async (url, body) => {
+  post: async (url, body, accessToken) => {
+    const headers = {
+      ...BASE_HEADER,
+      ...(accessToken ? { [ACCESS_TOKEN_KEY]: accessToken } : {}),
+    };
+
     const response = await fetch(baseUrl + url, {
       method: "POST",
       body: JSON.stringify(body),
-      // headers,
+      headers,
     });
     const data = await response.json().catch(() => null);
 

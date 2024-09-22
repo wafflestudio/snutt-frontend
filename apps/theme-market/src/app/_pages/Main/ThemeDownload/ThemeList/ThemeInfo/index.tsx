@@ -5,8 +5,13 @@ import styles from "./index.module.css";
 
 import SvgDownload from "@/assets/icons/svgDownload.svg";
 import { useRouter } from "next/navigation";
+import { Theme } from "@/entities/Theme";
 
-export const Theme = () => {
+interface Props {
+  theme: Theme;
+}
+
+export const ThemeInfo = ({ theme }: Props) => {
   const router = useRouter();
 
   return (
@@ -16,8 +21,8 @@ export const Theme = () => {
     >
       <div className={styles.metadata}>
         <div className={styles.info}>
-          <h2 className={styles.title}>SNUTT</h2>
-          <span className={styles.creator}>SNUTT</span>
+          <h2 className={styles.title}>{theme.publishInfo.publishName}</h2>
+          <span className={styles.creator}>{theme.publishInfo.authorName}</span>
         </div>
         <div className={styles.download}>
           <Image src={SvgDownload} alt="download" />
@@ -25,10 +30,15 @@ export const Theme = () => {
         </div>
       </div>
       <div className={styles.colorList}>
-        <div className={styles.color} style={{ backgroundColor: "#6F223D" }} />
-        <div className={styles.color} style={{ backgroundColor: "#DE789D" }} />
-        <div className={styles.color} style={{ backgroundColor: "#AA395D" }} />
-        <div className={styles.color} style={{ backgroundColor: "#D44A7A" }} />
+        {theme.colors.map((color, index) => {
+          return (
+            <div
+              key={index}
+              className={styles.color}
+              style={{ backgroundColor: color.bg }}
+            />
+          );
+        })}
       </div>
     </article>
   );
