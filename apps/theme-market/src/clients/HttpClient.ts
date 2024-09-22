@@ -16,11 +16,13 @@ const BASE_HEADER = {
   "x-access-apikey": apiKey,
 };
 
+export const ACCESS_TOKEN_KEY = "x-access-token";
+
 export const httpClient: HttpClient = {
   get: async (url, accessToken) => {
     const headers = {
       ...BASE_HEADER,
-      ...(accessToken ? { "x-access-token": accessToken } : {}),
+      ...(accessToken ? { [ACCESS_TOKEN_KEY]: accessToken } : {}),
     };
 
     const response = await fetch(baseUrl + url, {
@@ -34,7 +36,7 @@ export const httpClient: HttpClient = {
   post: async (url, body, accessToken) => {
     const headers = {
       ...BASE_HEADER,
-      ...(accessToken ? { "x-access-token": accessToken } : {}),
+      ...(accessToken ? { [ACCESS_TOKEN_KEY]: accessToken } : {}),
     };
 
     const response = await fetch(baseUrl + url, {
