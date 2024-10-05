@@ -23,6 +23,7 @@ import { FriendTimetable } from './FriendTimetable';
 import { ManageFriendsDrawerContent } from './ManageFriendsDrawerContent';
 import { RequestFriendsBottomSheetContent } from './RequestFriendsBottomSheetContent';
 import { AcceptFriendWithKakaoResponse } from '../../../repositories/responses/Friend';
+import { get } from '../../../utils/get';
 
 export type RequestFriendModalStep = 'METHOD_LIST' | 'REQUEST_WITH_NICKNAME';
 
@@ -126,8 +127,9 @@ export const MainScreen = () => {
 
             dispatch({ type: 'setFriend', friendId: response.id });
           },
-          onError: () => {
-            Alert.alert('친구 추가를 실패했습니다.\n잠시 후, 다시 시도해 주세요.');
+          onError: (err) => {
+            const message = get(err, ['displayMessage']);
+            Alert.alert(message ? `${message}` : '친구 추가를 실패했습니다.\n잠시 후, 다시 시도해 주세요.');
           },
         },
       );
