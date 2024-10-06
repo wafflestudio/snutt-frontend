@@ -3,6 +3,7 @@ export type Theme = {
   name: string;
   colors: ThemeColorInfo[];
   publishInfo: ThemePublishInfo;
+  isCustom: Boolean;
 };
 
 export type ThemeColorInfo = {

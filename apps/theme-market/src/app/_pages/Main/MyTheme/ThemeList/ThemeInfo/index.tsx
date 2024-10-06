@@ -10,7 +10,7 @@ interface Props {
   colors: string[];
 }
 
-export const Theme = ({ title, colors }: Props) => {
+export const ThemeInfo = ({ title, colors }: Props) => {
   const router = useRouter();
 
   return (

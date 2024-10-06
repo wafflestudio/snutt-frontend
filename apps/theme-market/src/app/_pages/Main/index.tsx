@@ -40,9 +40,6 @@ export const MainPage = ({ menu }: Props) => {
       <section className={styles.main}>
         {menu === "DOWNLOAD" ? <ThemeDownload /> : <MyTheme />}
       </section>
-      {/* <BottomSheet>
-        <Theme title="pastel" />
-      </BottomSheet> */}
     </>
   );
 };
