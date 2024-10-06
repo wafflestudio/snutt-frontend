@@ -9,7 +9,7 @@ import { useGuardContext } from '@/hooks/useGuardContext';
 export const LayoutProfile = () => {
   const { data: myInfo } = useMyInfo();
 
-  const isTempUser = myInfo && myInfo.type === 'success' && !myInfo.data.localId && !myInfo.data.facebookName;
+  const isTempUser = myInfo && myInfo.type === 'success' && !myInfo.data.email && !myInfo.data.facebookName;
   const isLoginButton = isTempUser;
 
   return isLoginButton ? (
@@ -18,7 +18,8 @@ export const LayoutProfile = () => {
     </ProfileText>
   ) : (
     <ProfileText to="/mypage" data-testid="layout-my-info">
-      {myInfo?.type === 'success' && `${myInfo.data.localId ?? myInfo.data.facebookName}님`}
+      {myInfo?.type === 'success' &&
+        `${myInfo.data.localId ?? myInfo.data.facebookName ?? myInfo.data.email?.split('@')[0]}님`}
     </ProfileText>
   );
 };

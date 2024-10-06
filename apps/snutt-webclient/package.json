@@ -16,6 +16,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@react-oauth/google": "^0.12.1",
     "@sf/snutt-api": "*",
     "@tanstack/react-query": "5.36.2",
     "@tanstack/react-query-devtools": "5.36.2",
@@ -24,6 +25,7 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-facebook-login": "4.1.1",
+    "react-kakao-login": "^2.1.1",
     "react-router-dom": "6.23.1",
     "styled-components": "6.1.11"
   },
