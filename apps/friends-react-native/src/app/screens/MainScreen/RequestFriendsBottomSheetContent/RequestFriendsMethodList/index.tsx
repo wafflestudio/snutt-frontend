@@ -49,8 +49,6 @@ export const RequestFriendsMethodList = () => {
           />
           <Typography>카카오톡으로 친구 초대</Typography>
         </TouchableOpacity>
-      </View>
-      <View style={styles.sheetContent}>
         <TouchableOpacity style={styles.sheetItem} onPress={() => setRequestFriendModalStep('REQUEST_WITH_NICKNAME')}>
           <UserHashtagIcon
             width={30}
