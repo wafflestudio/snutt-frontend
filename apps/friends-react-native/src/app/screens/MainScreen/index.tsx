@@ -114,6 +114,8 @@ export const MainScreen = () => {
     const parameters = { eventType: 'add-friend-kakao' };
 
     const listener = eventEmitter.addListener('add-friend-kakao', (event) => {
+      if (!event.requestToken) return;
+
       acceptFriend(
         {
           type: 'KAKAO',
