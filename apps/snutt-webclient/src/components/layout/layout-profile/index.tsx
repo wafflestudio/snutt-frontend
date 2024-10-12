@@ -9,7 +9,8 @@ import { useGuardContext } from '@/hooks/useGuardContext';
 export const LayoutProfile = () => {
   const { data: myInfo } = useMyInfo();
 
-  const isTempUser = myInfo && myInfo.type === 'success' && !myInfo.data.email && !myInfo.data.facebookName;
+  const isTempUser =
+    myInfo && myInfo.type === 'success' && !myInfo.data.localId && !myInfo.data.email && !myInfo.data.facebookName;
   const isLoginButton = isTempUser;
 
   return isLoginButton ? (
