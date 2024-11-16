@@ -4,6 +4,7 @@ import { PageResponse } from "@/entities/Page";
 import { Theme } from "@/entities/Theme";
 
 type ThemeRepository = {
+  getMyThemes: ({ accessToken }: { accessToken?: string }) => Promise<Theme[]>;
   getBestThemes: ({
     page,
     accessToken,
@@ -23,6 +24,10 @@ type ThemeRepository = {
 const DEFAULT_PAGE = 1;
 
 export const themeRepositry: ThemeRepository = {
+  getMyThemes: async ({ accessToken }) => {
+    const res = await httpClient.get<Theme[]>("/v1/themes", accessToken);
+    return res;
+  },
   getBestThemes: async ({ page, accessToken }) => {
     const params = new URLSearchParams({
       page: (page || DEFAULT_PAGE).toString(),
