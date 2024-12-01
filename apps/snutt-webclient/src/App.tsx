@@ -22,7 +22,6 @@ import {
   implTokenLocalStorageRepository,
   implTokenSessionStorageRepository,
 } from '@/infrastructures/implBrowserStorageRepository';
-import { implColorSnuttApiRepository } from '@/infrastructures/implColorSnuttApiRepository';
 import { implFeedbackSnuttApiRepository } from '@/infrastructures/implFeedbackSnuttApiRepository';
 import { getNotificationRepository } from '@/infrastructures/implNotificationSnuttApiRepository';
 import { implSearchSnuttApiRepository } from '@/infrastructures/implSearchSnuttApiRepository';
@@ -104,11 +103,10 @@ export const App = () => {
     const semesterRepository = implSemesterSnuttApiRepository({ snuttApi });
     const searchRepository = implSearchSnuttApiRepository({ snuttApi });
     const notificationRepository = getNotificationRepository({ snuttApi });
-    const colorRepository = implColorSnuttApiRepository({ snuttApi });
 
     const feedbackService = getFeedbackService({ feedbackRepository });
     const userService = getUserService({ userRepository });
-    const colorService = getColorService({ colorRepository });
+    const colorService = getColorService();
     const notificationService = getNotificationService({ notificationRepository });
     const searchService = getSearchService({ searchRepository });
     const timetableService = getTimetableService({ timetableRepository });
