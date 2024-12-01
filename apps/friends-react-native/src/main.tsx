@@ -11,7 +11,6 @@ import { themeContext } from './app/contexts/ThemeContext';
 import { getThemeValues } from './app/styles/theme';
 import { ClientFeature } from './entities/feature';
 import { createAssetService } from './infrastructures/createAssetService';
-import { createColorRepository } from './infrastructures/createColorRepository';
 import { createColorService } from './infrastructures/createColorService';
 import { createCourseBookService } from './infrastructures/createCourseBookService';
 import { createFetchClient } from './infrastructures/createFetchClient';
@@ -46,7 +45,7 @@ export const Main = ({
   const friendRepository = createFriendRepository(fetchClient);
   const assetService = createAssetService({ baseUrl: ASSET_URL });
   const timetableViewService = createTimetableViewService();
-  const colorService = createColorService({ repositories: [createColorRepository({ clients: [fetchClient] })] });
+  const colorService = createColorService();
   const friendService = createFriendService({ repositories: [friendRepository] });
   const courseBookService = createCourseBookService();
   const nativeEventService = createNativeEventService();
