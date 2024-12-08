@@ -1,12 +1,12 @@
+import { User } from "@/entities/User";
 import { authRepositry } from "@/repositories/AuthRepository";
 
-// 예시용
 type AuthService = {
-  me: () => Promise<void>;
+  me: (accessToken?: string) => Promise<User>;
 };
 
 export const authService: AuthService = {
-  me: async () => {
-    return await authRepositry.me();
+  me: async (accessToken?: string) => {
+    return await authRepositry.me(accessToken);
   },
 };

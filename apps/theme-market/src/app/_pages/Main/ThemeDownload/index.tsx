@@ -1,13 +1,10 @@
-import { cookies } from "next/headers";
-
-import { ACCESS_TOKEN_KEY } from "@/clients/HttpClient";
 import { themeService } from "@/services/ThemeService";
 
 import { ThemeList } from "./ThemeList";
+import { cookieService } from "@/services/CookieService";
 
 export const ThemeDownload = async () => {
-  const cookieStore = cookies();
-  const accessToken = cookieStore.get(ACCESS_TOKEN_KEY)?.value;
+  const accessToken = cookieService.getAccessToken();
 
   const bestThemes = await themeService.getBestThemes(accessToken);
   const friendsThemes = await themeService.getFriendsThemes(accessToken);

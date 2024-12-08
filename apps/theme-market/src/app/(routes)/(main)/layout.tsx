@@ -4,10 +4,12 @@ import "@/app/_styles/theme.css";
 import "@/app/_styles/font.css";
 
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
 import { ReactNode } from "react";
 
 import styles from "./index.module.css";
+import { UserStoreProvider } from "@/app/_providers/UserProvider";
+import { authService } from "@/services/AuthService";
+import { cookieService } from "@/services/CookieService";
 
 export const metadata: Metadata = {
   title: "SNUTT 테마 마켓",
@@ -18,14 +20,19 @@ interface Props {
   bottomsheet: ReactNode;
 }
 
-export default function RootLayout({ children, bottomsheet }: Props) {
-  const themeMode = cookies().get("theme")?.value ?? "light";
+export default async function RootLayout({ children, bottomsheet }: Props) {
+  const themeMode = cookieService.get("theme", "light");
+  const accessToken = cookieService.getAccessToken();
+
+  const user = await authService.me(accessToken);
 
   return (
     <html lang="ko" data-theme={themeMode}>
       <body className={styles.layout}>
-        {children}
-        {bottomsheet}
+        <UserStoreProvider user={user}>
+          {children}
+          {bottomsheet}
+        </UserStoreProvider>
       </body>
     </html>
   );

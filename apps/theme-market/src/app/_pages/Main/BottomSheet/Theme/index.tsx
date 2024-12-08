@@ -1,3 +1,5 @@
+"use client";
+
 import styles from "./index.module.css";
 import { Preview } from "./Preview";
 
