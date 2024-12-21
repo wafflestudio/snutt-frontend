@@ -17,7 +17,7 @@ export const ThemeInfo = ({ theme }: Props) => {
   return (
     <article
       className={styles.wrapper}
-      onClick={() => router.push("/theme/123")}
+      onClick={() => router.push(`/theme/${theme.id}`)}
     >
       <div className={styles.metadata}>
         <div className={styles.info}>

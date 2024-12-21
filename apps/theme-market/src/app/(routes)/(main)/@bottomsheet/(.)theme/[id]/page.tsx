@@ -1,10 +1,20 @@
 import { BottomSheet } from "@/app/_components/BottomSheet";
-import { Theme } from "@/app/_pages/Main/BottomSheet/Theme";
+import { ThemeDetail } from "@/app/_pages/Main/BottomSheet/ThemeDetail";
+import { cookieService } from "@/services/CookieService";
+import { themeService } from "@/services/ThemeService";
 
-export default function Page() {
+interface Props {
+  params: Promise<{ id: string }>;
+}
+
+export default async function Page({ params }: Props) {
+  const id = (await params).id;
+  const accessToken = cookieService.getAccessToken();
+
+  const theme = await themeService.getTheme(id, accessToken);
   return (
     <BottomSheet>
-      <Theme title="pastel" />
+      <ThemeDetail theme={theme} />
     </BottomSheet>
   );
 }

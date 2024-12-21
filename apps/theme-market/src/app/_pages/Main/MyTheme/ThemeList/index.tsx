@@ -14,7 +14,14 @@ export const ThemeList = ({ themes }: Props) => {
       {themes.map((theme) => {
         const colors = theme.colors.map((color) => color.bg);
 
-        return <ThemeInfo key={theme.id} title={theme.name} colors={colors} />;
+        return (
+          <ThemeInfo
+            key={theme.id}
+            id={theme.id}
+            title={theme.name}
+            colors={colors}
+          />
+        );
       })}
     </div>
   );
