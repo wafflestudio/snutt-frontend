@@ -5,9 +5,10 @@ import styles from "./index.module.css";
 
 interface Props {
   children?: React.ReactNode;
+  title: string;
 }
 
-export const BottomSheet = ({ children }: Props) => {
+export const BottomSheet = ({ children, title }: Props) => {
   const router = useRouter();
 
   return (
@@ -15,7 +16,7 @@ export const BottomSheet = ({ children }: Props) => {
       <section className={styles.bottomSheet}>
         <div className={styles.header}>
           <span onClick={() => router.back()}>취소</span>
-          <span className={styles.title}>테마 다운로드</span>
+          <span className={styles.title}>{title}</span>
           <span>담기</span>
         </div>
         <div>{children}</div>

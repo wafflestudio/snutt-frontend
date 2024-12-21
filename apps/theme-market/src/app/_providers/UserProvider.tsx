@@ -32,7 +32,7 @@ export const UserStoreProvider = ({
   );
 };
 
-export const useUserStroe = <T,>(selector: (store: UserStore) => T): T => {
+export const useUserStore = <T,>(selector: (store: UserStore) => T): T => {
   const userStoreContext = useContext(UserStoreContext);
 
   if (!userStoreContext) {
