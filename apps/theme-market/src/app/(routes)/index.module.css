@@ -1,7 +1,5 @@
 .layout {
-  height: 100vh;
-  position: relative;
   background-color: var(--palette-gray);
 
-  z-index: 5;
+  font-family: "AppleSDGothicNeo";
 }
