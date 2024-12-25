@@ -1,13 +1,11 @@
-import { cookies } from "next/headers";
 import styles from "./index.module.css";
 import { ThemeList } from "./ThemeList";
-import { ACCESS_TOKEN_KEY } from "@/clients/HttpClient";
 import { themeService } from "@/services/ThemeService";
 import { NotFound } from "@/app/_components/Error/NotFound";
+import { cookieService } from "@/services/CookieService";
 
 export const MyTheme = async () => {
-  const cookieStore = cookies();
-  const accessToken = cookieStore.get(ACCESS_TOKEN_KEY)?.value;
+  const accessToken = cookieService.getAccessToken();
 
   const myThemes = await themeService.getMyThemes(accessToken);
 

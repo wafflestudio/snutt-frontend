@@ -1,13 +1,13 @@
 import { httpClient } from "@/clients/HttpClient";
+import { User } from "@/entities/User";
 
-// 예시용
 type AuthRepository = {
-  me: () => Promise<void>;
+  me: (accessToken?: string) => Promise<User>;
 };
 
 export const authRepositry: AuthRepository = {
-  me: async () => {
-    const res = await httpClient.get<void>("/v1/users/me");
+  me: async (accessToken?: string) => {
+    const res = await httpClient.get<User>("/v1/users/me", accessToken);
 
     return res;
   },

@@ -1,25 +1,24 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useThemeStore } from "@/app/_providers/ThemeProvider";
+import { Theme } from "@/entities/Theme";
 
-import styles from "./index.module.css";
 import { Preview } from "./Preview";
+import styles from "./index.module.css";
 
 interface Props {
-  title: string;
-  colors: string[];
+  theme: Theme;
 }
 
-export const ThemeInfo = ({ title, colors }: Props) => {
-  const router = useRouter();
+export const ThemeInfo = ({ theme }: Props) => {
+  const { setTheme } = useThemeStore((state) => state);
+
+  const colors = theme.colors.map((color) => color.bg);
 
   return (
-    <article
-      className={styles.wrapper}
-      onClick={() => router.push("/theme/123")}
-    >
+    <article className={styles.wrapper} onClick={() => setTheme(theme)}>
       <Preview colors={colors} />
-      <span className={styles.title}>{title}</span>
+      <span className={styles.title}>{theme.name}</span>
     </article>
   );
 };
