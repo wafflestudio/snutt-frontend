@@ -6,7 +6,7 @@ export const getSnuttApis = ({ callWithToken, callWithoutToken }: GetApiSpecsPar
     'POST /auth/login/facebook': ({ body }: { body: { token: string } }) =>
       callWithoutToken<SuccessResponse<{ token: string; user_id: string }> | ErrorResponse<403, 4097>>({
         method: 'post',
-        path: `/v1/auth/facebook`,
+        path: `/v1/auth/login/facebook`,
         body,
       }),
     'POST /auth/login/google': ({ body }: { body: { token: string } }) =>
