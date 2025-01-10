@@ -1,10 +1,11 @@
 import { Api, GetApiSpecsParameter } from '..';
 import { SuccessResponse, ErrorResponse } from '../../response';
+import { LoginResponse } from '../snutt-timetable/schemas';
 
 export const getSnuttApis = ({ callWithToken, callWithoutToken }: GetApiSpecsParameter) =>
   ({
     'POST /auth/login/facebook': ({ body }: { body: { token: string } }) =>
-      callWithoutToken<SuccessResponse<{ token: string; user_id: string }> | ErrorResponse<403, 4097>>({
+      callWithoutToken<SuccessResponse<LoginResponse> | ErrorResponse<403, 4097>>({
         method: 'post',
         path: `/v1/auth/login/facebook`,
         body,
