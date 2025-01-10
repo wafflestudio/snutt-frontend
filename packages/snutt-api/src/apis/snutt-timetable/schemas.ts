@@ -1,16 +1,32 @@
 import { Int32, Double, Int64, DateTime } from './types';
 
-export type LocalLoginRequest = { id: string; password: string };
-
-export type LoginResponse = { user_id: string; token: string; message: string };
-
-export type LogoutRequest = { registration_id: string };
+export type SendEmailRequest = { email: string };
 
 export type OkResponse = { message: string };
 
+export type SocialLoginRequest = { token: string };
+
+export type LoginResponse = { user_id: string; token: string; message: string };
+
+export type FacebookLoginRequest = { fb_id?: string; fb_token: string };
+
+export type LocalLoginRequest = { id: string; password: string };
+
+export type LogoutRequest = { registration_id: string };
+
+export type PasswordResetRequest = { user_id: string; password: string; code: string };
+
+export type GetMaskedEmailRequest = { user_id: string };
+
+export type EmailResponse = { email: string };
+
+export type VerificationCodeRequest = { user_id?: string; code: string };
+
 export type LocalRegisterRequest = { id: string; password: string; email?: string };
 
-export type FriendRequestLinkResponse = { requestToken: string };
+export type TokenResponse = { token: string };
+
+export type EmailVerificationResultDto = { is_email_verified: boolean };
 
 export type UserLegacyDto = {
   isAdmin: boolean;
@@ -20,6 +36,8 @@ export type UserLegacyDto = {
   local_id?: string;
   fb_name?: string;
 };
+
+export type PasswordChangeRequest = { old_password: string; new_password: string };
 
 export type NicknameDto = { nickname: string; tag: string };
 
@@ -35,6 +53,14 @@ export type UserDto = {
 };
 
 export type UserPatchRequest = { nickname?: string };
+
+export type AuthProvidersCheckDto = {
+  local: boolean;
+  facebook: boolean;
+  google: boolean;
+  kakao: boolean;
+  apple: boolean;
+};
 
 export type TimetableBriefDto = {
   _id: string;
@@ -60,7 +86,7 @@ export type ClassPlaceAndTimeLegacyDto = {
   lectureBuildings?: LectureBuilding[];
 };
 
-export type ColorSet = { bg: string; fg: string } | Record<string, never>;
+export type ColorSet = { bg?: string; fg?: string };
 
 export type GeoCoordinate = { latitude: Double; longitude: Double };
 
@@ -74,10 +100,10 @@ export type LectureBuilding = {
   campus: 'GWANAK' | 'YEONGEON' | 'PYEONGCHANG';
 };
 
-export type SnuttEvLectureSummaryDto = { snuttId?: string; evLectureId: Int64; avgRating?: Double };
+export type SnuttEvLectureIdDto = { snuttId?: string; evLectureId: Int64 };
 
 export type TimetableLectureLegacyDto = {
-  _id: string;
+  _id?: string;
   academic_year?: string;
   category?: string;
   class_time_json: ClassPlaceAndTimeLegacyDto[];
@@ -91,15 +117,15 @@ export type TimetableLectureLegacyDto = {
   remark?: string;
   course_number?: string;
   course_title: string;
-  color: ColorSet;
+  color?: ColorSet;
   colorIndex: Int32;
   lecture_id?: string;
-  snuttEvLecture?: SnuttEvLectureSummaryDto;
+  snuttEvLecture?: SnuttEvLectureIdDto;
   class_time_mask: Int32[];
 };
 
 export type TimetableLegacyDto = {
-  _id: string;
+  _id?: string;
   user_id: string;
   year: Int32;
   semester: 1 | 2 | 3 | 4;
@@ -170,12 +196,13 @@ export type SearchQueryLegacy = {
   page: Int32;
   offset: Int64;
   limit: Int32;
+  sortCriteria?: string;
 };
 
 export type SearchTimeDto = { day: 0 | 1 | 2 | 3 | 4 | 5 | 6; startMinute: Int32; endMinute: Int32 };
 
 export type LectureDto = {
-  _id: string;
+  _id?: string;
   academic_year?: string;
   category?: string;
   class_time_json: ClassPlaceAndTimeLegacyDto[];
@@ -197,10 +224,17 @@ export type LectureDto = {
   class_time_mask: Int32[];
 };
 
-export type BuildingsResponse = { content: LectureBuilding[]; totalCount: Int32; nextPageToken?: string };
+export type SnuttEvLectureSummaryDto = {
+  snuttId?: string;
+  evLectureId: Int64;
+  avgRating?: Double;
+  evaluationCount: Int64;
+};
+
+export type BuildingsResponse = { content: LectureBuilding[]; totalCount: Int32 };
 
 export type BookmarkLectureDto = {
-  _id: string;
+  _id?: string;
   academic_year?: string;
   category?: string;
   class_time_json: ClassPlaceAndTimeLegacyDto[];
@@ -214,6 +248,7 @@ export type BookmarkLectureDto = {
   remark?: string;
   course_number: string;
   course_title: string;
+  snuttEvLecture?: SnuttEvLectureSummaryDto;
   class_time_mask: Int32[];
 };
 
@@ -224,7 +259,7 @@ export type BookmarkLectureModifyRequest = { lecture_id: string };
 export type ExistenceResponse = { exists: boolean };
 
 export type NotificationResponse = {
-  _id: string;
+  _id?: string;
   user_id?: string;
   title: string;
   message: string;
@@ -274,7 +309,7 @@ export type PopupResponse = {
 
 export type VacancyNotificationLecturesResponse = { lectures: LectureDto[] };
 
-export type PopupsResponse = { content: PopupResponse[]; totalCount: Int32; nextPageToken?: string };
+export type PopupsResponse = { content: PopupResponse[]; totalCount: Int32 };
 
 export type FriendResponse = {
   id: string;
@@ -284,9 +319,11 @@ export type FriendResponse = {
   createdAt: DateTime;
 };
 
-export type FriendsResponse = { content: FriendResponse[]; totalCount: Int32; nextPageToken?: string };
+export type FriendsResponse = { content: FriendResponse[]; totalCount: Int32 };
 
 export type FriendRequest = { nickname: string };
+
+export type FriendRequestLinkResponse = { requestToken: string };
 
 export type CoursebookDto = { year: Int32; semester: 1 | 2 | 3 | 4 };
 
@@ -328,10 +365,14 @@ export type TimetableLectureDto = {
   color?: ColorSet;
   colorIndex: Int32;
   lectureId?: string;
-  snuttEvLecture?: SnuttEvLectureSummaryDto;
+  snuttEvLecture?: SnuttEvLectureIdDto;
 };
 
 export type UpdateFriendDisplayNameRequest = { displayName: string };
+
+export type ThemeMarketInfoDto = { publishName: string; authorName: string; downloads: Int32 };
+
+export type ThemeOrigin = { originId: string; authorId: string };
 
 export type TimetableThemeDto = {
   id?: string;
@@ -340,6 +381,34 @@ export type TimetableThemeDto = {
   colors?: ColorSet[];
   isDefault: boolean;
   isCustom: boolean;
+  origin?: ThemeOrigin;
+  status: 'BASIC' | 'DOWNLOADED' | 'PUBLISHED' | 'PRIVATE';
+  publishInfo?: ThemeMarketInfoDto;
 };
 
 export type TimetableThemeAddRequestDto = { name: string; colors: ColorSet[] };
+
+export type ThemesResponse = { content: TimetableThemeDto[]; totalCount: Int32 };
+
+export type TimetableThemeDownloadRequestDto = { name: string };
+
+export type TimetableThemePublishRequestDto = { publishName: string; isAnonymous: boolean };
+
+export type TagListResponse = {
+  classification: string[];
+  department: string[];
+  academic_year: string[];
+  credit: string[];
+  instructor: string[];
+  category: string[];
+  sortCriteria: string[];
+  updated_at: Int64;
+};
+
+export type TagListUpdateTimeResponse = { updated_at: Int64 };
+
+export type CoursebookResponse = { year: Int32; semester: 1 | 2 | 3 | 4; updated_at: DateTime };
+
+export type CoursebookOfficialResponse = { noProxyUrl: string; proxyUrl?: string; url: string };
+
+export type FeedbackPostRequestDto = { email: string; message: string };
