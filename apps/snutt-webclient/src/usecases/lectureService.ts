@@ -25,7 +25,7 @@ export const getLectureService = (): LectureService => {
         4: { openShtmFg: 'U000200002', openDetaShtmFg: 'U000300002' },
       }[semester];
 
-      return `https://sugang.snu.ac.kr/sugang/cc/cc103.action?openSchyy=${year}&openShtmFg=${openShtmFg}&openDetaShtmFg=${openDetaShtmFg}&sbjtCd=${course_number}&ltNo=${lecture_number}&sbjtSubhCd=000`;
+      return `http://libproxy.snu.ac.kr/_Lib_Proxy_Url/https://sugang.snu.ac.kr/sugang/cc/cc103.action?openSchyy=${year}&openShtmFg=${openShtmFg}&openDetaShtmFg=${openDetaShtmFg}&sbjtCd=${course_number}&ltNo=${lecture_number}&sbjtSubhCd=000`;
     },
     getLectureTimeTexts: (lecture) =>
       lecture.class_time_json.map((t) => `${DAY_LABEL_MAP[t.day]}(${t.start_time}~${t.end_time})`),
