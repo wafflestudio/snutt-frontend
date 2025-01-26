@@ -10,6 +10,7 @@ export type UserStoreApi = ReturnType<typeof createUserStore>;
 export interface UserStoreProviderProps {
   children: ReactNode;
   user: User;
+  accessToken: string;
 }
 
 export const UserStoreContext = createContext<UserStoreApi | undefined>(
@@ -19,10 +20,11 @@ export const UserStoreContext = createContext<UserStoreApi | undefined>(
 export const UserStoreProvider = ({
   children,
   user,
+  accessToken,
 }: UserStoreProviderProps) => {
   const ref = useRef<UserStoreApi>();
   if (!ref.current) {
-    ref.current = createUserStore({ user });
+    ref.current = createUserStore({ user, accessToken });
   }
 
   return (

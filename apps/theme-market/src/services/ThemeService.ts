@@ -7,6 +7,12 @@ type ThemeService = {
   getMyThemes: (accessToken?: string) => Promise<Theme[]>;
   getBestThemes: (accessToken?: string) => Promise<Theme[]>;
   getFriendsThemes: (accessToken?: string) => Promise<Theme[]>;
+  publishTheme: (
+    themeId: string,
+    publishName: string,
+    isAnonymous: boolean,
+    accessToken?: string
+  ) => Promise<void>;
 };
 
 export const themeService: ThemeService = {
@@ -23,5 +29,18 @@ export const themeService: ThemeService = {
   },
   getFriendsThemes: async (accessToken?: string) => {
     return await themeRepositry.getFriendsThemes({ accessToken });
+  },
+  publishTheme: async (
+    themeId: string,
+    publishName: string,
+    isAnonymous: boolean,
+    accessToken?: string
+  ) => {
+    await themeRepositry.publishTheme({
+      themeId,
+      publishName,
+      isAnonymous,
+      accessToken,
+    });
   },
 };

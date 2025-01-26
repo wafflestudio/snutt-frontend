@@ -8,10 +8,19 @@ interface Props {
   children?: React.ReactNode;
   isOpen: boolean;
   title: string;
+  confirmText: string;
   onCancel?: () => void;
+  onConfirm?: () => void;
 }
 
-export const BottomSheet = ({ children, title, isOpen, onCancel }: Props) => {
+export const BottomSheet = ({
+  children,
+  title,
+  confirmText,
+  isOpen,
+  onCancel,
+  onConfirm,
+}: Props) => {
   const router = useRouter();
 
   return (
@@ -22,7 +31,7 @@ export const BottomSheet = ({ children, title, isOpen, onCancel }: Props) => {
         <div className={styles.header}>
           <span onClick={() => onCancel?.()}>취소</span>
           <span className={styles.title}>{title}</span>
-          <span>담기</span>
+          <span onClick={() => onConfirm?.()}>{confirmText}</span>
         </div>
         <div>{children}</div>
       </section>

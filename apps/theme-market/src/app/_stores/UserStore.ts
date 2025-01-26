@@ -3,6 +3,7 @@ import { createStore } from "zustand";
 
 export type UserStoreState = {
   user: User;
+  accessToken: string;
 };
 
 export type UserStoreAction = {};

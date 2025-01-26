@@ -9,6 +9,8 @@ import { ReactNode } from "react";
 import styles from "./index.module.css";
 import { cookieService } from "@/services/CookieService";
 import { ThemeStoreProvider } from "@/app/_providers/ThemeProvider";
+import { UserStoreProvider } from "../_providers/UserProvider";
+import { authService } from "@/services/AuthService";
 
 export const metadata: Metadata = {
   title: "SNUTT 테마 마켓",
@@ -21,11 +23,16 @@ interface Props {
 
 export default async function RootLayout({ children }: Props) {
   const themeMode = cookieService.get("theme", "light");
+  const accessToken = cookieService.getAccessToken();
+
+  const user = await authService.me(accessToken);
 
   return (
     <html lang="ko" data-theme={themeMode}>
       <body className={styles.layout}>
-        <ThemeStoreProvider>{children}</ThemeStoreProvider>
+        <UserStoreProvider user={user} accessToken={accessToken!!}>
+          <ThemeStoreProvider>{children}</ThemeStoreProvider>
+        </UserStoreProvider>
       </body>
     </html>
   );
