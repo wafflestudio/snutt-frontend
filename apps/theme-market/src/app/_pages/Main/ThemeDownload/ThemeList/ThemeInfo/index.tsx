@@ -4,21 +4,18 @@ import Image from "next/image";
 import styles from "./index.module.css";
 
 import SvgDownload from "@/assets/icons/svgDownload.svg";
-import { useRouter } from "next/navigation";
 import { Theme } from "@/entities/Theme";
+import { useThemeStore } from "@/app/_providers/ThemeProvider";
 
 interface Props {
   theme: Theme;
 }
 
 export const ThemeInfo = ({ theme }: Props) => {
-  const router = useRouter();
+  const { setTheme } = useThemeStore((state) => state);
 
   return (
-    <article
-      className={styles.wrapper}
-      onClick={() => router.push(`/theme/${theme.id}`)}
-    >
+    <article className={styles.wrapper} onClick={() => setTheme(theme)}>
       <div className={styles.metadata}>
         <div className={styles.info}>
           <h2 className={styles.title}>{theme.publishInfo.publishName}</h2>
@@ -26,7 +23,7 @@ export const ThemeInfo = ({ theme }: Props) => {
         </div>
         <div className={styles.download}>
           <Image src={SvgDownload} alt="download" />
-          <span>10</span>
+          <span>{theme.publishInfo.downloads || 0}</span>
         </div>
       </div>
       <div className={styles.colorList}>

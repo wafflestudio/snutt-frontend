@@ -1,6 +1,5 @@
 import { ACCESS_TOKEN_KEY } from "@/clients/HttpClient";
 import { cookieRepository } from "@/repositories/CookieRepository";
-import { cookies } from "next/headers";
 
 type CookieService = {
   get: (name: string, defaultValue: string) => string | undefined;

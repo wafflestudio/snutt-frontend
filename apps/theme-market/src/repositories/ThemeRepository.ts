@@ -26,6 +26,24 @@ type ThemeRepository = {
     page?: number;
     accessToken?: string;
   }) => Promise<Theme[]>;
+  publishTheme: ({
+    themeId,
+    publishName,
+    isAnonymous,
+    accessToken,
+  }: {
+    themeId: string;
+    publishName: string;
+    isAnonymous: boolean;
+    accessToken?: string;
+  }) => Promise<void>;
+  downloadTheme: ({
+    themeId,
+    accessToken,
+  }: {
+    themeId: string;
+    accessToken: string;
+  }) => Promise<void>;
 };
 
 const DEFAULT_PAGE = 1;
@@ -63,5 +81,15 @@ export const themeRepositry: ThemeRepository = {
     );
 
     return res.content;
+  },
+  publishTheme: async ({ themeId, publishName, isAnonymous, accessToken }) => {
+    await httpClient.post(
+      `/v1/themes/${themeId}/publish`,
+      { publishName, isAnonymous },
+      accessToken
+    );
+  },
+  downloadTheme: async ({ themeId, accessToken }) => {
+    await httpClient.post(`/v1/themes/${themeId}/download`, {}, accessToken);
   },
 };
