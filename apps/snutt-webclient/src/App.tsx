@@ -170,19 +170,19 @@ export const App = () => {
       <ServiceContext.Provider value={services}>
         <GlobalStyles />
         <TokenManageContext.Provider value={tokenContextValue}>
-          {token ? (
-            <BrowserRouter>
-              <AuthorizedApp
-                token={token}
-                isLogoutDialogOpen={isWrongTokenDialogOpen}
-                closeLogoutDialog={() => setWrongTokenDialogOpen(false)}
-              />
-            </BrowserRouter>
-          ) : (
-            <GoogleOAuthProvider clientId={ENV.GOOGLE_APP_ID}>
+          <GoogleOAuthProvider clientId={ENV.GOOGLE_APP_ID}>
+            {token ? (
+              <BrowserRouter>
+                <AuthorizedApp
+                  token={token}
+                  isLogoutDialogOpen={isWrongTokenDialogOpen}
+                  closeLogoutDialog={() => setWrongTokenDialogOpen(false)}
+                />
+              </BrowserRouter>
+            ) : (
               <Landing />
-            </GoogleOAuthProvider>
-          )}
+            )}
+          </GoogleOAuthProvider>
         </TokenManageContext.Provider>
         <ReactQueryDevtools />
       </ServiceContext.Provider>

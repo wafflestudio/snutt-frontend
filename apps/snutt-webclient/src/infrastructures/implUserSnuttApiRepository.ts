@@ -24,6 +24,15 @@ export const implUserSnuttApiRepository = ({
         };
       return { type: 'error', errcode: data.errcode };
     },
+    getMyAuthProviders: async ({ token }) => {
+      const { status, data } = await snuttApi['GET /v1/users/me/auth-providers']({ token });
+      if (status === 200)
+        return {
+          type: 'success',
+          data,
+        };
+      return { type: 'error', errcode: data.errcode };
+    },
     addIdPassword: async ({ id, password, token }) => {
       const { status, data } = await snuttApi['POST /v1/user/password']({ body: { id, password }, token });
       if (status === 200) return { type: 'success', data };

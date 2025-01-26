@@ -1,5 +1,6 @@
 import { Api, GetApiSpecsParameter } from '..';
 import { SuccessResponse, ErrorResponse } from '../../response';
+import { UserAuthProviderInfo } from './schemas';
 
 export const getSnuttApis = ({ callWithToken, callWithoutToken }: GetApiSpecsParameter) =>
   ({
@@ -129,6 +130,12 @@ export const getSnuttApis = ({ callWithToken, callWithoutToken }: GetApiSpecsPar
       callWithToken<SuccessResponse<{ token: string }>>({
         method: 'delete',
         path: `/v1/user/facebook`,
+        token,
+      }),
+    'GET /v1/users/me/auth-providers': ({ token }: { token: string }) =>
+      callWithToken<SuccessResponse<UserAuthProviderInfo>>({
+        method: 'GET',
+        path: '/v1/users/me/auth-providers',
         token,
       }),
   }) satisfies Record<string, Api>;

@@ -1,9 +1,12 @@
+import { type UserAuthProviderInfo } from '@sf/snutt-api/src/apis/snutt/schemas';
+
 import { getErrorMessage } from '@/entities/error';
 import { type RepositoryResponse, type UsecaseResponse } from '@/entities/response';
 import { type User } from '@/entities/user';
 
 export interface UserService {
   getUserInfo(_: { token: string }): UsecaseResponse<User>;
+  getMyAuthProviders(_: { token: string }): UsecaseResponse<UserAuthProviderInfo>;
   addIdPassword(body: { id: string; password: string; token: string }): UsecaseResponse<{ token: string }>;
   attachFacebookAccount(body: {
     facebookId: string;
@@ -12,6 +15,7 @@ export interface UserService {
   }): UsecaseResponse<{ token: string }>;
   detachFacebookAccount(_: { token: string }): UsecaseResponse<{ token: string }>;
   isFbOnlyUser(user: User): boolean;
+  // isProviderAvailable()
 }
 
 export const getUserService = ({
@@ -19,6 +23,7 @@ export const getUserService = ({
 }: {
   userRepository: {
     getUserInfo(_: { token: string }): RepositoryResponse<User>;
+    getMyAuthProviders(_: { token: string }): RepositoryResponse<UserAuthProviderInfo>;
     attachFacebookAccount(body: {
       facebookId: string;
       facebookToken: string;
@@ -46,6 +51,11 @@ export const getUserService = ({
     },
     detachFacebookAccount: async ({ token }) => {
       const data = await userRepository.detachFacebookAccount({ token });
+      if (data.type === 'success') return { type: 'success', data: data.data };
+      else return { type: 'error', message: getErrorMessage(data) };
+    },
+    getMyAuthProviders: async ({ token }) => {
+      const data = await userRepository.getMyAuthProviders({ token });
       if (data.type === 'success') return { type: 'success', data: data.data };
       else return { type: 'error', message: getErrorMessage(data) };
     },
