@@ -11,9 +11,7 @@ export default function MainBottomSheet() {
   const [isAnonymous, setIsAnonymous] = useState<boolean>(false);
 
   const { theme, setTheme } = useThemeStore((state) => state);
-
-  const { accessToken } = useUserStore((state) => state);
-  console.log(theme);
+  const { user, accessToken } = useUserStore((state) => state);
 
   const updateIsAnonymous = () => {
     setIsAnonymous((current) => !current);
@@ -30,14 +28,34 @@ export default function MainBottomSheet() {
       themeService.publishTheme(theme.id, theme.name, isAnonymous, accessToken);
   };
 
+  const downloadTheme = () => {
+    if (!theme) return;
+
+    const isConfirm = window.confirm(`해당 테마를 다운로드 하시겠습니까?`);
+
+    if (isConfirm) themeService.downloadTheme(theme.id, accessToken);
+  };
+
+  const isMyTheme = user.nickname.nickname === theme?.publishInfo.authorName;
+
+  const bottomSheetProps = isMyTheme
+    ? {
+        title: "내 테마 올리기",
+        confirmText: "등록",
+        onConfirm: () => publishTheme(),
+      }
+    : {
+        title: "테마 다운로드",
+        confirmText: "담기",
+        onConfirm: () => downloadTheme(),
+      };
+
   return (
     <>
       <BottomSheet
-        title="내 테마 올리기"
-        confirmText="등록"
         isOpen={!!theme}
         onCancel={() => setTheme(null)}
-        onConfirm={() => publishTheme()}
+        {...bottomSheetProps}
       >
         {theme && (
           <ThemeDetail

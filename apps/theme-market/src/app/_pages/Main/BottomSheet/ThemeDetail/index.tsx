@@ -33,17 +33,19 @@ export const ThemeDetail = ({
           </div>
         ))}
       </div>
-      <div className={styles.anonymous}>
-        <span>익명으로 올리기</span>
-        <label className={styles.switch}>
-          <input
-            type="checkbox"
-            checked={isAnonymous}
-            onClick={() => updateIsAnonymous()}
-          />
-          <span className={classNames(styles.slider, styles.round)} />
-        </label>
-      </div>
+      {theme.status != "PUBLISHED" && (
+        <div className={styles.anonymous}>
+          <span>익명으로 올리기</span>
+          <label className={styles.switch}>
+            <input
+              type="checkbox"
+              checked={isAnonymous}
+              onChange={() => updateIsAnonymous()}
+            />
+            <span className={classNames(styles.slider, styles.round)} />
+          </label>
+        </div>
+      )}
       <Preview colors={theme.colors} />
     </section>
   );

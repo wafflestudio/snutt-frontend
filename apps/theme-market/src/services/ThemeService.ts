@@ -13,6 +13,7 @@ type ThemeService = {
     isAnonymous: boolean,
     accessToken?: string
   ) => Promise<void>;
+  downloadTheme: (themeId: string, accessToken: string) => Promise<void>;
 };
 
 export const themeService: ThemeService = {
@@ -42,5 +43,8 @@ export const themeService: ThemeService = {
       isAnonymous,
       accessToken,
     });
+  },
+  downloadTheme: async (themeId: string, accessToken: string) => {
+    await themeRepositry.downloadTheme({ themeId, accessToken });
   },
 };

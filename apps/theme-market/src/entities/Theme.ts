@@ -4,6 +4,7 @@ export type Theme = {
   colors: ThemeColorInfo[];
   publishInfo: ThemePublishInfo;
   isCustom: Boolean;
+  status: string;
 };
 
 export type ThemeColorInfo = {

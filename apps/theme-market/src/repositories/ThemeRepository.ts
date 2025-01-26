@@ -37,6 +37,13 @@ type ThemeRepository = {
     isAnonymous: boolean;
     accessToken?: string;
   }) => Promise<void>;
+  downloadTheme: ({
+    themeId,
+    accessToken,
+  }: {
+    themeId: string;
+    accessToken: string;
+  }) => Promise<void>;
 };
 
 const DEFAULT_PAGE = 1;
@@ -81,5 +88,8 @@ export const themeRepositry: ThemeRepository = {
       { publishName, isAnonymous },
       accessToken
     );
+  },
+  downloadTheme: async ({ themeId, accessToken }) => {
+    await httpClient.post(`/v1/themes/${themeId}/download`, {}, accessToken);
   },
 };
