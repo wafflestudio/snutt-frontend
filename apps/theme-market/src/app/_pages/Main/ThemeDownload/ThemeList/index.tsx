@@ -2,9 +2,10 @@ import Image from "next/image";
 import styles from "./index.module.css";
 import { ThemeInfo } from "./ThemeInfo";
 
-import SvgChevronLeft from "@/assets/icons/svgChevronLeft.svg";
+import SvgChevronRight from "@/assets/icons/svgChevronRight.svg";
 import { NotFound } from "@/app/_components/Error/NotFound";
 import { Theme } from "@/entities/Theme";
+import Link from "next/link";
 
 interface Props {
   title: string;
@@ -24,10 +25,10 @@ export const ThemeList = ({ title, themes }: Props) => {
               return <ThemeInfo key={theme.id} theme={theme} />;
             })}
           </div>
-          <div className={styles.more}>
+          <Link className={styles.more} href="/download/best">
             <span>전체 보기</span>
-            <Image src={SvgChevronLeft} alt=">" />
-          </div>
+            <Image src={SvgChevronRight} alt=">" />
+          </Link>
         </>
       ) : (
         <div className={styles.notFound}>
