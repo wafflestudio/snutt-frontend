@@ -119,7 +119,7 @@ export const getSnuttApis = ({ callWithToken, callWithoutToken }: GetApiSpecsPar
         body,
         token,
       }),
-    'POST /v1/user/facebook': ({ body, token }: { body: { fb_id: string; fb_token: string }; token: string }) =>
+    'POST /v1/user/facebook': ({ body, token }: { body: { token: string }; token: string }) =>
       callWithToken<SuccessResponse<{ token: string }>>({
         method: 'post',
         path: `/v1/user/facebook`,
@@ -130,6 +130,32 @@ export const getSnuttApis = ({ callWithToken, callWithoutToken }: GetApiSpecsPar
       callWithToken<SuccessResponse<{ token: string }>>({
         method: 'delete',
         path: `/v1/user/facebook`,
+        token,
+      }),
+    'POST /v1/user/google': ({ body, token }: { body: { token: string }; token: string }) =>
+      callWithToken<SuccessResponse<{ token: string }>>({
+        method: 'post',
+        path: `/v1/user/google`,
+        body,
+        token,
+      }),
+    'DELETE /v1/user/google': ({ token }: { token: string }) =>
+      callWithToken<SuccessResponse<{ token: string }>>({
+        method: 'delete',
+        path: `/v1/user/google`,
+        token,
+      }),
+    'POST /v1/user/kakao': ({ body, token }: { body: { token: string }; token: string }) =>
+      callWithToken<SuccessResponse<{ token: string }>>({
+        method: 'post',
+        path: `/v1/user/kakao`,
+        body,
+        token,
+      }),
+    'DELETE /v1/user/kakao': ({ token }: { token: string }) =>
+      callWithToken<SuccessResponse<{ token: string }>>({
+        method: 'delete',
+        path: `/v1/user/kakao`,
         token,
       }),
     'GET /v1/users/me/auth-providers': ({ token }: { token: string }) =>

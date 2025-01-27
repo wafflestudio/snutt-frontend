@@ -1,3 +1,4 @@
+import { type TokenResponse, useGoogleLogin } from '@react-oauth/google';
 import { type UserAuthProviderInfo } from '@sf/snutt-api/src/apis/snutt/schemas';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
@@ -13,6 +14,7 @@ import { EnvContext } from '@/contexts/EnvContext';
 import { ServiceContext } from '@/contexts/ServiceContext';
 import { TokenAuthContext } from '@/contexts/TokenAuthContext';
 import { TokenManageContext } from '@/contexts/TokenManageContext';
+import { type AttachAuthRequest, type AuthProvider } from '@/entities/auth';
 import { useGuardContext } from '@/hooks/useGuardContext';
 
 import { MypageChangePassword } from './mypage-change-password';
@@ -30,8 +32,8 @@ export const MyPage = () => {
   const { data: authProviderInfo } = useMyAuthProviders();
   const navigate = useNavigate();
 
-  const { mutate: attach } = useAttachFacebook();
-  const { mutate: detach } = useDetachFacebook();
+  const { mutate: attach } = useAttachAuth();
+  const { mutate: detach } = useDetachAuth();
 
   const availableProviders =
     authProviderInfo?.type === 'success'
@@ -43,7 +45,9 @@ export const MyPage = () => {
     navigate('/');
   };
 
-  const googleLogin = () => {};
+  const attachGoogle = useGoogleLogin({
+    onSuccess: (tokenResponse: TokenResponse) => attach({ provider: 'GOOGLE', authToken: tokenResponse.access_token }),
+  });
 
   return (
     <Layout>
@@ -82,19 +86,20 @@ export const MyPage = () => {
           <RowLabel>페이스북</RowLabel>
           {availableProviders.includes('facebook') ? (
             <Button
-              // width=""
               style={{ width: '100%' }}
               variant="outlined"
               color="blue"
               data-testid="facebook-detach-button"
-              onClick={() => detach()}
+              onClick={() => detach('FACEBOOK')}
             >
               페이스북 연동 해지하기
             </Button>
           ) : (
             <FBLogin
               appId={FACEBOOK_APP_ID}
-              callback={attach}
+              callback={(userInfo: ReactFacebookLoginInfo) =>
+                attach({ provider: 'FACEBOOK', authToken: userInfo.accessToken })
+              }
               onFailure={({ status }: ReactFacebookFailureResponse) => alert(status || '')}
               render={({ onClick }) => (
                 <Button
@@ -113,23 +118,23 @@ export const MyPage = () => {
         <Row data-testid="google-row">
           <RowLabel>구글</RowLabel>
           {availableProviders.includes('google') ? (
-            <GoogleSignInButton variant="outlined" data-testid="google-detach-button" onClick={() => detach()}>
+            <GoogleSignInButton variant="outlined" data-testid="google-detach-button" onClick={() => detach('GOOGLE')}>
               구글 연동 해지하기
             </GoogleSignInButton>
           ) : (
-            <GoogleSignInButton onClick={() => googleLogin()}>구글 연동하기</GoogleSignInButton>
+            <GoogleSignInButton onClick={() => attachGoogle()}>구글 연동하기</GoogleSignInButton>
           )}
         </Row>
         <Row data-testid="kakao-row">
           <RowLabel>카카오</RowLabel>
           {availableProviders.includes('kakao') ? (
-            <GoogleSignInButton variant="outlined" data-testid="google-detach-button" onClick={() => detach()}>
+            <GoogleSignInButton variant="outlined" data-testid="kakao-detach-button" onClick={() => detach('KAKAO')}>
               카카오 연동 해지하기
             </GoogleSignInButton>
           ) : (
             <KakaoLogin
               token={KAKAO_APP_ID}
-              onSuccess={({ response }) => console.log(response)}
+              onSuccess={({ response }) => attach({ provider: 'KAKAO', authToken: response.access_token })}
               onFail={(e) => console.log(e)}
               render={({ onClick }) => <KakaoSignInButton onClick={onClick}>카카오로 로그인</KakaoSignInButton>}
             />
@@ -163,14 +168,14 @@ const useMyAuthProviders = () => {
   });
 };
 
-const useAttachFacebook = () => {
+const useAttachAuth = () => {
   const { saveToken } = useGuardContext(TokenManageContext);
   const { userService } = useGuardContext(ServiceContext);
   const { token } = useGuardContext(TokenAuthContext);
 
   return useMutation({
-    mutationFn: (userInfo: ReactFacebookLoginInfo) => {
-      return userService.attachFacebookAccount({ facebookId: userInfo.id, facebookToken: userInfo.accessToken, token });
+    mutationFn: (attachAuthRequest: AttachAuthRequest) => {
+      return userService.attachAuth({ ...attachAuthRequest, token });
     },
     onSuccess: (data) => {
       if (data.type === 'success') saveToken(data.data.token, false);
@@ -179,19 +184,33 @@ const useAttachFacebook = () => {
   });
 };
 
-const useDetachFacebook = () => {
+const useDetachAuth = () => {
   const { saveToken } = useGuardContext(TokenManageContext);
   const { token } = useGuardContext(TokenAuthContext);
   const { userService } = useGuardContext(ServiceContext);
 
   return useMutation({
-    mutationFn: () => userService.detachFacebookAccount({ token }),
+    mutationFn: (provider: AuthProvider) => userService.detachAuth({ provider, token }),
     onSuccess: (data) => {
       if (data.type === 'success') saveToken(data.data.token, false);
       else alert(data.message);
     },
   });
 };
+
+// const useDetachFacebook = () => {
+//   const { saveToken } = useGuardContext(TokenManageContext);
+//   const { token } = useGuardContext(TokenAuthContext);
+//   const { userService } = useGuardContext(ServiceContext);
+
+//   return useMutation({
+//     mutationFn: () => userService.detachFacebookAccount({ token }),
+//     onSuccess: (data) => {
+//       if (data.type === 'success') saveToken(data.data.token, false);
+//       else alert(data.message);
+//     },
+//   });
+// };
 
 const Wrapper = styled.div`
   width: 400px;

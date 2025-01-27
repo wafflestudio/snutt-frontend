@@ -38,16 +38,49 @@ export const implUserSnuttApiRepository = ({
       if (status === 200) return { type: 'success', data };
       return { type: 'error', errcode: data.errcode };
     },
-    attachFacebookAccount: async ({ facebookId, facebookToken, token }) => {
+    attachFacebook: async ({ authToken, token }) => {
       const { status, data } = await snuttApi['POST /v1/user/facebook']({
-        body: { fb_id: facebookId, fb_token: facebookToken },
+        body: { token: authToken },
         token,
       });
       if (status === 200) return { type: 'success', data };
       return { type: 'error', errcode: data.errcode };
     },
-    detachFacebookAccount: async ({ token }) => {
-      const { status, data } = await snuttApi['DELETE /v1/user/facebook']({ token });
+    attachGoogle: async ({ authToken, token }) => {
+      const { status, data } = await snuttApi['POST /v1/user/google']({
+        body: { token: authToken },
+        token,
+      });
+      if (status === 200) return { type: 'success', data };
+      return { type: 'error', errcode: data.errcode };
+    },
+    attachKakao: async ({ authToken, token }) => {
+      const { status, data } = await snuttApi['POST /v1/user/kakao']({
+        body: { token: authToken },
+        token,
+      });
+      if (status === 200) return { type: 'success', data };
+      return { type: 'error', errcode: data.errcode };
+    },
+    detachFacebook: async ({ token }) => {
+      const { status, data } = await snuttApi['DELETE /v1/user/facebook']({
+        // body: { token: authToken },
+        token,
+      });
+      if (status === 200) return { type: 'success', data };
+      return { type: 'error', errcode: data.errcode };
+    },
+    detachGoogle: async ({ token }) => {
+      const { status, data } = await snuttApi['DELETE /v1/user/google']({
+        token,
+      });
+      if (status === 200) return { type: 'success', data };
+      return { type: 'error', errcode: data.errcode };
+    },
+    detachKakao: async ({ token }) => {
+      const { status, data } = await snuttApi['DELETE /v1/user/kakao']({
+        token,
+      });
       if (status === 200) return { type: 'success', data };
       return { type: 'error', errcode: data.errcode };
     },
