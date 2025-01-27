@@ -198,20 +198,6 @@ const useDetachAuth = () => {
   });
 };
 
-// const useDetachFacebook = () => {
-//   const { saveToken } = useGuardContext(TokenManageContext);
-//   const { token } = useGuardContext(TokenAuthContext);
-//   const { userService } = useGuardContext(ServiceContext);
-
-//   return useMutation({
-//     mutationFn: () => userService.detachFacebookAccount({ token }),
-//     onSuccess: (data) => {
-//       if (data.type === 'success') saveToken(data.data.token, false);
-//       else alert(data.message);
-//     },
-//   });
-// };
-
 const Wrapper = styled.div`
   width: 400px;
   margin: 0 auto;
