@@ -6,12 +6,16 @@ import { themeService } from "@/services/ThemeService";
 import SvgChevronLeft from "@/assets/icons/svgChevronLeft.svg";
 
 import styles from "./index.module.css";
-import { ThemeInfo } from "../ThemeList/ThemeInfo";
+import { DEFAULT_PAGE } from "@/repositories/ThemeRepository";
+import { ThemeListWithInifiniteScorll } from "@/app/_components/Theme/List/ThemeListWithInfiniteScroll";
 import Link from "next/link";
 
 export const BestPage = async () => {
   const accessToken = cookieService.getAccessToken();
-  const themes = await themeService.getBestThemes(accessToken);
+  const { content: themes } = await themeService.getBestThemes(
+    DEFAULT_PAGE,
+    accessToken
+  );
 
   return (
     <>
@@ -22,9 +26,7 @@ export const BestPage = async () => {
           <span>돌아가기</span>
         </Link>
         <div className={styles.themes}>
-          {themes.map((theme) => {
-            return <ThemeInfo key={theme.id} theme={theme} />;
-          })}
+          <ThemeListWithInifiniteScorll defaultThemes={themes} />
         </div>
       </section>
     </>

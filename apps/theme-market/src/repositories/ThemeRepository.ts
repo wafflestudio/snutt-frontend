@@ -18,7 +18,7 @@ type ThemeRepository = {
   }: {
     page?: number;
     accessToken?: string;
-  }) => Promise<Theme[]>;
+  }) => Promise<PageResponse<Theme>>;
   getFriendsThemes: ({
     page,
     accessToken,
@@ -46,7 +46,7 @@ type ThemeRepository = {
   }) => Promise<void>;
 };
 
-const DEFAULT_PAGE = 1;
+export const DEFAULT_PAGE = 1;
 
 export const themeRepositry: ThemeRepository = {
   getTheme: async ({ id, accessToken }) => {
@@ -68,7 +68,7 @@ export const themeRepositry: ThemeRepository = {
       accessToken
     );
 
-    return res.content;
+    return res;
   },
   getFriendsThemes: async ({ page, accessToken }) => {
     const params = new URLSearchParams({

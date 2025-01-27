@@ -1,3 +1,4 @@
+import { PageResponse } from "@/entities/Page";
 import { Theme } from "@/entities/Theme";
 
 import { themeRepositry } from "@/repositories/ThemeRepository";
@@ -5,7 +6,10 @@ import { themeRepositry } from "@/repositories/ThemeRepository";
 type ThemeService = {
   getTheme: (id: string, accessToken?: string) => Promise<Theme>;
   getMyThemes: (accessToken?: string) => Promise<Theme[]>;
-  getBestThemes: (accessToken?: string) => Promise<Theme[]>;
+  getBestThemes: (
+    page?: number,
+    accessToken?: string
+  ) => Promise<PageResponse<Theme>>;
   getFriendsThemes: (accessToken?: string) => Promise<Theme[]>;
   publishTheme: (
     themeId: string,
@@ -25,8 +29,8 @@ export const themeService: ThemeService = {
       (theme) => theme.isCustom
     );
   },
-  getBestThemes: async (accessToken?: string) => {
-    return await themeRepositry.getBestThemes({ accessToken });
+  getBestThemes: async (page?: number, accessToken?: string) => {
+    return await themeRepositry.getBestThemes({ page, accessToken });
   },
   getFriendsThemes: async (accessToken?: string) => {
     return await themeRepositry.getFriendsThemes({ accessToken });

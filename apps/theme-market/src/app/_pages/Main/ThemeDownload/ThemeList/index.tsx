@@ -1,6 +1,6 @@
 import Image from "next/image";
 import styles from "./index.module.css";
-import { ThemeInfo } from "./ThemeInfo";
+import { ThemeInfo } from "../../../../_components/Theme/Info";
 
 import SvgChevronRight from "@/assets/icons/svgChevronRight.svg";
 import { NotFound } from "@/app/_components/Error/NotFound";
