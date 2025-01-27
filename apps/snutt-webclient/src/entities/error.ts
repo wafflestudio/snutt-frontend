@@ -1,4 +1,4 @@
-export type CoreServerError = { errcode: number; message: string; ext: unknown };
+export type CoreServerError = { errcode: number; message: string; ext: unknown; displayMessage?: string };
 
 export type ErrorTable = Record<number, string>;
 
@@ -66,7 +66,9 @@ const errors = [
   { code: 16390, message: '등록된 이메일이 없습니다' },
 ];
 
-export const getErrorMessage = ({ errcode }: { errcode: number }): string => {
+export const getErrorMessage = ({ errcode, displayMessage }: { errcode: number; displayMessage?: string }): string => {
+  if (displayMessage) return displayMessage;
+
   const matchingError = errors.find((e) => e.code === errcode);
   return matchingError ? matchingError.message : '오류가 발생했습니다';
 };
