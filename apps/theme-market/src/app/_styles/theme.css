@@ -7,9 +7,14 @@
 }
 
 :root[data-theme="dark"] {
-  --color-bg-default: var(--palette-dark);
+  --color-bg-default: var(--palette-white);
 
   --color-border-default: var(--palette-gray);
 
-  --color-text-default: var(--palette-white);
+  --color-text-default: var(--palette-black);
+  /* --color-bg-default: var(--palette-dark);
+
+  --color-border-default: var(--palette-gray);
+
+  --color-text-default: var(--palette-white); */
 }
