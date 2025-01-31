@@ -1,15 +1,23 @@
-import { MENU } from "@/entities/Menu";
-import { Input } from "../Input";
-import { Tab } from "../Tab";
-import { TabContent } from "../Tab/TabContent";
-import styles from "./index.module.css";
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+import { MENU } from "@/entities/Menu";
+
+import { TabContent } from "@/app/_components/Tab/TabContent";
+import { Tab } from "@/app/_components/Tab";
+import { Input } from "@/app/_components/Input";
+
+import styles from "./index.module.css";
 
 interface Props {
   menu: MENU;
 }
 
 export const MainHeader = ({ menu }: Props) => {
+  const router = useRouter();
+
   return (
     <section className={styles.header}>
       <div className={styles.inputWrapper}>
@@ -17,6 +25,7 @@ export const MainHeader = ({ menu }: Props) => {
           className={styles.input}
           placeholder="테마를 검색해보세요"
           type="search"
+          onComplete={(value: String) => router.push(`/search/${value}`)}
         />
       </div>
       <Tab>

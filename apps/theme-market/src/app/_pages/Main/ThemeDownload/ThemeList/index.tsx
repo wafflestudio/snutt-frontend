@@ -1,11 +1,13 @@
 import Image from "next/image";
 import styles from "./index.module.css";
-import { ThemeInfo } from "../../../../_components/Theme/Info";
+import Link from "next/link";
+
+import { NotFound } from "@/app/_components/Error/NotFound";
+import { ThemeInfoList } from "@/app/_components/Theme/List/ThemeInfoList";
+
+import { Theme } from "@/entities/Theme";
 
 import SvgChevronRight from "@/assets/icons/svgChevronRight.svg";
-import { NotFound } from "@/app/_components/Error/NotFound";
-import { Theme } from "@/entities/Theme";
-import Link from "next/link";
 
 interface Props {
   title: string;
@@ -21,9 +23,7 @@ export const ThemeList = ({ title, themes }: Props) => {
       {themeExists ? (
         <>
           <div className={styles.themeList}>
-            {themes.map((theme) => {
-              return <ThemeInfo key={theme.id} theme={theme} />;
-            })}
+            <ThemeInfoList themes={themes} />
           </div>
           <Link className={styles.more} href="/download/best">
             <span>전체 보기</span>

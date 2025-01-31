@@ -4,7 +4,7 @@ import { ThemeDownload } from "./ThemeDownload";
 import { MyTheme } from "./MyTheme";
 
 import styles from "./index.module.css";
-import { MainHeader } from "@/app/_components/Header/MainHeader";
+import { MainHeader } from "@/app/_pages/Main/Header/MainHeader";
 
 interface Props {
   menu: MENU;

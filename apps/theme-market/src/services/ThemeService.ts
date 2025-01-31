@@ -4,6 +4,7 @@ import { Theme } from "@/entities/Theme";
 import { themeRepositry } from "@/repositories/ThemeRepository";
 
 type ThemeService = {
+  search: (query: string, accessToken?: string) => Promise<Theme[]>;
   getTheme: (id: string, accessToken?: string) => Promise<Theme>;
   getMyThemes: (accessToken?: string) => Promise<Theme[]>;
   getBestThemes: (
@@ -21,6 +22,9 @@ type ThemeService = {
 };
 
 export const themeService: ThemeService = {
+  search: async (query: string, accessToken?: string) => {
+    return (await themeRepositry.search({ query, accessToken })).content;
+  },
   getTheme: async (id: string, accessToken?: string) => {
     return await themeRepositry.getTheme({ id, accessToken });
   },

@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 import { cookieService } from "@/services/CookieService";
-import { MainHeader } from "@/app/_components/Header/MainHeader";
+import { MainHeader } from "@/app/_pages/Main/Header/MainHeader";
 import { themeService } from "@/services/ThemeService";
 import SvgChevronLeft from "@/assets/icons/svgChevronLeft.svg";
 

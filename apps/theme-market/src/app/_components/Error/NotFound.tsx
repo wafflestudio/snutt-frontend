@@ -2,7 +2,6 @@ import Image from "next/image";
 import styles from "./index.module.css";
 
 import SvgCat from "@/assets/icons/svgCat.svg";
-import { ReactNode } from "react";
 
 interface Props {
   message?: string;
