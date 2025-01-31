@@ -2,11 +2,15 @@ import { themeService } from "@/services/ThemeService";
 
 import { ThemeList } from "./ThemeList";
 import { cookieService } from "@/services/CookieService";
+import { DEFAULT_PAGE } from "@/repositories/ThemeRepository";
 
 export const ThemeDownload = async () => {
   const accessToken = cookieService.getAccessToken();
 
-  const bestThemes = await themeService.getBestThemes(accessToken);
+  const { content: bestThemes } = await themeService.getBestThemes(
+    DEFAULT_PAGE,
+    accessToken
+  );
   const friendsThemes = await themeService.getFriendsThemes(accessToken);
 
   return (

@@ -4,6 +4,13 @@ import { PageResponse } from "@/entities/Page";
 import { Theme } from "@/entities/Theme";
 
 type ThemeRepository = {
+  search: ({
+    query,
+    accessToken,
+  }: {
+    query: string;
+    accessToken?: string;
+  }) => Promise<PageResponse<Theme>>;
   getTheme: ({
     id,
     accessToken,
@@ -18,7 +25,7 @@ type ThemeRepository = {
   }: {
     page?: number;
     accessToken?: string;
-  }) => Promise<Theme[]>;
+  }) => Promise<PageResponse<Theme>>;
   getFriendsThemes: ({
     page,
     accessToken,
@@ -46,9 +53,28 @@ type ThemeRepository = {
   }) => Promise<void>;
 };
 
-const DEFAULT_PAGE = 1;
+export const DEFAULT_PAGE = 1;
 
 export const themeRepositry: ThemeRepository = {
+  search: async ({ query, accessToken }) => {
+    const params = new URLSearchParams({
+      query,
+    });
+
+    try {
+      const res = await httpClient.get<PageResponse<Theme>>(
+        `/v1/themes/search?${params}`,
+        accessToken
+      );
+
+      return res;
+    } catch {
+      return {
+        content: [],
+        totalCount: 0,
+      };
+    }
+  },
   getTheme: async ({ id, accessToken }) => {
     const res = await httpClient.get<Theme>(`/v1/themes/${id}`, accessToken);
 
@@ -68,7 +94,7 @@ export const themeRepositry: ThemeRepository = {
       accessToken
     );
 
-    return res.content;
+    return res;
   },
   getFriendsThemes: async ({ page, accessToken }) => {
     const params = new URLSearchParams({

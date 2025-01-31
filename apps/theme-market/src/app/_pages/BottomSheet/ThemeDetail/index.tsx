@@ -1,10 +1,10 @@
 "use client";
 
-import { Theme } from "@/entities/Theme";
-import styles from "./index.module.css";
-import { Preview } from "./Preview";
 import classNames from "classnames";
 
+import { Theme } from "@/entities/Theme";
+import { Preview } from "./Preview";
+import styles from "./index.module.css";
 interface Props {
   theme: Theme;
   isAnonymous: boolean;

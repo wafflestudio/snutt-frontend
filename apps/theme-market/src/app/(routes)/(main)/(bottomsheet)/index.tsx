@@ -1,7 +1,7 @@
 "use client";
 
 import { BottomSheet } from "@/app/_components/BottomSheet";
-import { ThemeDetail } from "@/app/_pages/Main/BottomSheet/ThemeDetail";
+import { ThemeDetail } from "@/app/_pages/BottomSheet/ThemeDetail";
 import { useThemeStore } from "@/app/_providers/ThemeProvider";
 import { useUserStore } from "@/app/_providers/UserProvider";
 import { themeService } from "@/services/ThemeService";

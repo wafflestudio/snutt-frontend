@@ -1,10 +1,13 @@
 import Image from "next/image";
 import styles from "./index.module.css";
-import { ThemeInfo } from "./ThemeInfo";
+import Link from "next/link";
 
-import SvgChevronLeft from "@/assets/icons/svgChevronLeft.svg";
 import { NotFound } from "@/app/_components/Error/NotFound";
+import { ThemeInfoList } from "@/app/_components/Theme/List/ThemeInfoList";
+
 import { Theme } from "@/entities/Theme";
+
+import SvgChevronRight from "@/assets/icons/svgChevronRight.svg";
 
 interface Props {
   title: string;
@@ -20,14 +23,12 @@ export const ThemeList = ({ title, themes }: Props) => {
       {themeExists ? (
         <>
           <div className={styles.themeList}>
-            {themes.map((theme) => {
-              return <ThemeInfo key={theme.id} theme={theme} />;
-            })}
+            <ThemeInfoList themes={themes} />
           </div>
-          <div className={styles.more}>
+          <Link className={styles.more} href="/download/best">
             <span>전체 보기</span>
-            <Image src={SvgChevronLeft} alt=">" />
-          </div>
+            <Image src={SvgChevronRight} alt=">" />
+          </Link>
         </>
       ) : (
         <div className={styles.notFound}>
