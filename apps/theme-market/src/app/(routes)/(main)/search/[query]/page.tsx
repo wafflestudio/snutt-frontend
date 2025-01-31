@@ -5,6 +5,6 @@ interface Props {
 }
 
 export default async function SearchPageRoute({ params }: Props) {
-  const query = (await params).query;
+  const query = decodeURIComponent((await params).query);
   return <SearchPage query={query} />;
 }
