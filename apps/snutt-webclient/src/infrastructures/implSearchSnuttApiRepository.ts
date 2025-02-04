@@ -16,6 +16,7 @@ export const implSearchSnuttApiRepository = ({
           data: {
             academicYear: data.academic_year,
             category: data.category,
+            categoryPre2025: data.categoryPre2025 ?? [],
             classification: data.classification,
             credit: data.credit,
             department: data.department,
@@ -31,6 +32,7 @@ export const implSearchSnuttApiRepository = ({
         body: {
           academic_year: filter.academicYear,
           category: filter.category,
+          categoryPre2025: filter.categoryPre2025,
           classification: filter.classification,
           credit: filter.credit,
           department: filter.department,

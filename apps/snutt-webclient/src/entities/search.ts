@@ -10,6 +10,7 @@ export type SearchFilter = {
   semester: Semester;
   academicYear: string[];
   category: string[];
+  categoryPre2025: string[];
   credit: number[];
   department: string[];
   classification: string[];

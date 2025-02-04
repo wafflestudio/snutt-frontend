@@ -9,7 +9,10 @@ export interface SearchService {
     semester: number;
     token: string;
   }): UsecaseResponse<
-    Record<'academicYear' | 'category' | 'classification' | 'credit' | 'department' | 'instructor', string[]>
+    Record<
+      'academicYear' | 'category' | 'categoryPre2025' | 'classification' | 'credit' | 'department' | 'instructor',
+      string[]
+    >
   >;
   search(_: { token: string; params: Filter }): UsecaseResponse<SearchResultLecture[]>;
 }
@@ -23,7 +26,10 @@ export const getSearchService = ({
       year: number;
       semester: number;
     }): RepositoryResponse<
-      Record<'academicYear' | 'category' | 'classification' | 'credit' | 'department' | 'instructor', string[]>
+      Record<
+        'academicYear' | 'category' | 'categoryPre2025' | 'classification' | 'credit' | 'department' | 'instructor',
+        string[]
+      >
     >;
     search(_: {
       token: string;
