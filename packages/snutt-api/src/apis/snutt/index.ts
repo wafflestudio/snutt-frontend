@@ -87,6 +87,7 @@ export const getSnuttApis = ({ callWithToken, callWithoutToken }: GetApiSpecsPar
         SuccessResponse<{
           academic_year: string[];
           category: string[];
+          categoryPre2025?: string[];
           classification: string[];
           credit: string[];
           department: string[];

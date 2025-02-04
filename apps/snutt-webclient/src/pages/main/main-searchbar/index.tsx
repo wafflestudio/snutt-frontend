@@ -27,6 +27,7 @@ export type SearchForm = {
   title: SearchFilter['title'];
   academicYear: SearchFilter['academicYear'];
   category: SearchFilter['category'];
+  categoryPre2025: SearchFilter['categoryPre2025'];
   credit: SearchFilter['credit'];
   etc: SearchFilter['etc'];
   classification: SearchFilter['classification'];
@@ -40,6 +41,7 @@ const initialForm = {
   credit: [],
   etc: [],
   category: [],
+  categoryPre2025: [],
   classification: [],
   department: [],
   timeType: null,
@@ -73,6 +75,7 @@ export const MainSearchbar = ({ onSearch, currentFullTimetable, resetSearchResul
       params: {
         academicYear: undefinedIfEmpty(searchForm.academicYear),
         category: undefinedIfEmpty(searchForm.category),
+        categoryPre2025: undefinedIfEmpty(searchForm.categoryPre2025),
         classification: undefinedIfEmpty(searchForm.classification),
         credit: undefinedIfEmpty(searchForm.credit),
         department: undefinedIfEmpty(searchForm.department),
@@ -95,7 +98,9 @@ export const MainSearchbar = ({ onSearch, currentFullTimetable, resetSearchResul
 
   const onChangeBitMask = (manualBitmask: number[]) => setSearchForm((sf) => ({ ...sf, manualBitmask }));
 
-  const onChangeCheckbox = <F extends 'academicYear' | 'category' | 'classification' | 'credit' | 'department' | 'etc'>(
+  const onChangeCheckbox = <
+    F extends 'academicYear' | 'category' | 'categoryPre2025' | 'classification' | 'credit' | 'department' | 'etc',
+  >(
     field: F,
     e: SearchForm[F][number],
   ) => {

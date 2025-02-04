@@ -163,6 +163,7 @@ export type SearchQueryLegacy = {
   academic_year?: string[];
   department?: string[];
   category?: string[];
+  categoryPre2025?: string[];
   time_mask?: Int32[];
   times?: SearchTimeDto[];
   timesToExclude?: SearchTimeDto[];

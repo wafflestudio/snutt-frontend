@@ -18,7 +18,9 @@ type Props = {
   onSubmit: () => void;
   onReset: null | (() => void);
   searchForm: SearchForm;
-  onChangeCheckbox: <F extends 'academicYear' | 'category' | 'classification' | 'credit' | 'department' | 'etc'>(
+  onChangeCheckbox: <
+    F extends 'academicYear' | 'category' | 'categoryPre2025' | 'classification' | 'credit' | 'department' | 'etc',
+  >(
     field: F,
     e: SearchForm[F][number],
   ) => void;
@@ -39,9 +41,11 @@ export const MainSearchbarFilterDialog = ({
   onChangeDepartment,
 }: Props) => {
   const [isTimeModalOpen, setTimeModalOpen] = useState(false);
-  const { data } = useSearchFilterTags();
+  const { data, year } = useSearchFilterTags();
 
   const tags = data?.type === 'success' ? data.data : undefined;
+
+  const isAfter2025 = year >= 2025;
 
   return (
     <StyledDialog open={open} onClose={onClose}>
@@ -109,50 +113,101 @@ export const MainSearchbarFilterDialog = ({
               ))}
             </RowContent>
           </Row>
-          <Row>
-            <RowLabel>학문의 기초</RowLabel>
-            <RowContent>
-              {tags?.category
-                .filter((c) =>
-                  ['사고와 표현', '외국어', '수량적 분석과 추론', '과학적 사고와 실험', '컴퓨터와 정보 활용'].includes(
-                    c,
-                  ),
-                )
-                .map((c) => (
-                  <Checkbox field="category" key={c} value={c} searchForm={searchForm} onChange={onChangeCheckbox} />
-                ))}
-            </RowContent>
-          </Row>
-          <Row>
-            <RowLabel>학문의 세계</RowLabel>
-            <RowContent>
-              {tags?.category
-                .filter((c) =>
-                  [
-                    '언어와 문학',
-                    '문화와 예술',
-                    '역사와 철학',
-                    '정치와 경제',
-                    '인간과 사회',
-                    '자연과 기술',
-                    '생명과 환경',
-                  ].includes(c),
-                )
-                .map((c) => (
-                  <Checkbox field="category" key={c} value={c} searchForm={searchForm} onChange={onChangeCheckbox} />
-                ))}
-            </RowContent>
-          </Row>
-          <Row>
-            <RowLabel>선택 교양</RowLabel>
-            <RowContent>
-              {tags?.category
-                .filter((c) => ['체육', '예술실기', '대학과 리더십', '창의와 융합', '한국의 이해'].includes(c))
-                .map((c) => (
-                  <Checkbox field="category" key={c} value={c} searchForm={searchForm} onChange={onChangeCheckbox} />
-                ))}
-            </RowContent>
-          </Row>
+          {isAfter2025 ? (
+            <>
+              <Row>
+                <RowLabel>교양영역</RowLabel>
+                <RowContent>
+                  {tags?.category.map((c) => (
+                    <Checkbox field="category" key={c} value={c} searchForm={searchForm} onChange={onChangeCheckbox} />
+                  ))}
+                </RowContent>
+              </Row>
+              <Row>
+                <RowLabel>(구)교양영역</RowLabel>
+                <RowContent>
+                  {tags?.categoryPre2025.map((c) => (
+                    <Checkbox
+                      field="categoryPre2025"
+                      key={c}
+                      value={c}
+                      searchForm={searchForm}
+                      onChange={onChangeCheckbox}
+                    />
+                  ))}
+                </RowContent>
+              </Row>
+            </>
+          ) : (
+            <>
+              <Row>
+                <RowLabel>학문의 기초</RowLabel>
+                <RowContent>
+                  {tags?.category
+                    .filter((c) =>
+                      [
+                        '사고와 표현',
+                        '외국어',
+                        '수량적 분석과 추론',
+                        '과학적 사고와 실험',
+                        '컴퓨터와 정보 활용',
+                      ].includes(c),
+                    )
+                    .map((c) => (
+                      <Checkbox
+                        field="category"
+                        key={c}
+                        value={c}
+                        searchForm={searchForm}
+                        onChange={onChangeCheckbox}
+                      />
+                    ))}
+                </RowContent>
+              </Row>
+              <Row>
+                <RowLabel>학문의 세계</RowLabel>
+                <RowContent>
+                  {tags?.category
+                    .filter((c) =>
+                      [
+                        '언어와 문학',
+                        '문화와 예술',
+                        '역사와 철학',
+                        '정치와 경제',
+                        '인간과 사회',
+                        '자연과 기술',
+                        '생명과 환경',
+                      ].includes(c),
+                    )
+                    .map((c) => (
+                      <Checkbox
+                        field="category"
+                        key={c}
+                        value={c}
+                        searchForm={searchForm}
+                        onChange={onChangeCheckbox}
+                      />
+                    ))}
+                </RowContent>
+              </Row>
+              <Row>
+                <RowLabel>선택 교양</RowLabel>
+                <RowContent>
+                  {tags?.category
+                    .filter((c) => ['체육', '예술실기', '대학과 리더십', '창의와 융합', '한국의 이해'].includes(c))
+                    .map((c) => (
+                      <Checkbox
+                        field="category"
+                        key={c}
+                        value={c}
+                        searchForm={searchForm}
+                        onChange={onChangeCheckbox}
+                      />
+                    ))}
+                </RowContent>
+              </Row>
+            </>
+          )}
           <Row>
             <RowLabel>기타</RowLabel>
             <RowContent>
@@ -237,7 +292,9 @@ export const MainSearchbarFilterDialog = ({
   );
 };
 
-const Checkbox = <F extends 'academicYear' | 'category' | 'classification' | 'credit' | 'department' | 'etc'>({
+const Checkbox = <
+  F extends 'academicYear' | 'category' | 'categoryPre2025' | 'classification' | 'credit' | 'department' | 'etc',
+>({
   value,
   label,
   searchForm,
@@ -268,11 +325,14 @@ const useSearchFilterTags = () => {
   const { searchService } = useGuardContext(ServiceContext);
   const { token } = useGuardContext(TokenAuthContext);
 
-  return useQuery({
-    queryKey: ['SearchService', 'getTags', { ...ys, token }] as const,
-    queryFn: ({ queryKey }) => searchService.getTags(queryKey[2]),
-    staleTime: Infinity,
-  });
+  return {
+    ...useQuery({
+      queryKey: ['SearchService', 'getTags', { ...ys, token }] as const,
+      queryFn: ({ queryKey }) => searchService.getTags(queryKey[2]),
+      staleTime: Infinity,
+    }),
+    year: ys.year,
+  };
 };
 
 const StyledDialog = styled(Dialog)`
@@ -291,6 +351,7 @@ const Row = styled.div`
   display: flex;
   margin-bottom: 24px;
   font-size: 14px;
+  max-width: 1300px;
 `;
 
 const RowLabel = styled.div`

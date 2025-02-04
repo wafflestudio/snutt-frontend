@@ -272,5 +272,6 @@ export const mockTags: SnuttApiSuccessResponseData<'GET /v1/tags/:year/:semester
     '체육',
     '컴퓨터와 정보 활용',
   ],
+  categoryPre2025: [],
   updated_at: 1672231517496,
 };
