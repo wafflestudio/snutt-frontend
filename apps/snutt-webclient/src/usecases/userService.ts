@@ -44,10 +44,13 @@ export const getUserService = ({
       switch (body.provider) {
         case 'FACEBOOK':
           data = await userRepository.attachFacebook(body);
+          break;
         case 'GOOGLE':
           data = await userRepository.attachGoogle(body);
+          break;
         case 'KAKAO':
           data = await userRepository.attachKakao(body);
+          break;
       }
 
       if (data.type === 'success') return { type: 'success', data: data.data };
@@ -58,10 +61,13 @@ export const getUserService = ({
       switch (body.provider) {
         case 'FACEBOOK':
           data = await userRepository.detachFacebook(body);
+          break;
         case 'GOOGLE':
           data = await userRepository.detachGoogle(body);
+          break;
         case 'KAKAO':
           data = await userRepository.detachKakao(body);
+          break;
       }
 
       if (data.type === 'success') return { type: 'success', data: data.data };
