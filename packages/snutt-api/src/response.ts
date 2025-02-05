@@ -9,5 +9,5 @@ export type ErrorResponse<
   Ext extends Record<string, never> = Record<string, never>,
 > = {
   status: Status;
-  data: { errcode: Errcode; ext: Ext; message: string };
+  data: { errcode: Errcode; ext: Ext; message: string; displayMessage?: string };
 };
