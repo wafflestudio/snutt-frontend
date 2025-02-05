@@ -109,7 +109,7 @@ export const MyPage = () => {
                   data-testid="facebook-attach-button"
                   onClick={onClick}
                 >
-                  페이스북 연동 하기
+                  페이스북 연동하기
                 </Button>
               )}
             />
@@ -136,7 +136,7 @@ export const MyPage = () => {
               token={KAKAO_APP_ID}
               onSuccess={({ response }) => attach({ provider: 'KAKAO', authToken: response.access_token })}
               onFail={(e) => console.log(e)}
-              render={({ onClick }) => <KakaoSignInButton onClick={onClick}>카카오로 로그인</KakaoSignInButton>}
+              render={({ onClick }) => <KakaoSignInButton onClick={onClick}>카카오 연동하기</KakaoSignInButton>}
             />
           )}
         </Row>
