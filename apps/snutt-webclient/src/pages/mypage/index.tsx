@@ -128,9 +128,9 @@ export const MyPage = () => {
         <Row data-testid="kakao-row">
           <RowLabel>카카오</RowLabel>
           {availableProviders.includes('kakao') ? (
-            <GoogleSignInButton variant="outlined" data-testid="kakao-detach-button" onClick={() => detach('KAKAO')}>
+            <KakaoSignInButton variant="outlined" data-testid="kakao-detach-button" onClick={() => detach('KAKAO')}>
               카카오 연동 해지하기
-            </GoogleSignInButton>
+            </KakaoSignInButton>
           ) : (
             <KakaoLogin
               token={KAKAO_APP_ID}
