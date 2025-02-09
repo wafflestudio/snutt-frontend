@@ -1,3 +1,5 @@
+import { ApiError } from "@/entities/Error";
+
 type HttpClient = {
   get: <T = unknown>(url: string, accessToken?: string) => Promise<T>;
   post: <T = unknown, B = unknown>(
@@ -31,7 +33,14 @@ export const httpClient: HttpClient = {
     const data = await response.json().catch(() => null);
 
     if (response.ok) return data;
-    else throw data;
+    else {
+      const error = new Error() as ApiError;
+      error.name = "API_ERROR";
+      error.displayMessage = data.displayMessage;
+      error.message = data.message;
+      error.errCode = data.errCode;
+      throw error;
+    }
   },
   post: async (url, body, accessToken) => {
     const headers = {
@@ -47,6 +56,13 @@ export const httpClient: HttpClient = {
     const data = await response.json().catch(() => null);
 
     if (response.ok) return data;
-    else throw data;
+    else {
+      const error = new Error() as ApiError;
+      error.name = "API_ERROR";
+      error.displayMessage = data.displayMessage;
+      error.message = data.message;
+      error.errCode = data.errCode;
+      throw error;
+    }
   },
 };
