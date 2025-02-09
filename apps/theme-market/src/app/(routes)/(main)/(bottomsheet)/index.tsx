@@ -1,17 +1,18 @@
 "use client";
 
+import { useState } from "react";
+
 import { BottomSheet } from "@/app/_components/BottomSheet";
 import { ThemeDetail } from "@/app/_pages/BottomSheet/ThemeDetail";
 import { useThemeStore } from "@/app/_providers/ThemeProvider";
 import { useUserStore } from "@/app/_providers/UserProvider";
 import { themeService } from "@/services/ThemeService";
-import { useState } from "react";
 
 export default function MainBottomSheet() {
   const [isAnonymous, setIsAnonymous] = useState<boolean>(false);
 
   const { theme, setTheme } = useThemeStore((state) => state);
-  const { user, accessToken } = useUserStore((state) => state);
+  const { accessToken } = useUserStore((state) => state);
 
   const updateIsAnonymous = () => {
     setIsAnonymous((current) => !current);
@@ -33,21 +34,22 @@ export default function MainBottomSheet() {
 
     const isConfirm = window.confirm(`해당 테마를 다운로드 하시겠습니까?`);
 
-    if (isConfirm) themeService.downloadTheme(theme.id, accessToken);
+    if (isConfirm)
+      themeService.downloadTheme(theme.id, theme.name, accessToken);
   };
 
-  const isMyTheme = user.nickname.nickname === theme?.publishInfo.authorName;
+  const isPublished = theme?.status !== "PRIVATE";
 
-  const bottomSheetProps = isMyTheme
+  const bottomSheetProps = isPublished
     ? {
-        title: "내 테마 올리기",
-        confirmText: "등록",
-        onConfirm: () => publishTheme(),
-      }
-    : {
         title: "테마 다운로드",
         confirmText: "담기",
         onConfirm: () => downloadTheme(),
+      }
+    : {
+        title: "내 테마 올리기",
+        confirmText: "등록",
+        onConfirm: () => publishTheme(),
       };
 
   return (
