@@ -46,9 +46,11 @@ type ThemeRepository = {
   }) => Promise<void>;
   downloadTheme: ({
     themeId,
+    name,
     accessToken,
   }: {
     themeId: string;
+    name: string;
     accessToken: string;
   }) => Promise<void>;
 };
@@ -115,7 +117,11 @@ export const themeRepositry: ThemeRepository = {
       accessToken
     );
   },
-  downloadTheme: async ({ themeId, accessToken }) => {
-    await httpClient.post(`/v1/themes/${themeId}/download`, {}, accessToken);
+  downloadTheme: async ({ themeId, name, accessToken }) => {
+    await httpClient.post(
+      `/v1/themes/${themeId}/download`,
+      { name },
+      accessToken
+    );
   },
 };
