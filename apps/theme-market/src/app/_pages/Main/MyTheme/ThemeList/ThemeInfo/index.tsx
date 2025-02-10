@@ -18,7 +18,7 @@ export const ThemeInfo = ({ theme }: Props) => {
   return (
     <article className={styles.wrapper} onClick={() => setTheme(theme)}>
       <Preview colors={colors} />
-      <span className={styles.title}>{theme.name}</span>
+      <span className={styles.title}>제목이길어요오오오오오옹</span>
     </article>
   );
 };
