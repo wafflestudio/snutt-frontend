@@ -1,13 +1,13 @@
 import Image from "next/image";
-import styles from "./index.module.css";
 import Link from "next/link";
 
 import { NotFound } from "@/app/_components/Error/NotFound";
 import { ThemeInfoList } from "@/app/_components/Theme/List/ThemeInfoList";
-
 import { Theme } from "@/entities/Theme";
 
 import SvgChevronRight from "@/assets/icons/svgChevronRight.svg";
+
+import styles from "./index.module.css";
 
 interface Props {
   title: string;

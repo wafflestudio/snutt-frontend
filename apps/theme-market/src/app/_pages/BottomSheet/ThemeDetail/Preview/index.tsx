@@ -1,6 +1,8 @@
 import { ThemeColorInfo } from "@/entities/Theme";
-import styles from "./index.module.css";
+
 import { Timetable } from "./Timetable";
+
+import styles from "./index.module.css";
 
 interface Props {
   colors: ThemeColorInfo[];

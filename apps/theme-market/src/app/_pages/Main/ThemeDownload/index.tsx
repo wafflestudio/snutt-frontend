@@ -1,8 +1,9 @@
 import { themeService } from "@/services/ThemeService";
+import { cookieService } from "@/services/CookieService";
+
+import { DEFAULT_PAGE } from "@/repositories/ThemeRepository";
 
 import { ThemeList } from "./ThemeList";
-import { cookieService } from "@/services/CookieService";
-import { DEFAULT_PAGE } from "@/repositories/ThemeRepository";
 
 export const ThemeDownload = async () => {
   const accessToken = cookieService.getAccessToken();

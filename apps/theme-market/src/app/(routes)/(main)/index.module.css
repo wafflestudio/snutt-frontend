@@ -1,7 +1,7 @@
 .layout {
   height: 100vh;
   position: relative;
-  background-color: var(--palette-gray);
+  background-color: var(--color-bg-light);
 
   z-index: 5;
 }

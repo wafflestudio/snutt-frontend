@@ -6,11 +6,13 @@ import "@/app/_styles/font.css";
 import type { Metadata } from "next";
 import { ReactNode } from "react";
 
-import styles from "./index.module.css";
 import { cookieService } from "@/services/CookieService";
+import { authService } from "@/services/AuthService";
+
 import { ThemeStoreProvider } from "@/app/_providers/ThemeProvider";
 import { UserStoreProvider } from "../_providers/UserProvider";
-import { authService } from "@/services/AuthService";
+
+import styles from "./index.module.css";
 
 export const metadata: Metadata = {
   title: "SNUTT 테마 마켓",

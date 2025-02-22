@@ -1,7 +1,7 @@
 import { MouseEventHandler, ReactNode } from "react";
+import classNames from "classnames";
 
 import styles from "./index.module.css";
-import classNames from "classnames";
 
 export const TabContent = ({
   children,

@@ -9,7 +9,7 @@
   font-weight: 500;
   line-height: 15.6px;
   text-align: left;
-  color: var(--palette-gray-30);
+  color: var(--color-text-med);
 }
 
 .themeList {
@@ -30,7 +30,7 @@
   font-weight: 400;
   line-height: 14.4px;
 
-  color: var(--palette-gray-2);
+  color: var(--color-text-assistive);
 }
 
 .notFound {

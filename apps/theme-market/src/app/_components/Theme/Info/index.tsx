@@ -1,11 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import styles from "./index.module.css";
+
+import { useThemeStore } from "@/app/_providers/ThemeProvider";
+import { Theme } from "@/entities/Theme";
 
 import SvgDownload from "@/assets/icons/svgDownload.svg";
-import { Theme } from "@/entities/Theme";
-import { useThemeStore } from "@/app/_providers/ThemeProvider";
+
+import styles from "./index.module.css";
 
 interface Props {
   theme: Theme;
