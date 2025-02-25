@@ -50,6 +50,8 @@ export default function MainBottomSheet() {
       try {
         themeService.downloadTheme(theme.id, theme.name, accessToken);
       } catch (e) {
+        console.log("------------------");
+        console.log(e);
         if ((e as Error).name === "API_ERROR") {
           alert((e as ApiError).displayMessage);
         }
