@@ -1,4 +1,5 @@
 import { ApiError } from "@/entities/Error";
+import { channel } from "diagnostics_channel";
 
 type HttpClient = {
   get: <T = unknown>(url: string, accessToken?: string) => Promise<T>;
@@ -30,6 +31,7 @@ export const httpClient: HttpClient = {
     const response = await fetch(baseUrl + url, {
       headers,
     });
+
     const data = await response.json().catch(() => null);
 
     if (response.ok) return data;
@@ -58,10 +60,14 @@ export const httpClient: HttpClient = {
     if (response.ok) return data;
     else {
       const error = new Error() as ApiError;
+      console.log(data);
+      console.log(response);
       error.name = "API_ERROR";
       error.displayMessage = data.displayMessage;
       error.message = data.message;
       error.errCode = data.errCode;
+
+      console.log(error);
       throw error;
     }
   },
