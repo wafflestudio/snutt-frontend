@@ -30,6 +30,8 @@ export const ThemeListWithInifiniteScorll = ({ defaultThemes }: Props) => {
       accessToken
     );
 
+    if (themes.length === 0) return;
+
     setThemes((prev) => [...prev, ...themes]);
     setPage((prev) => prev + 1);
   }, [accessToken, page]);
