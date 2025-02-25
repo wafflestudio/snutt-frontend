@@ -1,4 +1,5 @@
 import { ApiError } from "@/entities/Error";
+import { channel } from "diagnostics_channel";
 
 type HttpClient = {
   get: <T = unknown>(url: string, accessToken?: string) => Promise<T>;
@@ -30,6 +31,7 @@ export const httpClient: HttpClient = {
     const response = await fetch(baseUrl + url, {
       headers,
     });
+
     const data = await response.json().catch(() => null);
 
     if (response.ok) return data;

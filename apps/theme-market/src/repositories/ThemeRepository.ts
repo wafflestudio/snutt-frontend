@@ -111,17 +111,25 @@ export const themeRepositry: ThemeRepository = {
     return res.content;
   },
   publishTheme: async ({ themeId, publishName, isAnonymous, accessToken }) => {
-    await httpClient.post(
-      `/v1/themes/${themeId}/publish`,
-      { publishName, isAnonymous },
-      accessToken
-    );
+    try {
+      await httpClient.post(
+        `/v1/themes/${themeId}/publish`,
+        { publishName, isAnonymous },
+        accessToken
+      );
+    } catch (err) {
+      throw err;
+    }
   },
   downloadTheme: async ({ themeId, name, accessToken }) => {
-    await httpClient.post(
-      `/v1/themes/${themeId}/download`,
-      { name },
-      accessToken
-    );
+    try {
+      await httpClient.post(
+        `/v1/themes/${themeId}/download`,
+        { name },
+        accessToken
+      );
+    } catch (err) {
+      throw err;
+    }
   },
 };
