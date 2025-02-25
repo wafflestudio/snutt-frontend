@@ -57,6 +57,10 @@ export const themeService: ThemeService = {
     });
   },
   downloadTheme: async (themeId: string, name: string, accessToken: string) => {
-    await themeRepositry.downloadTheme({ themeId, name, accessToken });
+    try {
+      await themeRepositry.downloadTheme({ themeId, name, accessToken });
+    } catch (err) {
+      throw err;
+    }
   },
 };

@@ -118,10 +118,14 @@ export const themeRepositry: ThemeRepository = {
     );
   },
   downloadTheme: async ({ themeId, name, accessToken }) => {
-    await httpClient.post(
-      `/v1/themes/${themeId}/download`,
-      { name },
-      accessToken
-    );
+    try {
+      await httpClient.post(
+        `/v1/themes/${themeId}/download`,
+        { name },
+        accessToken
+      );
+    } catch (err) {
+      throw err;
+    }
   },
 };

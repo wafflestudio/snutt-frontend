@@ -19,7 +19,7 @@ export default function MainBottomSheet() {
     setIsAnonymous((current) => !current);
   };
 
-  const publishTheme = () => {
+  const publishTheme = async () => {
     if (!theme) return;
 
     const isConfirm = window.confirm(
@@ -28,7 +28,7 @@ export default function MainBottomSheet() {
 
     if (isConfirm)
       try {
-        themeService.publishTheme(
+        await themeService.publishTheme(
           theme.id,
           theme.name,
           isAnonymous,
@@ -41,16 +41,18 @@ export default function MainBottomSheet() {
       }
   };
 
-  const downloadTheme = () => {
+  const downloadTheme = async () => {
     if (!theme) return;
 
     const isConfirm = window.confirm(`해당 테마를 다운로드 하시겠습니까?`);
 
     if (isConfirm)
       try {
-        themeService.downloadTheme(theme.id, theme.name, accessToken);
+        await themeService.downloadTheme(theme.id, theme.name, accessToken);
       } catch (e) {
-        if ((e as Error).name === "API_ERROR") {
+        console.log("------------------");
+        console.log(e);
+        if ((e as ApiError).name === "API_ERROR") {
           alert((e as ApiError).displayMessage);
         }
       }
