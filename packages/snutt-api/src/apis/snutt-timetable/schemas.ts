@@ -164,7 +164,6 @@ export type SearchQueryLegacy = {
   department?: string[];
   category?: string[];
   categoryPre2025?: string[];
-  time_mask?: Int32[];
   times?: SearchTimeDto[];
   timesToExclude?: SearchTimeDto[];
   etc?: string[];
