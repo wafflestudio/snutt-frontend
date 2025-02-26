@@ -34,7 +34,6 @@ export const SearchPage = async ({ query }: Props) => {
           </div>
         )}
       </section>
-      ;
     </>
   );
 };

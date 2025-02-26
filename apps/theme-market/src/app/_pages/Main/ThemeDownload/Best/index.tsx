@@ -21,7 +21,7 @@ export const BestPage = async () => {
     <>
       <MainHeader menu="DOWNLOAD" />
       <section className={styles.main}>
-        <Link className={styles.prev} href="/download">
+        <Link className={styles.prev} href="/download" replace>
           <Image src={SvgChevronLeft} alt="<" width="16" height="16.6" />
           <span>돌아가기</span>
         </Link>
