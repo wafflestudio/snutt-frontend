@@ -1,3 +1,4 @@
+import { type SearchTimeDto } from '@sf/snutt-api/src/apis/snutt-timetable/schemas';
 import { type FormEvent, useState } from 'react';
 import styled from 'styled-components';
 
@@ -32,11 +33,12 @@ export type SearchForm = {
   etc: SearchFilter['etc'];
   classification: SearchFilter['classification'];
   department: SearchFilter['department'];
-  manualBitmask: number[];
-  timeType: 'auto' | 'manual' | null;
+  times: SearchFilter['times'];
+  timeType: 'manual' | 'auto' | null;
 };
 
 const initialForm = {
+  title: '',
   academicYear: [],
   credit: [],
   etc: [],
@@ -44,9 +46,8 @@ const initialForm = {
   categoryPre2025: [],
   classification: [],
   department: [],
+  times: [],
   timeType: null,
-  title: '',
-  manualBitmask: [],
 };
 
 const isInitialForm = (form: SearchForm) => JSON.stringify(initialForm) === JSON.stringify(form);
@@ -83,20 +84,17 @@ export const MainSearchbar = ({ onSearch, currentFullTimetable, resetSearchResul
         year,
         semester,
         title: searchForm.title,
-        timeMask:
-          searchForm.timeType === 'manual'
-            ? searchForm.manualBitmask
-            : searchForm.timeType === 'auto'
-              ? currentFullTimetable
-                ? timeMaskService.getTimetableEmptyTimeBitMask(currentFullTimetable)
-                : undefined
-              : undefined,
+        times: undefinedIfEmpty(searchForm.times),
+        timesToExclude:
+          searchForm.timeType === 'auto' && currentFullTimetable
+            ? timeMaskService.getTimesByTimeTable(currentFullTimetable)
+            : undefined,
         limit: 200,
       },
     });
   };
 
-  const onChangeBitMask = (manualBitmask: number[]) => setSearchForm((sf) => ({ ...sf, manualBitmask }));
+  const onChangeTimes = (times: SearchTimeDto[]) => setSearchForm((sf) => ({ ...sf, times }));
 
   const onChangeCheckbox = <
     F extends 'academicYear' | 'category' | 'categoryPre2025' | 'classification' | 'credit' | 'department' | 'etc',
@@ -138,7 +136,7 @@ export const MainSearchbar = ({ onSearch, currentFullTimetable, resetSearchResul
           onChangeCheckbox={onChangeCheckbox}
           onChangeDepartment={(department) => setSearchForm((sf) => ({ ...sf, department }))}
           onChangeTimeRadio={(timeType) => setSearchForm((sf) => ({ ...sf, timeType }))}
-          onChangeBitMask={onChangeBitMask}
+          onChangeTimes={onChangeTimes}
         />
       </Form>
     </Wrapper>

@@ -1,3 +1,4 @@
+import { type SearchTimeDto } from '@sf/snutt-api/src/apis/snutt-timetable/schemas';
 import { useState } from 'react';
 import styled from 'styled-components';
 
@@ -10,12 +11,16 @@ import { useGuardContext } from '@/hooks/useGuardContext';
 
 import { MainSearchbarFilterTimeSelectCell } from './main-searchbar-filter-time-select-cell';
 
-type Props = { open: boolean; onClose: () => void; onChangeBitMask: (bm: number[]) => void };
+type Props = {
+  open: boolean;
+  onClose: () => void;
+  onChangeTimes: (times: SearchTimeDto[]) => void;
+};
 
 /**
  * @note 테스트코드가 붙어있지 않습니다. 수정할 때 주의해 주세요!
  */
-export const MainSearchbarFilterTimeSelectDialog = ({ open, onClose, onChangeBitMask }: Props) => {
+export const MainSearchbarFilterTimeSelectDialog = ({ open, onClose, onChangeTimes }: Props) => {
   const { timeMaskService, errorService } = useGuardContext(ServiceContext);
   const [dragStart, setDragStart] = useState<Position | null>(null);
   const [currentDrag, setCurrentDrag] = useState<Position | null>(null);
@@ -24,7 +29,7 @@ export const MainSearchbarFilterTimeSelectDialog = ({ open, onClose, onChangeBit
   );
 
   const onConfirm = () => {
-    onChangeBitMask(timeMaskService.getBitMask(cellStatus));
+    onChangeTimes(timeMaskService.getTimes(cellStatus));
     onClose();
   };
 

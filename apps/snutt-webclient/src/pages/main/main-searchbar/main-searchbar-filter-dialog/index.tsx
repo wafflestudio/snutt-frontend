@@ -1,3 +1,4 @@
+import { type SearchTimeDto } from '@sf/snutt-api/src/apis/snutt-timetable/schemas';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import styled from 'styled-components';
@@ -24,9 +25,9 @@ type Props = {
     field: F,
     e: SearchForm[F][number],
   ) => void;
-  onChangeTimeRadio: (value: 'auto' | 'manual' | null) => void;
+  onChangeTimeRadio: (value: 'manual' | 'auto' | null) => void;
   onChangeDepartment: (value: string[]) => void;
-  onChangeBitMask: (bm: number[]) => void;
+  onChangeTimes: (times: SearchTimeDto[]) => void;
 };
 
 export const MainSearchbarFilterDialog = ({
@@ -37,7 +38,7 @@ export const MainSearchbarFilterDialog = ({
   searchForm,
   onChangeCheckbox,
   onChangeTimeRadio,
-  onChangeBitMask,
+  onChangeTimes,
   onChangeDepartment,
 }: Props) => {
   const [isTimeModalOpen, setTimeModalOpen] = useState(false);
@@ -286,7 +287,7 @@ export const MainSearchbarFilterDialog = ({
       <MainSearchbarFilterTimeSelectDialog
         open={isTimeModalOpen}
         onClose={() => setTimeModalOpen(false)}
-        onChangeBitMask={onChangeBitMask}
+        onChangeTimes={onChangeTimes}
       />
     </StyledDialog>
   );

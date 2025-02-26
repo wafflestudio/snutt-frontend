@@ -1,3 +1,5 @@
+import { type SearchTimeDto } from '@sf/snutt-api/src/apis/snutt-timetable/schemas';
+
 import type { BaseLecture } from './lecture';
 import type { Semester } from './semester';
 
@@ -11,6 +13,8 @@ export type SearchFilter = {
   academicYear: string[];
   category: string[];
   categoryPre2025: string[];
+  times: SearchTimeDto[];
+  timesToExclude: SearchTimeDto[];
   credit: number[];
   department: string[];
   classification: string[];
