@@ -65,9 +65,6 @@ export default function MainBottomSheet() {
       theme?.publishInfo?.authorName === user.nickname.nickname ||
       theme?.isMyTheme;
 
-    console.log(theme);
-
-    console.log(user.nickname);
     if (isPublished) {
       if (isMyTheme) {
         return {
