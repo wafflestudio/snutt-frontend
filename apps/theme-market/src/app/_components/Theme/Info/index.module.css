@@ -56,6 +56,11 @@
   color: var(--color-text-alternative);
 }
 
+.download span {
+  line-height: 19.8px;
+  text-align: center;
+}
+
 .colorList {
   display: flex;
   gap: 9px;
