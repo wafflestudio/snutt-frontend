@@ -64,8 +64,9 @@ export const themeRepositry: ThemeRepository = {
     });
 
     try {
-      const res = await httpClient.get<PageResponse<Theme>>(
+      const res = await httpClient.post<PageResponse<Theme>>(
         `/v1/themes/search?${params}`,
+        {},
         accessToken
       );
 
