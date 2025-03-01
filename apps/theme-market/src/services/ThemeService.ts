@@ -33,9 +33,9 @@ export const themeService: ThemeService = {
     return await themeRepositry.getTheme({ id, accessToken });
   },
   getMyThemes: async (accessToken?: string) => {
-    return (await themeRepositry.getMyThemes({ accessToken })).filter(
-      (theme) => theme.isCustom
-    );
+    return (await themeRepositry.getMyThemes({ accessToken }))
+      .filter((theme) => theme.isCustom)
+      .map((theme) => ({ ...theme, isMyTheme: true }));
   },
   getBestThemes: async (page?: number, accessToken?: string) => {
     return await themeRepositry.getBestThemes({ page, accessToken });

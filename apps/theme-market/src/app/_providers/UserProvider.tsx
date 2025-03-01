@@ -1,8 +1,10 @@
 "use client";
 
 import { createContext, ReactNode, useContext, useRef } from "react";
-import { createUserStore, UserStore } from "../_stores/UserStore";
 import { useStore } from "zustand";
+
+import { createUserStore, UserStore } from "@/app/_stores/UserStore";
+
 import { User } from "@/entities/User";
 
 export type UserStoreApi = ReturnType<typeof createUserStore>;

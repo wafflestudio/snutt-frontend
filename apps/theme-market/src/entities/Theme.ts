@@ -2,8 +2,9 @@ export type Theme = {
   id: string;
   name: string;
   colors: ThemeColorInfo[];
-  publishInfo: ThemePublishInfo;
+  publishInfo?: ThemePublishInfo;
   isCustom: Boolean;
+  isMyTheme?: Boolean;
   status: string;
 };
 
