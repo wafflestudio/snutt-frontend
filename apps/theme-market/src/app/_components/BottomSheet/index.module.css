@@ -21,7 +21,7 @@
 .wrapper {
   width: 100vw;
   height: 100vh;
-  position: absolute;
+  position: fixed;
   top: 0;
   bottom: 0;
 
@@ -30,6 +30,7 @@
 
   &.hide {
     z-index: 0;
+    background-color: var(--color-bg-light);
   }
 }
 
@@ -38,6 +39,7 @@
   height: calc(100% - 67px);
   position: absolute;
   bottom: 0;
+  overscroll-behavior: none;
   overflow-y: scroll;
 
   animation: 0.5s ease-out 0s 1 slideIn;
