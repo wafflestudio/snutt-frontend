@@ -1,0 +1,39 @@
+.wrapper {
+  width: 100%;
+}
+
+.title {
+  padding-left: 13px;
+
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 15.6px;
+  text-align: left;
+  color: var(--color-text-med);
+}
+
+.themeList {
+  margin: 7px 0 10px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.more {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+
+  height: 14px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 14.4px;
+
+  color: var(--color-text-assistive);
+}
+
+.notFound {
+  width: 100%;
+  margin-top: 15px;
+}

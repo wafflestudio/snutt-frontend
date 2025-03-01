@@ -32,7 +32,7 @@ type ThemeRepository = {
   }: {
     page?: number;
     accessToken?: string;
-  }) => Promise<Theme[]>;
+  }) => Promise<PageResponse<Theme>>;
   publishTheme: ({
     themeId,
     publishName,
@@ -108,7 +108,7 @@ export const themeRepositry: ThemeRepository = {
       accessToken
     );
 
-    return res.content;
+    return res;
   },
   publishTheme: async ({ themeId, publishName, isAnonymous, accessToken }) => {
     try {

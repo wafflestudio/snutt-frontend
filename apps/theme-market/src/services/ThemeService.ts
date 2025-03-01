@@ -11,7 +11,10 @@ type ThemeService = {
     page?: number,
     accessToken?: string
   ) => Promise<PageResponse<Theme>>;
-  getFriendsThemes: (accessToken?: string) => Promise<Theme[]>;
+  getFriendsThemes: (
+    page?: number,
+    accessToken?: string
+  ) => Promise<PageResponse<Theme>>;
   publishTheme: (
     themeId: string,
     publishName: string,
@@ -40,8 +43,8 @@ export const themeService: ThemeService = {
   getBestThemes: async (page?: number, accessToken?: string) => {
     return await themeRepositry.getBestThemes({ page, accessToken });
   },
-  getFriendsThemes: async (accessToken?: string) => {
-    return await themeRepositry.getFriendsThemes({ accessToken });
+  getFriendsThemes: async (page?: number, accessToken?: string) => {
+    return await themeRepositry.getFriendsThemes({ page, accessToken });
   },
   publishTheme: async (
     themeId: string,
