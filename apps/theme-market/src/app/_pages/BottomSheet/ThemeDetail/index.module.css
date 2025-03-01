@@ -68,9 +68,9 @@
   font-weight: 400;
   line-height: 15px;
   text-align: left;
-  color: var(--palette-black);
+  color: var(--color-text-med);
 
-  background-color: var(--color-bg-default);
+  background-color: var(--color-bg-normal);
 }
 
 .switch {

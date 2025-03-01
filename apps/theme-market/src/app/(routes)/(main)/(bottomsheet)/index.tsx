@@ -18,6 +18,8 @@ export default function MainBottomSheet() {
   const { theme, setTheme } = useThemeStore((state) => state);
   const { accessToken, user } = useUserStore((state) => state);
 
+  const isPublished = theme?.status !== "PRIVATE";
+
   const updateIsAnonymous = () => {
     setIsAnonymous((current) => !current);
   };
@@ -60,7 +62,6 @@ export default function MainBottomSheet() {
   };
 
   const getBottomSheetProps = () => {
-    const isPublished = theme?.status !== "PRIVATE";
     const isMyTheme =
       theme?.publishInfo?.authorName === user.nickname.nickname ||
       theme?.isMyTheme;
@@ -97,6 +98,7 @@ export default function MainBottomSheet() {
           <ThemeDetail
             theme={theme}
             isAnonymous={isAnonymous}
+            isPublished={isPublished}
             updateIsAnonymous={updateIsAnonymous}
           />
         )}
