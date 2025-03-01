@@ -39,6 +39,7 @@ export default function MainBottomSheet() {
           isAnonymous,
           accessToken
         );
+        setTheme(null);
       } catch (e) {
         if ((e as Error).name === "API_ERROR") {
           alert((e as ApiError).displayMessage);
@@ -54,6 +55,7 @@ export default function MainBottomSheet() {
     if (isConfirm)
       try {
         await themeService.downloadTheme(theme.id, theme.name, accessToken);
+        setTheme(null);
       } catch (e) {
         if ((e as ApiError).name === "API_ERROR") {
           alert((e as ApiError).displayMessage);
