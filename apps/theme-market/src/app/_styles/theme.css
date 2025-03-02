@@ -10,6 +10,8 @@
   --color-text-med: #a6a6a6;
   --color-text-assistive: #c4c4c4;
   --color-text-alternative: #8a898e;
+
+  --icon-search: url("/static/icons/light/svgSearch.svg");
 }
 
 :root[data-theme="dark"] {
@@ -24,4 +26,6 @@
   --color-text-med: #8a898e;
   --color-text-assistive: #777777;
   --color-text-alternative: #b3b3b3;
+
+  --icon-search: url("/static/icons/dark/svgSearch.svg");
 }
