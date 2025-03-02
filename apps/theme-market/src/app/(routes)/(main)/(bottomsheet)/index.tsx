@@ -17,6 +17,7 @@ export default function MainBottomSheet() {
   const router = useRouter();
 
   const [isAnonymous, setIsAnonymous] = useState<boolean>(false);
+  const [publishName, setPublishName] = useState<string>("");
 
   const { theme, setTheme } = useThemeStore((state) => state);
   const { accessToken, user } = useUserStore((state) => state);
@@ -24,8 +25,13 @@ export default function MainBottomSheet() {
   const isPublished = theme?.status !== "PRIVATE";
 
   useEffect(() => {
+    setPublishName(theme?.name || "");
     document.body.style["overflow"] = !!theme ? "hidden" : "scroll";
   }, [theme]);
+
+  const updatePublishName = (publishName: string) => {
+    setPublishName(publishName);
+  };
 
   const updateIsAnonymous = () => {
     setIsAnonymous((current) => !current);
@@ -35,14 +41,14 @@ export default function MainBottomSheet() {
     if (!theme) return;
 
     const isConfirm = window.confirm(
-      `'${theme.name}' 테마를 등록하시겠습니까?`
+      `'${publishName}' 테마를 등록하시겠습니까?`
     );
 
     if (isConfirm)
       try {
         await themeService.publishTheme(
           theme.id,
-          theme.name,
+          publishName,
           isAnonymous,
           accessToken
         );
@@ -109,8 +115,10 @@ export default function MainBottomSheet() {
         {theme && (
           <ThemeDetail
             theme={theme}
+            publishName={publishName || theme.name}
             isAnonymous={isAnonymous}
             isPublished={isPublished}
+            updatePublishName={updatePublishName}
             updateIsAnonymous={updateIsAnonymous}
           />
         )}

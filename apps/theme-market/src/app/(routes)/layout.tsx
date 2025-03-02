@@ -3,7 +3,7 @@ import "@/app/_styles/palette.css";
 import "@/app/_styles/theme.css";
 import "@/app/_styles/font.css";
 
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { ReactNode } from "react";
 
 import { cookieService } from "@/services/CookieService";
@@ -16,12 +16,13 @@ import styles from "./index.module.css";
 
 export const metadata: Metadata = {
   title: "SNUTT 테마 마켓",
-  viewport: {
-    initialScale: 1.0,
-    maximumScale: 1.0,
-    userScalable: false,
-    width: "device-width",
-  },
+};
+
+export const viewport: Viewport = {
+  initialScale: 1.0,
+  maximumScale: 1.0,
+  userScalable: false,
+  width: "device-width",
 };
 
 interface Props {

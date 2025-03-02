@@ -4,12 +4,15 @@ import { InputHTMLAttributes, useState } from "react";
 import styles from "./index.module.css";
 import classNames from "classnames";
 
-interface Props extends InputHTMLAttributes<HTMLInputElement> {
+interface Props
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, "onChange"> {
   onComplete?: (value: string) => void;
+  onChange?: (value: string) => void;
 }
 
 export const Input = ({
   onComplete,
+  onChange,
   className,
   defaultValue,
   ...props
@@ -24,7 +27,10 @@ export const Input = ({
       onKeyDown={(e) => {
         if (e.key === "Enter") onComplete?.(value);
       }}
-      onChange={(e) => setValue(e.target.value)}
+      onChange={(e) => {
+        setValue(e.target.value);
+        onChange?.(e.target.value);
+      }}
     />
   );
 };
