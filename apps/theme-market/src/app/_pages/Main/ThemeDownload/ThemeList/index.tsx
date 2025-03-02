@@ -1,13 +1,17 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
 
 import { cookieService } from "@/services/CookieService";
 import { themeService } from "@/services/ThemeService";
-import SvgChevronLeft from "@/assets/icons/svgChevronLeft.svg";
 import { DEFAULT_PAGE } from "@/repositories/ThemeRepository";
+
+import { useUserStore } from "@/app/_providers/UserProvider";
 
 import { MainHeader } from "@/app/_pages/Main/Header/MainHeader";
 import { ThemeListWithInifiniteScorll } from "@/app/_components/Theme/List/ThemeListWithInfiniteScroll";
+import SvgChevronLeft from "@/assets/icons/svgChevronLeft.svg";
 
 import styles from "./index.module.css";
 
@@ -16,7 +20,9 @@ interface Props {
 }
 
 export const ThemeListPage = async ({ type }: Props) => {
-  const accessToken = cookieService.getAccessToken();
+  const router = useRouter();
+
+  const { accessToken } = useUserStore((state) => state);
   const { content: themes } =
     type === "BEST"
       ? await themeService.getBestThemes(DEFAULT_PAGE, accessToken)
@@ -26,10 +32,10 @@ export const ThemeListPage = async ({ type }: Props) => {
     <>
       <MainHeader menu="DOWNLOAD" />
       <section className={styles.main}>
-        <Link className={styles.prev} href="/download" replace>
+        <div className={styles.prev} onClick={() => router.back()}>
           <Image src={SvgChevronLeft} alt="<" width="16" height="16.6" />
           <span>돌아가기</span>
-        </Link>
+        </div>
         <div className={styles.themes}>
           <ThemeListWithInifiniteScorll defaultThemes={themes} />
         </div>
