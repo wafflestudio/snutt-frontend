@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { cookieService } from "@/services/CookieService";
 import { themeService } from "@/services/ThemeService";
 
@@ -7,7 +9,6 @@ import { ThemeInfoList } from "@/app/_components/Theme/List/ThemeInfoList";
 import SvgCat from "@/assets/icons/svgCat.svg";
 
 import styles from "./index.module.css";
-import Image from "next/image";
 
 interface Props {
   query: string;
@@ -33,7 +34,6 @@ export const SearchPage = async ({ query }: Props) => {
           </div>
         )}
       </section>
-      ;
     </>
   );
 };

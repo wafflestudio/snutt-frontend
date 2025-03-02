@@ -32,7 +32,7 @@ type ThemeRepository = {
   }: {
     page?: number;
     accessToken?: string;
-  }) => Promise<Theme[]>;
+  }) => Promise<PageResponse<Theme>>;
   publishTheme: ({
     themeId,
     publishName,
@@ -64,8 +64,9 @@ export const themeRepositry: ThemeRepository = {
     });
 
     try {
-      const res = await httpClient.get<PageResponse<Theme>>(
+      const res = await httpClient.post<PageResponse<Theme>>(
         `/v1/themes/search?${params}`,
+        {},
         accessToken
       );
 
@@ -108,20 +109,28 @@ export const themeRepositry: ThemeRepository = {
       accessToken
     );
 
-    return res.content;
+    return res;
   },
   publishTheme: async ({ themeId, publishName, isAnonymous, accessToken }) => {
-    await httpClient.post(
-      `/v1/themes/${themeId}/publish`,
-      { publishName, isAnonymous },
-      accessToken
-    );
+    try {
+      await httpClient.post(
+        `/v1/themes/${themeId}/publish`,
+        { publishName, isAnonymous },
+        accessToken
+      );
+    } catch (err) {
+      throw err;
+    }
   },
   downloadTheme: async ({ themeId, name, accessToken }) => {
-    await httpClient.post(
-      `/v1/themes/${themeId}/download`,
-      { name },
-      accessToken
-    );
+    try {
+      await httpClient.post(
+        `/v1/themes/${themeId}/download`,
+        { name },
+        accessToken
+      );
+    } catch (err) {
+      throw err;
+    }
   },
 };

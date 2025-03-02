@@ -17,9 +17,9 @@
   font-weight: 400;
   line-height: 15px;
   text-align: left;
-  color: var(--palette-black);
+  color: var(--color-text-med);
 
-  background-color: var(--color-bg-default);
+  background-color: var(--color-bg-normal);
 }
 
 .info span {
@@ -31,12 +31,12 @@
 .colors {
   margin: 16px 0;
   padding: 4px 0px 0px;
-  background-color: var(--color-bg-default);
+  background-color: var(--color-bg-normal);
 }
 
 .colors .info {
-  color: var(--palette-gray-2);
-  border-bottom: 0.5px solid var(--palette-gray-10);
+  color: var(--color-text-med);
+  border-bottom: 0.5px solid var(--color-line-disabled);
 }
 
 .colors .info:last-child {
@@ -47,7 +47,7 @@
   width: 40px;
   display: flex;
 
-  border: 0.3px solid var(--palette-gray-10);
+  border: 0.3px solid var(--color-line-disabled);
 }
 
 .color {
@@ -68,16 +68,15 @@
   font-weight: 400;
   line-height: 15px;
   text-align: left;
-  color: var(--palette-black);
+  color: var(--color-text-normal);
 
-  background-color: var(--color-bg-default);
+  background-color: var(--color-bg-normal);
 }
 
 .switch {
   position: relative;
   display: inline-block;
-  /* width: 60px;*/
-  /* height: 34px; */
+
   width: 51px;
   height: 31px;
 }

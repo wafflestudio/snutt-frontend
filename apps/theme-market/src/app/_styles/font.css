@@ -1,7 +1,6 @@
 @font-face {
   font-family: "AppleSDGothicNeo";
-  src: local(-apple-system),
-    url("https://dn04mybwr5t2y.cloudfront.net/fonts/AppleSDGothicNeoL.ttf");
+  src: url("https://dn04mybwr5t2y.cloudfront.net/fonts/AppleSDGothicNeoL.ttf");
   font-weight: normal;
   font-display: swap;
 }

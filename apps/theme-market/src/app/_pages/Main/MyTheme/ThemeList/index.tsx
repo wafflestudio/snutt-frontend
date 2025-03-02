@@ -1,7 +1,8 @@
 import { Theme } from "@/entities/Theme";
 
-import styles from "./index.module.css";
 import { ThemeInfo } from "./ThemeInfo";
+
+import styles from "./index.module.css";
 
 interface Props {
   themes: Theme[];

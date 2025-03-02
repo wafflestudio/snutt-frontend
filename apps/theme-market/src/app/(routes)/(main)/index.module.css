@@ -1,7 +1,8 @@
 .layout {
-  height: 100vh;
+  /* padding-bottom: 30px; */
+
   position: relative;
-  background-color: var(--palette-gray);
+  background-color: var(--color-bg-light);
 
   z-index: 5;
 }

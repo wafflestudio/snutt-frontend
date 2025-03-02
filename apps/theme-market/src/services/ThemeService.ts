@@ -11,7 +11,10 @@ type ThemeService = {
     page?: number,
     accessToken?: string
   ) => Promise<PageResponse<Theme>>;
-  getFriendsThemes: (accessToken?: string) => Promise<Theme[]>;
+  getFriendsThemes: (
+    page?: number,
+    accessToken?: string
+  ) => Promise<PageResponse<Theme>>;
   publishTheme: (
     themeId: string,
     publishName: string,
@@ -33,15 +36,15 @@ export const themeService: ThemeService = {
     return await themeRepositry.getTheme({ id, accessToken });
   },
   getMyThemes: async (accessToken?: string) => {
-    return (await themeRepositry.getMyThemes({ accessToken })).filter(
-      (theme) => theme.isCustom
-    );
+    return (await themeRepositry.getMyThemes({ accessToken }))
+      .filter((theme) => theme.isCustom)
+      .map((theme) => ({ ...theme, isMyTheme: true }));
   },
   getBestThemes: async (page?: number, accessToken?: string) => {
     return await themeRepositry.getBestThemes({ page, accessToken });
   },
-  getFriendsThemes: async (accessToken?: string) => {
-    return await themeRepositry.getFriendsThemes({ accessToken });
+  getFriendsThemes: async (page?: number, accessToken?: string) => {
+    return await themeRepositry.getFriendsThemes({ page, accessToken });
   },
   publishTheme: async (
     themeId: string,
@@ -49,14 +52,22 @@ export const themeService: ThemeService = {
     isAnonymous: boolean,
     accessToken?: string
   ) => {
-    await themeRepositry.publishTheme({
-      themeId,
-      publishName,
-      isAnonymous,
-      accessToken,
-    });
+    try {
+      await themeRepositry.publishTheme({
+        themeId,
+        publishName,
+        isAnonymous,
+        accessToken,
+      });
+    } catch (err) {
+      throw err;
+    }
   },
   downloadTheme: async (themeId: string, name: string, accessToken: string) => {
-    await themeRepositry.downloadTheme({ themeId, name, accessToken });
+    try {
+      await themeRepositry.downloadTheme({ themeId, name, accessToken });
+    } catch (err) {
+      throw err;
+    }
   },
 };

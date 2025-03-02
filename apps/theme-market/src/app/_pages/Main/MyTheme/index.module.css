@@ -9,7 +9,7 @@
   font-weight: 500;
   line-height: 15.6px;
   text-align: left;
-  color: var(--palette-gray-30);
+  color: var(--color-text-med);
 }
 
 .box {
@@ -17,7 +17,7 @@
   height: 134px;
   margin-top: 8px;
 
-  background-color: var(--color-bg-default);
+  background-color: var(--color-bg-normal);
   border-radius: 10px;
 }
 
@@ -29,7 +29,7 @@
   font-weight: 400;
   line-height: 16.8px;
 
-  color: var(--palette-gray-20);
+  color: var(--color-text-med);
 }
 
 .description strong {

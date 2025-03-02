@@ -1,5 +1,6 @@
 .layout {
-  background-color: var(--palette-gray);
+  margin-bottom: 50px;
+  background-color: var(--color-bg-light);
 
   font-family: "AppleSDGothicNeo";
 }

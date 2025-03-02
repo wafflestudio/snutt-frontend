@@ -1,8 +1,9 @@
 import { themeService } from "@/services/ThemeService";
-
-import { ThemeList } from "./ThemeList";
 import { cookieService } from "@/services/CookieService";
+
 import { DEFAULT_PAGE } from "@/repositories/ThemeRepository";
+
+import { ThemeListPreview } from "./ThemeListPreview";
 
 export const ThemeDownload = async () => {
   const accessToken = cookieService.getAccessToken();
@@ -11,12 +12,19 @@ export const ThemeDownload = async () => {
     DEFAULT_PAGE,
     accessToken
   );
-  const friendsThemes = await themeService.getFriendsThemes(accessToken);
+  const { content: friendsThemes } = await themeService.getFriendsThemes(
+    DEFAULT_PAGE,
+    accessToken
+  );
 
   return (
     <>
-      <ThemeList title="Best" themes={bestThemes} />
-      <ThemeList title="친구가 쓰고있어요" themes={friendsThemes} />
+      <ThemeListPreview title="Best" type="BEST" themes={bestThemes} />
+      <ThemeListPreview
+        title="친구가 쓰고있어요"
+        type="FRIENDS"
+        themes={friendsThemes}
+      />
     </>
   );
 };

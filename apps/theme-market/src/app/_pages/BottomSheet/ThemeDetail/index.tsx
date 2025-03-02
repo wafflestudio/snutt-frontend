@@ -3,17 +3,22 @@
 import classNames from "classnames";
 
 import { Theme } from "@/entities/Theme";
+
 import { Preview } from "./Preview";
+
 import styles from "./index.module.css";
+
 interface Props {
   theme: Theme;
   isAnonymous: boolean;
+  isPublished?: boolean;
   updateIsAnonymous: () => void;
 }
 
 export const ThemeDetail = ({
   theme,
   isAnonymous,
+  isPublished,
   updateIsAnonymous,
 }: Props) => {
   return (
@@ -33,7 +38,7 @@ export const ThemeDetail = ({
           </div>
         ))}
       </div>
-      {theme.status != "PUBLISHED" && (
+      {!isPublished && (
         <div className={styles.anonymous}>
           <span>익명으로 올리기</span>
           <label className={styles.switch}>

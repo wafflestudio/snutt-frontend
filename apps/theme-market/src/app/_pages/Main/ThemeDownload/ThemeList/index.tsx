@@ -1,40 +1,39 @@
 import Image from "next/image";
-import styles from "./index.module.css";
 import Link from "next/link";
 
-import { NotFound } from "@/app/_components/Error/NotFound";
-import { ThemeInfoList } from "@/app/_components/Theme/List/ThemeInfoList";
+import { cookieService } from "@/services/CookieService";
+import { themeService } from "@/services/ThemeService";
+import SvgChevronLeft from "@/assets/icons/svgChevronLeft.svg";
+import { DEFAULT_PAGE } from "@/repositories/ThemeRepository";
 
-import { Theme } from "@/entities/Theme";
+import { MainHeader } from "@/app/_pages/Main/Header/MainHeader";
+import { ThemeListWithInifiniteScorll } from "@/app/_components/Theme/List/ThemeListWithInfiniteScroll";
 
-import SvgChevronRight from "@/assets/icons/svgChevronRight.svg";
+import styles from "./index.module.css";
 
 interface Props {
-  title: string;
-  themes: Theme[];
+  type: "BEST" | "FRIENDS";
 }
 
-export const ThemeList = ({ title, themes }: Props) => {
-  const themeExists = themes.length > 0;
+export const ThemeListPage = async ({ type }: Props) => {
+  const accessToken = cookieService.getAccessToken();
+  const { content: themes } =
+    type === "BEST"
+      ? await themeService.getBestThemes(DEFAULT_PAGE, accessToken)
+      : await themeService.getFriendsThemes(DEFAULT_PAGE, accessToken);
 
   return (
-    <div className={styles.wrapper}>
-      <span className={styles.title}>{title}</span>
-      {themeExists ? (
-        <>
-          <div className={styles.themeList}>
-            <ThemeInfoList themes={themes} />
-          </div>
-          <Link className={styles.more} href="/download/best">
-            <span>전체 보기</span>
-            <Image src={SvgChevronRight} alt=">" />
-          </Link>
-        </>
-      ) : (
-        <div className={styles.notFound}>
-          <NotFound message="친구가 올린 테마가 아직 없어요" />
+    <>
+      <MainHeader menu="DOWNLOAD" />
+      <section className={styles.main}>
+        <Link className={styles.prev} href="/download" replace>
+          <Image src={SvgChevronLeft} alt="<" width="16" height="16.6" />
+          <span>돌아가기</span>
+        </Link>
+        <div className={styles.themes}>
+          <ThemeListWithInifiniteScorll defaultThemes={themes} />
         </div>
-      )}
-    </div>
+      </section>
+    </>
   );
 };

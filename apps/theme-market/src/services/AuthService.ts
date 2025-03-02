@@ -1,5 +1,6 @@
-import { User } from "@/entities/User";
 import { authRepositry } from "@/repositories/AuthRepository";
+
+import { User } from "@/entities/User";
 
 type AuthService = {
   me: (accessToken?: string) => Promise<User>;

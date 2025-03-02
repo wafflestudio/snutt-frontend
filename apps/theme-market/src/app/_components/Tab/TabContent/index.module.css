@@ -4,14 +4,14 @@
 
   font-size: 15px;
   font-weight: 400;
-  color: var(--palette-gray-10);
+  color: var(--color-text-assistive);
   text-align: center;
   vertical-align: middle;
 }
 
 .content.selected {
   font-weight: 600;
-  color: var(--palette-darker-gray);
+  color: var(--color-text-alternative);
 
-  border-bottom: solid 1.5px var(--palette-darker-gray);
+  border-bottom: solid 1.5px var(--color-line-disabled);
 }
