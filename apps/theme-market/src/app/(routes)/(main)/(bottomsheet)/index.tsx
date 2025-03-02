@@ -43,6 +43,7 @@ export default function MainBottomSheet() {
           accessToken
         );
         router.refresh();
+        alert("테마 등록이 완료되었습니다");
         setTheme(null);
       } catch (e) {
         if ((e as Error).name === "API_ERROR") {
@@ -59,6 +60,7 @@ export default function MainBottomSheet() {
     if (isConfirm)
       try {
         await themeService.downloadTheme(theme.id, theme.name, accessToken);
+        alert("테마 다운로드가 완료되었습니다");
         setTheme(null);
       } catch (e) {
         if ((e as ApiError).name === "API_ERROR") {
