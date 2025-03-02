@@ -17,9 +17,9 @@
   width: 100%;
   margin-top: 8px;
   padding: 23px 13px 18px;
+  border-radius: 10px;
 
-  background-color: #ffffff;
-  /* background-color: var(--color-bg-default); */
+  background-color: var(--color-bg-normal);
 }
 
 .timetable svg {
