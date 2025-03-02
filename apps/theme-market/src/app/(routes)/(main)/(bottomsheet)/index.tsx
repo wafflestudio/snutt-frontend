@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { BottomSheet } from "@/app/_components/BottomSheet";
 import { ThemeDetail } from "@/app/_pages/BottomSheet/ThemeDetail";
@@ -13,6 +14,8 @@ import { themeService } from "@/services/ThemeService";
 import { ApiError } from "@/entities/Error";
 
 export default function MainBottomSheet() {
+  const router = useRouter();
+
   const [isAnonymous, setIsAnonymous] = useState<boolean>(false);
 
   const { theme, setTheme } = useThemeStore((state) => state);
@@ -39,6 +42,7 @@ export default function MainBottomSheet() {
           isAnonymous,
           accessToken
         );
+        router.refresh();
         setTheme(null);
       } catch (e) {
         if ((e as Error).name === "API_ERROR") {

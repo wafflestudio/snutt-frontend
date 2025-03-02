@@ -30,6 +30,7 @@ export const httpClient: HttpClient = {
 
     const response = await fetch(baseUrl + url, {
       headers,
+      cache: "no-store",
     });
 
     const data = await response.json().catch(() => null);
