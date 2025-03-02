@@ -16,6 +16,12 @@ import styles from "./index.module.css";
 
 export const metadata: Metadata = {
   title: "SNUTT 테마 마켓",
+  viewport: {
+    initialScale: 1.0,
+    maximumScale: 1.0,
+    userScalable: false,
+    width: "device-width",
+  },
 };
 
 interface Props {
