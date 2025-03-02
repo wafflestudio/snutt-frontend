@@ -21,7 +21,11 @@ export const BottomSheet = ({
   onConfirm,
 }: Props) => {
   return (
-    <div className={classNames(styles.wrapper, { [styles.hide]: !isOpen })}>
+    <>
+      <div
+        className={classNames(styles.dimmed, { [styles.hide]: !isOpen })}
+        onClick={() => onCancel?.()}
+      />
       <section
         className={classNames(styles.bottomSheet, { [styles.hide]: !isOpen })}
       >
@@ -32,6 +36,6 @@ export const BottomSheet = ({
         </div>
         <div>{children}</div>
       </section>
-    </div>
+    </>
   );
 };

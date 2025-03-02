@@ -1,28 +1,11 @@
-@keyframes slideIn {
-  0% {
-    transform: translateY(100%);
-  }
-
-  100% {
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideOut {
-  0% {
-    transform: translateY(0);
-  }
-
-  100% {
-    transform: translateY(100%);
-  }
-}
-
-.wrapper {
+.dimmed {
+  display: block;
   width: 100vw;
+  height: 150%;
   position: fixed;
-  top: 0;
   bottom: 0;
+  overflow-y: scroll;
+  overscroll-behavior: none;
 
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 10;
@@ -36,19 +19,20 @@
 .bottomSheet {
   width: 100%;
   height: calc(100% - 67px);
-  position: absolute;
+  position: fixed;
   bottom: 0;
   overscroll-behavior: none;
   overflow-y: scroll;
 
-  animation: 0.5s ease-out 0s 1 slideIn;
+  transition: height 0.3s ease-in-out;
 
   border-radius: 10px 10px 0px 0px;
   background-color: var(--color-bg-light);
   display: block;
+  z-index: 15;
 
   &.hide {
-    display: none;
+    height: 0;
   }
 }
 

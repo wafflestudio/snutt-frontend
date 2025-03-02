@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { BottomSheet } from "@/app/_components/BottomSheet";
@@ -22,6 +22,10 @@ export default function MainBottomSheet() {
   const { accessToken, user } = useUserStore((state) => state);
 
   const isPublished = theme?.status !== "PRIVATE";
+
+  useEffect(() => {
+    document.body.style["overflow"] = !!theme ? "hidden" : "scroll";
+  }, [theme]);
 
   const updateIsAnonymous = () => {
     setIsAnonymous((current) => !current);
