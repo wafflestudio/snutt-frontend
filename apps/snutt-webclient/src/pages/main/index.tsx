@@ -165,6 +165,7 @@ const MainWithCurrentYearSemesterTimetablesAndCurrentTimetable = ({
           open={dialogLectureId !== null}
           onClose={() => setDialogLectureId(null)}
           lecture={dialogLecture}
+          timetableTheme={timetableData.currentTimetable.theme}
         />
       )}
 

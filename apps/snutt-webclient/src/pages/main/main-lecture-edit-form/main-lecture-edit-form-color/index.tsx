@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import type { Color } from '@/entities/color';
 
 type Props = {
+  timeTableTheme: number;
   colorList: Color[];
   currentColor?: Color;
   onChangeColor: (index: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9, color: Color) => void;
@@ -11,8 +12,10 @@ type Props = {
 
 const defaultCustomColor = '#888888';
 
-export const MainLectureEditFormColor = ({ colorList, currentColor, onChangeColor }: Props) => {
+export const MainLectureEditFormColor = ({ timeTableTheme, colorList, currentColor, onChangeColor }: Props) => {
   const [customValue, setCustomValue] = useState<string>();
+
+  const themeName = TIMETABLE_THEME_NAMES[timeTableTheme];
 
   const isCustomColor = !!currentColor && colorList.every((c) => c.bg !== currentColor.bg);
 
@@ -36,7 +39,7 @@ export const MainLectureEditFormColor = ({ colorList, currentColor, onChangeColo
               onChangeColor((i + 1) as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9, c);
             }}
           >
-            {COLOR_LABEL_MAP[c.bg] ?? c.bg}
+            {themeName ? `${themeName} ${i + 1}` : c.bg}
           </ColorChip>
         );
       })}
@@ -106,14 +109,15 @@ const Palette = styled.input.attrs({ type: 'color' })`
   display: none;
 `;
 
-const COLOR_LABEL_MAP: { [color: string]: string | undefined } = {
-  '#e54459': '석류',
-  '#f58d3d': '감귤',
-  '#fac52d': '들국',
-  '#a6d930': '완두',
-  '#2bc366': '비취',
-  '#1bd0c9': '지중해',
-  '#1d99e9': '하늘',
-  '#4f48c4': '라벤더',
-  '#af56b3': '자수정',
-};
+const TIMETABLE_THEME_NAMES = ['SNUTT', '가을', '모던', '벛꽃', '얼음', '잔디'];
+// : { [color: string]: string | undefined } = {
+//   '#e54459': '석류',
+//   '#f58d3d': '감귤',
+//   '#fac52d': '들국',
+//   '#a6d930': '완두',
+//   '#2bc366': '비취',
+//   '#1bd0c9': '지중해',
+//   '#1d99e9': '하늘',
+//   '#4f48c4': '라벤더',
+//   '#af56b3': '자수정',
+// };

@@ -25,10 +25,11 @@ type Props = {
   draft: Partial<LectureEditForm>;
   setDraft: (draft: Partial<LectureEditForm>) => void;
   defaultState?: Partial<Omit<LectureEditForm, 'color'> & { color: Color | Record<string, never> }>;
+  timetableTheme: number;
 };
 
-export const MainLectureEditForm = ({ draft, defaultState = {}, setDraft }: Props) => {
-  const { data: colorList } = useColorList();
+export const MainLectureEditForm = ({ draft, defaultState = {}, setDraft, timetableTheme }: Props) => {
+  const { data: colorList } = useColorList(timetableTheme);
   const { lectureService } = useGuardContext(ServiceContext);
 
   const currentColor =
@@ -59,6 +60,7 @@ export const MainLectureEditForm = ({ draft, defaultState = {}, setDraft }: Prop
         <RowLabel>색</RowLabel>
         {colorList && (
           <MainLectureEditFormColor
+            timeTableTheme={timetableTheme}
             colorList={colorList}
             currentColor={currentColor}
             onChangeColor={(i, c) => setDraft({ ...draft, colorIndex: i, color: c })}
@@ -94,12 +96,12 @@ export const MainLectureEditForm = ({ draft, defaultState = {}, setDraft }: Prop
   );
 };
 
-const useColorList = () => {
+const useColorList = (timetableTheme: number) => {
   const { colorService } = useGuardContext(ServiceContext);
   const { token } = useGuardContext(TokenAuthContext);
   return useQuery({
-    queryKey: ['ColorService', 'getColorList', { token }] as const,
-    queryFn: ({ queryKey: [, , req] }) => colorService.getColorList(req),
+    queryKey: ['ColorService', 'getColorList', { token, timetableTheme }] as const,
+    queryFn: ({ queryKey: [, , req] }) => colorService.getColorList(req.timetableTheme),
     staleTime: Infinity,
   });
 };
