@@ -7,7 +7,7 @@ export const createColorService = (): ColorService => {
       const colorPalettesByTheme: Record<'light' | 'dark', Color[][]> = {
         light: [
           [
-            { fg: '#ffffff', bg: '#e54459' },
+            { fg: '#ffffff', bg: '#ffffff' },
             { fg: '#ffffff', bg: '#f58d3d' },
             { fg: '#ffffff', bg: '#fac52d' },
             { fg: '#ffffff', bg: '#a6d930' },
@@ -75,7 +75,7 @@ export const createColorService = (): ColorService => {
         ],
         dark: [
           [
-            { fg: '#ffffff', bg: '#D95F71' },
+            { fg: '#ffffff', bg: '#ffffff' },
             { fg: '#ffffff', bg: '#DF6E3C' },
             { fg: '#ffffff', bg: '#E68937' },
             { fg: '#ffffff', bg: '#95B03E' },
