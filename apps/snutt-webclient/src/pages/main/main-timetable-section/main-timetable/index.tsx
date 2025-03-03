@@ -29,7 +29,7 @@ export const MainTimeTable = ({
   previewLecture,
   openCreateLectureDialog,
 }: Props) => {
-  const { data: colorList } = useColorList();
+  const { data: colorList } = useColorList(timetable.theme);
   const { lectureService, timetableViewService } = useGuardContext(ServiceContext);
 
   const allClassTimes = timetable.lecture_list
@@ -134,12 +134,12 @@ export const MainTimeTable = ({
   );
 };
 
-const useColorList = () => {
+const useColorList = (theme: number) => {
   const { colorService } = useGuardContext(ServiceContext);
   const { token } = useGuardContext(TokenAuthContext);
   return useQuery({
-    queryKey: ['ColorService', 'getColorList', { token }] as const,
-    queryFn: ({ queryKey: [, , req] }) => colorService.getColorList(req),
+    queryKey: ['ColorService', 'getColorList', { token, theme }] as const,
+    queryFn: ({ queryKey: [, , req] }) => colorService.getColorList(req.theme),
     staleTime: Infinity,
   });
 };

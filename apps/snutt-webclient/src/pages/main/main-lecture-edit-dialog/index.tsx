@@ -20,9 +20,10 @@ type Props = {
   onClose: () => void;
   lecture: Lecture;
   timetableId: string;
+  timetableTheme: number;
 };
 
-export const MainLectureEditDialog = ({ open, onClose, timetableId, lecture }: Props) => {
+export const MainLectureEditDialog = ({ open, onClose, timetableId, timetableTheme, lecture }: Props) => {
   const [draft, setDraft] = useState<Partial<LectureEditForm>>({});
   const { open: openErrorDialog, isOpen: isOpenErrorDialog, onClose: onCloseErrorDialog, message } = useErrorDialog();
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -71,12 +72,14 @@ export const MainLectureEditDialog = ({ open, onClose, timetableId, lecture }: P
           <MainLectureEditForm
             defaultState={{
               ...lecture,
+              // timetableTheme
               // TODO: find a better way
               // 받아올 때 lecture 를 받아놔야 하나..
               class_time_json: lecture.class_time_json.map((ctj) => lectureService.appendInternalId(ctj)),
             }}
             draft={draft}
             setDraft={setDraft}
+            timetableTheme={timetableTheme}
           />
         </EditDialogContent>
       )}
