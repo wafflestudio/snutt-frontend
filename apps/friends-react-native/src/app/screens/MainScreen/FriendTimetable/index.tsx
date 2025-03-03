@@ -21,11 +21,11 @@ export const FriendTimetable = () => {
   const { courseBookService, friendService } = useServiceContext();
   const primaryColor = useThemeContext((data) => data.color.text.primary);
   const { data: friends } = useFriends({ state: 'ACTIVE' });
-  const { data: palette } = useColors();
   const { data: courseBooks } = useFriendCourseBooks(selectedFriendId);
   const { data: fullTimetable } = useFriendPrimaryTable(
     selectedCourseBook && selectedFriendId && { friendId: selectedFriendId, courseBook: selectedCourseBook },
   );
+  const { data: palette } = useColors(fullTimetable);
   const selectedFriend = friends?.find((f) => f.friendId === selectedFriendId);
 
   if (!friends) return null;
