@@ -1,5 +1,5 @@
 import { Color } from '../entities/color';
 
 export type ColorService = {
-  getColorPalette: () => Color[];
+  getColorPalette: (theme: 'light' | 'dark', timetableTheme: number) => Color[];
 };
