@@ -2,30 +2,41 @@
 
 import classNames from "classnames";
 
-import { Theme } from "@/entities/Theme";
-
+import { Input } from "@/app/_components/Input";
 import { Preview } from "./Preview";
+
+import { Theme } from "@/entities/Theme";
 
 import styles from "./index.module.css";
 
 interface Props {
   theme: Theme;
+  publishName: string;
   isAnonymous: boolean;
   isPublished?: boolean;
+  updatePublishName: (publishName: string) => void;
   updateIsAnonymous: () => void;
 }
 
 export const ThemeDetail = ({
   theme,
+  publishName,
   isAnonymous,
   isPublished,
+  updatePublishName,
   updateIsAnonymous,
 }: Props) => {
   return (
     <section className={styles.wrapper}>
-      <div className={styles.info}>
+      <div
+        className={classNames(styles.info, { [styles.published]: isPublished })}
+      >
         <span>테마명</span>
-        <span>{theme.name}</span>
+        {isPublished ? (
+          <span>{theme.publishInfo?.publishName || theme.name}</span>
+        ) : (
+          <Input defaultValue={publishName} onChange={updatePublishName} />
+        )}
       </div>
       <div className={styles.colors}>
         {theme.colors.map((color, index) => (

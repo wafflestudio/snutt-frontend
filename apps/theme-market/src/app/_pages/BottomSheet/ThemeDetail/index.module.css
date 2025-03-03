@@ -17,15 +17,24 @@
   font-weight: 400;
   line-height: 15px;
   text-align: left;
-  color: var(--color-text-med);
+  color: var(--color-text-normal);
 
   background-color: var(--color-bg-normal);
+}
+
+.info.published {
+  color: var(--color-text-med);
 }
 
 .info span {
   display: inline-block;
   vertical-align: middle;
   line-height: normal;
+}
+
+.info input {
+  color: var(--color-text-normal);
+  background-color: var(--color-bg-normal);
 }
 
 .colors {

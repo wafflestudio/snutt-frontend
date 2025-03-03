@@ -17,15 +17,15 @@
   width: 100%;
   margin-top: 8px;
   padding: 23px 13px 18px;
+  border-radius: 10px;
 
-  background-color: #ffffff;
-  /* background-color: var(--color-bg-default); */
+  background-color: var(--color-bg-normal);
 }
 
 .timetable svg {
   width: 100%;
   height: auto;
 
-  border: 1px solid var(--palette-gray);
+  border: 0.5px solid var(--color-timetable-border-line);
   border-radius: 12px;
 }
