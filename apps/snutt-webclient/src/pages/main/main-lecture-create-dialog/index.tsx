@@ -14,9 +14,14 @@ import { useGuardContext } from '@/hooks/useGuardContext';
 
 import { type LectureEditForm, MainLectureEditForm } from '../main-lecture-edit-form';
 
-type Props = { open: boolean; onClose: () => void; timetableId: FullTimetable['_id'] };
+type Props = {
+  open: boolean;
+  onClose: () => void;
+  timetableId: FullTimetable['_id'];
+  timetableTheme: FullTimetable['theme'];
+};
 
-export const MainLectureCreateDialog = ({ open, onClose, timetableId }: Props) => {
+export const MainLectureCreateDialog = ({ open, onClose, timetableId, timetableTheme }: Props) => {
   const [draft, setDraft] = useState<Partial<LectureEditForm>>({});
   const { open: openErrorDialog, isOpen: isOpenErrorDialog, onClose: onCloseErrorDialog, message } = useErrorDialog();
   const { lectureService } = useGuardContext(ServiceContext);
@@ -57,7 +62,7 @@ export const MainLectureCreateDialog = ({ open, onClose, timetableId }: Props) =
       <Dialog.Title>강의 생성</Dialog.Title>
 
       <EditDialogContent data-testid="main-lecture-create-dialog-content">
-        <MainLectureEditForm draft={draft} setDraft={setDraft} />
+        <MainLectureEditForm draft={draft} setDraft={setDraft} timetableTheme={timetableTheme} />
       </EditDialogContent>
 
       <Actions>
