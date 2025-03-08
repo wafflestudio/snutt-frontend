@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import SurprisedCat from '../assets/images/surprised-cat.svg';
+import WaffleCat from '../assets/images/waffle-cat.svg';
 import { useThemeContext } from '../contexts/ThemeContext';
 import { Typography } from './Typography';
 
@@ -9,11 +10,13 @@ export const EmptyView = ({
   title,
   descriptions,
   size = 'small',
+  catType,
   etc,
 }: {
   title: ReactNode;
   descriptions?: ReactNode[];
   size?: 'small' | 'big';
+  catType?: 'waffle' | 'basic';
   etc?: ReactNode;
 }) => {
   const { subtitle, caption } = useThemeContext(({ color }) => color.text);
@@ -21,7 +24,11 @@ export const EmptyView = ({
 
   return (
     <View style={styles.container}>
-      <SurprisedCat width={sizeStyle.image.width} height={sizeStyle.image.height} />
+      {catType === 'waffle' ? (
+        <WaffleCat width={sizeStyle.image.width} height={sizeStyle.image.height} />
+      ) : (
+        <SurprisedCat width={sizeStyle.image.width} height={sizeStyle.image.height} />
+      )}
       <Typography style={{ color: subtitle, ...styles.subtitle, ...sizeStyle.subtitle }}>{title}</Typography>
       {descriptions?.map((d, i) => (
         <Typography key={i} style={{ ...styles.description, color: caption, ...sizeStyle.description }}>
