@@ -2,6 +2,7 @@ import { type SnuttApi, type SnuttApiSuccessResponseData } from '@sf/snutt-api';
 
 import type { FullTimetable, Timetable } from '@/entities/timetable';
 import { type getTimetableService } from '@/usecases/timetableService';
+import { convertToMinute } from '@/utils/time';
 
 export const implTimetableSnuttApiRepository = ({
   snuttApi,
@@ -40,7 +41,15 @@ export const implTimetableSnuttApiRepository = ({
     },
     createLecture: async ({ id, token }, body) => {
       const { status, data } = await snuttApi['POST /v1/tables/:timetableId/lecture']({
-        body: { ...body, is_forced: false },
+        body: {
+          ...body,
+          is_forced: false,
+          class_time_json: body.class_time_json.map((it) => ({
+            ...it,
+            startMinute: convertToMinute(it.start_time),
+            endMinute: convertToMinute(it.end_time),
+          })),
+        },
         token,
         params: { timetableId: id },
       });
