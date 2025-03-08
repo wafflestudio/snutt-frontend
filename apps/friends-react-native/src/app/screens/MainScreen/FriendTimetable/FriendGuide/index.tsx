@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { EmptyView } from '../../../../components/EmptyView';
 // import { HamburgerIcon } from '../../../../components/Icons/HamburgerIcon';
@@ -9,7 +9,6 @@ import { Typography } from '../../../../components/Typography';
 import { useThemeContext } from '../../../../contexts/ThemeContext';
 import { useMainScreenContext } from '../..';
 import { CheckIcon } from '../../../../components/Icons/CheckIcon';
-import { View } from 'react-native-reanimated/lib/typescript/Animated';
 
 export const FriendGuide = () => {
   const { dispatch } = useMainScreenContext();
