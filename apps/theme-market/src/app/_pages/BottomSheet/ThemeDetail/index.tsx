@@ -35,7 +35,11 @@ export const ThemeDetail = ({
         {isPublished ? (
           <span>{theme.publishInfo?.publishName || theme.name}</span>
         ) : (
-          <Input defaultValue={publishName} onChange={updatePublishName} />
+          <Input
+            className={styles.titleInput}
+            defaultValue={publishName}
+            onChange={updatePublishName}
+          />
         )}
       </div>
       <div className={styles.colors}>
