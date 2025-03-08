@@ -49,7 +49,7 @@ export const MainLectureEditForm = ({ draft, defaultState = {}, setDraft, timeta
         />
       </Row>
       <Row>
-        <RowLabel>선생님</RowLabel>
+        <RowLabel>교수</RowLabel>
         <Input
           data-testid="main-lecture-edit-form-instructor"
           value={draft.instructor ?? defaultState.instructor ?? ''}

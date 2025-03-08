@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 import { givenUser } from '../utils/user.ts';
 
 const testIds = {
-  선생님: 'main-lecture-edit-form-instructor',
+  교수: 'main-lecture-edit-form-instructor',
   '강의 시간 추가 버튼': 'main-lecture-edit-form-add-time',
   '강의 시간 제거 버튼': 'main-lecture-edit-form-delete-time',
 };
@@ -15,7 +15,7 @@ test('강의 수정 모달이 잘 보인다 (성공케이스)', async ({ page })
   await expect(page.getByTestId('main-lecture-edit-dialog-content')).toHaveCount(0);
   await lectureItem.filter({ hasText: '컴퓨터공학부, 2학년' }).click();
   await expect(page.getByTestId('main-lecture-edit-form-title')).toHaveValue('컴퓨터프로그래밍');
-  await page.getByTestId(testIds['선생님']).fill('떡볶이맛 아몬드');
+  await page.getByTestId(testIds['교수']).fill('떡볶이맛 아몬드');
   await page.getByTestId('main-lecture-edit-form-color').filter({ hasText: '라벤더' }).click();
   await page.getByTestId('main-lecture-edit-form-time').nth(0).locator('input').nth(2).fill('낙아치');
   await page.getByTestId('main-lecture-edit-form-time').nth(1).locator('input').nth(0).click();
@@ -183,10 +183,10 @@ test('강의 수정 모달이 잘 취소된다', async ({ page }) => {
   const lectureItem = page.getByTestId('main-lecture-listitem');
   await expect(page.getByTestId('main-lecture-edit-dialog-content')).toHaveCount(0);
   await lectureItem.filter({ hasText: '컴퓨터공학부, 2학년' }).click();
-  await page.getByTestId(testIds['선생님']).type('떡볶이맛 아몬드');
+  await page.getByTestId(testIds['교수']).type('떡볶이맛 아몬드');
   await page.getByTestId('main-lecture-edit-dialog-cancel').click();
   await lectureItem.filter({ hasText: '컴퓨터공학부, 2학년' }).click();
-  await expect(page.getByTestId(testIds['선생님'])).toHaveValue('이영기');
+  await expect(page.getByTestId(testIds['교수'])).toHaveValue('이영기');
 });
 
 test('강의 수정 모달이 잘 취소된다 (실패케이스)', async ({ page }) => {
