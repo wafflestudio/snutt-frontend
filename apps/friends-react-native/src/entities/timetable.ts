@@ -1,5 +1,6 @@
 export type FullTimetable = {
   id: string;
+  theme: number;
   lectures: ({
     id: string;
     courseTitle: string;
