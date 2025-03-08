@@ -27,19 +27,19 @@ export const FriendGuide = () => {
         title="망한 시간표 대회 참여 방법"
         descriptions={[
           <>
-            <CheckIcon style={{ color: caption }} width={24} height={36} /> 우측 상단{' '}
+            <CheckIcon style={{ color: caption }} width={12} height={12} /> 우측 상단{' '}
             <UserPlusIcon style={{ color: caption }} width={12} height={12} /> 을 눌러
             <Typography style={styles.bold}>'수신망한와플#7777'</Typography>로
           </>,
           '친구 요청을 보내주시면 자동 신청됩니다.',
           <>
-            <CheckIcon style={{ color: caption }} width={24} height={36} /> 2025년 1학기 시간표 중 하나가
+            <CheckIcon style={{ color: caption }} width={12} height={12} /> 2025년 1학기 시간표 중 하나가
           </>,
           <>
             <Typography style={styles.bold}>'대표 시간표'</Typography>로 지정되어 있는지 확인해주세요.
           </>,
           <>
-            <CheckIcon style={{ color: caption }} width={24} height={36} /> 발표(3/30) 전에 친구 삭제 시 무효
+            <CheckIcon style={{ color: caption }} width={12} height={12} /> 발표(3/30) 전에 친구 삭제 시 무효
             처리됩니다.
           </>,
           // <>
