@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { Fragment, ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import SurprisedCat from '../assets/images/surprised-cat.svg';
@@ -32,7 +32,7 @@ export const EmptyView = ({
         <SurprisedCat width={sizeStyle.image.width} height={sizeStyle.image.height} />
       )}
       <Typography style={{ color: subtitle, ...styles.subtitle, ...sizeStyle.subtitle }}>{title}</Typography>
-      {views?.map((v) => v)}
+      {views?.map((v, i) => <Fragment key={i}>{v}</Fragment>)}
       {descriptions?.map((d, i) => (
         <Typography key={i} style={{ ...styles.description, color: caption, ...sizeStyle.description }}>
           {d}
