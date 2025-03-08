@@ -60,7 +60,7 @@ export const RequestFriendsWithNickname = () => {
               <>
                 <WarningIcon width={18} height={18} style={{ color }} />
                 <Typography variant="description" style={{ ...styles.guideText, color }}>
-                  닉네임 전체를 입력하세요
+                  망한 시간표 대회 참가를 위한 닉네임: '수신망한와플#7777'
                 </Typography>
               </>
             );
