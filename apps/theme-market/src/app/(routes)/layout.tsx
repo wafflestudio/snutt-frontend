@@ -31,7 +31,7 @@ interface Props {
 }
 
 export default async function RootLayout({ children }: Props) {
-  const themeMode = cookieService.get("theme", "dark");
+  const themeMode = cookieService.get("theme", "light");
   const accessToken = cookieService.getAccessToken();
 
   const user = await authService.me(accessToken);
