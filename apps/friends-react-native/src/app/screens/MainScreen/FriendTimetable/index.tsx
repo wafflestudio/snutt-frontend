@@ -34,7 +34,7 @@ export const FriendTimetable = () => {
 
   return (
     <Paper style={styles.wrapper}>
-      {friends.length === 0 ? (
+      {friends.length !== 0 ? (
         <FriendGuide />
       ) : (
         <>
