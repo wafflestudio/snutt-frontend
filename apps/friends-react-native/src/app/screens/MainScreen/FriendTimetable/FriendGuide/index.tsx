@@ -26,7 +26,7 @@ export const FriendGuide = () => {
         size="big"
         title="망한 시간표 대회 참여 방법"
         catType="waffle"
-        descriptions={[
+        views={[
           <View style={styles.description}>
             <CheckIcon style={{ color: caption }} width={12} height={12} /> 우측 상단{' '}
             <UserPlusIcon style={{ color: caption }} width={12} height={12} /> 을 눌러{' '}

@@ -9,6 +9,7 @@ import { Typography } from './Typography';
 export const EmptyView = ({
   title,
   descriptions,
+  views,
   size = 'small',
   catType,
   etc,
@@ -18,6 +19,7 @@ export const EmptyView = ({
   size?: 'small' | 'big';
   catType?: 'waffle' | 'basic';
   etc?: ReactNode;
+  views?: ReactNode[];
 }) => {
   const { subtitle, caption } = useThemeContext(({ color }) => color.text);
   const sizeStyle = { small: smallStyle, big: bigStyle }[size];
@@ -30,6 +32,7 @@ export const EmptyView = ({
         <SurprisedCat width={sizeStyle.image.width} height={sizeStyle.image.height} />
       )}
       <Typography style={{ color: subtitle, ...styles.subtitle, ...sizeStyle.subtitle }}>{title}</Typography>
+      {views?.map((v) => v)}
       {descriptions?.map((d, i) => (
         <Typography key={i} style={{ ...styles.description, color: caption, ...sizeStyle.description }}>
           {d}
