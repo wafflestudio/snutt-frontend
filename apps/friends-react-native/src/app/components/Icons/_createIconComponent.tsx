@@ -5,7 +5,7 @@ import { useThemeContext } from '../../contexts/ThemeContext';
 import { ThemeValues } from '../../styles/theme';
 
 type Props = Omit<SvgProps, 'style'> & {
-  style?: Partial<{ color: string }>;
+  style?: Partial<{ color: string; marginTop: number }>;
   variant?: keyof ThemeValues['color']['text'];
 };
 

@@ -1,4 +1,4 @@
-import { Fragment, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import SurprisedCat from '../assets/images/surprised-cat.svg';
@@ -16,10 +16,10 @@ export const EmptyView = ({
 }: {
   title: ReactNode;
   descriptions?: ReactNode[];
+  views?: ReactNode[][];
   size?: 'small' | 'big';
   catType?: 'waffle' | 'basic';
   etc?: ReactNode;
-  views?: ReactNode[];
 }) => {
   const { subtitle, caption } = useThemeContext(({ color }) => color.text);
   const sizeStyle = { small: smallStyle, big: bigStyle }[size];
@@ -32,7 +32,20 @@ export const EmptyView = ({
         <SurprisedCat width={sizeStyle.image.width} height={sizeStyle.image.height} />
       )}
       <Typography style={{ color: subtitle, ...styles.subtitle, ...sizeStyle.subtitle }}>{title}</Typography>
-      {views?.map((v, i) => <Fragment key={i}>{v}</Fragment>)}
+
+      <View style={styles.viewContainer}>
+        {views?.map((view) => {
+          return (
+            <View style={styles.viewContentsContainer}>
+              {view.map((v, i) => (
+                <Typography key={i} style={{ ...styles.view, color: caption, ...sizeStyle.description }}>
+                  {v}
+                </Typography>
+              ))}
+            </View>
+          );
+        })}
+      </View>
       {descriptions?.map((d, i) => (
         <Typography key={i} style={{ ...styles.description, color: caption, ...sizeStyle.description }}>
           {d}
@@ -47,6 +60,9 @@ const styles = StyleSheet.create({
   container: { display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' },
   subtitle: { fontWeight: '600' },
   description: { fontWeight: '600' },
+  view: { fontWeight: '600', lineHeight: 18 },
+  viewContainer: { display: 'flex', gap: 17 },
+  viewContentsContainer: { display: 'flex', gap: 8 },
 });
 
 const smallStyle = StyleSheet.create({

@@ -18,6 +18,7 @@ export const FriendGuide = () => {
     },
   } = useThemeContext();
 
+  const svgMargionTop = -2;
   const openGuideModal = () => dispatch({ type: 'setGuideModalOpen', isOpen: true });
 
   return (
@@ -27,26 +28,33 @@ export const FriendGuide = () => {
         title="망한 시간표 대회 참여 방법"
         catType="waffle"
         views={[
-          <View style={styles.description}>
-            <CheckIcon style={{ color: caption }} width={12} height={12} /> 우측 상단{' '}
-            <UserPlusIcon style={{ color: caption }} width={12} height={12} /> 을 눌러{' '}
-            <Typography style={styles.bold}>'수신망한와플#7777'</Typography>로
-          </View>,
-          <View style={styles.description}>친구 요청을 보내주시면 자동 신청됩니다.</View>,
-          <View style={styles.description}>
-            <CheckIcon style={{ color: caption }} width={12} height={12} /> 2025년 1학기 시간표 중 하나가
-          </View>,
-          <View style={styles.description}>
-            <Typography style={styles.bold}>'대표 시간표'</Typography>로 지정되어 있는지 확인해주세요.
-          </View>,
-          <View style={styles.description}>
-            <CheckIcon style={{ color: caption }} width={12} height={12} /> 발표(3/30) 전에 친구 삭제 시 무효
-            처리됩니다.
-          </View>,
-          // <>
-          //   친구가 수락하면 사이드바 <HamburgerIcon style={{ color: caption }} width={12} height={12} /> 친구 목록에
-          //   추가됩니다.
-          // </>,
+          [
+            <>
+              <CheckIcon style={{ color: caption, marginTop: svgMargionTop }} width={12} height={12} /> 우측 상단{' '}
+              <UserPlusIcon style={{ color: caption, marginTop: svgMargionTop }} width={12} height={12} /> 을 눌러{' '}
+              <Typography style={styles.bold}>'수신망한와플#7777'</Typography>로
+            </>,
+            <>
+              <View style={styles.empty} />
+              친구 요청을 보내주시면 자동 신청됩니다.
+            </>,
+          ],
+          [
+            <>
+              <CheckIcon style={{ color: caption, marginTop: svgMargionTop }} width={12} height={12} /> 2025년 1학기
+              시간표 중 하나가
+            </>,
+            <>
+              <View style={styles.empty} />
+              <Typography style={styles.bold}>'대표 시간표'</Typography>로 지정되어 있는지 확인해주세요.
+            </>,
+          ],
+          [
+            <>
+              <CheckIcon style={{ color: caption, marginTop: svgMargionTop }} width={12} height={12} /> 발표(3/30) 전에
+              친구 삭제 시 무효 처리됩니다.
+            </>,
+          ],
         ]}
         // title="추가한 친구가 없습니다."
         // descriptions={[
@@ -79,4 +87,8 @@ const styles = StyleSheet.create({
   description: { width: 450 },
   hint: { textDecorationLine: 'underline', fontSize: 10 },
   bold: { fontWeight: 'bold' },
+  empty: {
+    width: 12,
+    height: 12,
+  },
 });
