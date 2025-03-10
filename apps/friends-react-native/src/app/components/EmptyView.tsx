@@ -61,8 +61,8 @@ const styles = StyleSheet.create({
   subtitle: { fontWeight: '600' },
   description: { fontWeight: '600' },
   view: { fontWeight: '600', lineHeight: 18 },
-  viewContainer: { display: 'flex', gap: 17 },
-  viewContentsContainer: { display: 'flex', gap: 8 },
+  viewContainer: { display: 'flex', gap: 10 },
+  viewContentsContainer: { display: 'flex', gap: 4 },
 });
 
 const smallStyle = StyleSheet.create({

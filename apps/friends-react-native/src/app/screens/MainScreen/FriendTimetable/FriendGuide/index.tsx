@@ -14,7 +14,7 @@ export const FriendGuide = () => {
   const { dispatch } = useMainScreenContext();
   const {
     color: {
-      text: { caption, hint },
+      text: { caption, hint, selectLabel },
     },
   } = useThemeContext();
 
@@ -32,7 +32,7 @@ export const FriendGuide = () => {
             <>
               <CheckIcon style={{ color: caption, marginTop: svgMargionTop }} width={12} height={12} /> 우측 상단{' '}
               <UserPlusIcon style={{ color: caption, marginTop: svgMargionTop }} width={12} height={12} /> 을 눌러{' '}
-              <Typography style={styles.bold}>'수신망한와플#7777'</Typography>로
+              <Typography style={{ ...styles.bold, color: selectLabel }}>'수신망한와플#7777'</Typography>로
             </>,
             <>
               <View style={styles.empty} />
@@ -46,7 +46,8 @@ export const FriendGuide = () => {
             </>,
             <>
               <View style={styles.empty} />
-              <Typography style={styles.bold}>'대표 시간표'</Typography>로 지정되어 있는지 확인해주세요.
+              <Typography style={{ ...styles.bold, color: selectLabel }}>'대표 시간표'</Typography>로 지정되어 있는지
+              확인해주세요.
             </>,
           ],
           [
@@ -86,7 +87,7 @@ const styles = StyleSheet.create({
   detailButton: { marginTop: 20, flexDirection: 'row', alignItems: 'center', gap: 4 },
   description: { width: 450 },
   hint: { textDecorationLine: 'underline', fontSize: 10 },
-  bold: { fontWeight: 'bold' },
+  bold: { fontWeight: '600', color: '#A6A6A6' },
   empty: {
     width: 12,
     height: 12,
