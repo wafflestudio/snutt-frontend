@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   typoMargin4: { paddingTop: 8 },
   detailButton: { marginTop: 20, flexDirection: 'row', alignItems: 'center', gap: 4 },
   description: { width: 450 },
-  hint: { textDecorationLine: 'underline', fontSize: 10 },
+  hint: { textDecorationLine: 'underline', fontSize: 11 },
   bold: { fontWeight: '600', color: '#A6A6A6' },
   empty: {
     width: 12,
