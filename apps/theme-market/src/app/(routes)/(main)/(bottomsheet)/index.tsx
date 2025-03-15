@@ -45,7 +45,7 @@ export default function MainBottomSheet() {
     setModal({
       isOpen: true,
       type: "CONFIRM",
-      description: `'${publishName}' 테마를 등록하시겠습니까?`,
+      description: `'${publishName}' 테마를\n등록하시겠습니까?`,
       onConfirm: async () => {
         try {
           await themeService.publishTheme(

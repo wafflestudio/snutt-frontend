@@ -1,6 +1,8 @@
 :root[data-theme="light"] {
   --color-bg-normal: #ffffff;
   --color-bg-light: #f7f7f7;
+  --color-bg-dimmed: rgba(0, 0, 0, 0.25);
+  --color-bg-mint: #1bd0c8;
 
   --color-line-divider-strong: #a6a6a6;
   --color-line-disabled: #dcdcde;
@@ -10,6 +12,7 @@
   --color-text-med: #a6a6a6;
   --color-text-assistive: #c4c4c4;
   --color-text-alternative: #8a898e;
+  --color-text-on-bg: #ffffff;
 
   --color-timetable-main-line: #ebebed;
   --color-timetable-sub-line: #f5f5f5;
@@ -23,6 +26,8 @@
 :root[data-theme="dark"] {
   --color-bg-normal: #222222;
   --color-bg-light: #2b2b2b;
+  --color-bg-dimmed: rgba(0, 0, 0, 0.3);
+  --color-bg-mint: #1ca6a0;
 
   --color-line-divider-strong: #777777;
   --color-line-disabled: #3c3c3c;
@@ -32,6 +37,7 @@
   --color-text-med: #8a898e;
   --color-text-assistive: #777777;
   --color-text-alternative: #b3b3b3;
+  --color-text-on-bg: #ffffff;
 
   --color-timetable-main-line: #ebebf529;
   --color-timetable-sub-line: #ebebf51a;
