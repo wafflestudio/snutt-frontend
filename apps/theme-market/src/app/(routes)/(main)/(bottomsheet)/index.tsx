@@ -85,12 +85,7 @@ export default function MainBottomSheet() {
       description: `해당 테마를 다운로드 하시겠습니까?`,
       onConfirm: async () => {
         try {
-          await themeService.publishTheme(
-            theme.id,
-            publishName,
-            isAnonymous,
-            accessToken
-          );
+          await themeService.downloadTheme(theme.id, theme.name, accessToken);
           setModal({
             isOpen: true,
             type: "ALERT",
