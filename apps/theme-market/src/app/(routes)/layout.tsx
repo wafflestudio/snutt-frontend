@@ -13,6 +13,7 @@ import { ThemeStoreProvider } from "@/app/_providers/ThemeProvider";
 import { UserStoreProvider } from "../_providers/UserProvider";
 
 import styles from "./index.module.css";
+import { ModalStoreProvider } from "../_providers/ModalProvider";
 
 export const metadata: Metadata = {
   title: "SNUTT 테마 마켓",
@@ -40,7 +41,9 @@ export default async function RootLayout({ children }: Props) {
     <html lang="ko" data-theme={themeMode}>
       <body className={styles.layout}>
         <UserStoreProvider user={user} accessToken={accessToken!!}>
-          <ThemeStoreProvider>{children}</ThemeStoreProvider>
+          <ThemeStoreProvider>
+            <ModalStoreProvider>{children}</ModalStoreProvider>
+          </ThemeStoreProvider>
         </UserStoreProvider>
       </body>
     </html>
