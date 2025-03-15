@@ -14,8 +14,7 @@ export type ModalStore = ModalStoreState & ModalStoreAction;
 export const createModalStore = () => {
   return createStore<ModalStore>((set) => ({
     isOpen: false,
-    setModal: (modalStatus: ModalStatus) =>
-      set((state) => ({ ...state, ...modalStatus })),
+    setModal: (modalStatus: ModalStatus) => set(() => ({ ...modalStatus })),
     closeModal: () => set(() => ({ isOpen: false })),
   }));
 };
