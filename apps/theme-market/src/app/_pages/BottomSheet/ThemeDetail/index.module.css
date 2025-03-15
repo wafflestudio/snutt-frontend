@@ -27,14 +27,16 @@
 }
 
 .info span {
-  display: inline-block;
   vertical-align: middle;
   line-height: normal;
+  min-width: 35px;
 }
 
-.info input {
+.info .titleInput {
+  width: calc(100% - 120px);
   color: var(--color-text-normal);
   background-color: var(--color-bg-normal);
+  border: none;
 }
 
 .colors {
