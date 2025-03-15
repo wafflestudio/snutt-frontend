@@ -1,0 +1,52 @@
+name: deploy-snutt-theme-market-prod
+
+on:
+  push:
+    tags:
+      - theme-market-prod-*
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_TAG: ${{ github.run_number }}
+      BUILD_NUMBER: ${{ github.run_number }}
+      ECR_REGISTRY: 405906814034.dkr.ecr.ap-northeast-2.amazonaws.com
+      ECR_REPOSITORY: snutt-prod/snutt-theme-market
+    environment: prod
+    defaults:
+      run:
+        working-directory: ./apps/theme-market
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: copy yarn.lock
+        run: cp ../../yarn.lock ./yarn.lock
+      
+      - name: Set ENV
+        run: |
+          cp .env.prod .env
+          echo "NEXT_PUBLIC_API_KEY=${{ secrets.BACKEND_API_KEY }}" >> .env
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Docker Build, tag, and push image to ECR
+        id: build-image
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+            --build-arg APP_ENV=prod \
+            .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
