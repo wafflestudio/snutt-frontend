@@ -31,9 +31,11 @@ export const ThemeDetail = ({
       <div
         className={classNames(styles.info, { [styles.published]: isPublished })}
       >
-        <span>테마명</span>
+        <span className={styles.title}>테마명</span>
         {isPublished ? (
-          <span>{theme.publishInfo?.publishName || theme.name}</span>
+          <span className={styles.title}>
+            {theme.publishInfo?.publishName || theme.name}
+          </span>
         ) : (
           <Input
             className={styles.titleInput}
