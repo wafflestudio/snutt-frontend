@@ -26,10 +26,15 @@
   color: var(--color-text-med);
 }
 
-.info span {
+.info .title {
   vertical-align: middle;
   line-height: normal;
   min-width: 35px;
+  max-width: 70%;
+  overflow-x: hidden;
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
 }
 
 .info .titleInput {
