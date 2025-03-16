@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { BottomSheet } from "@/app/_components/BottomSheet";
 import { ThemeDetail } from "@/app/_pages/BottomSheet/ThemeDetail";
@@ -16,6 +16,7 @@ import { ApiError } from "@/entities/Error";
 
 export default function MainBottomSheet() {
   const router = useRouter();
+  const pathname = usePathname();
 
   const [isAnonymous, setIsAnonymous] = useState<boolean>(false);
   const [publishName, setPublishName] = useState<string>("");
@@ -34,6 +35,10 @@ export default function MainBottomSheet() {
   const updatePublishName = (publishName: string) => {
     setPublishName(publishName);
   };
+
+  useEffect(() => {
+    setTheme(null);
+  }, [pathname, setTheme]);
 
   const updateIsAnonymous = () => {
     setIsAnonymous((current) => !current);
@@ -101,7 +106,6 @@ export default function MainBottomSheet() {
               isOpen: true,
               type: "ALERT",
               description: (e as ApiError).displayMessage,
-              // onConfirm: undefined,
             });
           }
         }
