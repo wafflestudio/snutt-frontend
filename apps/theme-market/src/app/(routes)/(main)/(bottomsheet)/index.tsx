@@ -22,7 +22,7 @@ export default function MainBottomSheet() {
 
   const { theme, setTheme } = useThemeStore((state) => state);
   const { accessToken, user } = useUserStore((state) => state);
-  const { setModal, closeModal } = useModalStore((state) => state);
+  const { setModal } = useModalStore((state) => state);
 
   const isPublished = theme?.status !== "PRIVATE";
 
@@ -101,6 +101,7 @@ export default function MainBottomSheet() {
               isOpen: true,
               type: "ALERT",
               description: (e as ApiError).displayMessage,
+              // onConfirm: undefined,
             });
           }
         }
