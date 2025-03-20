@@ -1,6 +1,8 @@
 import { OpenAPIV3 } from 'openapi-types';
 import { toPascalCase } from './case';
 
+const requiredKeys = ['id', '_id'];
+
 export const propertyToType = (property: OpenAPIV3.SchemaObject | OpenAPIV3.ReferenceObject): string => {
   if ('$ref' in property) {
     const last = property.$ref.split('/').at(-1);
@@ -12,7 +14,11 @@ export const propertyToType = (property: OpenAPIV3.SchemaObject | OpenAPIV3.Refe
 
   if (property.type === 'integer' || property.type === 'number' || property.type === 'string') {
     if (property.enum) return property.enum.map((e) => (!isNaN(Number(e)) ? e : `'${e}'`)).join(' | ');
-    if (property.format) return toPascalCase(property.format);
+    if (property.format) {
+      if (['int32', 'int64'].includes(property.format)) return 'Integer';
+
+      return toPascalCase(property.format);
+    }
     return 'string';
   }
 
@@ -26,7 +32,11 @@ export const propertyToType = (property: OpenAPIV3.SchemaObject | OpenAPIV3.Refe
     }
 
     return `{ ${Object.entries(property.properties)
-      .map(([key, value]) => `${key}${property.required?.includes(key) ? '' : '?'}: ${propertyToType(value)}`)
+      .map(([key, value]) => {
+        const type = propertyToType(value);
+
+        return `${key}${property.required?.includes(key) || requiredKeys.includes(key) ? '' : '?'}: ${type}`;
+      })
       .join('; ')} }`;
   }
 

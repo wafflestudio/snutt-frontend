@@ -1,4 +1,4 @@
-import { Int32, Double, Int64, DateTime } from './types';
+import { Double, DateTime, Integer } from './types';
 
 export type SendEmailRequest = { email: string };
 
@@ -64,70 +64,57 @@ export type AuthProvidersCheckDto = {
 
 export type TimetableBriefDto = {
   _id: string;
-  year: Int32;
-  semester: Int32;
+  year: Integer;
+  semester: Integer;
   title: string;
   isPrimary: boolean;
   updated_at: DateTime;
-  total_credit: Int64;
+  total_credit: Integer;
 };
 
-export type TimetableAddRequestDto = { year: Int32; semester: 1 | 2 | 3 | 4; title: string };
+export type TimetableAddRequestDto = { year: Integer; semester: 1 | 2 | 3 | 4; title: string };
 
 export type ClassPlaceAndTimeLegacyDto = {
   day: 0 | 1 | 2 | 3 | 4 | 5 | 6;
   place?: string;
-  startMinute: Int32;
-  endMinute: Int32;
+  startMinute: Integer;
+  endMinute: Integer;
   start_time: string;
   end_time: string;
   len: Double;
   start: Double;
-  lectureBuildings?: LectureBuilding[];
 };
 
 export type ColorSet = { bg?: string; fg?: string };
 
-export type GeoCoordinate = { latitude: Double; longitude: Double };
-
-export type LectureBuilding = {
-  id?: string;
-  buildingNumber: string;
-  buildingNameKor: string;
-  buildingNameEng: string;
-  locationInDMS?: GeoCoordinate;
-  locationInDecimal?: GeoCoordinate;
-  campus: 'GWANAK' | 'YEONGEON' | 'PYEONGCHANG';
-};
-
-export type SnuttEvLectureIdDto = { snuttId?: string; evLectureId: Int64 };
+export type SnuttEvLectureIdDto = { snuttId?: string; evLectureId: Integer };
 
 export type TimetableLectureLegacyDto = {
-  _id?: string;
+  _id: string;
   academic_year?: string;
   category?: string;
   class_time_json: ClassPlaceAndTimeLegacyDto[];
   classification?: string;
-  credit?: Int64;
+  credit?: Integer;
   department?: string;
   instructor?: string;
   lecture_number?: string;
-  quota?: Int32;
-  freshman_quota?: Int32;
+  quota?: Integer;
+  freshman_quota?: Integer;
   remark?: string;
   course_number?: string;
   course_title: string;
   color?: ColorSet;
-  colorIndex: Int32;
+  colorIndex: Integer;
   lecture_id?: string;
   snuttEvLecture?: SnuttEvLectureIdDto;
-  class_time_mask: Int32[];
+  categoryPre2025?: string;
 };
 
 export type TimetableLegacyDto = {
-  _id?: string;
+  _id: string;
   user_id: string;
-  year: Int32;
+  year: Integer;
   semester: 1 | 2 | 3 | 4;
   lecture_list: TimetableLectureLegacyDto[];
   title: string;
@@ -142,22 +129,18 @@ export type TimetableModifyRequestDto = { title: string };
 export type ClassPlaceAndTimeLegacyRequestDto = {
   day: 0 | 1 | 2 | 3 | 4 | 5 | 6;
   place?: string;
-  startMinute?: Int32;
-  endMinute?: Int32;
-  start_time?: string;
-  end_time?: string;
-  len?: Double;
-  start?: Double;
+  startMinute?: Integer;
+  endMinute?: Integer;
 };
 
 export type CustomTimetableLectureAddLegacyRequestDto = {
   course_title: string;
   instructor?: string;
-  credit?: Int64;
+  credit?: Integer;
   class_time_json: ClassPlaceAndTimeLegacyRequestDto[];
   remark?: string;
   color?: ColorSet;
-  colorIndex?: Int32;
+  colorIndex?: Integer;
   is_forced: boolean;
 };
 
@@ -167,12 +150,13 @@ export type TimetableLectureModifyLegacyRequestDto = {
   category?: string;
   classification?: string;
   instructor?: string;
-  credit?: Int64;
+  credit?: Integer;
   class_time_json?: ClassPlaceAndTimeLegacyRequestDto[];
   remark?: string;
   color?: ColorSet;
-  colorIndex?: Int32;
+  colorIndex?: Integer;
   is_forced: boolean;
+  categoryPre2025?: string;
 };
 
 export type Unit = Record<string, never>;
@@ -180,86 +164,97 @@ export type Unit = Record<string, never>;
 export type TimetableModifyThemeRequestDto = { theme?: 0 | 1 | 2 | 3 | 4 | 5; themeId?: string };
 
 export type SearchQueryLegacy = {
-  year: Int32;
+  year: Integer;
   semester: 1 | 2 | 3 | 4;
   title?: string;
   classification?: string[];
-  credit?: Int32[];
+  credit?: Integer[];
   course_number?: string[];
   academic_year?: string[];
   department?: string[];
   category?: string[];
-  categoryPre2025?: string[];
   times?: SearchTimeDto[];
   timesToExclude?: SearchTimeDto[];
   etc?: string[];
-  page: Int32;
-  offset: Int64;
-  limit: Int32;
+  page: Integer;
+  offset: Integer;
+  limit: Integer;
   sortCriteria?: string;
+  categoryPre2025?: string[];
 };
 
-export type SearchTimeDto = { day: 0 | 1 | 2 | 3 | 4 | 5 | 6; startMinute: Int32; endMinute: Int32 };
+export type SearchTimeDto = { day: 0 | 1 | 2 | 3 | 4 | 5 | 6; startMinute: Integer; endMinute: Integer };
 
 export type LectureDto = {
-  _id?: string;
+  _id: string;
   academic_year?: string;
   category?: string;
   class_time_json: ClassPlaceAndTimeLegacyDto[];
   classification?: string;
-  credit: Int64;
+  credit: Integer;
   department?: string;
   instructor?: string;
   lecture_number: string;
-  quota?: Int32;
-  freshmanQuota?: Int32;
+  quota?: Integer;
+  freshmanQuota?: Integer;
   remark?: string;
   semester: 1 | 2 | 3 | 4;
-  year: Int32;
+  year: Integer;
   course_number: string;
   course_title: string;
-  registrationCount: Int32;
+  registrationCount: Integer;
   wasFull: boolean;
   snuttEvLecture?: SnuttEvLectureSummaryDto;
-  class_time_mask: Int32[];
+  categoryPre2025?: string;
 };
 
 export type SnuttEvLectureSummaryDto = {
   snuttId?: string;
-  evLectureId: Int64;
+  evLectureId: Integer;
   avgRating?: Double;
-  evaluationCount: Int64;
+  evaluationCount: Integer;
 };
 
-export type BuildingsResponse = { content: LectureBuilding[]; totalCount: Int32 };
+export type BuildingsResponse = { content: LectureBuilding[]; totalCount: Integer };
+
+export type GeoCoordinate = { latitude: Double; longitude: Double };
+
+export type LectureBuilding = {
+  id: string;
+  buildingNumber: string;
+  buildingNameKor: string;
+  buildingNameEng: string;
+  locationInDMS?: GeoCoordinate;
+  locationInDecimal?: GeoCoordinate;
+  campus: 'GWANAK' | 'YEONGEON' | 'PYEONGCHANG';
+};
 
 export type BookmarkLectureDto = {
-  _id?: string;
+  _id: string;
   academic_year?: string;
   category?: string;
   class_time_json: ClassPlaceAndTimeLegacyDto[];
   classification?: string;
-  credit: Int64;
+  credit: Integer;
   department?: string;
   instructor?: string;
   lecture_number: string;
-  quota?: Int32;
-  freshmanQuota?: Int32;
+  quota?: Integer;
+  freshmanQuota?: Integer;
   remark?: string;
   course_number: string;
   course_title: string;
   snuttEvLecture?: SnuttEvLectureSummaryDto;
-  class_time_mask: Int32[];
 };
 
-export type BookmarkResponse = { year: Int32; semester: Int32; lectures: BookmarkLectureDto[] };
+export type BookmarkResponse = { year: Integer; semester: Integer; lectures: BookmarkLectureDto[] };
 
 export type BookmarkLectureModifyRequest = { lecture_id: string };
 
 export type ExistenceResponse = { exists: boolean };
 
 export type NotificationResponse = {
-  _id?: string;
+  _id: string;
   user_id?: string;
   title: string;
   message: string;
@@ -268,7 +263,7 @@ export type NotificationResponse = {
   created_at: DateTime;
 };
 
-export type NotificationCountResponse = { count: Int64 };
+export type NotificationCountResponse = { count: Integer };
 
 export type ConfigResponse = {
   id: string;
@@ -296,20 +291,21 @@ export type InsertNotificationRequest = {
   dataPayload: Record<string, string>;
 };
 
-export type PostPopupRequest = { key: string; imageOriginUri: string; hiddenDays?: Int32 };
+export type PostPopupRequest = { key: string; imageOriginUri: string; linkUrl?: string; hiddenDays?: Integer };
 
 export type PopupResponse = {
   id: string;
   key: string;
   imageUri: string;
   image_url: string;
-  hiddenDays?: Int32;
-  hidden_days?: Int32;
+  linkUrl?: string;
+  hiddenDays?: Integer;
+  hidden_days?: Integer;
 };
 
 export type VacancyNotificationLecturesResponse = { lectures: LectureDto[] };
 
-export type PopupsResponse = { content: PopupResponse[]; totalCount: Int32 };
+export type PopupsResponse = { content: PopupResponse[]; totalCount: Integer };
 
 export type FriendResponse = {
   id: string;
@@ -319,25 +315,25 @@ export type FriendResponse = {
   createdAt: DateTime;
 };
 
-export type FriendsResponse = { content: FriendResponse[]; totalCount: Int32 };
+export type FriendsResponse = { content: FriendResponse[]; totalCount: Integer };
 
 export type FriendRequest = { nickname: string };
 
 export type FriendRequestLinkResponse = { requestToken: string };
 
-export type CoursebookDto = { year: Int32; semester: 1 | 2 | 3 | 4 };
+export type CoursebookDto = { year: Integer; semester: 1 | 2 | 3 | 4 };
 
 export type ClassPlaceAndTimeDto = {
   day: 0 | 1 | 2 | 3 | 4 | 5 | 6;
   place?: string;
-  startMinute: Int32;
-  endMinute: Int32;
+  startMinute: Integer;
+  endMinute: Integer;
 };
 
 export type TimetableDto = {
-  id?: string;
+  id: string;
   userId: string;
-  year: Int32;
+  year: Integer;
   semester: 1 | 2 | 3 | 4;
   lectures: TimetableLectureDto[];
   title: string;
@@ -348,34 +344,35 @@ export type TimetableDto = {
 };
 
 export type TimetableLectureDto = {
-  id?: string;
+  id: string;
   academicYear?: string;
   category?: string;
   classPlaceAndTimes: ClassPlaceAndTimeDto[];
   classification?: string;
-  credit?: Int64;
+  credit?: Integer;
   department?: string;
   instructor?: string;
   lectureNumber?: string;
-  quota?: Int32;
-  freshmanQuota?: Int32;
+  quota?: Integer;
+  freshmanQuota?: Integer;
   remark?: string;
   courseNumber?: string;
   courseTitle: string;
   color?: ColorSet;
-  colorIndex: Int32;
+  colorIndex: Integer;
   lectureId?: string;
   snuttEvLecture?: SnuttEvLectureIdDto;
+  categoryPre2025?: string;
 };
 
 export type UpdateFriendDisplayNameRequest = { displayName: string };
 
-export type ThemeMarketInfoDto = { publishName: string; authorName: string; downloads: Int32 };
+export type ThemeMarketInfoDto = { publishName: string; authorName: string; downloads: Integer };
 
 export type ThemeOrigin = { originId: string; authorId: string };
 
 export type TimetableThemeDto = {
-  id?: string;
+  id: string;
   theme: 0 | 1 | 2 | 3 | 4 | 5;
   name: string;
   colors?: ColorSet[];
@@ -388,7 +385,7 @@ export type TimetableThemeDto = {
 
 export type TimetableThemeAddRequestDto = { name: string; colors: ColorSet[] };
 
-export type ThemesResponse = { content: TimetableThemeDto[]; totalCount: Int32 };
+export type ThemesResponse = { content: TimetableThemeDto[]; totalCount: Integer };
 
 export type TimetableThemeDownloadRequestDto = { name: string };
 
@@ -402,12 +399,13 @@ export type TagListResponse = {
   instructor: string[];
   category: string[];
   sortCriteria: string[];
-  updated_at: Int64;
+  updated_at: Integer;
+  categoryPre2025: string[];
 };
 
-export type TagListUpdateTimeResponse = { updated_at: Int64 };
+export type TagListUpdateTimeResponse = { updated_at: Integer };
 
-export type CoursebookResponse = { year: Int32; semester: 1 | 2 | 3 | 4; updated_at: DateTime };
+export type CoursebookResponse = { year: Integer; semester: 1 | 2 | 3 | 4; updated_at: DateTime };
 
 export type CoursebookOfficialResponse = { noProxyUrl: string; proxyUrl?: string; url: string };
 
