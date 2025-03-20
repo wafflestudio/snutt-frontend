@@ -98,7 +98,7 @@ const timetableMapper = (timetable: SnuttApiSuccessResponseData<'GET /v1/tables'
 });
 
 const fullTimetableMapper = (timetable: SnuttApiSuccessResponseData<'GET /v1/tables/:timetableId'>): FullTimetable => ({
-  _id: timetable._id,
+  _id: timetable.id,
   title: timetable.title,
   year: timetable.year,
   semester: (() => {
@@ -107,21 +107,21 @@ const fullTimetableMapper = (timetable: SnuttApiSuccessResponseData<'GET /v1/tab
     throw new Error('Invalid semester');
   })(),
   theme: timetable.theme,
-  updated_at: timetable.updated_at,
-  user_id: timetable.user_id,
-  lecture_list: timetable.lecture_list.map(lectureMapper),
+  updated_at: timetable.updatedAt,
+  user_id: timetable.userId,
+  lecture_list: timetable.lectures.map(lectureMapper),
 });
 
 const lectureMapper = (
-  lecture: SnuttApiSuccessResponseData<'GET /v1/tables/:timetableId'>['lecture_list'][number],
+  lecture: SnuttApiSuccessResponseData<'GET /v1/tables/:timetableId'>['lectures'][number],
 ): FullTimetable['lecture_list'][number] => ({
-  _id: lecture._id,
-  course_title: lecture.course_title,
+  _id: lecture.id,
+  course_title: lecture.courseTitle,
   instructor: lecture.instructor,
   credit: lecture.credit,
-  class_time_json: lecture.class_time_json,
+  class_time_json: lecture.classPlaceAndTimes,
   remark: lecture.remark,
-  color: lecture.color,
+  color: { bg: lecture.color.bg, fg: lecture.color.fg },
   colorIndex: (() => {
     if (
       lecture.colorIndex === 0 ||
@@ -138,7 +138,6 @@ const lectureMapper = (
       return lecture.colorIndex;
     throw new Error('Invalid colorIndex');
   })(),
-  class_time_mask: lecture.class_time_mask,
   lecture_id: lecture.lecture_id,
   course_number: lecture.course_number,
   classification: lecture.classification,

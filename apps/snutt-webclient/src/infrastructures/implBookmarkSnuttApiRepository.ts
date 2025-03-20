@@ -36,7 +36,6 @@ export const implBookmarkSnuttApiRepository = ({
                 return data.semester;
               throw new Error('invalid semester');
             })(),
-            class_time_mask: l.class_time_mask,
           })),
         };
 

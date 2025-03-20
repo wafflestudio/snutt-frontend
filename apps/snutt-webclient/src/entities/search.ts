@@ -22,7 +22,7 @@ export type SearchFilter = {
   limit: number;
 };
 
-export interface SearchResultLecture extends BaseLecture {
+export interface SearchResultLecture extends Omit<BaseLecture, 'lecture_id' | 'quot'> {
   year: number;
   semester: Semester;
 }
