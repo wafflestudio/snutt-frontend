@@ -26,6 +26,7 @@ export default function MainBottomSheet() {
   const { setModal } = useModalStore((state) => state);
 
   const isPublished = theme?.status !== "PRIVATE";
+  const isMyTheme = theme?.userId == user.id;
 
   useEffect(() => {
     setPublishName(theme?.name || "");
@@ -114,28 +115,21 @@ export default function MainBottomSheet() {
   };
 
   const getBottomSheetProps = () => {
-    const isMyTheme =
-      theme?.publishInfo?.authorName === user.nickname.nickname ||
-      theme?.isMyTheme;
+    // TODO: bottomSheet 관리 형식 수정
+    const isMyPage = pathname === "/my";
 
-    if (isPublished) {
-      if (isMyTheme) {
-        return {
-          title: "테마 다운로드",
-        };
-      }
-
+    if (isMyPage) {
       return {
-        title: "테마 다운로드",
-        confirmText: "담기",
-        onConfirm: () => downloadTheme(),
+        title: "내 테마 올리기",
+        confirmText: isPublished ? "" : "등록",
+        onConfirm: isPublished ? undefined : () => publishTheme(),
       };
     }
 
     return {
-      title: "내 테마 올리기",
-      confirmText: "등록",
-      onConfirm: () => publishTheme(),
+      title: "테마 다운로드",
+      confirmText: isMyTheme ? "" : "담기",
+      onConfirm: isMyTheme ? undefined : () => downloadTheme(),
     };
   };
 
