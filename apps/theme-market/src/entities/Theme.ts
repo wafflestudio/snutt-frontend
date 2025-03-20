@@ -1,6 +1,7 @@
 export type Theme = {
   id: string;
   name: string;
+  userId: string;
   colors: ThemeColorInfo[];
   publishInfo?: ThemePublishInfo;
   isCustom: Boolean;
