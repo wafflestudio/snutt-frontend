@@ -15,6 +15,7 @@ import {
   CustomTimetableLectureAddLegacyRequestDto,
   TimetableModifyRequestDto,
   BookmarkResponse,
+  TimetableDto,
 } from './schemas';
 
 export const getSnuttTimetableApis = ({ callWithToken, callWithoutToken }: GetApiSpecsParameter) =>
@@ -83,7 +84,7 @@ export const getSnuttTimetableApis = ({ callWithToken, callWithoutToken }: GetAp
         token,
       }),
     'GET /v1/tables/:timetableId': ({ token, params }: { token: string; params: { timetableId: string } }) =>
-      callWithToken<SuccessResponse<TimetableLegacyDto>>({
+      callWithToken<SuccessResponse<TimetableDto>>({
         method: 'get',
         path: `/v1/tables/${params.timetableId}`,
         token,
