@@ -1,4 +1,7 @@
-import { type ClassPlaceAndTimeDto } from '@sf/snutt-api/src/apis/snutt-timetable/schemas';
+import {
+  type ClassPlaceAndTimeDto,
+  type ClassPlaceAndTimeLegacyDto,
+} from '@sf/snutt-api/src/apis/snutt-timetable/schemas';
 
 import type { Color } from './color';
 import type { Day } from './time';
@@ -10,8 +13,8 @@ export interface BaseLecture {
   academic_year?: string;
   course_title: string;
   credit?: number;
-  classPlaceAndTimes: ClassPlaceAndTimeDto[];
-  // class_time_json: ClassTime[];
+  classPlaceAndTimes?: ClassPlaceAndTimeDto[];
+  class_time_json: ClassPlaceAndTimeLegacyDto[];
   instructor?: string;
   quota?: number;
   remark?: string;

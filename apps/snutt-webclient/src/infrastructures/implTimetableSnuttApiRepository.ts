@@ -1,4 +1,9 @@
 import { type SnuttApi, type SnuttApiSuccessResponseData } from '@sf/snutt-api';
+import {
+  type TimetableDto,
+  type TimetableLectureLegacyDto,
+  type TimetableLegacyDto,
+} from '@sf/snutt-api/src/apis/snutt-timetable/schemas';
 
 import type { FullTimetable, Timetable } from '@/entities/timetable';
 import { type getTimetableService } from '@/usecases/timetableService';
@@ -36,7 +41,7 @@ export const implTimetableSnuttApiRepository = ({
         token,
         params: { timetableId: id, timetableLectureId: lecture_id },
       });
-      if (status === 200) return { type: 'success', data: fullTimetableMapper(data) };
+      if (status === 200) return { type: 'success', data: legacyFullTimetableMapper(data) };
       return { type: 'error', errcode: data.errcode };
     },
     createLecture: async ({ id, token }, body) => {
@@ -53,7 +58,7 @@ export const implTimetableSnuttApiRepository = ({
         token,
         params: { timetableId: id },
       });
-      if (status === 200) return { type: 'success', data: fullTimetableMapper(data) };
+      if (status === 200) return { type: 'success', data: legacyFullTimetableMapper(data) };
       return { type: 'error', errcode: data.errcode };
     },
     deleteLecture: async ({ id, lecture_id, token }) => {
@@ -61,7 +66,7 @@ export const implTimetableSnuttApiRepository = ({
         token,
         params: { timetableId: id, timetableLectureId: lecture_id },
       });
-      if (status === 200) return { type: 'success', data: fullTimetableMapper(data) };
+      if (status === 200) return { type: 'success', data: legacyFullTimetableMapper(data) };
       return { type: 'error', errcode: data.errcode };
     },
     addLecture: async ({ id, lecture_id, token }) => {
@@ -69,7 +74,7 @@ export const implTimetableSnuttApiRepository = ({
         token,
         params: { timetableId: id, timetableLectureId: lecture_id },
       });
-      if (status === 200) return { type: 'success', data: fullTimetableMapper(data) };
+      if (status === 200) return { type: 'success', data: legacyFullTimetableMapper(data) };
       return { type: 'error', errcode: data.errcode };
     },
     updateTimetable: async ({ id, token }, body) => {
@@ -97,7 +102,7 @@ const timetableMapper = (timetable: SnuttApiSuccessResponseData<'GET /v1/tables'
   updated_at: timetable.updated_at,
 });
 
-const fullTimetableMapper = (timetable: SnuttApiSuccessResponseData<'GET /v1/tables/:timetableId'>): FullTimetable => ({
+const fullTimetableMapper = (timetable: TimetableDto): FullTimetable => ({
   _id: timetable.id,
   title: timetable.title,
   year: timetable.year,
@@ -119,9 +124,60 @@ const lectureMapper = (
   course_title: lecture.courseTitle,
   instructor: lecture.instructor,
   credit: lecture.credit,
-  class_time_json: lecture.classPlaceAndTimes,
+  class_time_json: lecture.classPlaceAndTimes.map((p) => ({ ...p, start_time: '0', end_time: '0', len: 0, start: 0 })),
+  classPlaceAndTimes: lecture.classPlaceAndTimes,
   remark: lecture.remark,
-  color: { bg: lecture.color.bg, fg: lecture.color.fg },
+  color: { bg: lecture.color?.bg, fg: lecture.color?.fg },
+  colorIndex: (() => {
+    if (
+      lecture.colorIndex === 0 ||
+      lecture.colorIndex === 1 ||
+      lecture.colorIndex === 2 ||
+      lecture.colorIndex === 3 ||
+      lecture.colorIndex === 4 ||
+      lecture.colorIndex === 5 ||
+      lecture.colorIndex === 6 ||
+      lecture.colorIndex === 7 ||
+      lecture.colorIndex === 8 ||
+      lecture.colorIndex === 9
+    )
+      return lecture.colorIndex;
+    throw new Error('Invalid colorIndex');
+  })(),
+  lecture_id: lecture.lectureId,
+  course_number: lecture.courseNumber,
+  classification: lecture.classification,
+  department: lecture.department,
+  academic_year: lecture.academicYear,
+  category: lecture.category,
+  quota: lecture.quota,
+  lecture_number: lecture.lectureNumber,
+});
+
+const legacyFullTimetableMapper = (timetable: TimetableLegacyDto): FullTimetable => ({
+  _id: timetable._id,
+  title: timetable.title,
+  year: timetable.year,
+  semester: (() => {
+    if (timetable.semester === 1 || timetable.semester === 2 || timetable.semester === 3 || timetable.semester === 4)
+      return timetable.semester;
+    throw new Error('Invalid semester');
+  })(),
+  theme: timetable.theme,
+  updated_at: timetable.updated_at,
+  user_id: timetable.user_id,
+  lecture_list: timetable.lecture_list.map(legacyLectureMapper),
+});
+
+const legacyLectureMapper = (lecture: TimetableLectureLegacyDto): FullTimetable['lecture_list'][number] => ({
+  _id: lecture._id,
+  course_title: lecture.course_title,
+  instructor: lecture.instructor,
+  credit: lecture.credit,
+  class_time_json: lecture.class_time_json,
+  classPlaceAndTimes: lecture.class_time_json,
+  remark: lecture.remark,
+  color: { bg: lecture.color?.bg, fg: lecture.color?.fg },
   colorIndex: (() => {
     if (
       lecture.colorIndex === 0 ||
