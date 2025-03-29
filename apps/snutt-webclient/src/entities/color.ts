@@ -1,1 +1,1 @@
-export type Color = { bg: string; fg: string };
+export type Color = { bg?: string; fg?: string };

@@ -1,3 +1,4 @@
+import { type Integer } from '@sf/snutt-api/src/apis/snutt-timetable/types';
 import { http } from 'msw';
 
 import type { SignInResponse } from '@/entities/auth';
@@ -140,7 +141,7 @@ export const handlers = [
         return { type: 'error', status: 400, body: { ext: {}, errcode: -1, message: '' } };
 
       const classTimeJson = class_time_json as { start_time: string; end_time: string; day: number }[] | undefined;
-      if (classTimeJson?.some((c1, i1) => classTimeJson.some((c2, i2) => i1 !== i2 && isOverlap(c1, c2))))
+      if (classTimeJson?.some((c1, i1) => classTimeJson.some((c2, i2) => i1 !== i2 && isOverlapClassTimeJson(c1, c2))))
         return {
           type: 'error',
           status: 403,
@@ -159,7 +160,7 @@ export const handlers = [
         return { type: 'error', status: 400, body: { ext: {}, errcode: -1, message: '' } };
 
       const classTimeJson = class_time_json as { start_time: string; end_time: string; day: number }[];
-      if (classTimeJson.some((c1, i1) => classTimeJson.some((c2, i2) => i1 !== i2 && isOverlap(c1, c2))))
+      if (classTimeJson.some((c1, i1) => classTimeJson.some((c2, i2) => i1 !== i2 && isOverlapClassTimeJson(c1, c2))))
         return {
           type: 'error',
           status: 403,
@@ -187,9 +188,9 @@ export const handlers = [
       const lecture = mockSearchResult.find((item) => item._id === lectureId);
 
       if (
-        table.lecture_list
-          .flatMap((ll) => ll.class_time_json)
-          .some((t1, i1) => lecture?.class_time_json.some((t2, i2) => i1 !== i2 && isOverlap(t1, t2)))
+        table.lectures
+          .flatMap((ll) => ll.classPlaceAndTimes)
+          .some((t1, i1) => lecture?.classPlaceAndTimes?.some((t2, i2) => i1 !== i2 && isOverlap(t1, t2)))
       )
         return { type: 'error', status: 403, body: { errcode: 12300, message: '', ext: {} } };
 
@@ -399,7 +400,7 @@ export const handlers = [
   ),
 ];
 
-const isOverlap = (
+const isOverlapClassTimeJson = (
   c1: { start_time: string; end_time: string; day: number },
   c2: { start_time: string; end_time: string; day: number },
 ) => {
@@ -412,4 +413,16 @@ const isOverlap = (
     c1.day === c2.day &&
     (toNumber(c1.start_time) - toNumber(c2.end_time)) * (toNumber(c1.end_time) - toNumber(c2.start_time)) < 0
   );
+};
+
+const isOverlap = (
+  c1: { startMinute: Integer; endMinute: Integer; day: number },
+  c2: { startMinute: Integer; endMinute: Integer; day: number },
+) => {
+  // const toNumber = (time: string) => {
+  //   const [hour, minute] = time.split(':').map(Number);
+  //   return hour * 60 + minute;
+  // };
+
+  return c1.day === c2.day && (c1.startMinute - c2.endMinute) * (c1.endMinute - c2.startMinute) < 0;
 };
