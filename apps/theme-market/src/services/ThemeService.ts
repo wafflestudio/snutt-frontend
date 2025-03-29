@@ -1,6 +1,7 @@
 import { PageResponse } from "@/entities/Page";
 import { Theme } from "@/entities/Theme";
 
+import { authRepositry } from "@/repositories/AuthRepository";
 import { themeRepositry } from "@/repositories/ThemeRepository";
 
 type ThemeService = {
@@ -36,9 +37,11 @@ export const themeService: ThemeService = {
     return await themeRepositry.getTheme({ id, accessToken });
   },
   getMyThemes: async (accessToken?: string) => {
-    return (await themeRepositry.getMyThemes({ accessToken }))
-      .filter((theme) => theme.isCustom)
-      .map((theme) => ({ ...theme, isMyTheme: true }));
+    const user = await authRepositry.me(accessToken);
+
+    return (await themeRepositry.getMyThemes({ accessToken })).filter(
+      (theme) => theme.userId === user.id
+    );
   },
   getBestThemes: async (page?: number, accessToken?: string) => {
     return await themeRepositry.getBestThemes({ page, accessToken });

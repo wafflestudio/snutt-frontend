@@ -4,8 +4,8 @@ export type Theme = {
   userId: string;
   colors: ThemeColorInfo[];
   publishInfo?: ThemePublishInfo;
+  origin?: ThemeOrigin;
   isCustom: Boolean;
-  isMyTheme?: Boolean;
   status: string;
 };
 
@@ -18,4 +18,9 @@ export type ThemePublishInfo = {
   publishName: string;
   authorName: string;
   downloads: number;
+};
+
+type ThemeOrigin = {
+  originId: string;
+  authorId: string;
 };

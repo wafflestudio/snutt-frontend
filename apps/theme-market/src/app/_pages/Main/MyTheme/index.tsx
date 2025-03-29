@@ -9,7 +9,9 @@ import styles from "./index.module.css";
 export const MyTheme = async () => {
   const accessToken = cookieService.getAccessToken();
 
-  const myThemes = await themeService.getMyThemes(accessToken);
+  const myThemes = (await themeService.getMyThemes(accessToken))
+    .filter((theme) => theme.isCustom)
+    .filter((theme) => theme.status !== "DOWNLOADED");
 
   return (
     <div className={styles.wrapper}>
