@@ -20,7 +20,13 @@ export const SearchHeader = ({ defaultValue }: Props) => {
         placeholder="테마를 검색해보세요"
         type="search"
         defaultValue={defaultValue}
-        onComplete={(value: String) => router.replace(`/search/${value}`)}
+        onComplete={(value: string) => {
+          const params = new URLSearchParams({
+            query: value,
+          });
+
+          router.replace(`/search?${params}`);
+        }}
       />
     </div>
   );
