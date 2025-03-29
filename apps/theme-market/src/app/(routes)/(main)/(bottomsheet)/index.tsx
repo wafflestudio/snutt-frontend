@@ -25,7 +25,7 @@ export default function MainBottomSheet() {
   const { accessToken, user } = useUserStore((state) => state);
   const { setModal } = useModalStore((state) => state);
 
-  const isPublished = theme?.status !== "PRIVATE";
+  const isPublished = theme?.status === "PUBLISHED";
   const isMyTheme = theme?.userId == user.id;
 
   useEffect(() => {
