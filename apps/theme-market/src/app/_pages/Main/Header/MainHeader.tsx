@@ -25,7 +25,13 @@ export const MainHeader = ({ menu }: Props) => {
           className={styles.input}
           placeholder="테마를 검색해보세요"
           type="search"
-          onComplete={(value: String) => router.push(`/search/${value}`)}
+          onComplete={(value: string) => {
+            const params = new URLSearchParams({
+              query: value,
+            });
+
+            router.push(`/search?${params}`);
+          }}
         />
       </div>
       <Tab>
