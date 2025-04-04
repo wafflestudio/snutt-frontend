@@ -1,39 +1,73 @@
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { EmptyView } from '../../../../components/EmptyView';
-import { HamburgerIcon } from '../../../../components/Icons/HamburgerIcon';
+// import { HamburgerIcon } from '../../../../components/Icons/HamburgerIcon';
 import { QuestionIcon } from '../../../../components/Icons/QuestionIcon';
 import { UserPlusIcon } from '../../../../components/Icons/UserPlusIcon';
 import { Paper } from '../../../../components/Paper';
 import { Typography } from '../../../../components/Typography';
 import { useThemeContext } from '../../../../contexts/ThemeContext';
 import { useMainScreenContext } from '../..';
+import { CheckIcon } from '../../../../components/Icons/CheckIcon';
 
 export const FriendGuide = () => {
   const { dispatch } = useMainScreenContext();
   const {
     color: {
-      text: { caption, hint },
+      text: { caption, hint, selectLabel },
     },
   } = useThemeContext();
 
+  const svgMargionTop = -2;
   const openGuideModal = () => dispatch({ type: 'setGuideModalOpen', isOpen: true });
 
   return (
     <Paper style={styles.wrapper}>
       <EmptyView
         size="big"
-        title="추가한 친구가 없습니다."
-        descriptions={[
-          <>
-            우측 상단 <UserPlusIcon style={{ color: caption }} width={12} height={12} /> 을 눌러
-          </>,
-          '시간표를 공유하고 싶은 친구에게 친구 요청을 보내보세요!',
-          <>
-            친구가 수락하면 사이드바 <HamburgerIcon style={{ color: caption }} width={12} height={12} /> 친구 목록에
-            추가됩니다.
-          </>,
+        title="망한 시간표 대회 참여 방법"
+        catType="waffle"
+        views={[
+          [
+            <>
+              <CheckIcon style={{ color: caption, marginTop: svgMargionTop }} width={12} height={12} /> 우측 상단{' '}
+              <UserPlusIcon style={{ color: caption, marginTop: svgMargionTop }} width={12} height={12} /> 을 눌러{' '}
+              <Typography style={{ ...styles.bold, color: selectLabel }}>'수신망한와플#7777'</Typography>로
+            </>,
+            <>
+              <View style={styles.empty} />
+              친구 요청을 보내주시면 자동 신청됩니다.
+            </>,
+          ],
+          [
+            <>
+              <CheckIcon style={{ color: caption, marginTop: svgMargionTop }} width={12} height={12} /> 2025년 1학기
+              시간표 중 하나가
+            </>,
+            <>
+              <View style={styles.empty} />
+              <Typography style={{ ...styles.bold, color: selectLabel }}>'대표 시간표'</Typography>로 지정되어 있는지
+              확인해주세요.
+            </>,
+          ],
+          [
+            <>
+              <CheckIcon style={{ color: caption, marginTop: svgMargionTop }} width={12} height={12} /> 발표(3/30) 전에
+              친구 삭제 시 무효 처리됩니다.
+            </>,
+          ],
         ]}
+        // title="추가한 친구가 없습니다."
+        // descriptions={[
+        //   <>
+        //     우측 상단 <UserPlusIcon style={{ color: caption }} width={12} height={12} /> 을 눌러
+        //   </>,
+        //   '시간표를 공유하고 싶은 친구에게 친구 요청을 보내보세요!',
+        //   <>
+        //     친구가 수락하면 사이드바 <HamburgerIcon style={{ color: caption }} width={12} height={12} /> 친구 목록에
+        //     추가됩니다.
+        //   </>,
+        // ]}
         etc={
           <TouchableOpacity onPress={openGuideModal} style={styles.detailButton}>
             <QuestionIcon style={{ color: hint }} width={12} height={12} />
@@ -51,5 +85,11 @@ const styles = StyleSheet.create({
   wrapper: { display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1 },
   typoMargin4: { paddingTop: 8 },
   detailButton: { marginTop: 20, flexDirection: 'row', alignItems: 'center', gap: 4 },
-  hint: { textDecorationLine: 'underline', fontSize: 10 },
+  description: { width: 450 },
+  hint: { textDecorationLine: 'underline', fontSize: 11 },
+  bold: { fontWeight: '600', color: '#A6A6A6' },
+  empty: {
+    width: 12,
+    height: 12,
+  },
 });
