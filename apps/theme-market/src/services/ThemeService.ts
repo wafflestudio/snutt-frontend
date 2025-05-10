@@ -8,6 +8,11 @@ type ThemeService = {
   search: (query: string, accessToken?: string) => Promise<Theme[]>;
   getTheme: (id: string, accessToken?: string) => Promise<Theme>;
   getMyThemes: (accessToken?: string) => Promise<Theme[]>;
+  getThemes: (
+    type: "BEST" | "FRIENDS",
+    page?: number,
+    accessToken?: string
+  ) => Promise<PageResponse<Theme>>;
   getBestThemes: (
     page?: number,
     accessToken?: string
@@ -35,6 +40,15 @@ export const themeService: ThemeService = {
   },
   getTheme: async (id: string, accessToken?: string) => {
     return await themeRepositry.getTheme({ id, accessToken });
+  },
+  getThemes: async (
+    type: "BEST" | "FRIENDS",
+    page?: number,
+    accessToken?: string
+  ) => {
+    return type === "BEST"
+      ? await themeService.getBestThemes(page, accessToken)
+      : await themeService.getFriendsThemes(page, accessToken);
   },
   getMyThemes: async (accessToken?: string) => {
     const user = await authRepositry.me(accessToken);
