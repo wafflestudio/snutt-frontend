@@ -31,6 +31,8 @@ export const ThemeListPage = async ({ type }: Props) => {
           <ThemeListWithInifiniteScorll
             defaultThemes={themes}
             getMoreThemes={async (page: number) => {
+              "use server";
+
               const { content: themes } = await themeService.getThemes(
                 type,
                 page,
