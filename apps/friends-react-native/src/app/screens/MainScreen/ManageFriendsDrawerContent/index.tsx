@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { CloseIcon } from '../../../components/Icons/CloseIcon';
@@ -30,6 +30,10 @@ export const ManageFriendsDrawerContent = ({ onClose }: Props) => {
   const dividerColor = useThemeContext((data) => data.color.border.divider);
   const { data: requestedFriends } = useFriends({ state: 'REQUESTED' });
   const isRequestedFriendExist = requestedFriends && requestedFriends.length !== 0;
+
+  useEffect(() => {
+    if (isRequestedFriendExist) setTab('REQUESTED');
+  }, [isRequestedFriendExist]);
 
   return (
     <View style={styles.container}>

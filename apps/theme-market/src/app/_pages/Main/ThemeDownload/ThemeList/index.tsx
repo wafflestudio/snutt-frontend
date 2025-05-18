@@ -14,10 +14,13 @@ interface Props {
 
 export const ThemeListPage = async ({ type }: Props) => {
   const accessToken = cookieService.getAccessToken();
-  const { content: themes } =
-    type === "BEST"
-      ? await themeService.getBestThemes(DEFAULT_PAGE, accessToken)
-      : await themeService.getFriendsThemes(DEFAULT_PAGE, accessToken);
+
+  // const getThemes = (type: 'BEST' | 'FRIENDS')
+  const { content: themes } = await themeService.getThemes(
+    type,
+    DEFAULT_PAGE,
+    accessToken
+  );
 
   return (
     <>
@@ -25,7 +28,20 @@ export const ThemeListPage = async ({ type }: Props) => {
       <section className={styles.main}>
         <Back className={styles.prev} />
         <div className={styles.themes}>
-          <ThemeListWithInifiniteScorll defaultThemes={themes} />
+          <ThemeListWithInifiniteScorll
+            defaultThemes={themes}
+            getMoreThemes={async (page: number) => {
+              "use server";
+
+              const { content: themes } = await themeService.getThemes(
+                type,
+                page,
+                accessToken
+              );
+
+              return themes;
+            }}
+          />
         </div>
       </section>
     </>
