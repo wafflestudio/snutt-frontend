@@ -4,6 +4,7 @@ import classNames from "classnames";
 import styles from "./index.module.css";
 
 interface Props {
+  type?: string;
   children?: React.ReactNode;
   isOpen: boolean;
   title: string;
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export const BottomSheet = ({
+  type,
   children,
   title,
   confirmText,
@@ -32,7 +34,12 @@ export const BottomSheet = ({
         <div className={styles.header}>
           <span onClick={() => onCancel?.()}>취소</span>
           <span className={styles.title}>{title}</span>
-          <span onClick={() => onConfirm?.()}>{confirmText || ""}</span>
+          <span
+            className={classNames({ [styles.warn]: type === "WARN" })}
+            onClick={() => onConfirm?.()}
+          >
+            {confirmText || ""}
+          </span>
         </div>
         <div>{children}</div>
       </section>

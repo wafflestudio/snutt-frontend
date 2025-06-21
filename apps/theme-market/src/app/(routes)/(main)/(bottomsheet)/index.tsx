@@ -119,10 +119,18 @@ export default function MainBottomSheet() {
     const isMyPage = pathname === "/my";
 
     if (isMyPage) {
+      if (isPublished) {
+        return {
+          title: "내가 올린 테마",
+          confirmText: "내리기",
+          type: "WARN",
+        };
+      }
+
       return {
         title: "내 테마 올리기",
-        confirmText: isPublished ? "" : "등록",
-        onConfirm: isPublished ? undefined : () => publishTheme(),
+        confirmText: "등록",
+        onConfirm: () => publishTheme(),
       };
     }
 

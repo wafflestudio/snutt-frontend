@@ -15,7 +15,6 @@ interface Props {
 export const ThemeListPage = async ({ type }: Props) => {
   const accessToken = cookieService.getAccessToken();
 
-  // const getThemes = (type: 'BEST' | 'FRIENDS')
   const { content: themes } = await themeService.getThemes(
     type,
     DEFAULT_PAGE,
