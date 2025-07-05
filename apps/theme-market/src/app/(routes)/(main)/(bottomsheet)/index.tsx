@@ -45,6 +45,38 @@ export default function MainBottomSheet() {
     setIsAnonymous((current) => !current);
   };
 
+  const unpublishTheme = async () => {
+    if (!theme) return;
+
+    setModal({
+      isOpen: true,
+      type: "CONFIRM",
+      description: `'${publishName}' 테마를\n내리시겠습니까?`,
+      onConfirm: async () => {
+        try {
+          await themeService.unpublishTheme(theme.id, accessToken);
+          setModal({
+            isOpen: true,
+            type: "ALERT",
+            description: "테마 내리기가 완료되었습니다",
+            onConfirm: () => {
+              router.refresh();
+              setTheme(null);
+            },
+          });
+        } catch (e) {
+          if ((e as Error).name === "API_ERROR") {
+            setModal({
+              isOpen: true,
+              type: "ALERT",
+              description: (e as ApiError).displayMessage,
+            });
+          }
+        }
+      },
+    });
+  };
+
   const publishTheme = async () => {
     if (!theme) return;
 
@@ -124,6 +156,7 @@ export default function MainBottomSheet() {
           title: "내가 올린 테마",
           confirmText: "내리기",
           type: "WARN",
+          onConfirm: () => unpublishTheme(),
         };
       }
 
