@@ -59,6 +59,15 @@
   display: inline-block;
   min-width: 28px;
 }
+
 .header .title {
   font-size: 17px;
+}
+
+.header .confirm {
+  color: var(--color-text-normal);
+}
+
+.header .warn {
+  color: var(--color-text-red);
 }

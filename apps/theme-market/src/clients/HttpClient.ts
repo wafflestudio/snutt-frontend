@@ -8,6 +8,7 @@ type HttpClient = {
     body?: B,
     accessToken?: string
   ) => Promise<T>;
+  delete: <T = unknown>(url: string, accessToken?: string) => Promise<T>;
 };
 
 const baseUrl =
@@ -56,6 +57,30 @@ export const httpClient: HttpClient = {
       body: JSON.stringify(body),
       headers,
     });
+    const data = await response.json().catch(() => null);
+
+    if (response.ok) return data;
+    else {
+      const error = new Error() as ApiError;
+      error.name = "API_ERROR";
+      error.displayMessage = data.displayMessage;
+      error.message = data.message;
+      error.errCode = data.errCode;
+      throw error;
+    }
+  },
+  delete: async (url, accessToken) => {
+    const headers = {
+      ...BASE_HEADER,
+      ...(accessToken ? { [ACCESS_TOKEN_KEY]: accessToken } : {}),
+    };
+
+    const response = await fetch(baseUrl + url, {
+      headers,
+      method: "DELETE",
+      cache: "no-store",
+    });
+
     const data = await response.json().catch(() => null);
 
     if (response.ok) return data;

@@ -27,6 +27,7 @@ type ThemeService = {
     isAnonymous: boolean,
     accessToken?: string
   ) => Promise<void>;
+  unpublishTheme: (themeId: string, accessToken?: string) => Promise<void>;
   downloadTheme: (
     themeId: string,
     name: string,
@@ -74,6 +75,16 @@ export const themeService: ThemeService = {
         themeId,
         publishName,
         isAnonymous,
+        accessToken,
+      });
+    } catch (err) {
+      throw err;
+    }
+  },
+  unpublishTheme: async (themeId: string, accessToken?: string) => {
+    try {
+      await themeRepositry.unpublishTheme({
+        themeId,
         accessToken,
       });
     } catch (err) {
