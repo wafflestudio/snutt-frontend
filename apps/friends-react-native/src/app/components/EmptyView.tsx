@@ -2,18 +2,23 @@ import { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import SurprisedCat from '../assets/images/surprised-cat.svg';
+import WaffleCat from '../assets/images/waffle-cat.svg';
 import { useThemeContext } from '../contexts/ThemeContext';
 import { Typography } from './Typography';
 
 export const EmptyView = ({
   title,
   descriptions,
+  views,
   size = 'small',
+  catType,
   etc,
 }: {
   title: ReactNode;
   descriptions?: ReactNode[];
+  views?: ReactNode[][];
   size?: 'small' | 'big';
+  catType?: 'waffle' | 'basic';
   etc?: ReactNode;
 }) => {
   const { subtitle, caption } = useThemeContext(({ color }) => color.text);
@@ -21,8 +26,26 @@ export const EmptyView = ({
 
   return (
     <View style={styles.container}>
-      <SurprisedCat width={sizeStyle.image.width} height={sizeStyle.image.height} />
+      {catType === 'waffle' ? (
+        <WaffleCat width={sizeStyle.image.width} height={sizeStyle.image.height} />
+      ) : (
+        <SurprisedCat width={sizeStyle.image.width} height={sizeStyle.image.height} />
+      )}
       <Typography style={{ color: subtitle, ...styles.subtitle, ...sizeStyle.subtitle }}>{title}</Typography>
+
+      <View style={styles.viewContainer}>
+        {views?.map((view) => {
+          return (
+            <View style={styles.viewContentsContainer}>
+              {view.map((v, i) => (
+                <Typography key={i} style={{ ...styles.view, color: caption, ...sizeStyle.description }}>
+                  {v}
+                </Typography>
+              ))}
+            </View>
+          );
+        })}
+      </View>
       {descriptions?.map((d, i) => (
         <Typography key={i} style={{ ...styles.description, color: caption, ...sizeStyle.description }}>
           {d}
@@ -37,6 +60,9 @@ const styles = StyleSheet.create({
   container: { display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' },
   subtitle: { fontWeight: '600' },
   description: { fontWeight: '600' },
+  view: { fontWeight: '600', lineHeight: 18 },
+  viewContainer: { display: 'flex', gap: 10 },
+  viewContentsContainer: { display: 'flex', gap: 4 },
 });
 
 const smallStyle = StyleSheet.create({
