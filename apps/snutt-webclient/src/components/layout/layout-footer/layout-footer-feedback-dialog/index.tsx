@@ -11,6 +11,7 @@ type Props = { isOpen: boolean; onClose: () => void };
 
 export const LayoutFooterFeedbackDialog = ({ onClose, isOpen }: Props) => {
   const [email, setEmail] = useState('');
+  const [emailErrorMessage, setEmailErrorMessage] = useState<string | undefined>(undefined);
   const [message, setMessage] = useState('');
 
   const { mutate, isPending, isSuccess, reset } = useSubmitFeedback();
@@ -19,12 +20,22 @@ export const LayoutFooterFeedbackDialog = ({ onClose, isOpen }: Props) => {
 
   const submit = () => {
     if (!isValid || isPending) return;
+
+    if (
+      !email.match(
+        /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
+      )
+    ) {
+      setEmailErrorMessage('이메일 주소를 입력해주세요.');
+      return;
+    }
     mutate({ email, message });
   };
 
   const close = () => {
     setEmail('');
     setMessage('');
+    setEmailErrorMessage(undefined);
     reset();
     onClose();
   };
@@ -42,6 +53,7 @@ export const LayoutFooterFeedbackDialog = ({ onClose, isOpen }: Props) => {
           type="email"
           placeholder="이메일"
         />
+        <ErrorMessage>{emailErrorMessage}</ErrorMessage>
         <label>내용</label>
         <Textarea
           disabled={isPending || isSuccess}
@@ -93,8 +105,14 @@ const inputStyle = css`
 `;
 
 const Input = styled.input`
-  margin-bottom: 30px;
   ${inputStyle}
+`;
+
+const ErrorMessage = styled.span`
+  font-size: 12px;
+  color: red;
+  margin: 5px 0 10px;
+  min-height: 20px;
 `;
 
 const Textarea = styled.textarea`
