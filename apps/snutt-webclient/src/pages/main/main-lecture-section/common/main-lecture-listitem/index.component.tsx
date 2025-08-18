@@ -22,6 +22,36 @@ export const MainLectureListitem = ({
 }) => {
   const vm = mainLectureListitemPresenter.useViewModel(props);
 
+  const renderLink = (link: { isShow: false } | { isShow: true; href: string; text: string; usePopup?: boolean }) => {
+    if (!link.isShow) return <div></div>;
+
+    return (
+      <a
+        data-testid="main-lecture-listitem-link"
+        className={styles.link}
+        onClick={(e) => {
+          e.stopPropagation();
+
+          if (!link.usePopup) return;
+
+          e.preventDefault();
+          const newTab = window.open('about:blank', '_blank', 'width=1024,height=800');
+
+          setTimeout(() => {
+            if (newTab && link.href) {
+              newTab.location.href = link.href;
+            }
+          }, 500);
+        }}
+        href={link.href}
+        target="_blank"
+      >
+        {link.text}
+        <IcChevronRight width={18} style={{ display: 'block' }} />
+      </a>
+    );
+  };
+
   return (
     <div
       className={clsx(
@@ -81,18 +111,7 @@ export const MainLectureListitem = ({
             ))}
           </div>
           <div className={styles.detailRight} data-testid="main-lecture-listitem-right">
-            {vm.content.link.isShow && (
-              <a
-                data-testid="main-lecture-listitem-link"
-                className={styles.link}
-                onClick={(e) => e.stopPropagation()}
-                href={vm.content.link.href}
-                target="_blank"
-              >
-                {vm.content.link.text}
-                <IcChevronRight width={18} style={{ display: 'block' }} />
-              </a>
-            )}
+            {renderLink(vm.content.link)}
           </div>
         </div>
       </div>

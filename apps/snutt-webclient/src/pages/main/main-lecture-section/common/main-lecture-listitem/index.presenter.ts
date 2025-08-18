@@ -49,7 +49,7 @@ type ViewModel = {
   };
   content: {
     detail: { icon: 'label' | 'clock' | 'map'; text: string }[];
-    link: { isShow: false } | { isShow: true; href: string; text: string };
+    link: { isShow: false } | { isShow: true; href: string; text: string; usePopup?: boolean };
   };
   remark: { isShow: false } | { isShow: true; text: string };
   deleteDialog: { isOpen: boolean; onClose: () => void; title: string; onConfirm: () => void };
@@ -154,7 +154,7 @@ export const mainLectureListitemPresenter = {
           { icon: 'clock', text: times.some(Boolean) ? times.join(', ') : emptyText },
           { icon: 'map', text: places.some(Boolean) ? places.map((v) => v || '-').join(', ') : emptyText },
         ],
-        link: detailUrl ? { isShow: true, href: detailUrl, text: '강의계획서' } : { isShow: false },
+        link: detailUrl ? { isShow: true, href: detailUrl, text: '강의계획서', usePopup: true } : { isShow: false },
       },
       remark: lecture.remark ? { isShow: true, text: lecture.remark } : { isShow: false },
       deleteDialog: {
