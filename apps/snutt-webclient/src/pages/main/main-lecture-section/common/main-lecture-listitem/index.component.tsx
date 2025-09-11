@@ -151,6 +151,18 @@ export const MainLectureListitem = ({
           </Button>
         </Dialog.Actions>
       </Dialog>
+
+      <Dialog open={vm.moveToBookmarkDialog.isOpen} onClose={vm.moveToBookmarkDialog.onClose}>
+        <Dialog.Title>{vm.moveToBookmarkDialog.title}</Dialog.Title>
+        <Dialog.Actions>
+          <Button color="gray" size="small" onClick={vm.moveToBookmarkDialog.onClose}>
+            취소
+          </Button>
+          <Button size="small" onClick={vm.moveToBookmarkDialog.onClick} data-testid="move-to-bookmark-confirm">
+            이동하기
+          </Button>
+        </Dialog.Actions>
+      </Dialog>
     </div>
   );
 };

@@ -55,6 +55,7 @@ type ViewModel = {
   deleteDialog: { isOpen: boolean; onClose: () => void; title: string; onConfirm: () => void };
   errorDialog: { isOpen: boolean; onClose: () => void; message: string | null };
   deleteBookmarkDialog: { isOpen: boolean; onClose: () => void; title: string; onClick: () => void };
+  moveToBookmarkDialog: { isOpen: boolean; onClose: () => void; title: string; onClick: () => void };
 };
 
 export const mainLectureListitemPresenter = {
@@ -62,6 +63,7 @@ export const mainLectureListitemPresenter = {
     const { lectureService } = useGuardContext(ServiceContext);
     const { year, semester } = useGuardContext(YearSemesterContext);
 
+    const [isMoveToBookmarkDialogOpen, setMoveToBookmarkDialogOpen] = useState(false);
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [isDeleteBookmarkDialogOpen, setDeleteBookmarkDialogOpen] = useState(false);
     const addMutation = useAddLecture({
@@ -120,7 +122,7 @@ export const mainLectureListitemPresenter = {
                   if (isBookmarked) setDeleteBookmarkDialogOpen(true);
                   else
                     addBookmarkMutation.mutate(undefined, {
-                      onSuccess: (data) => data.type === 'success' && openBookmarkTab(),
+                      onSuccess: (data) => data.type === 'success' && setMoveToBookmarkDialogOpen(true),
                     });
                 },
               },
@@ -184,6 +186,15 @@ export const mainLectureListitemPresenter = {
               }
             },
           }),
+      },
+      moveToBookmarkDialog: {
+        title: `관심강좌 탭으로 이동하시겠습니까?`,
+        isOpen: isMoveToBookmarkDialogOpen,
+        onClose: () => setMoveToBookmarkDialogOpen(false),
+        onClick: () => {
+          setMoveToBookmarkDialogOpen(false);
+          openBookmarkTab();
+        },
       },
     };
   },
