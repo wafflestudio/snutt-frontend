@@ -1,9 +1,10 @@
 "use client";
 
+import classNames from "classnames";
+
 import { useModalStore } from "@/app/_providers/ModalProvider";
 
 import styles from "./index.module.css";
-import classNames from "classnames";
 
 interface Props {
   type: "ALERT" | "CONFIRM";
