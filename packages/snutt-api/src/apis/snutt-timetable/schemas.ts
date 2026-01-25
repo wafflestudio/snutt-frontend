@@ -53,8 +53,6 @@ export type ClassPlaceAndTimeLegacyDto = {
   place?: string;
   startMinute: Int32;
   endMinute: Int32;
-  start_time: string;
-  end_time: string;
   len: Double;
   start: Double;
   lectureBuildings?: LectureBuilding[];
@@ -118,8 +116,6 @@ export type ClassPlaceAndTimeLegacyRequestDto = {
   place?: string;
   startMinute?: Int32;
   endMinute?: Int32;
-  start_time?: string;
-  end_time?: string;
   len?: Double;
   start?: Double;
 };

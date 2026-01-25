@@ -2,7 +2,6 @@ import { type SnuttApi, type SnuttApiSuccessResponseData } from '@sf/snutt-api';
 
 import type { FullTimetable, Timetable } from '@/entities/timetable';
 import { type getTimetableService } from '@/usecases/timetableService';
-import { convertToMinute } from '@/utils/time';
 
 export const implTimetableSnuttApiRepository = ({
   snuttApi,
@@ -31,23 +30,10 @@ export const implTimetableSnuttApiRepository = ({
       return { type: 'error', errcode: data.errcode };
     },
     updateLecture: async ({ id, lecture_id, token }, body) => {
-      const { class_time_json, ...lecture } = body;
-
       const { status, data } = await snuttApi['PUT /v1/tables/:timetableId/lecture/:timetableLectureId']({
         body: {
-          ...lecture,
+          ...body,
           is_forced: false,
-          class_time_json:
-            class_time_json &&
-            class_time_json.map((it) => {
-              const { start_time, end_time, ...classTimeJson } = it;
-
-              return {
-                ...classTimeJson,
-                startMinute: convertToMinute(start_time),
-                endMinute: convertToMinute(end_time),
-              };
-            }),
         },
         token,
         params: { timetableId: id, timetableLectureId: lecture_id },
@@ -56,21 +42,10 @@ export const implTimetableSnuttApiRepository = ({
       return { type: 'error', errcode: data.errcode };
     },
     createLecture: async ({ id, token }, body) => {
-      const { class_time_json, ...lecture } = body;
-
       const { status, data } = await snuttApi['POST /v1/tables/:timetableId/lecture']({
         body: {
-          ...lecture,
+          ...body,
           is_forced: false,
-          class_time_json: class_time_json.map((it) => {
-            const { start_time, end_time, ...classTimeJson } = it;
-
-            return {
-              ...classTimeJson,
-              startMinute: convertToMinute(start_time),
-              endMinute: convertToMinute(end_time),
-            };
-          }),
         },
         token,
         params: { timetableId: id },

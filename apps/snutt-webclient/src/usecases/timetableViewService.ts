@@ -16,8 +16,9 @@ export interface TimetableViewService {
     isCustomLecture?: boolean,
   ) => { col: [number, number]; row: [number, number] };
 
-  parseTime: (time: string) => HourMinute24; // 11:55 => { hour: 11, minute: 55 }
-  formatTime: (hourMinute: HourMinute24) => string; // { hour: 11, minute: 55 } => 11:55
+  // parseTime: (time: string) => HourMinute24; // 11:55 => { hour: 11, minute: 55 }
+  parseMinute: (minute: number) => HourMinute24; // 11:55 => { hour: 11, minute: 55 }
+  formatTime: (hourMinute: HourMinute24) => number; // { hour: 11, minute: 55 } => 11:55
 }
 
 export const getTimetableViewService = ({
@@ -29,13 +30,16 @@ export const getTimetableViewService = ({
   };
 }): TimetableViewService => {
   const getDisplayMode = () => persistStorageRepository.getDisplayMode() ?? 'real';
-  const parseTime = (time: string) => ({ hour: +time.split(':')[0] as Hour24, minute: +time.split(':')[1] as Minute });
-  const formatTime = ({ hour, minute }: HourMinute24) =>
-    `${`${hour}`.padStart(2, '0')}:${`${minute}`.padStart(2, '0')}`;
+  // const parseTime = (time: string) => ({ hour: +time.split(':')[0] as Hour24, minute: +time.split(':')[1] as Minute });
+  const parseMinute = (minute: number) => ({
+    hour: Math.floor(minute / 60) as Hour24,
+    minute: (minute % 60) as Minute,
+  });
+  const formatTime = ({ hour, minute }: HourMinute24) => hour * 60 + minute;
 
   const getHourRange = (times: LectureTime[]): [Hour24, Hour24] => {
-    const start = Math.min(...times.map((t) => parseTime(t.start_time).hour), 8) as Hour24;
-    const end = Math.max(...times.map((t) => parseTime(t.end_time).hour), 22) as Hour24;
+    const start = Math.min(...times.map((t) => parseMinute(t.startMinute).hour), 8) as Hour24;
+    const end = Math.max(...times.map((t) => parseMinute(t.endMinute).hour), 22) as Hour24;
     return [start, end];
   };
 
@@ -54,19 +58,19 @@ export const getTimetableViewService = ({
 
       // 시간
       const rowStart = (() => {
-        const { hour, minute } = parseTime(time.start_time);
+        const { hour, minute } = parseMinute(time.startMinute);
         const row = (hour - startHour) * 12 + minute / 5;
         return row + 2;
       })();
       const rowEnd = (() => {
-        const { hour, minute } = parseTime(time.end_time);
+        const { hour, minute } = parseMinute(time.endMinute);
         const row = (hour - startHour) * 12 + minute / 5;
         return displayMode === 'full' && !isCustomLecture ? Math.ceil(row / 6) * 6 + 2 : row + 2;
       })();
 
       return { col: [colStart, colEnd], row: [rowStart, rowEnd] };
     },
-    parseTime,
+    parseMinute,
     formatTime,
   };
 };

@@ -24,4 +24,9 @@ export interface Lecture extends BaseLecture {
   colorIndex: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 }
 
-export type ClassTime = { day: Day; place?: string; start_time: string; end_time: string };
+export type ClassTime = {
+  day: Day;
+  place?: string;
+  startMinute: number;
+  endMinute: number;
+};

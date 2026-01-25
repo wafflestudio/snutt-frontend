@@ -29,6 +29,7 @@ export const MainLectureCreateDialog = ({ open, onClose, timetableId, timetableT
   const { mutate } = useCreateLecture(timetableId);
 
   const submit = () => {
+    console.log('submit??');
     if (!draft.course_title) return openErrorDialog('강의명을 입력해 주세요');
     if (draft.color === undefined || draft.colorIndex === undefined) return openErrorDialog('강의 색을 지정해 주세요');
 
@@ -37,6 +38,7 @@ export const MainLectureCreateDialog = ({ open, onClose, timetableId, timetableT
         ? { colorIndex: 0 as const, color: draft.color as Color }
         : { colorIndex: draft.colorIndex };
 
+    console.log('submit??222');
     mutate(
       {
         data: {
@@ -84,8 +86,10 @@ const useCreateLecture = (timetableId: FullTimetable['_id']) => {
   const { token } = useGuardContext(TokenAuthContext);
 
   return useMutation({
-    mutationFn: (body: Omit<Parameters<(typeof timetableService)['createLecture']>[0], 'token' | 'id'>) =>
-      timetableService.createLecture({ ...body, token, id: timetableId }),
+    mutationFn: (body: Omit<Parameters<(typeof timetableService)['createLecture']>[0], 'token' | 'id'>) => {
+      console.log('mutate!!!');
+      return timetableService.createLecture({ ...body, token, id: timetableId });
+    },
     onSuccess: () => queryClient.invalidateQueries(),
   });
 };
