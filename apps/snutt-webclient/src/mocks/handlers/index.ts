@@ -139,7 +139,7 @@ export const handlers = [
       if (class_time_json && !Array.isArray(class_time_json))
         return { type: 'error', status: 400, body: { ext: {}, errcode: -1, message: '' } };
 
-      const classTimeJson = class_time_json as { startMinute: string; endMinute: string; day: number }[] | undefined;
+      const classTimeJson = class_time_json as { startMinute: number; endMinute: number; day: number }[] | undefined;
       if (classTimeJson?.some((c1, i1) => classTimeJson.some((c2, i2) => i1 !== i2 && isOverlap(c1, c2))))
         return {
           type: 'error',
