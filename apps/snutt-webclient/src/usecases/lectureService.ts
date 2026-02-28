@@ -27,9 +27,15 @@ export const getLectureService = (): LectureService => {
 
       return `http://libproxy.snu.ac.kr/_Lib_Proxy_Url/https://sugang.snu.ac.kr/sugang/cc/cc103.action?openSchyy=${year}&openShtmFg=${openShtmFg}&openDetaShtmFg=${openDetaShtmFg}&sbjtCd=${course_number}&ltNo=${lecture_number}&sbjtSubhCd=000`;
     },
-    //TODO : 시간 포맷 수정
     getLectureTimeTexts: (lecture) =>
-      lecture.class_time_json.map((t) => `${DAY_LABEL_MAP[t.day]}(${t.startMinute}~${t.endMinute})`),
+      lecture.class_time_json.map((t) => {
+        const startHour = String(Math.floor(t.startMinute / 60)).padStart(2, '0');
+        const startMinute = String(t.startMinute % 60).padStart(2, '0');
+        const endHour = String(Math.floor(t.endMinute / 60)).padStart(2, '0');
+        const endMinute = String(t.endMinute % 60).padStart(2, '0');
+
+        return `${DAY_LABEL_MAP[t.day]}(${startHour}:${startMinute}~${endHour}:${endMinute})`;
+      }),
     getLectureColor: (lecture, colorList) => {
       const fallback = { bg: '#94e6fe', fg: '#1579c2' };
 

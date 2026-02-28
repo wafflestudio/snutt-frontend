@@ -44,17 +44,13 @@ export const MainLectureEditFormTime = ({ lectureTime, onChangeLectureTime }: Pr
         const onChangeStartEndMinute = (startMinute: number, endMinute: number) =>
           onChangeLectureTime(lectureTime.map((_lt, _i) => (_i === i ? { ..._lt, startMinute, endMinute } : _lt)));
 
-        // const onChangeStartTime = (start_time: string) =>
-        //   onChangeLectureTime(lectureTime.map((_lt, _i) => (_i === i ? { ..._lt, start_time } : _lt)));
-
-        // const onChangeEndTime = (end_time: string) =>
-        //   onChangeLectureTime(lectureTime.map((_lt, _i) => (_i === i ? { ..._lt, end_time } : _lt)));
-
-        // const onChangeStartEndTime = (start_time: string, end_time: string) =>
-        //   onChangeLectureTime(lectureTime.map((_lt, _i) => (_i === i ? { ..._lt, start_time, end_time } : _lt)));
-
         const onChangePlace = (place: string) =>
           onChangeLectureTime(lectureTime.map((_lt, _i) => (_i === i ? { ..._lt, place } : _lt)));
+
+        const startHour = String(Math.floor(lt.startMinute / 60)).padStart(2, '0');
+        const startMinute = String(lt.startMinute % 60).padStart(2, '0');
+        const endHour = String(Math.floor(lt.endMinute / 60)).padStart(2, '0');
+        const endMinute = String(lt.endMinute % 60).padStart(2, '0');
 
         return (
           <TimeItem key={id} data-testid="main-lecture-edit-form-time">
@@ -68,7 +64,7 @@ export const MainLectureEditFormTime = ({ lectureTime, onChangeLectureTime }: Pr
 
             <Input
               readOnly
-              value={lt.startMinute}
+              value={`${startHour}:${startMinute}`}
               onClick={() =>
                 setOpenTimeDialog({ id, type: 'start', defaultTime: timetableViewService.parseMinute(lt.startMinute) })
               }
@@ -76,7 +72,7 @@ export const MainLectureEditFormTime = ({ lectureTime, onChangeLectureTime }: Pr
 
             <Input
               readOnly
-              value={lt.endMinute}
+              value={`${endHour}:${endMinute}`}
               onClick={() =>
                 setOpenTimeDialog({ id, type: 'end', defaultTime: timetableViewService.parseMinute(lt.endMinute) })
               }
