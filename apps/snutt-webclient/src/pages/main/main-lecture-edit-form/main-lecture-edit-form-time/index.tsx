@@ -35,17 +35,22 @@ export const MainLectureEditFormTime = ({ lectureTime, onChangeLectureTime }: Pr
         const onChangeDay = (day: Day) =>
           onChangeLectureTime(lectureTime.map((_lt, _i) => (_i === i ? { ..._lt, day } : _lt)));
 
-        const onChangeStartTime = (start_time: string) =>
-          onChangeLectureTime(lectureTime.map((_lt, _i) => (_i === i ? { ..._lt, start_time } : _lt)));
+        const onChangeStartMinute = (startMinute: number) =>
+          onChangeLectureTime(lectureTime.map((_lt, _i) => (_i === i ? { ..._lt, startMinute } : _lt)));
 
-        const onChangeEndTime = (end_time: string) =>
-          onChangeLectureTime(lectureTime.map((_lt, _i) => (_i === i ? { ..._lt, end_time } : _lt)));
+        const onChangeEndMinute = (endMinute: number) =>
+          onChangeLectureTime(lectureTime.map((_lt, _i) => (_i === i ? { ..._lt, endMinute } : _lt)));
 
-        const onChangeStartEndTime = (start_time: string, end_time: string) =>
-          onChangeLectureTime(lectureTime.map((_lt, _i) => (_i === i ? { ..._lt, start_time, end_time } : _lt)));
+        const onChangeStartEndMinute = (startMinute: number, endMinute: number) =>
+          onChangeLectureTime(lectureTime.map((_lt, _i) => (_i === i ? { ..._lt, startMinute, endMinute } : _lt)));
 
         const onChangePlace = (place: string) =>
           onChangeLectureTime(lectureTime.map((_lt, _i) => (_i === i ? { ..._lt, place } : _lt)));
+
+        const startHour = String(Math.floor(lt.startMinute / 60)).padStart(2, '0');
+        const startMinute = String(lt.startMinute % 60).padStart(2, '0');
+        const endHour = String(Math.floor(lt.endMinute / 60)).padStart(2, '0');
+        const endMinute = String(lt.endMinute % 60).padStart(2, '0');
 
         return (
           <TimeItem key={id} data-testid="main-lecture-edit-form-time">
@@ -59,17 +64,17 @@ export const MainLectureEditFormTime = ({ lectureTime, onChangeLectureTime }: Pr
 
             <Input
               readOnly
-              value={lt.start_time}
+              value={`${startHour}:${startMinute}`}
               onClick={() =>
-                setOpenTimeDialog({ id, type: 'start', defaultTime: timetableViewService.parseTime(lt.start_time) })
+                setOpenTimeDialog({ id, type: 'start', defaultTime: timetableViewService.parseMinute(lt.startMinute) })
               }
             />
 
             <Input
               readOnly
-              value={lt.end_time}
+              value={`${endHour}:${endMinute}`}
               onClick={() =>
-                setOpenTimeDialog({ id, type: 'end', defaultTime: timetableViewService.parseTime(lt.end_time) })
+                setOpenTimeDialog({ id, type: 'end', defaultTime: timetableViewService.parseMinute(lt.endMinute) })
               }
             />
 
@@ -86,20 +91,22 @@ export const MainLectureEditFormTime = ({ lectureTime, onChangeLectureTime }: Pr
                 openTimeDialog?.type === 'start'
                   ? (hour, minute) => {
                       // 시작 시간 바꿨는데 끝 시간 보다 같거나 뒤면 끝시간을 시작시간 + 5분 으로
-                      if (!hourMinuteService.isAfter(timetableViewService.parseTime(lt.end_time), { hour, minute })) {
+                      if (
+                        !hourMinuteService.isAfter(timetableViewService.parseMinute(lt.endMinute), { hour, minute })
+                      ) {
                         const start = timetableViewService.formatTime({ hour, minute });
                         const end = timetableViewService.formatTime(hourMinuteService.addMinute({ hour, minute }, 5));
-                        onChangeStartEndTime(start, end);
-                      } else onChangeStartTime(timetableViewService.formatTime({ hour, minute }));
+                        onChangeStartEndMinute(start, end);
+                      } else onChangeStartMinute(timetableViewService.formatTime({ hour, minute }));
                     }
-                  : (hour, minute) => onChangeEndTime(timetableViewService.formatTime({ hour, minute }))
+                  : (hour, minute) => onChangeEndMinute(timetableViewService.formatTime({ hour, minute }))
               }
               defaultHourMinute={openTimeDialog?.defaultTime}
               range={
                 openTimeDialog?.type === 'start'
                   ? { start: { hour: 0, minute: 0 }, end: { hour: 23, minute: 50 } }
                   : {
-                      start: hourMinuteService.addMinute(timetableViewService.parseTime(lt.start_time), 5),
+                      start: hourMinuteService.addMinute(timetableViewService.parseMinute(lt.startMinute), 5),
                       end: { hour: 23, minute: 55 },
                     }
               }

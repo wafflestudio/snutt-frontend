@@ -10,22 +10,18 @@ describe('getGridPos', () => {
       persistStorageRepository: { getDisplayMode: () => null, setDisplayMode: () => null },
     });
 
-    expect(
-      timetableViewService.getGridPos([], { start_time: '11:00', end_time: '13:00', day: 1 } as Time),
-    ).toStrictEqual({
+    expect(timetableViewService.getGridPos([], { startMinute: 660, endMinute: 780, day: 1 } as Time)).toStrictEqual({
       row: [38, 62],
       col: [3, 4],
     });
 
-    expect(
-      timetableViewService.getGridPos([], { start_time: '10:00', end_time: '12:45', day: 2 } as Time),
-    ).toStrictEqual({
+    expect(timetableViewService.getGridPos([], { startMinute: 600, endMinute: 765, day: 2 } as Time)).toStrictEqual({
       row: [26, 59],
       col: [4, 5],
     });
 
     expect(
-      timetableViewService.getGridPos([], { start_time: '11:00', end_time: '12:45', day: 3 } as Time, true),
+      timetableViewService.getGridPos([], { startMinute: 660, endMinute: 765, day: 3 } as Time, true),
     ).toStrictEqual({
       row: [38, 59],
       col: [5, 6],
@@ -37,22 +33,18 @@ describe('getGridPos', () => {
       persistStorageRepository: { getDisplayMode: () => 'real', setDisplayMode: () => null },
     });
 
-    expect(
-      timetableViewService.getGridPos([], { start_time: '11:00', end_time: '13:00', day: 1 } as Time),
-    ).toStrictEqual({
+    expect(timetableViewService.getGridPos([], { startMinute: 660, endMinute: 780, day: 1 } as Time)).toStrictEqual({
       row: [38, 62],
       col: [3, 4],
     });
 
-    expect(
-      timetableViewService.getGridPos([], { start_time: '10:00', end_time: '12:45', day: 2 } as Time),
-    ).toStrictEqual({
+    expect(timetableViewService.getGridPos([], { startMinute: 600, endMinute: 765, day: 2 } as Time)).toStrictEqual({
       row: [26, 59],
       col: [4, 5],
     });
 
     expect(
-      timetableViewService.getGridPos([], { start_time: '11:00', end_time: '12:45', day: 3 } as Time, true),
+      timetableViewService.getGridPos([], { startMinute: 660, endMinute: 765, day: 3 } as Time, true),
     ).toStrictEqual({
       row: [38, 59],
       col: [5, 6],
@@ -65,9 +57,9 @@ describe('getGridPos', () => {
     });
 
     expect(
-      timetableViewService.getGridPos([{ start_time: '00:00', end_time: '02:00' } as Time], {
-        start_time: '11:00',
-        end_time: '13:00',
+      timetableViewService.getGridPos([{ startMinute: 0, endMinute: 720 } as Time], {
+        startMinute: 660,
+        endMinute: 780,
         day: 1,
       } as Time),
     ).toStrictEqual({
@@ -75,15 +67,13 @@ describe('getGridPos', () => {
       col: [3, 4],
     });
 
-    expect(
-      timetableViewService.getGridPos([], { start_time: '10:00', end_time: '12:45', day: 2 } as Time),
-    ).toStrictEqual({
+    expect(timetableViewService.getGridPos([], { startMinute: 600, endMinute: 765, day: 2 } as Time)).toStrictEqual({
       row: [26, 62],
       col: [4, 5],
     });
 
     expect(
-      timetableViewService.getGridPos([], { start_time: '11:00', end_time: '12:45', day: 3 } as Time, true),
+      timetableViewService.getGridPos([], { startMinute: 660, endMinute: 765, day: 3 } as Time, true),
     ).toStrictEqual({
       row: [38, 59],
       col: [5, 6],

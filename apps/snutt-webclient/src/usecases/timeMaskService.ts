@@ -53,12 +53,10 @@ export const getTimeMaskService = (): TimeMaskService => {
     getTimesByTimeTable: (timetable) => {
       return timetable.lecture_list.flatMap((lecture) => {
         return lecture.class_time_json.map((classTime) => {
-          const [startHour, startMinute] = classTime.start_time.split(':');
-          const [endHour, endMinute] = classTime.end_time.split(':');
           return {
             day: classTime.day,
-            startMinute: Number(startHour) * 60 + Number(startMinute),
-            endMinute: Number(endHour) * 60 + Number(endMinute),
+            startMinute: classTime.startMinute,
+            endMinute: classTime.endMinute,
           };
         });
       });

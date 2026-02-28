@@ -45,8 +45,8 @@ export const MainLectureEditDialog = ({ open, onClose, timetableId, timetableThe
       {
         class_time_json: draft.class_time_json?.map((t) => ({
           day: t.day,
-          start_time: t.start_time,
-          end_time: t.end_time,
+          startMinute: t.startMinute,
+          endMinute: t.endMinute,
           place: t.place,
         })),
         course_title: draft.course_title,

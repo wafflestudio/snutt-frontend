@@ -80,7 +80,9 @@ export const getTimetableService = ({
       return { type: 'error', message: getErrorMessage(res) };
     },
     createLecture: async ({ data, id, token }) => {
+      console.log('here');
       const res = await timetableRepository.createLecture({ id, token }, data);
+      console.log(res);
       if (res.type === 'success') return { type: 'success', data: res.data };
       return { type: 'error', message: getErrorMessage(res) };
     },
