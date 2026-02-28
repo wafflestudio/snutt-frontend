@@ -1,6 +1,5 @@
-import test, { expect } from '@playwright/test';
-
-import { givenUser } from '../utils/user.ts';
+import { expect, test } from '../utils/test';
+import { givenUser } from '../utils/user';
 
 const testIds = {
   '아이디 찾기 버튼': 'login-find-id',

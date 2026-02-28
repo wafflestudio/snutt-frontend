@@ -1,6 +1,6 @@
 import test, { expect } from '@playwright/test';
 
-import { givenUser } from '../utils/user.ts';
+import { givenUser } from '../utils/user';
 
 test('로그인되지 않았을 경우 랜딩 화면이 보인다', async ({ page }) => {
   await page.goto('/');
