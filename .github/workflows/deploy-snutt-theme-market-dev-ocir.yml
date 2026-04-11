@@ -1,0 +1,45 @@
+name: deploy-snutt-theme-market-dev-ocir
+
+on:
+  push:
+    tags:
+      - theme-market-dev-*
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-24.04-arm
+    env:
+      IMAGE_TAG: ${{ github.run_number }}
+      BUILD_NUMBER: ${{ github.run_number }}
+      OCIR_REGISTRY: yny.ocir.io
+      OCIR_NAMESPACE: ax1dvc8vmenm
+      OCIR_REPOSITORY: snutt-dev/snutt-theme-market
+    environment: dev
+    defaults:
+      run:
+        working-directory: ./apps/theme-market
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: copy yarn.lock
+        run: cp ../../yarn.lock ./yarn.lock
+      
+      - name: Set ENV
+        run: |
+          cp .env.dev .env
+          echo "NEXT_PUBLIC_API_KEY=${{ secrets.BACKEND_API_KEY }}" >> .env
+
+      - name: Login to OCIR
+        run: echo "${{ secrets.OCI_AUTH_TOKEN }}" | docker login $OCIR_REGISTRY -u $OCIR_NAMESPACE/members/waffle-deployer --password-stdin
+
+      - name: Docker Build, tag, and push image to OCIR
+        id: build-image
+        run: |
+          docker build -t $OCIR_REGISTRY/$OCIR_NAMESPACE/$OCIR_REPOSITORY:$IMAGE_TAG \
+            --build-arg APP_ENV=dev \
+            .
+          docker push $OCIR_REGISTRY/$OCIR_NAMESPACE/$OCIR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$OCIR_REGISTRY/$OCIR_NAMESPACE/$OCIR_REPOSITORY:$IMAGE_TAG"
