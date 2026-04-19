@@ -9,7 +9,6 @@ export interface BaseLecture {
   course_title: string;
   credit?: number;
   class_time_json: ClassTime[];
-  class_time_mask: number[];
   instructor?: string;
   quota?: number;
   remark?: string;

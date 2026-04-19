@@ -19,4 +19,6 @@ type NotificationType =
   /** 친구기능 관련 알림 */
   | 'FRIEND'
   /** 신규 기능 안내 알림 */
-  | 'NEW_FEATURE';
+  | 'NEW_FEATURE'
+  /** 강의 리마인더 알림 */
+  | 'REMINDER';

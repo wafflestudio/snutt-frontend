@@ -3,7 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { propertyToType } from './utils/propertyToType';
 
-const endpoint = 'https://snu4t-api-dev.wafflestudio.com/v3/api-docs';
+const endpoint = 'https://snutt-api-dev.wafflestudio.com/v3/api-docs';
 
 const run = async () => {
   const data = await fetch(endpoint).then((res) => res.json() as Promise<OpenAPIV3.Document>);

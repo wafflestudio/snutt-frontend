@@ -47,8 +47,16 @@ export const implSearchSnuttApiRepository = ({
           offset: filter.offset,
         },
       });
-      if (status === 200) return { type: 'success', data };
-      else return { type: 'error', errcode: data.errcode };
+      if (status === 200) {
+        return {
+          type: 'success',
+          data: data.map((lecture) => ({
+            ...lecture,
+            _id: lecture._id ?? '',
+          })),
+        };
+      }
+      return { type: 'error', errcode: data.errcode };
     },
   };
 };

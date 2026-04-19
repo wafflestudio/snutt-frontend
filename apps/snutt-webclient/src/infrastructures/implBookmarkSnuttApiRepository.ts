@@ -18,7 +18,7 @@ export const implBookmarkSnuttApiRepository = ({
         return {
           type: 'success',
           data: data.lectures.map((l) => ({
-            _id: l._id,
+            _id: l._id ?? '',
             class_time_json: l.class_time_json,
             course_title: l.course_title,
             instructor: l.instructor,
@@ -36,7 +36,6 @@ export const implBookmarkSnuttApiRepository = ({
                 return data.semester;
               throw new Error('invalid semester');
             })(),
-            class_time_mask: l.class_time_mask,
           })),
         };
 

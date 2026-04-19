@@ -44,6 +44,7 @@ const notificationTypeMap: Record<Notification['type'], ReactNode> = {
   LINK_ADDR: <IcExclamation />,
   FRIEND: <IcFriend />,
   NEW_FEATURE: <IcExclamation />,
+  REMINDER: <IcCalendar />,
 };
 
 const useNotificationList = (show: boolean) => {

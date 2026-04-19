@@ -20,13 +20,14 @@ export const getNotificationRepository = ({
           4: 'LINK_ADDR',
           5: 'FRIEND',
           6: 'NEW_FEATURE',
+          7: 'REMINDER',
         };
 
         return {
           type: 'success',
           data: {
             notifications: data.map((notification) => ({
-              id: notification._id,
+              id: notification._id ?? '',
               title: notification.title,
               message: notification.message,
               createdAt: new Date(notification.created_at),
