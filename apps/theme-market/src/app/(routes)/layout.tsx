@@ -11,6 +11,7 @@ import { authService } from "@/services/AuthService";
 
 import { ThemeStoreProvider } from "@/app/_providers/ThemeProvider";
 import { UserStoreProvider } from "../_providers/UserProvider";
+import { ColorSchemeProvider } from "../_providers/ColorSchemeProvider";
 
 import styles from "./index.module.css";
 import { ModalStoreProvider } from "../_providers/ModalProvider";
@@ -40,11 +41,13 @@ export default async function RootLayout({ children }: Props) {
   return (
     <html lang="ko" data-theme={themeMode}>
       <body className={styles.layout}>
-        <UserStoreProvider user={user} accessToken={accessToken!!}>
-          <ThemeStoreProvider>
-            <ModalStoreProvider>{children}</ModalStoreProvider>
-          </ThemeStoreProvider>
-        </UserStoreProvider>
+        <ColorSchemeProvider>
+          <UserStoreProvider user={user} accessToken={accessToken!!}>
+            <ThemeStoreProvider>
+              <ModalStoreProvider>{children}</ModalStoreProvider>
+            </ThemeStoreProvider>
+          </UserStoreProvider>
+        </ColorSchemeProvider>
       </body>
     </html>
   );
