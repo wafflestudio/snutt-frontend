@@ -1,5 +1,7 @@
 import { http } from 'msw';
 
+import type { UserAuthProviderInfo } from '@sf/snutt-api/src/apis/snutt/schemas';
+
 import type { SignInResponse } from '@/entities/auth';
 import type { Color } from '@/entities/color';
 import type { CoreServerError } from '@/entities/error';
@@ -82,6 +84,26 @@ export const handlers = [
       if (!user) return { type: 'error', body: { errcode: 8194, ext: {}, message: '' }, status: 403 };
 
       return { type: 'success', body: user.info };
+    }),
+  ),
+
+  http.get<never, never, UserAuthProviderInfo | CoreServerError>(
+    `*/v1/users/me/auth-providers`,
+    withValidateAccess(({ token }) => {
+      const user = mockUsers.find((u) => u.auth.token === token);
+
+      if (!user) return { type: 'error', body: { errcode: 8194, ext: {}, message: '' }, status: 403 };
+
+      return {
+        type: 'success',
+        body: {
+          local: !!user.info.local_id,
+          facebook: !!user.info.fb_name,
+          google: false,
+          kakao: false,
+          apple: false,
+        },
+      };
     }),
   ),
 
