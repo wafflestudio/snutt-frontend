@@ -54,7 +54,7 @@ test('수강편람 버튼이 정상 동작한다', async ({ page, context }) => 
     lectureItem.filter({ hasText: '고급수학 2' }).getByTestId('main-lecture-listitem-link').click(),
   ]);
   await expect(newPage).toHaveURL(
-    'https://sugang.snu.ac.kr/sugang/cc/cc103.action?openSchyy=1001&openShtmFg=U000200001&openDetaShtmFg=U000300001&sbjtCd=L0442.000700&ltNo=001&sbjtSubhCd=000',
+    'https://snutt-proxy.wafflestudio.com/sugang/cc/cc103.action?openSchyy=1001&openShtmFg=U000200001&openDetaShtmFg=U000300001&sbjtCd=L0442.000700&ltNo=001&sbjtSubhCd=000',
   );
   await expect(lectureItem.filter({ hasText: '복싱' }).getByTestId('main-lecture-listitem-link')).toHaveCount(0);
 });

@@ -41,7 +41,8 @@ test('검색 기능이 정상 동작한다 (검색 결과 있을 때)', async ({
         req.url().includes('/v1/search_query') &&
         req.postDataJSON().year === 2001 &&
         req.postDataJSON().limit === 200 &&
-        req.postDataJSON().time_mask[0] === 671024127 &&
+        Array.isArray(req.postDataJSON().timesToExclude) &&
+        req.postDataJSON().timesToExclude.length === 17 &&
         req.postDataJSON().etc[0] === 'MO' &&
         req.postDataJSON().etc.length === 1 &&
         req.method() === 'POST',

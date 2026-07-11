@@ -48,13 +48,13 @@ test('개발자 괴롭히기 기능이 잘 동작한다 (정상 제출)', async 
   await givenUser(page, { login: true });
   await page.getByText('개발자 괴롭히기').click();
   await expect(page.getByTestId('feedback-submit')).toBeDisabled();
-  await page.getByTestId('feedback-email').type('test1');
+  await page.getByTestId('feedback-email').type('test1@test.com');
   await expect(page.getByTestId('feedback-submit')).toBeDisabled();
   await page.getByTestId('feedback-message').type('test2');
   await Promise.all([
     page.waitForRequest(
       (req) =>
-        req.postDataJSON().email === 'test1' &&
+        req.postDataJSON().email === 'test1@test.com' &&
         req.postDataJSON().message === 'test2' &&
         req.url().includes('/v1/feedback') &&
         req.method() === 'POST',

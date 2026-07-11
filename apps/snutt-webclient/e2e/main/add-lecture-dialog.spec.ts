@@ -21,7 +21,7 @@ test('강의 생성 모달이 잘 보여진다 (성공 케이스)', async ({ pag
 
   await expect(page.getByTestId(testIds['강의명 필드'])).toHaveValue('');
   await page.getByTestId(testIds['강의명 필드']).fill('떡볶이맛 아몬드');
-  await page.getByTestId(testIds['강의 색 칩']).filter({ hasText: '라벤더' }).click();
+  await page.getByTestId(testIds['강의 색 칩']).filter({ hasText: 'SNUTT 8' }).click();
   await page.getByTestId(testIds['강의 시간 추가 버튼']).click();
   await page.getByTestId(testIds['강의 시간 행']).nth(0).locator('input').nth(2).fill('낙아치');
   await Promise.all([
@@ -82,8 +82,8 @@ test('커스텀 색 관련 ui가 잘 보여진다', async ({ page }) => {
   await page.getByTestId(testIds['강의 추가하기 버튼']).click();
   const cLabels = {
     커스텀: page.getByTestId('main-lecture-edit-form-custom-color'),
-    하늘: page.getByTestId('main-lecture-edit-form-color').filter({ hasText: '하늘' }),
-    감귤: page.getByTestId('main-lecture-edit-form-color').filter({ hasText: '감귤' }),
+    하늘: page.getByTestId('main-lecture-edit-form-color').filter({ hasText: 'SNUTT 7' }),
+    감귤: page.getByTestId('main-lecture-edit-form-color').filter({ hasText: 'SNUTT 2' }),
   };
 
   await expect(cLabels['커스텀']).toHaveValue('#888888');

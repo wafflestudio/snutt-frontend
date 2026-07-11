@@ -3,6 +3,7 @@ import { expect, test } from '@playwright/test';
 import { givenUser } from '../utils/user.ts';
 
 test('강의 시간 수정 선택 기능이 엄청 잘 동작한다 (컴프)', async ({ page }) => {
+  test.slow(); // 시나리오가 길어 병렬 실행 시 기본 타임아웃(5000ms)에 종종 걸린다
   await page.goto('/');
   await givenUser(page);
   await page.getByTestId(testIds['강의']).filter({ hasText: '컴퓨터공학부, 2학년' }).click();
