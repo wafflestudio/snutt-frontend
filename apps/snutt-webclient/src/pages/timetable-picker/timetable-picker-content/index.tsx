@@ -113,6 +113,7 @@ export const TimetablePickerContent = ({ targetOrigin }: Props) => {
               onClickLecture={() => {}}
               openCreateLectureDialog={() => {}}
               readOnly
+              hideTotalCredit
               style={{ opacity: isLoadingTimetable ? 0.6 : 1, transition: 'opacity 0.2s' }}
             />
             <ConfirmButton onClick={onConfirm} disabled={!hasOpener || isLoadingTimetable} data-testid="timetable-picker-confirm">

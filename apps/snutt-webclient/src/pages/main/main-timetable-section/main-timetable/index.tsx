@@ -19,6 +19,7 @@ type Props = {
   previewLecture?: BaseLecture;
   openCreateLectureDialog: () => void;
   readOnly?: boolean;
+  hideTotalCredit?: boolean;
 };
 
 export const MainTimeTable = ({
@@ -30,6 +31,7 @@ export const MainTimeTable = ({
   previewLecture,
   openCreateLectureDialog,
   readOnly = false,
+  hideTotalCredit = false,
 }: Props) => {
   const { data: colorList } = useColorList(timetable.theme);
   const { lectureService, timetableViewService } = useGuardContext(ServiceContext);
@@ -133,7 +135,7 @@ export const MainTimeTable = ({
           직접 추가하기
         </AddLectureButton>
       )}
-      <TotalCredit data-testid="main-timetable-credit">{totalCredit}학점</TotalCredit>
+      {!hideTotalCredit && <TotalCredit data-testid="main-timetable-credit">{totalCredit}학점</TotalCredit>}
     </Wrapper>
   );
 };
