@@ -5,7 +5,7 @@ import { ServiceContext } from '@/contexts/ServiceContext';
 import { TokenAuthContext } from '@/contexts/TokenAuthContext';
 import { useGuardContext } from '@/hooks/useGuardContext';
 
-import { Landing } from '../landing';
+import { TimetablePickerLogin } from './timetable-picker-login';
 import { TimetablePickerContent } from './timetable-picker-content';
 
 type Props = {
@@ -28,7 +28,7 @@ export const TimetablePickerPage = ({ token }: Props) => {
   }
 
   if (!token) {
-    return <Landing />;
+    return <TimetablePickerLogin />;
   }
 
   return (
