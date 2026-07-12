@@ -1,6 +1,6 @@
 import { Component, type PropsWithChildren, type ReactNode } from 'react';
 
-type Props = PropsWithChildren<{ fallback: ReactNode }>;
+type Props = PropsWithChildren<{ fallback: ReactNode; onError?: (error: Error) => void }>;
 
 export class ErrorBoundary extends Component<Props, { hasError: boolean }> {
   constructor(props: Props) {
@@ -11,6 +11,10 @@ export class ErrorBoundary extends Component<Props, { hasError: boolean }> {
   static getDerivedStateFromError() {
     // Update state so the next render will show the fallback UI.
     return { hasError: true };
+  }
+
+  componentDidCatch(error: Error) {
+    this.props.onError?.(error);
   }
 
   render() {

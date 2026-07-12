@@ -93,6 +93,7 @@ test('Step 3: 코드 입력이 잘 된다 (기본)', async ({ page }) => {
   await page.getByTestId(testIds['비밀번호 재설정 버튼']).click();
   await page.getByTestId(testIds['인풋']).type('woohm402');
   await page.getByTestId(testIds['버튼']).click();
+  await expect(page.getByTestId(testIds['설명'])).toHaveText('아래 이메일로 인증코드를 전송합니다.');
   await page.getByTestId(testIds['버튼']).click();
 
   // test
@@ -124,7 +125,9 @@ test('Step 3: 코드 입력이 잘 된다 (만료)', async ({ browser }) => {
   await page.getByTestId(testIds['비밀번호 재설정 버튼']).click();
   await page.getByTestId(testIds['인풋']).type('woohm402');
   await page.getByTestId(testIds['버튼']).click();
+  await expect(page.getByTestId(testIds['설명'])).toHaveText('아래 이메일로 인증코드를 전송합니다.');
   await page.getByTestId(testIds['버튼']).click();
+  await expect(page.getByTestId(testIds['설명'])).toHaveText('인증코드를 입력해주세요.');
 
   // test
   await page.getByTestId(testIds['인풋']).type('코드');
@@ -144,7 +147,9 @@ test('Step 3: 코드 입력이 잘 된다 (인증한적 없음)', async ({ brows
   await page.getByTestId(testIds['비밀번호 재설정 버튼']).click();
   await page.getByTestId(testIds['인풋']).type('woohm402');
   await page.getByTestId(testIds['버튼']).click();
+  await expect(page.getByTestId(testIds['설명'])).toHaveText('아래 이메일로 인증코드를 전송합니다.');
   await page.getByTestId(testIds['버튼']).click();
+  await expect(page.getByTestId(testIds['설명'])).toHaveText('인증코드를 입력해주세요.');
 
   // test
   await page.getByTestId(testIds['인풋']).type('code');
@@ -164,7 +169,9 @@ test('Step 3: 코드 입력이 잘 된다 (틀림)', async ({ browser }) => {
   await page.getByTestId(testIds['비밀번호 재설정 버튼']).click();
   await page.getByTestId(testIds['인풋']).type('woohm402');
   await page.getByTestId(testIds['버튼']).click();
+  await expect(page.getByTestId(testIds['설명'])).toHaveText('아래 이메일로 인증코드를 전송합니다.');
   await page.getByTestId(testIds['버튼']).click();
+  await expect(page.getByTestId(testIds['설명'])).toHaveText('인증코드를 입력해주세요.');
 
   // test
   await page.getByTestId(testIds['인풋']).type('코드');
@@ -182,7 +189,9 @@ test('Step 4: 비밀번호 변경이 잘 된다 (기본)', async ({ page }) => {
   await page.getByTestId(testIds['비밀번호 재설정 버튼']).click();
   await page.getByTestId(testIds['인풋']).type('woohm402');
   await page.getByTestId(testIds['버튼']).click();
+  await expect(page.getByTestId(testIds['설명'])).toHaveText('아래 이메일로 인증코드를 전송합니다.');
   await page.getByTestId(testIds['버튼']).click();
+  await expect(page.getByTestId(testIds['설명'])).toHaveText('인증코드를 입력해주세요.');
   await page.getByTestId(testIds['인풋']).type('코드');
   await page.getByTestId(testIds['버튼']).click();
 
@@ -213,9 +222,12 @@ test('Step 5: 비밀번호 변경이 잘 된다 (기본)', async ({ page }) => {
   await page.getByTestId(testIds['비밀번호 재설정 버튼']).click();
   await page.getByTestId(testIds['인풋']).fill('woohm402');
   await page.getByTestId(testIds['버튼']).click();
+  await expect(page.getByTestId(testIds['설명'])).toHaveText('아래 이메일로 인증코드를 전송합니다.');
   await page.getByTestId(testIds['버튼']).click();
+  await expect(page.getByTestId(testIds['설명'])).toHaveText('인증코드를 입력해주세요.');
   await page.getByTestId(testIds['인풋']).fill('코드');
   await page.getByTestId(testIds['버튼']).click();
+  await expect(page.getByTestId(testIds['설명'])).toHaveText('새 비밀번호를 입력해주세요.');
   await page.getByTestId(testIds['인풋']).fill('qwerqwer');
   await page.getByTestId(testIds['버튼']).click();
 

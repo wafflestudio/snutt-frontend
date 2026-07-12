@@ -16,7 +16,7 @@ test('강의 수정 모달이 잘 보인다 (성공케이스)', async ({ page })
   await lectureItem.filter({ hasText: '컴퓨터공학부, 2학년' }).click();
   await expect(page.getByTestId('main-lecture-edit-form-title')).toHaveValue('컴퓨터프로그래밍');
   await page.getByTestId(testIds['교수']).fill('떡볶이맛 아몬드');
-  await page.getByTestId('main-lecture-edit-form-color').filter({ hasText: '라벤더' }).click();
+  await page.getByTestId('main-lecture-edit-form-color').filter({ hasText: 'SNUTT 8' }).click();
   await page.getByTestId('main-lecture-edit-form-time').nth(0).locator('input').nth(2).fill('낙아치');
   await page.getByTestId('main-lecture-edit-form-time').nth(1).locator('input').nth(0).click();
   await page.getByTestId('hour-clock').getByText('4', { exact: true }).click();
@@ -28,7 +28,7 @@ test('강의 수정 모달이 잘 보인다 (성공케이스)', async ({ page })
         req.method() === 'PUT' &&
         req.url().includes('/v1/tables/123/lecture/5d1decbddb261b554d609dcc') &&
         req.postDataJSON().class_time_json[0].place === '낙아치' &&
-        req.postDataJSON().class_time_json[1].startMinute === 970 &&
+        req.postDataJSON().class_time_json[1].startMinute === 990 &&
         req.postDataJSON().class_time_json[1].endMinute === 1220 &&
         req.postDataJSON().class_time_json[2].place === '302-208' &&
         req.postDataJSON().course_title === undefined &&
@@ -49,7 +49,7 @@ test('커스텀 색 관련 ui가 잘 보인다 (커스텀 색인 강의)', async
   await page.getByTestId('main-lecture-listitem').filter({ hasText: '진화와 인간사회' }).click();
   const cLabels = {
     커스텀: page.getByTestId('main-lecture-edit-form-custom-color'),
-    하늘: page.getByTestId('main-lecture-edit-form-color').filter({ hasText: '하늘' }),
+    하늘: page.getByTestId('main-lecture-edit-form-color').filter({ hasText: 'SNUTT 7' }),
   };
 
   await expect(cLabels['커스텀']).toHaveValue('#000000');
@@ -76,8 +76,8 @@ test('커스텀 색 관련 ui가 잘 보인다 (커스텀 색이 아닌 강의)'
   await page.getByTestId('main-lecture-listitem').filter({ hasText: '컴퓨터프로그래밍' }).click();
   const cLabels = {
     커스텀: page.getByTestId('main-lecture-edit-form-custom-color'),
-    하늘: page.getByTestId('main-lecture-edit-form-color').filter({ hasText: '하늘' }),
-    감귤: page.getByTestId('main-lecture-edit-form-color').filter({ hasText: '감귤' }),
+    하늘: page.getByTestId('main-lecture-edit-form-color').filter({ hasText: 'SNUTT 7' }),
+    감귤: page.getByTestId('main-lecture-edit-form-color').filter({ hasText: 'SNUTT 2' }),
   };
 
   await expect(cLabels['커스텀']).toHaveValue('#888888');
@@ -120,7 +120,7 @@ test('커스텀 색에서 잘 수정된다', async ({ page }) => {
   const lectureItem = page.getByTestId('main-lecture-listitem');
   await expect(page.getByTestId('main-lecture-edit-dialog-content')).toHaveCount(0);
   await lectureItem.filter({ hasText: '진화와 인간사회' }).click();
-  await page.getByTestId('main-lecture-edit-form-color').filter({ hasText: '비취' }).click();
+  await page.getByTestId('main-lecture-edit-form-color').filter({ hasText: 'SNUTT 5' }).click();
   await Promise.all([
     page.waitForRequest((req) => req.postDataJSON().colorIndex === 5 && req.postDataJSON().color === undefined),
     page.waitForRequest((req) => req.method() === 'GET' && req.url().includes('/v1/tables/123')),

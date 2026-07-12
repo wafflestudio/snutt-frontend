@@ -1,9 +1,11 @@
+import { getTruffleClient } from '@wafflestudio/truffle-browser';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 
 import { ErrorBoundary } from '@/components/error-boundary';
 import { EnvContext } from '@/contexts/EnvContext';
 import { ErrorPage } from '@/pages/error';
+import { getErrorService } from '@/usecases/errorService';
 
 import { App } from './App';
 
@@ -28,10 +30,18 @@ async function startApp() {
 
   window.git = { sha: ENV.GIT_SHA, tag: ENV.GIT_TAG };
 
+  const errorService = getErrorService({
+    errorCaptureClient: getTruffleClient({
+      enabled: ENV.NODE_ENV === 'production' && ENV.APP_ENV !== 'mock',
+      app: { name: 'snutt-webclient-v2', phase: ENV.APP_ENV },
+      apiKey: ENV.TRUFFLE_API_KEY,
+    }),
+  });
+
   ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <StrictMode>
       <EnvContext.Provider value={ENV}>
-        <ErrorBoundary fallback={<ErrorPage />}>
+        <ErrorBoundary fallback={<ErrorPage />} onError={(error) => errorService.captureError(error)}>
           <App />
         </ErrorBoundary>
       </EnvContext.Provider>
