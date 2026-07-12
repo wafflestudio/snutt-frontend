@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { Button } from '@/components/button';
+import { Loader } from '@/components/loader';
 import { ServiceContext } from '@/contexts/ServiceContext';
 import { TokenAuthContext } from '@/contexts/TokenAuthContext';
 import { type Timetable } from '@/entities/timetable';
@@ -53,12 +54,20 @@ export const TimetablePickerContent = ({ targetOrigin }: Props) => {
     return allTimetables[0]._id;
   }, [allTimetables, selectedTimetableId, currentCourseBook]);
 
-  const { data: selectedFullTimetable } = useFullTimetable(effectiveSelectedId ?? undefined);
+  const { data: selectedFullTimetable, isLoading: isLoadingTimetable } = useFullTimetable(
+    effectiveSelectedId ?? undefined,
+  );
 
   const hasOpener = useMemo(() => window.opener !== null, []);
 
   if (!courseBooks || !allTimetables || !currentCourseBook) {
-    return <LoadingPage />;
+    return (
+      <Wrapper>
+        <LoadingContainer>
+          <Loader />
+        </LoadingContainer>
+      </Wrapper>
+    );
   }
 
   if (allTimetables.length === 0) {
@@ -104,13 +113,16 @@ export const TimetablePickerContent = ({ targetOrigin }: Props) => {
               onClickLecture={() => {}}
               openCreateLectureDialog={() => {}}
               readOnly
+              style={{ opacity: isLoadingTimetable ? 0.6 : 1, transition: 'opacity 0.2s' }}
             />
-            <ConfirmButton onClick={onConfirm} disabled={!hasOpener} data-testid="timetable-picker-confirm">
+            <ConfirmButton onClick={onConfirm} disabled={!hasOpener || isLoadingTimetable} data-testid="timetable-picker-confirm">
               확인
             </ConfirmButton>
           </>
         ) : (
-          <LoadingPage />
+          <LoadingContainer>
+            <Loader />
+          </LoadingContainer>
         )}
       </RightPane>
     </Wrapper>
@@ -119,6 +131,7 @@ export const TimetablePickerContent = ({ targetOrigin }: Props) => {
 
 const Wrapper = styled.div`
   display: flex;
+  width: 100%;
   height: 100vh;
   background-color: rgb(247, 248, 249);
 `;
@@ -153,4 +166,12 @@ const EmptyMessage = styled.div`
   font-size: 14px;
   text-align: center;
   padding: 16px;
+`;
+
+const LoadingContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
 `;

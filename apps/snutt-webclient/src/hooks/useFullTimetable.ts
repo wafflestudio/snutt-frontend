@@ -16,5 +16,6 @@ export const useFullTimetable = (id: string | undefined) => {
     },
     enabled: !!id,
     select: (data) => (data?.type === 'success' ? data.data : undefined),
+    gcTime: 5 * 60 * 1000,
   });
 };
