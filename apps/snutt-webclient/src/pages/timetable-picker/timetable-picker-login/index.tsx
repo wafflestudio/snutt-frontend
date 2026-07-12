@@ -42,7 +42,7 @@ export const TimetablePickerLogin = () => {
   return (
     <Wrapper>
       <Container>
-        <Title>시간표 선택</Title>
+        <Title>로그인</Title>
 
         <Form
           onSubmit={(e) => {
@@ -251,47 +251,35 @@ const SocialButtonsGroup = styled.div`
   gap: 12px;
 `;
 
-const SocialButton = styled(Button)`
+const SocialButton = styled(Button).attrs({ variant: 'outlined' })`
   width: 100%;
   padding: 10px 16px;
   font-size: 14px;
 `;
 
-const FacebookButton = styled(SocialButton).attrs({ variant: 'contained' })`
-  background-color: #1877f2;
-  color: white;
+const FacebookButton = styled(SocialButton)`
+  border-color: #1877f2;
+  color: #1877f2;
 
   &:hover {
-    background-color: #165ac7;
-  }
-
-  &:active {
-    background-color: #0d47a1;
+    background-color: rgba(24, 119, 242, 0.05);
   }
 `;
 
-const GoogleButton = styled(SocialButton).attrs({ variant: 'contained' })`
-  background-color: #1f2937;
-  color: white;
+const GoogleButton = styled(SocialButton)`
+  border-color: #1f2937;
+  color: #1f2937;
 
   &:hover {
-    background-color: #111827;
-  }
-
-  &:active {
-    background-color: #030712;
+    background-color: rgba(31, 41, 55, 0.05);
   }
 `;
 
-const KakaoButton = styled(SocialButton).attrs({ variant: 'contained' })`
-  background-color: #ffe812;
-  color: #191919;
+const KakaoButton = styled(SocialButton)`
+  border-color: #ffe812;
+  color: #ffa500;
 
   &:hover {
-    background-color: #f0d800;
-  }
-
-  &:active {
-    background-color: #d4b800;
+    background-color: rgba(255, 232, 18, 0.05);
   }
 `;
