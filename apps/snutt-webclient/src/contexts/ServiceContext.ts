@@ -12,6 +12,7 @@ import { type NotificationService } from '@/usecases/notificationService';
 import { type SearchService } from '@/usecases/searchService';
 import { type SemesterService } from '@/usecases/semesterService';
 import { type TimeMaskService } from '@/usecases/timeMaskService';
+import { type TimetablePickerService } from '@/usecases/timetablePickerService';
 import { type TimetableService } from '@/usecases/timetableService';
 import { type TimetableViewService } from '@/usecases/timetableViewService';
 import { type UserService } from '@/usecases/userService';
@@ -32,6 +33,7 @@ export type ServiceContext = {
   colorService: ColorService;
   userService: UserService;
   bookmarkService: BookmarkService;
+  timetablePickerService: TimetablePickerService;
 };
 
 export const ServiceContext = createContext<ServiceContext | null>(null);

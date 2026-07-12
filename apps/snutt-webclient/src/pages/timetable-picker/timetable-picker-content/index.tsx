@@ -6,10 +6,8 @@ import { Button } from '@/components/button';
 import { Loader } from '@/components/loader';
 import { ServiceContext } from '@/contexts/ServiceContext';
 import { TokenAuthContext } from '@/contexts/TokenAuthContext';
-import { type Timetable } from '@/entities/timetable';
 import { useFullTimetable } from '@/hooks/useFullTimetable';
 import { useGuardContext } from '@/hooks/useGuardContext';
-import { LoadingPage } from '@/pages/loading';
 import { MainTimeTable } from '@/pages/main/main-timetable-section/main-timetable';
 
 import { TimetablePickerGroupedList } from '../timetable-picker-grouped-list';
@@ -59,6 +57,7 @@ export const TimetablePickerContent = ({ targetOrigin }: Props) => {
   );
 
   const hasOpener = useMemo(() => window.opener !== null, []);
+  const [confirmError, setConfirmError] = useState<string | null>(null);
 
   if (!courseBooks || !allTimetables || !currentCourseBook) {
     return (
@@ -84,11 +83,20 @@ export const TimetablePickerContent = ({ targetOrigin }: Props) => {
   }
 
   const onConfirm = () => {
-    if (!selectedFullTimetable || !window.opener) return;
+    if (!selectedFullTimetable) return;
+
+    // window.opener can be lost after this popup mounts — the requesting window
+    // may have closed or navigated away. `.closed` is readable even cross-origin.
+    const opener = window.opener as Window | null;
+    if (!opener || opener.closed) {
+      setConfirmError('시간표를 요청한 창을 찾을 수 없습니다. 창을 닫고 다시 시도해주세요.');
+      return;
+    }
+
     timetablePickerService.sendTimetableToOpener({
       timetable: selectedFullTimetable,
       targetOrigin: targetOrigin!,
-      opener: window.opener,
+      opener,
     });
     window.close();
   };
@@ -116,7 +124,12 @@ export const TimetablePickerContent = ({ targetOrigin }: Props) => {
               hideTotalCredit
               style={{ opacity: isLoadingTimetable ? 0.6 : 1, transition: 'opacity 0.2s' }}
             />
-            <ConfirmButton onClick={onConfirm} disabled={!hasOpener || isLoadingTimetable} data-testid="timetable-picker-confirm">
+            {confirmError && <ConfirmError data-testid="timetable-picker-error">{confirmError}</ConfirmError>}
+            <ConfirmButton
+              onClick={onConfirm}
+              disabled={!hasOpener || isLoadingTimetable}
+              data-testid="timetable-picker-confirm"
+            >
               확인
             </ConfirmButton>
           </>
@@ -156,6 +169,13 @@ const RightPane = styled.div`
 const ConfirmButton = styled(Button)`
   align-self: flex-end;
   min-width: 100px;
+`;
+
+const ConfirmError = styled.div`
+  align-self: flex-end;
+  color: #c62828;
+  font-size: 13px;
+  text-align: right;
 `;
 
 const EmptyMessage = styled.div`

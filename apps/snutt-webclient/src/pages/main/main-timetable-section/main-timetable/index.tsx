@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { type CSSProperties } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
 import { Button } from '@/components/button';
@@ -13,6 +14,7 @@ import { rangeToArray } from '@/utils/rangeToArray';
 type Props = {
   timetable: FullTimetable;
   className?: string;
+  style?: CSSProperties;
   hoveredLectureId: string | null;
   setHoveredLectureId: (id: string | null) => void;
   onClickLecture: (id: string) => void;
@@ -25,6 +27,7 @@ type Props = {
 export const MainTimeTable = ({
   timetable,
   className,
+  style,
   hoveredLectureId,
   setHoveredLectureId,
   onClickLecture,
@@ -46,6 +49,7 @@ export const MainTimeTable = ({
   return (
     <Wrapper
       className={className}
+      style={style}
       $columnCount={days.length}
       $rowCount={hours.length * 12}
       data-testid="main-timetable"
