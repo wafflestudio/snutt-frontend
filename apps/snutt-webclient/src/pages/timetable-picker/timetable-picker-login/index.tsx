@@ -251,14 +251,47 @@ const SocialButtonsGroup = styled.div`
   gap: 12px;
 `;
 
-const SocialButton = styled(Button).attrs({ variant: 'outlined' })`
+const SocialButton = styled(Button)`
   width: 100%;
   padding: 10px 16px;
   font-size: 14px;
 `;
 
-const FacebookButton = styled(SocialButton)``;
+const FacebookButton = styled(SocialButton).attrs({ variant: 'contained' })`
+  background-color: #1877f2;
+  color: white;
 
-const GoogleButton = styled(SocialButton)``;
+  &:hover {
+    background-color: #165ac7;
+  }
 
-const KakaoButton = styled(SocialButton)``;
+  &:active {
+    background-color: #0d47a1;
+  }
+`;
+
+const GoogleButton = styled(SocialButton).attrs({ variant: 'contained' })`
+  background-color: #1f2937;
+  color: white;
+
+  &:hover {
+    background-color: #111827;
+  }
+
+  &:active {
+    background-color: #030712;
+  }
+`;
+
+const KakaoButton = styled(SocialButton).attrs({ variant: 'contained' })`
+  background-color: #ffe812;
+  color: #191919;
+
+  &:hover {
+    background-color: #f0d800;
+  }
+
+  &:active {
+    background-color: #d4b800;
+  }
+`;
