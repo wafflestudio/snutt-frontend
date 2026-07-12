@@ -8,6 +8,7 @@ import { TokenAuthContext } from '@/contexts/TokenAuthContext';
 import { YearSemesterContext } from '@/contexts/YearSemesterContext';
 import { type CourseBook } from '@/entities/semester';
 import { type FullTimetable, type Timetable } from '@/entities/timetable';
+import { useFullTimetable } from '@/hooks/useFullTimetable';
 import { useGuardContext } from '@/hooks/useGuardContext';
 import { LoadingPage } from '@/pages/loading';
 import { BREAKPOINT } from '@/styles/constants';
@@ -46,7 +47,7 @@ export const Main = ({ courseBooks }: { courseBooks: CourseBook[] }) => {
     },
   });
 
-  const { data: currentFullTimetable } = useCurrentFullTimetable(
+  const { data: currentFullTimetable } = useFullTimetable(
     timetablesAndCurrentTimetableId && !timetablesAndCurrentTimetableId.isEmpty
       ? timetablesAndCurrentTimetableId.currentTimetableId
       : undefined,
@@ -179,21 +180,6 @@ const MainWithCurrentYearSemesterTimetablesAndCurrentTimetable = ({
       )}
     </Layout>
   );
-};
-
-const useCurrentFullTimetable = (id: string | undefined) => {
-  const { timetableService } = useGuardContext(ServiceContext);
-  const { token } = useGuardContext(TokenAuthContext);
-
-  return useQuery({
-    queryKey: ['TimetableService', 'getFullTimetable', { id, token }] as const,
-    queryFn: ({ queryKey: [, , { id, token }] }) => {
-      if (!id) throw new Error('no id');
-      return timetableService.getFullTimetable({ id, token });
-    },
-    enabled: !!id,
-    select: (data) => (data?.type === 'success' ? data.data : undefined),
-  });
 };
 
 const useSearchResult = () => {
