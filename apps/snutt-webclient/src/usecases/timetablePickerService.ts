@@ -1,21 +1,17 @@
 import type { FullTimetable } from '@/entities/timetable';
 
-export const ALLOWED_TIMETABLE_PICKER_ORIGINS: readonly string[] = [
-  'http://localhost:3000',
-  'http://localhost:5173',
-  'http://127.0.0.1:3000',
-  'http://127.0.0.1:5173',
-  // TODO: Add actual production origins before deployment
-];
-
 export interface TimetablePickerService {
   isAllowedOrigin(origin: string | null): boolean;
   sendTimetableToOpener(_: { timetable: FullTimetable; targetOrigin: string; opener: Window }): void;
 }
 
-export const getTimetablePickerService = (): TimetablePickerService => {
+/**
+ * `allowedOrigins`: 팝업 결과(postMessage)를 받을 수 있는 origin 허용 목록.
+ * 빌드 타임 환경변수 `VITE_TIMETABLE_PICKER_ORIGINS`(콤마 구분)에서 주입된다.
+ */
+export const getTimetablePickerService = (allowedOrigins: readonly string[]): TimetablePickerService => {
   const isAllowedOrigin = (origin: string | null): origin is string =>
-    origin !== null && ALLOWED_TIMETABLE_PICKER_ORIGINS.includes(origin);
+    origin !== null && allowedOrigins.includes(origin);
 
   return {
     isAllowedOrigin,
