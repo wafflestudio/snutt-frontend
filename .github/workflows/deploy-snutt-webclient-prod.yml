@@ -30,6 +30,7 @@ jobs:
           yarn install
           VITE_API_KEY=${{ secrets.BACKEND_API_KEY }} \
           VITE_TRUFFLE_API_KEY=${{ secrets.SNUTT_WEBCLIENT_TRUFFLE_API_KEY }} \
+          VITE_TIMETABLE_PICKER_ORIGINS=${{ secrets.TIMETABLE_PICKER_ORIGINS }} \
           VITE_GIT_SHA=$(git rev-parse HEAD) \
           VITE_GIT_TAG=$(git describe --tags) \
             yarn build:prod
