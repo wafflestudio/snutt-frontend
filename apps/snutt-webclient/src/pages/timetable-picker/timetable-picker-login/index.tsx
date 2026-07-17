@@ -6,6 +6,7 @@ import KakaoLogin from 'react-kakao-login';
 import styled from 'styled-components';
 
 import { Button } from '@/components/button';
+import { IcLogo } from '@/components/icons/ic-logo';
 import { EnvContext } from '@/contexts/EnvContext';
 import { ServiceContext } from '@/contexts/ServiceContext';
 import { TokenManageContext } from '@/contexts/TokenManageContext';
@@ -42,7 +43,10 @@ export const TimetablePickerLogin = () => {
   return (
     <Wrapper>
       <Container>
-        <Title>로그인</Title>
+        <Title>
+          <IcLogo width={26} height={26} />
+          <TitleText>SNUTT</TitleText>
+        </Title>
 
         <Form
           onSubmit={(e) => {
@@ -148,11 +152,18 @@ const Container = styled.div`
 `;
 
 const Title = styled.h1`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 0 32px 0;
+`;
+
+const TitleText = styled.span`
   font-size: 24px;
   font-weight: 600;
   color: rgba(0, 0, 0, 0.87);
-  margin: 0 0 32px 0;
-  text-align: center;
+  line-height: 1;
 `;
 
 const Form = styled.form`
