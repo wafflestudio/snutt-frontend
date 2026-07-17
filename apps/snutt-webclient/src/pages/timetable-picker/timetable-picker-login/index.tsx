@@ -164,6 +164,9 @@ const TitleText = styled.span`
   font-weight: 600;
   color: rgba(0, 0, 0, 0.87);
   line-height: 1;
+  /* 대문자 워드마크는 글리프가 라인박스 위쪽에 쏠려 로고보다 위로 떠 보이므로
+     광학적 중앙을 맞추기 위해 살짝 아래로 내린다. */
+  transform: translateY(2px);
 `;
 
 const Form = styled.form`
