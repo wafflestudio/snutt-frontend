@@ -85,8 +85,7 @@ export const TimetablePickerContent = ({ targetOrigin }: Props) => {
   const onConfirm = () => {
     if (!selectedFullTimetable) return;
 
-    // window.opener can be lost after this popup mounts — the requesting window
-    // may have closed or navigated away. `.closed` is readable even cross-origin.
+    // 팝업을 연 창이 닫혔거나 사라졌을 수 있다 (.closed는 cross-origin에서도 읽힌다).
     const opener = window.opener as Window | null;
     if (!opener || opener.closed) {
       setConfirmError('시간표를 요청한 창을 찾을 수 없습니다. 창을 닫고 다시 시도해주세요.');

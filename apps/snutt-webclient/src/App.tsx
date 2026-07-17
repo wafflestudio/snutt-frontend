@@ -150,7 +150,7 @@ export const App = () => {
       tokenService,
       timetableViewService,
       bookmarkService: getBookmarkService({ bookmarkRepository: implBookmarkSnuttApiRepository({ snuttApi }) }),
-      timetablePickerService: getTimetablePickerService(),
+      timetablePickerService: getTimetablePickerService(ENV.TIMETABLE_PICKER_ORIGINS),
     };
   }, [ENV]);
 

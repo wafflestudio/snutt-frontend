@@ -21,6 +21,10 @@ async function startApp() {
     GOOGLE_APP_ID: import.meta.env.VITE_GOOGLE_APP_ID,
     KAKAO_APP_ID: import.meta.env.VITE_KAKAO_APP_ID,
     NODE_ENV: process.env.NODE_ENV as 'development' | 'production',
+    TIMETABLE_PICKER_ORIGINS: (import.meta.env.VITE_TIMETABLE_PICKER_ORIGINS ?? '')
+      .split(',')
+      .map((origin) => origin.trim())
+      .filter(Boolean),
   };
 
   if (ENV.APP_ENV === 'mock') {

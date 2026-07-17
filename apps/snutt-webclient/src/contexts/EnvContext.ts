@@ -9,6 +9,7 @@ export type EnvContext = {
   FACEBOOK_APP_ID: string;
   GOOGLE_APP_ID: string;
   KAKAO_APP_ID: string;
+  TIMETABLE_PICKER_ORIGINS: string[];
 };
 
 export const EnvContext = createContext<EnvContext | null>(null);
