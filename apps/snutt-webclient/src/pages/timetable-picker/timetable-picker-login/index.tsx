@@ -164,7 +164,6 @@ const TitleText = styled.span`
   font-weight: 600;
   color: rgba(0, 0, 0, 0.87);
   line-height: 1;
-  /* 대문자 워드마크 광학 중앙 보정 */
   transform: translateY(2px);
 `;
 
