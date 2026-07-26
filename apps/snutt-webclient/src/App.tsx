@@ -46,10 +46,12 @@ import { getTimeMaskService } from '@/usecases/timeMaskService';
 import { getTimetableService } from '@/usecases/timetableService';
 import { getTimetableViewService } from '@/usecases/timetableViewService';
 import { getTokenService } from '@/usecases/tokenService';
+import { getTimetablePickerService } from '@/usecases/timetablePickerService';
 import { getUserService } from '@/usecases/userService';
 
 import { Landing } from './pages/landing';
 import { NotFoundPage } from './pages/not-found';
+import { TimetablePickerPage } from './pages/timetable-picker';
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { refetchOnWindowFocus: false, retry: false } } });
 
@@ -148,6 +150,7 @@ export const App = () => {
       tokenService,
       timetableViewService,
       bookmarkService: getBookmarkService({ bookmarkRepository: implBookmarkSnuttApiRepository({ snuttApi }) }),
+      timetablePickerService: getTimetablePickerService(ENV.TIMETABLE_PICKER_ORIGINS),
     };
   }, [ENV]);
 
@@ -171,17 +174,25 @@ export const App = () => {
         <GlobalStyles />
         <TokenManageContext.Provider value={tokenContextValue}>
           <GoogleOAuthProvider clientId={ENV.GOOGLE_APP_ID}>
-            {token ? (
-              <BrowserRouter>
-                <AuthorizedApp
-                  token={token}
-                  isLogoutDialogOpen={isWrongTokenDialogOpen}
-                  closeLogoutDialog={() => setWrongTokenDialogOpen(false)}
+            <BrowserRouter>
+              <Routes>
+                <Route path="/timetable-picker" element={<TimetablePickerPage token={token} />} />
+                <Route
+                  path="/*"
+                  element={
+                    token ? (
+                      <AuthorizedApp
+                        token={token}
+                        isLogoutDialogOpen={isWrongTokenDialogOpen}
+                        closeLogoutDialog={() => setWrongTokenDialogOpen(false)}
+                      />
+                    ) : (
+                      <Landing />
+                    )
+                  }
                 />
-              </BrowserRouter>
-            ) : (
-              <Landing />
-            )}
+              </Routes>
+            </BrowserRouter>
           </GoogleOAuthProvider>
         </TokenManageContext.Provider>
         <ReactQueryDevtools />

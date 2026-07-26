@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { type CSSProperties } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
 import { Button } from '@/components/button';
@@ -13,21 +14,27 @@ import { rangeToArray } from '@/utils/rangeToArray';
 type Props = {
   timetable: FullTimetable;
   className?: string;
+  style?: CSSProperties;
   hoveredLectureId: string | null;
   setHoveredLectureId: (id: string | null) => void;
   onClickLecture: (id: string) => void;
   previewLecture?: BaseLecture;
   openCreateLectureDialog: () => void;
+  readOnly?: boolean;
+  hideTotalCredit?: boolean;
 };
 
 export const MainTimeTable = ({
   timetable,
   className,
+  style,
   hoveredLectureId,
   setHoveredLectureId,
   onClickLecture,
   previewLecture,
   openCreateLectureDialog,
+  readOnly = false,
+  hideTotalCredit = false,
 }: Props) => {
   const { data: colorList } = useColorList(timetable.theme);
   const { lectureService, timetableViewService } = useGuardContext(ServiceContext);
@@ -42,6 +49,7 @@ export const MainTimeTable = ({
   return (
     <Wrapper
       className={className}
+      style={style}
       $columnCount={days.length}
       $rowCount={hours.length * 12}
       data-testid="main-timetable"
@@ -126,10 +134,12 @@ export const MainTimeTable = ({
           </Item>
         );
       })}
-      <AddLectureButton onClick={openCreateLectureDialog} data-testid="mt-add-custom-lecture">
-        직접 추가하기
-      </AddLectureButton>
-      <TotalCredit data-testid="main-timetable-credit">{totalCredit}학점</TotalCredit>
+      {!readOnly && (
+        <AddLectureButton onClick={openCreateLectureDialog} data-testid="mt-add-custom-lecture">
+          직접 추가하기
+        </AddLectureButton>
+      )}
+      {!hideTotalCredit && <TotalCredit data-testid="main-timetable-credit">{totalCredit}학점</TotalCredit>}
     </Wrapper>
   );
 };
@@ -159,7 +169,7 @@ const DayLabel = styled.div<{ $colStart: number }>`
   justify-content: center;
   align-items: flex-end;
   padding: 8px;
-  font-size: 14px;
+  font-size: clamp(12px, 1.8vw, 15px);
   color: rgba(0, 0, 0, 0.4);
   border-bottom: 1px solid rgb(232, 235, 240);
 `;
@@ -168,7 +178,7 @@ const Time = styled.div<{ $rowStart: number }>`
   grid-column: 1 / 2;
   grid-row: ${({ $rowStart }) => `${$rowStart} / ${$rowStart + 6}`};
   text-align: right;
-  font-size: 14px;
+  font-size: clamp(12px, 1.8vw, 15px);
   opacity: 0.4;
   padding-right: 7px;
 `;
@@ -212,7 +222,7 @@ const Item = styled.div<{
 }>`
   grid-column: ${({ $colStart, $colEnd }) => `${$colStart} / ${$colEnd}`};
   grid-row: ${({ $rowStart, $rowEnd }) => `${$rowStart} / ${$rowEnd}`};
-  font-size: 10px;
+  font-size: clamp(9px, 1.3vw, 13px);
   display: flex;
   flex-direction: column;
   padding: 4px 6px;
