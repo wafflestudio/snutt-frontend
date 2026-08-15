@@ -40,7 +40,6 @@ jobs:
         run: |
           docker build -t $OCIR_REGISTRY/$OCIR_NAMESPACE/$OCIR_REPOSITORY:$IMAGE_TAG \
             --build-arg APP_ENV=prod \
-            --build-arg BUILD_NUMBER=$BUILD_NUMBER \
             .
           docker push $OCIR_REGISTRY/$OCIR_NAMESPACE/$OCIR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$OCIR_REGISTRY/$OCIR_NAMESPACE/$OCIR_REPOSITORY:$IMAGE_TAG"
