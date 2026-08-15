@@ -36,6 +36,7 @@ export default async function RootLayout({ children }: Props) {
   const accessToken = cookieService.getAccessToken();
 
   const user = await authService.me(accessToken);
+  const buildNumber = process.env.NEXT_PUBLIC_BUILD_NUMBER;
 
   return (
     <html lang="ko" data-theme={themeMode}>
@@ -45,6 +46,11 @@ export default async function RootLayout({ children }: Props) {
             <ModalStoreProvider>{children}</ModalStoreProvider>
           </ThemeStoreProvider>
         </UserStoreProvider>
+        {buildNumber && (
+          <div style={{ position: "fixed", bottom: 4, right: 8, fontSize: 10, opacity: 0.4, pointerEvents: "none" }}>
+            #{buildNumber}
+          </div>
+        )}
       </body>
     </html>
   );

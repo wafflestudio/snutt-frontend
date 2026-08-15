@@ -1,11 +1,13 @@
 # Builder
 FROM node:20-alpine AS builder
 ARG APP_ENV
+ARG BUILD_NUMBER
 # ENV NODE_ENV production
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY . .
 
+ENV NEXT_PUBLIC_BUILD_NUMBER=$BUILD_NUMBER
 RUN yarn
 RUN yarn build
 
