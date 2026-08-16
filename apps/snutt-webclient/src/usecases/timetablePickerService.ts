@@ -1,6 +1,14 @@
 import type { Lecture } from '@/entities/lecture';
 import type { FullTimetable } from '@/entities/timetable';
 
+declare global {
+  interface Window {
+    ReactNativeWebView?: {
+      postMessage(message: string): void;
+    };
+  }
+}
+
 export type SharedLecture = Omit<Lecture, '_id' | 'color' | 'colorIndex'>;
 export type SharedTimetable = Omit<FullTimetable, '_id' | 'user_id' | 'updated_at' | 'theme' | 'lecture_list'> & {
   lecture_list: SharedLecture[];
@@ -32,8 +40,23 @@ export const getTimetablePickerService = (allowedOrigins: readonly string[]): Ti
     isAllowedOrigin,
     sendTimetableToOpener: ({ timetable, targetOrigin, opener }) => {
       // 허용 목록 밖 origin으로는 절대 전송하지 않는다 (호출부 검증 누락 대비).
+
+      const message = {
+        type: 'SNUTT_TIMETABLE_SELECTED',
+        payload: toSharedTimetable(timetable),
+      };
+
+      // React Native WebView 환경
+      if (window.ReactNativeWebView) {
+        if (!isAllowedOrigin(window.location.origin)) return;
+        window.ReactNativeWebView.postMessage(JSON.stringify(message));
+        return;
+      }
+
+      // 일반 웹 환경
       if (!isAllowedOrigin(targetOrigin)) return;
-      opener.postMessage({ type: 'SNUTT_TIMETABLE_SELECTED', payload: toSharedTimetable(timetable) }, targetOrigin);
+      opener.postMessage(message, targetOrigin);
+      
     },
   };
 };
