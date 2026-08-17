@@ -48,7 +48,7 @@ export const getTimetablePickerService = (allowedOrigins: readonly string[]): Ti
 
       // React Native WebView 환경
       if (window.ReactNativeWebView) {
-        if (!isAllowedOrigin(window.location.origin)) return;
+        if (!isAllowedOrigin(targetOrigin)) return;
         window.ReactNativeWebView.postMessage(JSON.stringify(message));
         return;
       }
