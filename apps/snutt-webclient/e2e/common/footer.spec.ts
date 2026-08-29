@@ -19,8 +19,8 @@ test('snutt github 링크로 잘 이동한다', async ({ page, context }) => {
 test('약관 링크로 잘 이동한다', async ({ page, context, baseURL }) => {
   await page.goto('/');
   await givenUser(page, { login: true });
-  await page.getByText('약관').click();
-  const [newPage] = await Promise.all([context.waitForEvent('page'), page.getByText('약관').click()]);
+  await page.getByText('이용약관').click();
+  const [newPage] = await Promise.all([context.waitForEvent('page'), page.getByText('이용약관').click()]);
   await expect(newPage).toHaveURL(`${baseURL}/terms_of_service`);
 });
 

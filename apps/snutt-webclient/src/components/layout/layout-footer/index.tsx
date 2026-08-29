@@ -19,7 +19,7 @@ export const LayoutFooter = () => {
           WaffleStudio SNUTT 팀
         </SLinkExternal>
         <Divider />
-        <SLinkExternal key="github" href={`https://github.com/wafflestudio/snutt-webclient-v2`} target="_blank">
+        <SLinkExternal key="github" href={`https://github.com/wafflestudio/snutt-frontend`} target="_blank">
           SNUTT Github
         </SLinkExternal>
         <Divider />
@@ -29,7 +29,7 @@ export const LayoutFooter = () => {
       </Left>
       <Right>
         <SLinkExternal href={`${API_BASE_URL}/terms_of_service`} target="_blank">
-          약관
+          이용약관
         </SLinkExternal>
         <Divider />
         <SLinkExternal href={`${API_BASE_URL}/privacy_policy`} target="_blank">
