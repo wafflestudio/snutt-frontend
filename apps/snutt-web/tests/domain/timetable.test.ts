@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import type { ClassTime, TimetableLecture } from './lecture';
-import { findConflictingLectures, getTotalCredit, hasLecture } from './timetable';
+import type { ClassTime, TimetableLecture } from '@/domain/lecture';
+import { findConflictingLectures, getTotalCredit, hasLecture } from '@/domain/timetable';
 
 const lecture = (id: string, classTimes: ClassTime[], overrides: Partial<TimetableLecture> = {}): TimetableLecture => ({
   id,

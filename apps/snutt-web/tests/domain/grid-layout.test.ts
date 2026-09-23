@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { getGridRange, getHourMarks, type GridRange, layoutGridBlocks } from './grid-layout';
-import type { DayTimeRange } from './time';
+import { getGridRange, getHourMarks, type GridRange, layoutGridBlocks } from '@/domain/grid-layout';
+import type { DayTimeRange } from '@/domain/time';
 
 const t = (day: DayTimeRange['day'], startHour: number, endHour: number): DayTimeRange => ({
   day,

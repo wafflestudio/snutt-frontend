@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest';
 
-import type { GridRange } from './grid-layout';
+import type { GridRange } from '@/domain/grid-layout';
 import {
   applyDragSelection,
   createTimeSelection,
   getSlotCount,
   rangesToSelection,
   selectionToRanges,
-} from './time-filter';
+} from '@/domain/time-filter';
 
 // 월~수, 9~12시 → 3열 x 6칸(30분)
 const range: GridRange = { days: [0, 1, 2], startMinute: 540, endMinute: 720 };

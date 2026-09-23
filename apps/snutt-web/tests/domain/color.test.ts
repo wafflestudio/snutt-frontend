@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { type ColorPair, FALLBACK_LECTURE_COLOR, isSameLectureColor, resolveLectureColor } from './color';
+import { type ColorPair, FALLBACK_LECTURE_COLOR, isSameLectureColor, resolveLectureColor } from '@/domain/color';
 
 const palette: ColorPair[] = [
   { bg: '#e54459', fg: '#ffffff' },

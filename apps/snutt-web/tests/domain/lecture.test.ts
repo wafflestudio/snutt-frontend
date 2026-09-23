@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getClassTimeTexts, getSyllabusUrl } from './lecture';
+import { getClassTimeTexts, getSyllabusUrl } from '@/domain/lecture';
 
 describe('getClassTimeTexts', () => {
   it('요일, 시작 시각 순으로 정렬해 표시한다', () => {

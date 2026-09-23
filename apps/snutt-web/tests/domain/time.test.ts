@@ -8,7 +8,7 @@ import {
   isOverlapping,
   isValidDayTimeRange,
   toMinute,
-} from './time';
+} from '@/domain/time';
 
 const range = (day: DayTimeRange['day'], start: string, end: string): DayTimeRange => {
   const toM = (t: string) => toMinute(Number(t.split(':')[0]), Number(t.split(':')[1]));

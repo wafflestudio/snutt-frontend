@@ -7,7 +7,7 @@ import {
   parseSemesterKey,
   type Semester,
   toSemesterKey,
-} from './semester';
+} from '@/domain/semester';
 
 describe('formatSemester', () => {
   it.each([

@@ -109,7 +109,8 @@ export const timetableQueries = {
 
 - `domain/`: vitest 단위 테스트. 시간 계산, 충돌, 그리드 배치는 경계값까지 테스트한다.
 - `api/` 와 화면: 인터페이스 mock 대신 MSW 로 네트워크를 mock 한다. mapper 까지 포함해서 검증된다.
-- 테스트 파일은 대상 옆에 `*.test.ts(x)` 로 둔다.
+- 테스트는 `tests/` 에 `src/` 와 같은 폴더 구조로 둔다. (`src/domain/time.ts` → `tests/domain/time.test.ts`)
+- 테스트에서 대상은 `@/` 경로로 import 한다.
 
 ## 컴포넌트 원칙
 
