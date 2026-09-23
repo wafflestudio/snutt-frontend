@@ -1,4 +1,4 @@
-import { type SearchTimeDto } from '@sf/snutt-api/src/apis/snutt-timetable/schemas';
+import { type SearchTimeDto } from '@sf/snutt-api/src/apis/snutt-timetable/legacySchemas';
 
 import type { BaseLecture } from './lecture';
 import type { Semester } from './semester';

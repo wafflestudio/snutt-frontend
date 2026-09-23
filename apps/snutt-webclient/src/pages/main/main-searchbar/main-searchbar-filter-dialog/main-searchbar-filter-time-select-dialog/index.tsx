@@ -1,4 +1,4 @@
-import { type SearchTimeDto } from '@sf/snutt-api/src/apis/snutt-timetable/schemas';
+import { type SearchTimeDto } from '@sf/snutt-api/src/apis/snutt-timetable/legacySchemas';
 import { useState } from 'react';
 import styled from 'styled-components';
 
