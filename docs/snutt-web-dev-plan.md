@@ -24,28 +24,48 @@ dev 서버 OpenAPI 명세(`https://snutt-api-dev.wafflestudio.com/v3/api-docs`)�
 - v1 은 snutt-webclient 교체 시점에 `legacySchemas.ts`와 함께 제거한다.
 - 확인 필요: v1 경로가 서버에서 여전히 살아있는지 (명세에서만 빠진 것인지). 토큰 없이는 404/403 구분 불가.
 
-기획 스펙 대비 v2 매핑 (주요):
+기획 스펙 대비 v2 매핑 (전체):
 
-| 기능 | v2 엔드포인트 |
+| 기능 | v2 엔드포인트 | 비고 |
+|---|---|---|
+| 시간표 목록/생성 | `GET, POST /v2/timetables` | |
+| 최근 시간표 | `GET /v2/timetables/recent` | |
+| 시간표 상세/수정/삭제 | `GET, PATCH, DELETE /v2/timetables/{timetableId}` | |
+| 학기별 시간표 목록 | `GET /v2/timetables/{year}/{semester}` | |
+| 기본 시간표 지정/해제 | `PUT, DELETE /v2/timetables/{timetableId}/primary` | |
+| 시간표 복사 | `POST /v2/timetables/{timetableId}/copy` | |
+| 시간표 테마 변경 | `PUT /v2/timetables/{timetableId}/theme` | |
+| 강의 추가 | `POST /v2/timetables/{timetableId}/lectures` | |
+| 직접 추가 | `POST /v2/timetables/{timetableId}/lectures/custom` | |
+| 강의 수정/삭제 (색상 포함) | `PATCH, DELETE /v2/timetables/{timetableId}/lectures/{timetableLectureId}` | v2 는 `paletteIndex` + `customColor` (hex) |
+| 강의 원래대로 (reset) | `POST .../lectures/{timetableLectureId}/reset` | |
+| 강의 검색 | `POST /v2/lectures/search` | cursor 기반 페이지네이션, `evaluationSummary` 포함 |
+| 검색 필터 태그 | `GET /v2/tags/{year}/{semester}` | 학과·분류·학점·정렬 기준 등 |
+| 코스 태그 | `GET /v2/tags/courses` | |
+| 관심강좌 | `GET /v2/bookmarks`, `POST, DELETE /v2/bookmarks/lectures/{lectureId}` | |
+| 관심강좌 담기 여부 | `GET /v2/bookmarks/lectures/{lectureId}/state` | |
+| 빈자리 알림 (관심 목록 후보) | `GET /v2/vacancy-notifications/lectures`, `POST, DELETE .../{lectureId}` | |
+| 빈자리 알림 등록 여부 | `GET /v2/vacancy-notifications/lectures/{lectureId}/state` | |
+| 로그인/회원가입 | `POST /v2/auth/login`, `/v2/auth/login/{provider}`, `/v2/auth/register` | |
+| 내 정보 | `GET, PATCH, DELETE /v2/users/me` | |
+| 소셜 연동/해제 | `POST, DELETE /v2/users/me/social/{provider}` | |
+| 비밀번호 | `POST, PATCH /v2/users/me/password` | |
+| 알림 | `GET /v2/notifications`, `GET /v2/notifications/count` | cursor 기반 |
+| 학기 상태 (현재/다음) | `GET /v2/semesters/status` | 현재 수강신청 학기 판단에 사용 |
+| 수강편람 (학기 목록) | `GET /v2/coursebooks`, `GET /v2/coursebooks/recent` | |
+| 테마 (강의 색상 팔레트) | `GET, POST /v2/themes`, `GET, PATCH, DELETE /v2/themes/{themeId}` | |
+| 테마 복사/기본 지정 | `POST /v2/themes/{themeId}/copy`, `POST, DELETE /v2/themes/{themeId}/default` | |
+| 건물 정보 | `GET /v2/buildings` | 강의실 위치 지도 표시 (선택 구현) |
+| 친구 시간표 보기 | `GET /v2/friends/{friendId}/primary-table` | Phase 8 |
+
+**v2 에 없는 기능 (여전히 v1 전용 또는 서버 미지원)**:
+
+| 기능 | 상태 |
 |---|---|
-| 시간표 목록/생성 | `GET, POST /v2/timetables` |
-| 시간표 상세/수정/삭제 | `GET, PATCH, DELETE /v2/timetables/{timetableId}` |
-| 학기별 시간표 | `GET /v2/timetables/{year}/{semester}` |
-| 기본 시간표 지정/해제 | `PUT, DELETE /v2/timetables/{timetableId}/primary` |
-| 시간표 복사 | `POST /v2/timetables/{timetableId}/copy` |
-| 강의 추가 | `POST /v2/timetables/{timetableId}/lectures` |
-| 직접 추가 | `POST /v2/timetables/{timetableId}/lectures/custom` |
-| 강의 수정/삭제 (색상 포함) | `PATCH, DELETE /v2/timetables/{timetableId}/lectures/{timetableLectureId}` |
-| 강의 검색 | `POST /v2/lectures/search` |
-| 관심강좌 | `GET /v2/bookmarks`, `POST, DELETE /v2/bookmarks/lectures/{lectureId}` |
-| 빈자리 알림 (관심 목록 후보) | `GET /v2/vacancy-notifications/lectures`, `POST, DELETE .../{lectureId}` |
-| 로그인/회원가입 | `POST /v2/auth/login`, `/v2/auth/login/{provider}`, `/v2/auth/register` |
-| 내 정보 | `GET, PATCH, DELETE /v2/users/me` |
-| 소셜 연동/해제 | `POST, DELETE /v2/users/me/social/{provider}` |
-| 비밀번호 | `POST, PATCH /v2/users/me/password` |
-| 알림 | `GET /v2/notifications`, `GET /v2/notifications/count` |
+| 시간표 이미지 내보내기 / 링크 공유 | 클라이언트 렌더링(이미지) + 서버 미지원(링크). v2 명세에 없음 |
+| 공식 수강편람 강의 조회 | `GET /v2/coursebooks/official` 존재하나 웹 클라이언트 직접 사용 불필요 (검색 API가 대체) |
 
-> 목록에 없는 기능(학기 목록, 태그, 색상 등)은 Phase 0-3 에서 확인한다.
+→ **기획 스펙의 모든 핵심 기능이 v2에 존재한다.** 강의 색상 모델만 v1(colorIndex 0–9) → v2(paletteIndex + customColor hex)로 변경됐으므로 entities 설계 시 주의.
 
 ### 기술 리스크
 
