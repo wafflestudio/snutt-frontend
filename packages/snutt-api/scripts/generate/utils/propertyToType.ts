@@ -24,7 +24,11 @@ export const propertyToType = (property: OpenAPIV3_1.SchemaObject | OpenAPIV3_1.
 
   if (property.type === 'null') return 'null';
 
-  if (property.type === 'array') return `${propertyToType(property.items)}[]`;
+  if (property.type === 'array') {
+    const itemType = propertyToType(property.items);
+    // union 은 괄호로 감싸야 배열 전체가 union 의 배열이 된다 ('a' | 'b'[] 가 아니라 ('a' | 'b')[])
+    return itemType.includes(' | ') ? `(${itemType})[]` : `${itemType}[]`;
+  }
 
   if (property.type === 'integer' || property.type === 'number' || property.type === 'string') {
     if (property.enum) return property.enum.map((e) => (!isNaN(Number(e)) ? e : `'${e}'`)).join(' | ');

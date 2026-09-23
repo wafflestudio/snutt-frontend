@@ -376,7 +376,7 @@ export type ChangePasswordResponse = { accessToken?: string; refreshToken?: stri
 export type TimetableModifyRequest = { title: string };
 
 export type TimetableLectureModifyRequest = {
-  resetFields?:
+  resetFields?: (
     | 'courseTitle'
     | 'instructor'
     | 'credit'
@@ -385,7 +385,8 @@ export type TimetableLectureModifyRequest = {
     | 'academicYear'
     | 'category'
     | 'classification'
-    | 'categoryPre2025'[];
+    | 'categoryPre2025'
+  )[];
   courseTitle?: string | null;
   instructor?: string | null;
   credit?: Int32 | null;
