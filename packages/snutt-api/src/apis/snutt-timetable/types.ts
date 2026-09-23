@@ -5,3 +5,5 @@ export type Int64 = number;
 export type Int32 = number;
 
 export type Double = number;
+
+export type LocalDate = string; // example: '2022-07-04'

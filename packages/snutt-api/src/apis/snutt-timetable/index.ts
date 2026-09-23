@@ -15,7 +15,7 @@ import {
   CustomTimetableLectureAddLegacyRequestDto,
   TimetableModifyRequestDto,
   BookmarkResponse,
-} from './schemas';
+} from './legacySchemas';
 
 export const getSnuttTimetableApis = ({ callWithToken, callWithoutToken }: GetApiSpecsParameter) =>
   ({

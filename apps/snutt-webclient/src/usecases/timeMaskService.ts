@@ -1,4 +1,4 @@
-import { type SearchTimeDto } from '@sf/snutt-api/src/apis/snutt-timetable/schemas';
+import { type SearchTimeDto } from '@sf/snutt-api/src/apis/snutt-timetable/legacySchemas';
 
 import type { CellStatus, DragMode, Position } from '@/entities/timeMask';
 import type { FullTimetable } from '@/entities/timetable';
