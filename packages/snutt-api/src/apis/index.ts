@@ -1,6 +1,7 @@
 import { ErrorResponse } from '../response';
 import { getSnuttApis } from './snutt';
 import { getSnuttTimetableApis } from './snutt-timetable';
+import { getSnuttTimetableV2Apis } from './snutt-timetable/v2';
 
 export type Api = (_: {
   body: never;
@@ -38,5 +39,9 @@ export const apis = (client: InternalClient) => {
 
   const params = { callWithToken, callWithoutToken };
 
-  return { ...getSnuttApis(params), ...getSnuttTimetableApis(params) } satisfies Record<string, Api>;
+  return {
+    ...getSnuttApis(params),
+    ...getSnuttTimetableApis(params),
+    ...getSnuttTimetableV2Apis(params),
+  } satisfies Record<string, Api>;
 };

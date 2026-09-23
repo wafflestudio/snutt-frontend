@@ -19,37 +19,66 @@ dev 서버 OpenAPI 명세(`https://snutt-api-dev.wafflestudio.com/v3/api-docs`)�
 | `src/apis/snutt-timetable/schemas.ts` | v2 스키마 | `yarn generate:snutt-timetable` 자동 생성 |
 | `src/apis/snutt-timetable/legacySchemas.ts` | v1 스키마 (snutt-webclient 용) | 수동 관리 |
 | `src/apis/snutt-timetable/index.ts` | v1 엔드포인트 정의 | 수동 |
+| `src/apis/snutt-timetable/v2.ts` | v2 엔드포인트 정의 | 수동 |
 
 - snutt-web 은 **v2 엔드포인트만** 사용한다. 필요한 엔드포인트를 `@sf/snutt-api`에 v2 스키마 기반으로 추가해 나간다.
 - v1 은 snutt-webclient 교체 시점에 `legacySchemas.ts`와 함께 제거한다.
 - 확인 필요: v1 경로가 서버에서 여전히 살아있는지 (명세에서만 빠진 것인지). 토큰 없이는 404/403 구분 불가.
+- 확인 필요: **v2 인증 방식.** 명세상 v2 API 대부분(135개 중 92개)이 `userId` 를 필수 query 파라미터로 받지만, 명세에 인증 방식(securitySchemes)은 정의돼 있지 않다. 서버가 토큰에서 채우는 값이 명세에 노출된 것으로 보고 `v2.ts` 에서는 제외했다. 로그인 응답(`TokenResponse`)이 `userId`(int64) / `accessToken` / `refreshToken` 으로 바뀐 만큼, 토큰 헤더 이름과 refresh 흐름도 함께 확인한다.
 
-기획 스펙 대비 v2 매핑 (주요):
+기획 스펙 대비 v2 매핑 (전체):
 
-| 기능 | v2 엔드포인트 |
+| 기능 | v2 엔드포인트 | 비고 |
+|---|---|---|
+| 시간표 목록/생성 | `GET, POST /v2/timetables` | |
+| 최근 시간표 | `GET /v2/timetables/recent` | |
+| 시간표 상세/수정/삭제 | `GET, PATCH, DELETE /v2/timetables/{timetableId}` | |
+| 학기별 시간표 목록 | `GET /v2/timetables/{year}/{semester}` | |
+| 기본 시간표 지정/해제 | `PUT, DELETE /v2/timetables/{timetableId}/primary` | |
+| 시간표 복사 | `POST /v2/timetables/{timetableId}/copy` | |
+| 시간표 테마 변경 | `PUT /v2/timetables/{timetableId}/theme` | |
+| 강의 추가 | `POST /v2/timetables/{timetableId}/lectures` | |
+| 직접 추가 | `POST /v2/timetables/{timetableId}/lectures/custom` | |
+| 강의 수정/삭제 (색상 포함) | `PATCH, DELETE /v2/timetables/{timetableId}/lectures/{timetableLectureId}` | v2 는 `paletteIndex` + `customColor` (hex) |
+| 강의 원래대로 (reset) | `POST .../lectures/{timetableLectureId}/reset` | |
+| 강의 검색 | `POST /v2/lectures/search` | cursor 기반 페이지네이션, `evaluationSummary` 포함 |
+| 검색 필터 태그 | `GET /v2/tags/{year}/{semester}` | 학과·분류·학점·정렬 기준 등 |
+| 코스 태그 | `GET /v2/tags/courses` | |
+| 관심강좌 | `GET /v2/bookmarks`, `POST, DELETE /v2/bookmarks/lectures/{lectureId}` | |
+| 관심강좌 담기 여부 | `GET /v2/bookmarks/lectures/{lectureId}/state` | |
+| 빈자리 알림 (관심 목록 후보) | `GET /v2/vacancy-notifications/lectures`, `POST, DELETE .../{lectureId}` | |
+| 빈자리 알림 등록 여부 | `GET /v2/vacancy-notifications/lectures/{lectureId}/state` | |
+| 로그인/회원가입 | `POST /v2/auth/login`, `/v2/auth/login/{provider}`, `/v2/auth/register` | |
+| 내 정보 | `GET, PATCH, DELETE /v2/users/me` | |
+| 소셜 연동/해제 | `POST, DELETE /v2/users/me/social/{provider}` | |
+| 비밀번호 | `POST, PATCH /v2/users/me/password` | |
+| 알림 | `GET /v2/notifications`, `GET /v2/notifications/count` | cursor 기반 |
+| 학기 상태 (현재/다음) | `GET /v2/semesters/status` | 현재 수강신청 학기 판단에 사용 |
+| 수강편람 (학기 목록) | `GET /v2/coursebooks`, `GET /v2/coursebooks/recent` | |
+| 테마 (강의 색상 팔레트) | `GET, POST /v2/themes`, `GET, PATCH, DELETE /v2/themes/{themeId}` | |
+| 테마 복사/기본 지정 | `POST /v2/themes/{themeId}/copy`, `POST, DELETE /v2/themes/{themeId}/default` | |
+| 건물 정보 | `GET /v2/buildings` | 강의실 위치 지도 표시 (선택 구현) |
+| 친구 목록/요청 | `GET, POST /v2/friends`, `DELETE /v2/friends/{friendId}` | `v2.ts` 미구현 (Phase 8 에서 추가) |
+| 친구 수락/거절 | `POST /v2/friends/{friendId}/accept`, `.../decline` | 〃 |
+| 친구 닉네임 | `PATCH /v2/friends/{friendId}/display-name` | 〃 |
+| 카카오 링크 친구 추가 | `GET /v2/friends/generate-link`, `POST /v2/friends/accept-link/{requestToken}` | 〃 |
+| 친구 시간표 / 학기 | `GET /v2/friends/{friendId}/primary-table`, `.../coursebooks` | 〃 |
+
+> 친구 API 가 core(snutt-api) v2 명세에 모두 들어 있다. 기획 스펙은 별도 friends-api 서버를 가정했으므로, 별도 서버가 여전히 필요한지 백엔드에 확인한다. 필요 없다면 Phase 1-3 의 friends-api 클라이언트는 `@sf/snutt-api` v2 엔드포인트 추가로 대체된다.
+
+**v2 에 없는 기능 (여전히 v1 전용 또는 서버 미지원)**:
+
+| 기능 | 상태 |
 |---|---|
-| 시간표 목록/생성 | `GET, POST /v2/timetables` |
-| 시간표 상세/수정/삭제 | `GET, PATCH, DELETE /v2/timetables/{timetableId}` |
-| 학기별 시간표 | `GET /v2/timetables/{year}/{semester}` |
-| 기본 시간표 지정/해제 | `PUT, DELETE /v2/timetables/{timetableId}/primary` |
-| 시간표 복사 | `POST /v2/timetables/{timetableId}/copy` |
-| 강의 추가 | `POST /v2/timetables/{timetableId}/lectures` |
-| 직접 추가 | `POST /v2/timetables/{timetableId}/lectures/custom` |
-| 강의 수정/삭제 (색상 포함) | `PATCH, DELETE /v2/timetables/{timetableId}/lectures/{timetableLectureId}` |
-| 강의 검색 | `POST /v2/lectures/search` |
-| 관심강좌 | `GET /v2/bookmarks`, `POST, DELETE /v2/bookmarks/lectures/{lectureId}` |
-| 빈자리 알림 (관심 목록 후보) | `GET /v2/vacancy-notifications/lectures`, `POST, DELETE .../{lectureId}` |
-| 로그인/회원가입 | `POST /v2/auth/login`, `/v2/auth/login/{provider}`, `/v2/auth/register` |
-| 내 정보 | `GET, PATCH, DELETE /v2/users/me` |
-| 소셜 연동/해제 | `POST, DELETE /v2/users/me/social/{provider}` |
-| 비밀번호 | `POST, PATCH /v2/users/me/password` |
-| 알림 | `GET /v2/notifications`, `GET /v2/notifications/count` |
+| 시간표 이미지 내보내기 / 링크 공유 | 클라이언트 렌더링(이미지) + 서버 미지원(링크). v2 명세에 없음 |
+| 공식 수강편람 강의 조회 | `GET /v2/coursebooks/official` 존재하나 웹 클라이언트 직접 사용 불필요 (검색 API가 대체) |
 
-> 목록에 없는 기능(학기 목록, 태그, 색상 등)은 Phase 0-3 에서 확인한다.
+→ **기획 스펙의 모든 핵심 기능이 v2에 존재한다.** 강의 색상 모델만 v1(colorIndex 0–9) → v2(paletteIndex + customColor hex)로 변경됐으므로 entities 설계 시 주의.
 
 ### 기술 리스크
 
-- **React 19 hoisting**: Next 15 는 React 19, 다른 워크스페이스는 React 18 이고 Yarn 1.22(classic) hoisting 을 쓴다. 0-1 에서 설치/빌드부터 검증한다.
+- **React 19 hoisting**: ✅ 0-1 에서 확인. snutt-web 만 React 19 가 nested 로 설치되고 나머지 앱은 React 18 그대로다. 대신 Yarn 1 이 peer 의존성을 설치하지 않아 vitest 가 루트의 vite 5 를 잡는 문제가 있어 `vite` 를 직접 명시했다.
+- **TypeScript 7 미사용**: TS 7 은 기존 컴파일러 API 를 제공하지 않아 typescript-eslint, Next 빌드 타입 검사와 호환되지 않는다. 6.0 을 쓴다.
 - **이미지 내보내기**: html2canvas 는 Tailwind v4 기본 색상 포맷인 `oklch()`를 파싱하지 못한다. `html-to-image` 또는 `modern-screenshot` 사용.
 - **localStorage 토큰**: 서버에서 인증 상태를 알 수 없으므로 사실상 전부 클라이언트 렌더링이다. SSR 을 억지로 쓰지 않고 라우트 단위 `'use client'`. 배포가 정적 호스팅이면 `output: 'export'` 검토.
 - **timetable-picker 는 1280px 예외**: RN WebView/iframe 안에서 동작하므로 모바일 폭 대응 필요. #235/#238 의 origin 검사 로직 이식.
@@ -128,12 +157,12 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 
 | Phase | 단위 | 내용 | 완료 기준 |
 |---|---|---|---|
-| **0. 셋업** | 0-1 | Next 15 + Tailwind v4 + TS, turbo lint/tsc/test/build 연동 | 루트 `turbo run build` 통과, 다른 앱 영향 없음 |
+| **0. 셋업** | 0-1 | Next 16 + Tailwind v4 + TS 6, turbo lint/tsc/test/build 연동 | 루트 `turbo run build` 통과, 다른 앱 영향 없음 |
 | | 0-2 | `CLAUDE.md` (레이어 규칙, 네이밍, 폴더 규약) | |
 | | 0-3 | v2 매핑표 완성 + 필요한 v2 엔드포인트를 `@sf/snutt-api`에 추가 | 기획 스펙 기능 전부 엔드포인트 확인 |
 | **1. 기반** | 1-1 | entities 이식 (webclient 에서 가져와 v2 기준으로 정리) + 단위 테스트 | |
 | | 1-2 | httpClient, storage, snutt-api repository 구현, ServiceContext, QueryClient provider | 테스트 페이지에서 `GET /v2/timetables` 성공 |
-| | 1-3 | friends-api, ev-api 클라이언트 | |
+| | 1-3 | ev-api 클라이언트 (friends 는 core v2 에 있으면 `@sf/snutt-api` 에 추가) | |
 | **2. 디자인 시스템** | 2-1 | 토큰 (primary teal, 텍스트, 강의 색상), 폰트 | |
 | | 2-2 | 기본 UI: Button, Input, Dialog, Tabs, Dropdown, ColorPalette, Toast | |
 | **3. 인증** | 3-1 | 로컬 로그인, 회원가입, AuthGuard, 토큰 관리 | |
@@ -169,10 +198,12 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 
 | 항목 | 추천 / 현황 | 근거 |
 |---|---|---|
-| friends / ev API 위치 | `packages/`에 `@sf/snutt-api`와 같은 `implXxxApi` 패턴으로 생성 | friends-react-native, snutt-ev-webview 가 이미 같은 서버를 씀 |
+| friends / ev API 위치 | friends: core v2 명세에 있으므로 `@sf/snutt-api` 에 추가 (별도 서버 필요 여부 확인). ev: `packages/`에 `implXxxApi` 패턴으로 생성 | snutt-ev-webview 가 이미 같은 서버를 씀 |
 | 시간표 공유 | 이미지는 클라이언트(`html-to-image`), **링크 공유는 백엔드 필요** | 링크는 서버 저장소 없이 불가. 이미지 먼저 출시 |
 | 강의평 점수 (검색 결과) | ✅ 해결: v2 검색 응답 `LectureResponse.evaluationSummary`에 포함 | 강의별 N+1 호출 불필요 |
 | 기본 시간표 지정 | ✅ 해결: `PUT /v2/timetables/{id}/primary` | |
 | 관심 목록 vs 관심강좌 | 관심 목록 = 빈자리 알림(`/v2/vacancy-notifications`)일 가능성 높음 → 백엔드 확인 | |
 | 로그인 라우트 | `/`에서 조건부 렌더링 대신 `/login` 분리 + redirect | localStorage 토큰이라 조건부 렌더링은 깜빡임 발생 |
 | v1 서버 생존 여부 | 확인 필요 | snutt-webclient 운영 지속 기간에 영향 |
+| v2 인증 방식 | 확인 필요: `userId` query 파라미터, 토큰 헤더, refresh 흐름 | `v2.ts` 는 `userId` 를 보내지 않는 것으로 구현. 틀리면 Phase 1-2 전에 수정 |
+| 친구 기능 서버 | 확인 필요: 별도 friends-api 가 필요한지, core v2 로 충분한지 | core v2 명세에 친구 API 전체가 있음 |
