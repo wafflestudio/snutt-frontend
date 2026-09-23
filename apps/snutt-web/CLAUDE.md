@@ -81,6 +81,11 @@ export const timetableQueries = {
 - 에러는 **throw** 로 통일한다. 결과 래퍼(`{ type: 'success' | 'error' }`)를 만들지 않는다. errcode → 사용자 메시지 변환은 `client.ts` 에서 한 번만 한다.
 - **토큰 처리는 `api/client.ts` 한 곳에만** 둔다. 저장 위치, 헤더, 401 / refresh 처리를 다른 곳에 흩지 않는다. (BFF 전환 가능성 대비)
 - DI context 는 환경마다 달라지는 것(토큰 저장소, timetable-picker 의 RN WebView 브리지 등)에만 쓴다.
+- 수정 요청(PATCH)은 사용자가 바꾼 필드만 보낸다.
+- **값이 없는 필드는 domain 에서도 `null` 로 둔다.** `''` / `0` 으로 바꾸지 않는다. 서버 값과 같게 유지해야 그대로 되돌려 보내도 데이터가 바뀌지 않는다.
+  - 문자열이 필요한 곳(폼 input 등)에서 `?? ''` 로 바꾼다.
+  - 폼 제출 시 빈 입력은 `trim() || null` 로 되돌린다. 이 변환은 폼 경계 한 곳에서만 한다.
+  - 템플릿 문자열에 nullable 값을 바로 넣지 않는다. `` `강사: ${instructor}` `` 는 `'강사: null'` 이 되고 TS 가 잡지 못한다. JSX(`{instructor}`)는 `null` 이면 아무것도 그리지 않는다.
 
 ### 네이밍
 
@@ -104,7 +109,8 @@ export const timetableQueries = {
 
 - `domain/`: vitest 단위 테스트. 시간 계산, 충돌, 그리드 배치는 경계값까지 테스트한다.
 - `api/` 와 화면: 인터페이스 mock 대신 MSW 로 네트워크를 mock 한다. mapper 까지 포함해서 검증된다.
-- 테스트 파일은 대상 옆에 `*.test.ts(x)` 로 둔다.
+- 테스트는 `tests/` 에 `src/` 와 같은 폴더 구조로 둔다. (`src/domain/time.ts` → `tests/domain/time.test.ts`)
+- 테스트에서 대상은 `@/` 경로로 import 한다.
 
 ## 컴포넌트 원칙
 

@@ -184,7 +184,7 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | **0. 셋업** | 0-1 | Next 16 + Tailwind v4 + TS 6, turbo lint/tsc/test/build 연동 | 루트 `turbo run build` 통과, 다른 앱 영향 없음 | ✅ #240 |
 | | 0-2 | `CLAUDE.md` + 앱 구조 확정 (경계 규칙 ESLint 강제) | | ✅ #242 |
 | | 0-3 | v2 매핑표 완성 + 필요한 v2 엔드포인트를 `@sf/snutt-api`에 추가 | 기획 스펙 기능 전부 엔드포인트 확인 | ✅ #241 |
-| **1. 기반** | 1-1 | `domain/` 작성 (webclient entities 참고, v2 기준 정리) + 단위 테스트 | |  |
+| **1. 기반** | 1-1 | `domain/` 작성 (webclient entities 참고, v2 기준 정리) + 단위 테스트 | | ✅ #243 |
 | | 1-2 | `api/client.ts`(토큰, 에러 변환), mappers, queryOptions, QueryClient provider, MSW 테스트 환경 | 테스트 페이지에서 `GET /v2/timetables` 성공 |  |
 | | 1-3 | ev-api 클라이언트 (friends 는 core v2 에 있으면 `@sf/snutt-api` 에 추가) | |  |
 | **2. 디자인 시스템** | 2-1 | 토큰 (primary teal, 텍스트, 강의 색상), 폰트 | |  |
@@ -231,3 +231,6 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | v1 서버 생존 여부 | 확인 필요 | snutt-webclient 운영 지속 기간에 영향 |
 | v2 인증 방식 | 확인 필요: `userId` query 파라미터, 토큰 헤더, refresh 흐름 | `v2.ts` 는 `userId` 를 보내지 않는 것으로 구현. 틀리면 Phase 1-2 전에 수정 |
 | 친구 기능 서버 | 확인 필요: 별도 friends-api 가 필요한지, core v2 로 충분한지 | core v2 명세에 친구 API 전체가 있음 |
+| v2 ID 크기 | 1-2 에서 확인: 2^53 초과 여부 | v2 ID 는 `Int64`. domain 은 문자열로 다룸. 초과하면 JSON 파싱 단계에서 정확도가 깨지므로 별도 처리 필요 |
+| `paletteIndex` 시작 번호 | 1-2 에서 확인: 0부터인지 | domain 은 0부터(팔레트 배열 인덱스)로 가정. v1 `colorIndex` 는 1~9 가 팔레트, 0 이 직접 고른 색이었음 |
+| 검색 시간 조건의 끝 시각 | 1-2 에서 확인: 포함인지 제외인지 | domain 은 `[start, end)`. v1 웹클라이언트는 `endMinute` 에 -1 을 해서 보냈음 |
