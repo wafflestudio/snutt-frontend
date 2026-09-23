@@ -7,16 +7,16 @@ const lecture = (id: string, classTimes: ClassTime[], overrides: Partial<Timetab
   id,
   lectureId: `lecture-${id}`,
   title: `강의 ${id}`,
-  instructor: '',
+  instructor: null,
   credit: 3,
-  remark: '',
+  remark: null,
   classTimes,
-  courseNumber: '',
-  lectureNumber: '',
-  department: '',
-  academicYear: '',
-  category: '',
-  classification: '',
+  courseNumber: null,
+  lectureNumber: null,
+  department: null,
+  academicYear: null,
+  category: null,
+  classification: null,
   color: { type: 'palette', index: 0 },
   ...overrides,
 });
@@ -25,12 +25,16 @@ const time = (day: ClassTime['day'], startMinute: number, endMinute: number): Cl
   day,
   startMinute,
   endMinute,
-  place: '',
+  place: null,
 });
 
 describe('getTotalCredit', () => {
   it('학점을 더한다', () => {
     expect(getTotalCredit([{ credit: 3 }, { credit: 2 }, { credit: 0 }])).toBe(5);
+  });
+
+  it('학점이 없는 강의(직접 추가)는 0 으로 친다', () => {
+    expect(getTotalCredit([{ credit: 3 }, { credit: null }])).toBe(3);
   });
 
   it('강의가 없으면 0', () => {

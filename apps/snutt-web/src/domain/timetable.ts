@@ -25,7 +25,7 @@ export type Timetable = {
 };
 
 export const getTotalCredit = (lectures: readonly Pick<TimetableLecture, 'credit'>[]) =>
-  lectures.reduce((sum, lecture) => sum + lecture.credit, 0);
+  lectures.reduce((sum, lecture) => sum + (lecture.credit ?? 0), 0);
 
 type ConflictCandidate = {
   classTimes: readonly ClassTime[];

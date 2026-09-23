@@ -7,42 +7,41 @@ export type LectureId = string;
 /** 시간표에 담긴 강의의 ID (같은 강의라도 시간표마다 다르다) */
 export type TimetableLectureId = string;
 
-export type ClassTime = DayTimeRange & { place: string };
+export type ClassTime = DayTimeRange & { place: string | null };
 
 export type LectureEvaluation = { rating: number | null; count: number };
 
-/**
- * 강의 정보 중 수강편람에서 오는 부분.
- * 표시하기 쉽도록 값이 없는 텍스트는 빈 문자열, 학점은 0 으로 둔다. ("값 없음"과 "빈 값"을 구분하지 않는다)
- * 이 값을 그대로 요청 body 로 보내지 않는다. 수정 요청은 사용자가 바꾼 필드만 보낸다.
- */
+/** 강의 정보 중 공통 부분. 값이 없으면 null 이다. (서버 값과 같게 유지) */
 type LectureInfo = {
   title: string;
-  instructor: string;
-  credit: number;
-  remark: string;
+  instructor: string | null;
+  remark: string | null;
   classTimes: ClassTime[];
-  courseNumber: string;
-  lectureNumber: string;
-  department: string;
-  academicYear: string;
-  category: string;
-  classification: string;
+  department: string | null;
+  academicYear: string | null;
+  category: string | null;
+  classification: string | null;
 };
 
 /** 수강편람 강의 (검색 결과, 관심강좌) */
 export type Lecture = LectureInfo & {
   id: LectureId;
   semester: Semester;
+  credit: number;
+  courseNumber: string;
+  lectureNumber: string;
   quota: number | null;
   freshmanQuota: number | null;
   evaluation: LectureEvaluation | null;
 };
 
-/** 시간표에 담긴 강의. lectureId 가 null 이면 직접 추가한 강의다. */
+/** 시간표에 담긴 강의. lectureId 가 null 이면 직접 추가한 강의라 학점, 강좌번호가 없을 수 있다. */
 export type TimetableLecture = LectureInfo & {
   id: TimetableLectureId;
   lectureId: LectureId | null;
+  credit: number | null;
+  courseNumber: string | null;
+  lectureNumber: string | null;
   color: LectureColor;
 };
 
@@ -61,7 +60,7 @@ const SUGANG_SEMESTER_CODES: Record<Term, { openShtmFg: string; openDetaShtmFg: 
 
 /** 수강신청 사이트의 강의계획서 URL. 직접 추가한 강의처럼 강좌번호가 없으면 null */
 export const getSyllabusUrl = (
-  { courseNumber, lectureNumber }: Pick<LectureInfo, 'courseNumber' | 'lectureNumber'>,
+  { courseNumber, lectureNumber }: Pick<TimetableLecture, 'courseNumber' | 'lectureNumber'>,
   { year, term }: Semester,
 ) => {
   if (!courseNumber || !lectureNumber) return null;

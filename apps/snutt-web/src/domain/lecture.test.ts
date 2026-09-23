@@ -13,8 +13,8 @@ describe('getClassTimeTexts', () => {
 
   it('원본 배열의 순서는 바꾸지 않는다', () => {
     const classTimes = [
-      { day: 2 as const, startMinute: 600, endMinute: 675, place: '' },
-      { day: 0 as const, startMinute: 600, endMinute: 675, place: '' },
+      { day: 2 as const, startMinute: 600, endMinute: 675, place: null },
+      { day: 0 as const, startMinute: 600, endMinute: 675, place: null },
     ];
     getClassTimeTexts({ classTimes });
     expect(classTimes[0].day).toBe(2);
@@ -35,8 +35,8 @@ describe('getSyllabusUrl', () => {
     });
   });
 
-  it('강좌번호나 분반이 없으면 null', () => {
-    expect(getSyllabusUrl({ courseNumber: '', lectureNumber: '001' }, { year: 2026, term: 1 })).toBeNull();
-    expect(getSyllabusUrl({ courseNumber: '033.001', lectureNumber: '' }, { year: 2026, term: 1 })).toBeNull();
+  it('강좌번호나 분반이 없으면(직접 추가한 강의) null', () => {
+    expect(getSyllabusUrl({ courseNumber: null, lectureNumber: '001' }, { year: 2026, term: 1 })).toBeNull();
+    expect(getSyllabusUrl({ courseNumber: '033.001', lectureNumber: null }, { year: 2026, term: 1 })).toBeNull();
   });
 });
