@@ -3,7 +3,10 @@ import type { DayTimeRange } from './time';
 
 /**
  * 검색 시간 필터에서 그리드로 고르는 시간대.
- * slots[column][row] 가 true 면 선택된 칸이다. column 은 GridRange.days 의 순서, row 는 30분 단위.
+ * selection[column][row] 가 true 면 선택된 칸이다. column 은 GridRange.days 의 순서, row 는 30분 단위.
+ *
+ * 칸 번호는 GridRange 에 따라 의미가 바뀐다(범위가 넓어지면 같은 row 가 다른 시각이 된다).
+ * 그래서 필터 상태는 DayTimeRange[] 로 저장하고, TimeSelection 은 그리드를 그리고 드래그하는 동안에만 쓴다.
  */
 export type TimeSelection = boolean[][];
 
@@ -23,15 +26,15 @@ export const createTimeSelection = (range: GridRange): TimeSelection =>
  */
 export const applyDragSelection = (selection: TimeSelection, from: TimeSlot, to: TimeSlot): TimeSelection => {
   const nextValue = !selection[from.column]?.[from.row];
-  const [minColumn, maxColumn] = [Math.min(from.column, to.column), Math.max(from.column, to.column)];
-  const [minRow, maxRow] = [Math.min(from.row, to.row), Math.max(from.row, to.row)];
+  const isInDragArea = (column: number, row: number) =>
+    isBetween(column, from.column, to.column) && isBetween(row, from.row, to.row);
 
   return selection.map((rows, column) =>
-    rows.map((selected, row) =>
-      column >= minColumn && column <= maxColumn && row >= minRow && row <= maxRow ? nextValue : selected,
-    ),
+    rows.map((selected, row) => (isInDragArea(column, row) ? nextValue : selected)),
   );
 };
+
+const isBetween = (value: number, a: number, b: number) => Math.min(a, b) <= value && value <= Math.max(a, b);
 
 /** 선택된 칸을 요일별 연속 구간으로 합친다 */
 export const selectionToRanges = (selection: TimeSelection, range: GridRange): DayTimeRange[] =>

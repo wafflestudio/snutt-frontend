@@ -11,7 +11,11 @@ export type ClassTime = DayTimeRange & { place: string };
 
 export type LectureEvaluation = { rating: number | null; count: number };
 
-/** 강의 정보 중 수강편람에서 오는 부분. 텍스트 필드는 값이 없으면 빈 문자열이다. */
+/**
+ * 강의 정보 중 수강편람에서 오는 부분.
+ * 표시하기 쉽도록 값이 없는 텍스트는 빈 문자열, 학점은 0 으로 둔다. ("값 없음"과 "빈 값"을 구분하지 않는다)
+ * 이 값을 그대로 요청 body 로 보내지 않는다. 수정 요청은 사용자가 바꾼 필드만 보낸다.
+ */
 type LectureInfo = {
   title: string;
   instructor: string;

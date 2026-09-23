@@ -14,6 +14,8 @@ type GridRangeOptions = {
   days?: 'all' | 'auto';
 };
 
+const FRIDAY: Day = 4;
+
 export const DEFAULT_GRID_START_HOUR = 9;
 export const DEFAULT_GRID_END_HOUR = 22;
 
@@ -24,7 +26,7 @@ export const getGridRange = (
 ): GridRange => {
   const earliest = Math.min(startHour * MINUTES_PER_HOUR, ...times.map((t) => t.startMinute));
   const latest = Math.max(endHour * MINUTES_PER_HOUR, ...times.map((t) => t.endMinute));
-  const lastDay = Math.max(4, ...times.map((t) => t.day));
+  const lastDay = Math.max(FRIDAY, ...times.map((t) => t.day));
 
   return {
     days: days === 'all' ? [...DAYS] : DAYS.filter((day) => day <= lastDay),
@@ -51,52 +53,61 @@ export type GridBlock<T> = GridEntry<T> & {
   laneCount: number;
 };
 
+type ClippedEntry<T> = { entry: GridEntry<T>; start: number; end: number };
+
 export const layoutGridBlocks = <T>(entries: readonly GridEntry<T>[], range: GridRange): GridBlock<T>[] => {
   const total = range.endMinute - range.startMinute;
 
-  const visible = entries
-    .map((entry) => ({
-      entry,
-      column: range.days.indexOf(entry.time.day),
-      start: Math.max(entry.time.startMinute, range.startMinute),
-      end: Math.min(entry.time.endMinute, range.endMinute),
-    }))
-    .filter(({ column, start, end }) => column !== -1 && start < end);
+  // 1. 범위 밖을 잘라내고 요일(column)별로 나눈다
+  const byColumn = new Map<number, ClippedEntry<T>[]>();
+  for (const entry of entries) {
+    const column = range.days.indexOf(entry.time.day);
+    const start = Math.max(entry.time.startMinute, range.startMinute);
+    const end = Math.min(entry.time.endMinute, range.endMinute);
+    if (column === -1 || start >= end) continue;
+    const list = byColumn.get(column) ?? [];
+    list.push({ entry, start, end });
+    byColumn.set(column, list);
+  }
 
-  const blocks: GridBlock<T>[] = [];
+  // 2. 요일마다 겹치는 것끼리 묶고, 3. 묶음 안에서 lane 을 배정한다
+  return [...byColumn].flatMap(([column, clipped]) =>
+    groupOverlapping(clipped).flatMap((cluster) => {
+      const lanes = assignLanes(cluster);
+      const laneCount = Math.max(...lanes) + 1;
+      return cluster.map(({ entry, start, end }, i) => ({
+        ...entry,
+        column,
+        top: (start - range.startMinute) / total,
+        height: (end - start) / total,
+        lane: lanes[i],
+        laneCount,
+      }));
+    }),
+  );
+};
 
-  range.days.forEach((_, column) => {
-    const sorted = visible.filter((v) => v.column === column).sort((a, b) => a.start - b.start || b.end - a.end);
+/** 시작 시각 순으로 정렬한 뒤, 앞 블록들과 이어서 겹치는 것끼리 묶는다 */
+const groupOverlapping = <T>(items: readonly ClippedEntry<T>[]) => {
+  const sorted = [...items].sort((a, b) => a.start - b.start || b.end - a.end);
+  const clusters: ClippedEntry<T>[][] = [];
+  let clusterEnd = -Infinity;
 
-    // 서로 겹치는 블록끼리 묶은 뒤, 묶음 안에서 비어 있는 가장 앞 lane 에 배치한다
-    let cluster: { v: (typeof sorted)[number]; lane: number }[] = [];
-    let clusterEnd = -Infinity;
+  for (const item of sorted) {
+    if (item.start >= clusterEnd) clusters.push([]);
+    clusters[clusters.length - 1].push(item);
+    clusterEnd = Math.max(clusterEnd, item.end);
+  }
+  return clusters;
+};
 
-    const flush = () => {
-      const laneCount = Math.max(0, ...cluster.map((c) => c.lane + 1));
-      cluster.forEach(({ v, lane }) =>
-        blocks.push({
-          ...v.entry,
-          column,
-          top: (v.start - range.startMinute) / total,
-          height: (v.end - v.start) / total,
-          lane,
-          laneCount,
-        }),
-      );
-      cluster = [];
-    };
-
-    sorted.forEach((v) => {
-      if (v.start >= clusterEnd) flush();
-      const laneEnds: number[] = [];
-      cluster.forEach((c) => (laneEnds[c.lane] = Math.max(laneEnds[c.lane] ?? -Infinity, c.v.end)));
-      const freeLane = laneEnds.findIndex((end) => end <= v.start);
-      cluster.push({ v, lane: freeLane === -1 ? laneEnds.length : freeLane });
-      clusterEnd = cluster.length === 1 ? v.end : Math.max(clusterEnd, v.end);
-    });
-    flush();
+/** 각 블록을 이미 비어 있는 가장 앞 lane 에 넣는다. 블록별 lane 번호를 돌려준다 */
+const assignLanes = <T>(cluster: readonly ClippedEntry<T>[]) => {
+  const laneEnds: number[] = [];
+  return cluster.map(({ start, end }) => {
+    const free = laneEnds.findIndex((laneEnd) => laneEnd <= start);
+    const lane = free === -1 ? laneEnds.length : free;
+    laneEnds[lane] = end;
+    return lane;
   });
-
-  return blocks;
 };

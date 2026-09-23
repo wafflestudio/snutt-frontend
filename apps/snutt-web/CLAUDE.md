@@ -81,6 +81,7 @@ export const timetableQueries = {
 - 에러는 **throw** 로 통일한다. 결과 래퍼(`{ type: 'success' | 'error' }`)를 만들지 않는다. errcode → 사용자 메시지 변환은 `client.ts` 에서 한 번만 한다.
 - **토큰 처리는 `api/client.ts` 한 곳에만** 둔다. 저장 위치, 헤더, 401 / refresh 처리를 다른 곳에 흩지 않는다. (BFF 전환 가능성 대비)
 - DI context 는 환경마다 달라지는 것(토큰 저장소, timetable-picker 의 RN WebView 브리지 등)에만 쓴다.
+- **요청 body 를 domain 객체에서 통째로 만들지 않는다.** 수정 요청은 사용자가 바꾼 필드만 보낸다. domain 은 표시하기 쉽도록 서버의 `null` 을 `''` / `0` 으로 바꿔 두었기 때문에, 그대로 되돌려 보내면 사용자가 건드리지 않은 필드가 서버에서 `null` → `''` / `0` 으로 바뀐다.
 
 ### 네이밍
 
