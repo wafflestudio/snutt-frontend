@@ -28,63 +28,83 @@ Next.js 16 (App Router) · React 19 · Tailwind CSS v4 · TanStack Query v5 · T
 
 ## 아키텍처
 
-### 레이어와 의존 방향
-
-```
-app/ , features/ , shared/   (React)
-        │  ServiceContext 로 주입받은 service 사용
-        ▼
-usecases/        비즈니스 로직. React 금지
-        │  repository 인터페이스에만 의존
-        ▼
-repositories/    Repository 인터페이스 (타입만)
-        ▲
-        │  구현
-infrastructure/  API / storage 구현체. @sf/snutt-api 는 여기서만 import
-
-entities/        순수 타입 + 순수 함수. 모든 레이어가 import 가능, 자신은 아무것도 import 하지 않음
-```
-
-- `usecases/` 와 `entities/` 에서 React, Next, `@sf/snutt-api` 를 import 하지 않는다.
-- 컴포넌트에서 `infrastructure/` 나 `@sf/snutt-api` 를 직접 import 하지 않는다. service 를 거친다.
-- API 응답 타입을 그대로 UI 까지 흘리지 않는다. `infrastructure/` 에서 `entities/` 타입으로 변환한다.
-
-### 네이밍 (snutt-webclient 관례를 따름)
-
-| 레이어 | 파일 | export |
-|---|---|---|
-| repositories | `timetableRepository.ts` | `type TimetableRepository` |
-| usecases | `timetableService.ts` | `type TimetableService`, `getTimetableService({ timetableRepository })` |
-| infrastructure | `implTimetableSnuttApiRepository.ts` | `implTimetableSnuttApiRepository({ snuttApi }): TimetableRepository` |
-
-- repository 반환: `RepositoryResponse<T>` (`{ type: 'success', data } | { type: 'error', errcode }`)
-- service 반환: `UsecaseResponse<T>` (`{ type: 'success', data } | { type: 'error', message }`)
-- 인스턴스 조립은 `app/providers.tsx` 한 곳에서 하고 `ServiceContext` 로 내려준다. 테스트에서는 repository 를 mock 으로 바꿔 끼운다.
-
-### 폴더
+Feature 중심 + 얇은 API 층 + 순수 도메인. 복잡도가 있는 곳(시간표 계산, 메인 화면 UI 상태)에만 구조를 두고, API 경로는 짧게 유지한다.
+snutt-webclient 의 repository / usecase / DI 레이어는 쓰지 않는다. (이유: `docs/snutt-web-dev-plan.md` "검토한 다른 구조")
 
 ```
 src/
 ├── app/            라우팅·레이아웃만. 로직을 두지 않는다
-├── entities/
-├── repositories/
-├── usecases/
-├── infrastructure/
-├── features/<기능>/ components/, queries.ts (TanStack Query hook), 필요 시 store.ts
+├── domain/         순수 TS: 타입 + 계산 (시간, 강의, 충돌, 학점, 그리드 배치)
+├── api/            서버와의 경계
+│   ├── client.ts   @sf/snutt-api 인스턴스, 토큰, 에러 변환
+│   ├── mappers/    v2 응답 → domain 타입
+│   └── <리소스>.ts queryOptions 팩토리 + mutation hook
+├── features/<기능>/ components/, hooks, 필요 시 store.ts
 └── shared/
     ├── ui/             Button, Dialog 같은 기능 무관 공용 컴포넌트
-    └── timetable-grid/ 시간표 그리드
+    ├── timetable-grid/ 시간표 그리드
+    └── lib/
 ```
 
-- 한 feature 에서만 쓰는 컴포넌트는 그 feature 안에 둔다. 두 곳 이상에서 쓰일 때 `shared/` 로 옮긴다.
-- feature 끼리 서로의 내부(`features/a/components/...`)를 import 하지 않는다.
+데이터 흐름: `컴포넌트 → useQuery(timetableQueries.detail(id)) → api/ → @sf/snutt-api → mappers → domain 타입`
+
+### 경계 규칙
+
+| 폴더            | import 가능                                | import 금지                                                  |
+| --------------- | ------------------------------------------ | ------------------------------------------------------------ |
+| `domain/`       | `domain/` 만                               | React, Next, `api/`, `@sf/snutt-api`, `features/`, `shared/` |
+| `api/`          | `domain/`, `@sf/snutt-api`, TanStack Query | `features/`, `shared/ui`                                     |
+| `features/<a>/` | `domain/`, `api/`, `shared/`, 자기 자신    | 다른 feature 의 내부                                         |
+| `shared/`       | `domain/`, `shared/`                       | `api/`, `features/`                                          |
+| `app/`          | 전부                                       |                                                              |
+
+- `@sf/snutt-api` 는 `api/` 에서만 import 한다. 컴포넌트에서 직접 부르지 않는다.
+- API 응답 타입을 `api/` 밖으로 내보내지 않는다. `mappers/` 에서 domain 타입으로 바꾼다. 응답 형태가 바뀌어도 고칠 곳이 mappers 하나가 되도록.
+- `domain/` 은 나중에 `packages/` 로 옮길 수 있게 외부 의존 없이 유지한다.
+- 두 feature 가 같은 것을 필요로 하면 `shared/` 나 `domain/` 으로 올린다.
+
+### API 층
+
+```ts
+// api/timetable.ts
+export const timetableQueries = {
+  all: () => ['timetables'] as const,
+  detail: (id: string) =>
+    queryOptions({
+      queryKey: [...timetableQueries.all(), id],
+      queryFn: async () => toTimetable(await call('GET /v2/timetables/:timetableId', { params: { timetableId: id } })),
+    }),
+};
+```
+
+- query key 와 queryFn 은 `queryOptions` 팩토리로 리소스별 파일 한 곳에 모은다. 컴포넌트에서 query key 를 직접 쓰지 않는다.
+- 에러는 **throw** 로 통일한다. 결과 래퍼(`{ type: 'success' | 'error' }`)를 만들지 않는다. errcode → 사용자 메시지 변환은 `client.ts` 에서 한 번만 한다.
+- **토큰 처리는 `api/client.ts` 한 곳에만** 둔다. 저장 위치, 헤더, 401 / refresh 처리를 다른 곳에 흩지 않는다. (BFF 전환 가능성 대비)
+- DI context 는 환경마다 달라지는 것(토큰 저장소, timetable-picker 의 RN WebView 브리지 등)에만 쓴다.
+
+### 네이밍
+
+| 대상          | 예                                               |
+| ------------- | ------------------------------------------------ |
+| domain 파일   | `timetable.ts`, `grid-layout.ts` (kebab-case)    |
+| domain 함수   | `getTotalCredits`, `findConflicts` (동사로 시작) |
+| query 팩토리  | `timetableQueries`, `searchQueries`              |
+| mutation hook | `useAddLecture`, `useDeleteTimetable`            |
+| mapper        | `toTimetable`, `toLecture`                       |
+| 컴포넌트 파일 | `TimetableTabs.tsx` (PascalCase)                 |
 
 ## 상태 관리
 
-- 서버 상태: TanStack Query. query key 와 hook 은 feature 의 `queries.ts` 에 모은다.
+- 서버 상태: TanStack Query (`api/` 의 queryOptions).
 - UI 상태: `useState` / `useReducer`.
 - 전역 상태: Zustand. 패널↔그리드 hover 미리보기처럼 멀리 떨어진 컴포넌트가 공유하는 휘발성 상태에만 쓴다.
 - 메인 페이지 레이아웃(패널/상세/직접 추가/비교)은 하나의 discriminated union(`MainView`)으로 관리하고 URL search params 와 동기화한다. 불리언 플래그를 여러 개 두지 않는다.
+
+## 테스트
+
+- `domain/`: vitest 단위 테스트. 시간 계산, 충돌, 그리드 배치는 경계값까지 테스트한다.
+- `api/` 와 화면: 인터페이스 mock 대신 MSW 로 네트워크를 mock 한다. mapper 까지 포함해서 검증된다.
+- 테스트 파일은 대상 옆에 `*.test.ts(x)` 로 둔다.
 
 ## 컴포넌트 원칙
 
@@ -94,7 +114,7 @@ src/
 
 ## 렌더링
 
-- 인증 토큰이 localStorage 에 있어 서버는 로그인 상태를 모른다. 인증이 필요한 화면은 클라이언트 컴포넌트로 만든다. SSR 로 데이터를 가져오려 하지 않는다.
+- 인증 토큰이 브라우저에 있어 서버는 로그인 상태를 모른다. 인증이 필요한 화면은 클라이언트 컴포넌트로 만든다. SSR 로 데이터를 가져오려 하지 않는다.
 - Next 16 기준: `next lint` 는 없다(`eslint .` 사용), `middleware` 는 `proxy` 로 이름이 바뀌었다, 라우트 `params` / `searchParams` 는 Promise 다.
 
 ## 스타일
@@ -103,10 +123,10 @@ src/
 - 클래스 순서는 `prettier-plugin-tailwindcss` 가 정렬한다.
 - 이미지 내보내기에 html2canvas 를 쓰지 않는다. Tailwind v4 기본 색상 포맷인 `oklch()` 를 지원하지 않는다. `html-to-image` 계열을 쓴다.
 
-## API
+## 백엔드
 
-- 백엔드 3개: snutt-core (`@sf/snutt-api`), friends-api, snutt-ev-api.
-- snutt-core 는 **v2 엔드포인트만** 쓴다. v1(`legacySchemas.ts`, `snutt-timetable/index.ts`)은 snutt-webclient 용이다.
+- snutt-core (`@sf/snutt-api`), snutt-ev-api. 친구 API 도 core v2 명세에 있다(별도 friends-api 필요 여부 확인 중).
+- snutt-core 는 **v2 엔드포인트만** 쓴다(`snutt-timetable/v2.ts`). v1(`legacySchemas.ts`, `snutt-timetable/index.ts`)은 snutt-webclient 용이다.
 - 필요한 엔드포인트가 `@sf/snutt-api` 에 없으면 앱에서 fetch 하지 말고 패키지에 추가한다. 스키마는 `packages/snutt-api` 에서 `yarn generate:snutt-timetable` 로 갱신한다.
 
 ## 주의사항
