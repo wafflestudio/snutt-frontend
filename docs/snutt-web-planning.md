@@ -12,7 +12,7 @@ SNUTT 서울대 시간표 앱 웹 버전. 강의 검색, 시간표 편집, 친�
 ### 기술 스택
 | 항목 | 선택 |
 |---|---|
-| Framework | Next.js 15 (App Router) |
+| Framework | Next.js 16 (App Router) |
 | Styling | Tailwind CSS v4 |
 | Server State | TanStack Query v5 |
 | Language | TypeScript |
@@ -339,7 +339,7 @@ components/       UI 컴포넌트
 
 ## 개발 순서
 
-1. `apps/snutt-web` 프로젝트 초기 셋업 (Next.js 15, Tailwind v4, Turborepo 연동)
+1. `apps/snutt-web` 프로젝트 초기 셋업 (Next.js 16, Tailwind v4, Turborepo 연동)
 2. `CLAUDE.md` Harness 문서 작성
 3. entities 타입 정의
 4. infrastructure — snutt-api 연결 (기존 `@sf/snutt-api` 사용)
