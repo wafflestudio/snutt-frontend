@@ -88,24 +88,26 @@ dev 서버 OpenAPI 명세(`https://snutt-api-dev.wafflestudio.com/v3/api-docs`)�
 
 ## 1. 디렉토리 구조
 
-기획 스펙의 레이어 구조를 따르되 두 가지를 바꾼다.
+**Feature 중심 + 얇은 API 층 + 순수 도메인** 구조를 쓴다.
 
-- `components/` 단일 폴더 → **`features/`(기능별) + `shared/ui/`(공용)**. 메인 페이지 상태가 5가지라 평면 구조로는 감당이 안 된다.
-- **`repositories/`(인터페이스)와 `infrastructure/`(구현) 분리**. 기존 snutt-webclient / friends-react-native 와 같은 패턴이라 이식이 쉽고 테스트 mock 교체가 쉽다.
+이 앱의 복잡도는 (1) 시간표 도메인 계산(충돌, 학점, time mask, 그리드 배치)과 (2) 메인 화면 UI 상태에 몰려 있고, API 호출은 대부분 CRUD 전달이다.
+그래서 계층은 도메인과 UI 상태에 두고, API 경로는 짧게 유지한다.
 
 ```
 apps/snutt-web/src/
 ├── app/                          # 라우팅·레이아웃만 (얇게)
-│   ├── providers.tsx             # QueryClient + ServiceContext
+│   ├── providers.tsx             # QueryClient, 환경 의존 context
 │   ├── (auth)/login | register | password-reset
 │   ├── (main)/layout.tsx         # AuthGuard + Header + IconBar
 │   ├── (main)/page.tsx           # 메인 시간표
 │   ├── (main)/friends/ | mypage/
 │   └── timetable-picker/         # 위젯 (별도 레이아웃, 모바일 대응)
-├── entities/                     # 순수 타입 + 순수 함수 (시간 충돌, 학점 합, timeMask)
-├── repositories/                 # Repository 인터페이스
-├── usecases/                     # 비즈니스 로직 (React 없음, vitest 대상)
-├── infrastructure/               # impl*Repository: snutt-api / friends-api / ev-api / storage
+├── domain/                       # 순수 TS. React / API 를 모름. 테스트 집중 구역
+│   ├── time.ts  lecture.ts  timetable.ts  grid-layout.ts …
+├── api/                          # 서버와의 경계
+│   ├── client.ts                 # @sf/snutt-api 인스턴스, 토큰, 에러 변환
+│   ├── mappers/                  # v2 응답 → domain 타입
+│   └── timetable.ts  search.ts … # queryOptions 팩토리 + mutation hook
 ├── features/
 │   ├── timetable/                # 탭, 학기 선택, 그리드 연결
 │   ├── search/                   # 검색 패널, 필터 모달, 시간 필터
@@ -113,11 +115,31 @@ apps/snutt-web/src/
 │   ├── custom-lecture/
 │   ├── bookmark/
 │   ├── friends/  auth/  mypage/  export/  notification/
-│   └── (각 feature: components/, queries.ts, 필요 시 store.ts)
+│   └── (각 feature: components/, hooks, 필요 시 store.ts)
 └── shared/
     ├── ui/                       # Button, Input, Dialog, Tabs, Dropdown, ColorPalette …
-    └── timetable-grid/           # 가장 많이 재사용되는 컴포넌트, 별도 관리
+    ├── timetable-grid/           # 가장 많이 재사용되는 컴포넌트, 별도 관리
+    └── lib/
 ```
+
+데이터 흐름: `컴포넌트 → useQuery(timetableQueries.detail(id)) → api/ → @sf/snutt-api → mappers → domain 타입`
+
+### 검토한 다른 구조
+
+| 구조 | 채택하지 않은 이유 |
+|---|---|
+| snutt-webclient 식 레이어 (entities / repositories / usecases / infrastructure + DI context) | API 하나에 파일 4~5개. service 대부분이 전달만 하고, 결과 래퍼(`RepositoryResponse`)가 TanStack Query 의 throw 기반 에러 처리와 겹친다 |
+| Feature-Sliced Design | 이 규모에선 무겁고, feature / widget 분류 논쟁이 생기며 Next 의 `app/` 과 이름이 겹친다 |
+| 라우트 옆에 두기 (`app/**/_components`) | 메인은 라우트 하나에 상태 5개, 그리드는 여러 라우트에서 공유해서 효과가 적다. 한 라우트 전용 화면에만 부분 적용 가능 |
+| domain 을 `packages/` 로 분리 | 아직 이르다. `domain/` 이 아무것도 import 하지 않게 지켜 두면 나중에 그대로 옮길 수 있다 |
+
+### BFF (Next 서버 경유) 여부: 보류
+
+브라우저 → Next 서버(httpOnly 쿠키) → snutt-api 구조로 가면 토큰이 XSS 로부터 안전하고 API key 가 노출되지 않으며, 서버에서 인증 분기가 가능하다.
+대신 Node 서버 운영이 필요하고(theme-market 처럼 컨테이너 배포), iframe / RN WebView 로 열리는 timetable-picker 에서는 쿠키 인증이 제한될 수 있다.
+
+- v2 인증 방식(토큰 헤더, refresh 흐름) 확인 후 **Phase 3(인증) 전에 결정**한다. Phase 1~2 는 영향 없음.
+- 어느 쪽이든 전환 비용을 줄이기 위해 **토큰 처리는 `api/client.ts` 한 곳에만** 둔다.
 
 ### 설계 포인트
 
@@ -142,7 +164,7 @@ type MainView =
 
 **3. 상태 관리**
 
-- 서버 상태: TanStack Query v5 (feature 별 `queries.ts`에 query key / hook 모음)
+- 서버 상태: TanStack Query v5 (`api/` 의 `queryOptions` 팩토리로 query key / fn 을 한 곳에서 관리)
 - UI 상태: `useState` / `useReducer`
 - 전역: Zustand (필요할 때만)
 
@@ -155,40 +177,42 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 - **그리드를 뼈대 단계에서 제대로** 구현
 - **알림 추가**
 
-| Phase | 단위 | 내용 | 완료 기준 |
-|---|---|---|---|
-| **0. 셋업** | 0-1 | Next 16 + Tailwind v4 + TS 6, turbo lint/tsc/test/build 연동 | 루트 `turbo run build` 통과, 다른 앱 영향 없음 |
-| | 0-2 | `CLAUDE.md` (레이어 규칙, 네이밍, 폴더 규약) | |
-| | 0-3 | v2 매핑표 완성 + 필요한 v2 엔드포인트를 `@sf/snutt-api`에 추가 | 기획 스펙 기능 전부 엔드포인트 확인 |
-| **1. 기반** | 1-1 | entities 이식 (webclient 에서 가져와 v2 기준으로 정리) + 단위 테스트 | |
-| | 1-2 | httpClient, storage, snutt-api repository 구현, ServiceContext, QueryClient provider | 테스트 페이지에서 `GET /v2/timetables` 성공 |
-| | 1-3 | ev-api 클라이언트 (friends 는 core v2 에 있으면 `@sf/snutt-api` 에 추가) | |
-| **2. 디자인 시스템** | 2-1 | 토큰 (primary teal, 텍스트, 강의 색상), 폰트 | |
-| | 2-2 | 기본 UI: Button, Input, Dialog, Tabs, Dropdown, ColorPalette, Toast | |
-| **3. 인증** | 3-1 | 로컬 로그인, 회원가입, AuthGuard, 토큰 관리 | |
-| | 3-2 | 소셜 로그인 (Google / Facebook / Kakao) | |
-| | 3-3 | 비밀번호 재설정 (이메일 인증) | |
-| **4. 메인 뼈대** | 4-1 | AppShell: Header, IconBar, 패널 슬롯(push), `MainView` 상태 | 5개 상태가 빈 패널로 전환됨 |
-| | 4-2 | **TimetableGrid** (7일, 시간 자동 범위, 모드 구조) | readonly 모드로 실데이터 렌더링 |
-| | 4-3 | 시간표 탭 CRUD, 학점 표시, 기본 시간표 지정, 학기 선택 | |
-| **5. 검색** | 5-1 | 검색 패널: 300ms debounce, 결과 목록(강의평 점수 포함), 담기, 시간 충돌 경고 | |
-| | 5-2 | 결과 hover 시 그리드 미리보기 | |
-| | 5-3 | 필터 모달: 카테고리 구조, 학과(즐겨찾기), 나머지 필터 | |
-| | 5-4 | 시간 필터: 그리드 `selectable` 모드 + 음영 표시 | |
-| **6. 강의 편집** | 6-1 | 강의 상세 인라인 패널 (3-panel), 색상 변경, 삭제 | |
-| | 6-2 | 직접 추가/수정 폼 (시간·장소 여러 개) | |
-| **7. 관심강좌** | 7-1 | 관심강좌(bookmark) 탭 | |
-| | 7-2 | 관심 목록 탭 (빈자리 알림으로 확정되면) | |
-| **8. 신규 서버** | 8-1 | `/friends` 목록, 3개 상태 탭, 수락/거절 | |
-| | 8-2 | 친구 추가 (닉네임 / Kakao 링크), 닉네임 변경, 삭제 | |
-| | 8-3 | 친구 시간표 뷰 (그리드 재사용, 학기 선택) | |
-| | 8-4 | 강의 상세 패널의 강의평 요약 | |
-| **9. 부가 기능** | 9-1 | 내보내기 (이미지 저장, 공유) | |
-| | 9-2 | 두 시간표 비교 (Split View) | |
-| | 9-3 | 마이페이지 (프로필, 소셜 연동/해제, 비밀번호, 탈퇴) | |
-| | 9-4 | 알림 | |
-| | 9-5 | timetable-picker 이식 (origin 검사 포함) | 기존 RN 앱에서 동작 확인 |
-| **10. 마무리** | 10-1 | Playwright e2e (로그인 → 검색 → 담기 → 삭제), 배포 스크립트 | |
+상태: ✅ 완료 (PR 번호) · 🚧 진행 중 · 빈칸 대기. PR 을 올릴 때 해당 단위의 상태를 함께 갱신한다.
+
+| Phase | 단위 | 내용 | 완료 기준 | 상태 |
+|---|---|---|---|---|
+| **0. 셋업** | 0-1 | Next 16 + Tailwind v4 + TS 6, turbo lint/tsc/test/build 연동 | 루트 `turbo run build` 통과, 다른 앱 영향 없음 | ✅ #240 |
+| | 0-2 | `CLAUDE.md` + 앱 구조 확정 (경계 규칙 ESLint 강제) | | ✅ #242 |
+| | 0-3 | v2 매핑표 완성 + 필요한 v2 엔드포인트를 `@sf/snutt-api`에 추가 | 기획 스펙 기능 전부 엔드포인트 확인 | ✅ #241 |
+| **1. 기반** | 1-1 | `domain/` 작성 (webclient entities 참고, v2 기준 정리) + 단위 테스트 | |  |
+| | 1-2 | `api/client.ts`(토큰, 에러 변환), mappers, queryOptions, QueryClient provider, MSW 테스트 환경 | 테스트 페이지에서 `GET /v2/timetables` 성공 |  |
+| | 1-3 | ev-api 클라이언트 (friends 는 core v2 에 있으면 `@sf/snutt-api` 에 추가) | |  |
+| **2. 디자인 시스템** | 2-1 | 토큰 (primary teal, 텍스트, 강의 색상), 폰트 | |  |
+| | 2-2 | 기본 UI: Button, Input, Dialog, Tabs, Dropdown, ColorPalette, Toast | |  |
+| **3. 인증** | 3-1 | 로컬 로그인, 회원가입, AuthGuard, 토큰 관리 | |  |
+| | 3-2 | 소셜 로그인 (Google / Facebook / Kakao) | |  |
+| | 3-3 | 비밀번호 재설정 (이메일 인증) | |  |
+| **4. 메인 뼈대** | 4-1 | AppShell: Header, IconBar, 패널 슬롯(push), `MainView` 상태 | 5개 상태가 빈 패널로 전환됨 |  |
+| | 4-2 | **TimetableGrid** (7일, 시간 자동 범위, 모드 구조) | readonly 모드로 실데이터 렌더링 |  |
+| | 4-3 | 시간표 탭 CRUD, 학점 표시, 기본 시간표 지정, 학기 선택 | |  |
+| **5. 검색** | 5-1 | 검색 패널: 300ms debounce, 결과 목록(강의평 점수 포함), 담기, 시간 충돌 경고 | |  |
+| | 5-2 | 결과 hover 시 그리드 미리보기 | |  |
+| | 5-3 | 필터 모달: 카테고리 구조, 학과(즐겨찾기), 나머지 필터 | |  |
+| | 5-4 | 시간 필터: 그리드 `selectable` 모드 + 음영 표시 | |  |
+| **6. 강의 편집** | 6-1 | 강의 상세 인라인 패널 (3-panel), 색상 변경, 삭제 | |  |
+| | 6-2 | 직접 추가/수정 폼 (시간·장소 여러 개) | |  |
+| **7. 관심강좌** | 7-1 | 관심강좌(bookmark) 탭 | |  |
+| | 7-2 | 관심 목록 탭 (빈자리 알림으로 확정되면) | |  |
+| **8. 신규 서버** | 8-1 | `/friends` 목록, 3개 상태 탭, 수락/거절 | |  |
+| | 8-2 | 친구 추가 (닉네임 / Kakao 링크), 닉네임 변경, 삭제 | |  |
+| | 8-3 | 친구 시간표 뷰 (그리드 재사용, 학기 선택) | |  |
+| | 8-4 | 강의 상세 패널의 강의평 요약 | |  |
+| **9. 부가 기능** | 9-1 | 내보내기 (이미지 저장, 공유) | |  |
+| | 9-2 | 두 시간표 비교 (Split View) | |  |
+| | 9-3 | 마이페이지 (프로필, 소셜 연동/해제, 비밀번호, 탈퇴) | |  |
+| | 9-4 | 알림 | |  |
+| | 9-5 | timetable-picker 이식 (origin 검사 포함) | 기존 RN 앱에서 동작 확인 |  |
+| **10. 마무리** | 10-1 | Playwright e2e (로그인 → 검색 → 담기 → 삭제), 배포 스크립트 | |  |
 
 **의존 관계**: Phase 5~9 는 Phase 4 이후 서로 독립적이라 병렬 진행 가능. 단 Phase 4-2 그리드는 이후 전부가 의존하므로 먼저 끝낸다.
 
