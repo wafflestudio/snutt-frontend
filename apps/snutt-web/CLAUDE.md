@@ -132,7 +132,9 @@ export const timetableQueries = {
 ## 백엔드
 
 - snutt-core (`@sf/snutt-api`), snutt-ev-api. 친구 API 도 core v2 명세에 있다(별도 friends-api 필요 여부 확인 중).
-- snutt-core 는 **v2 엔드포인트만** 쓴다(`snutt-timetable/v2.ts`). v1(`legacySchemas.ts`, `snutt-timetable/index.ts`)은 snutt-webclient 용이다.
+- snutt-core 는 **v2 엔드포인트만** 쓴다(`snutt-timetable/v2/`). v1(`snutt-timetable/v1/`)은 snutt-webclient 용이다.
+- v2 요청 헤더는 v1 과 다르다: `x-os-type` + `x-client-key`, 사용자 토큰은 `Authorization: Bearer`. (`docs/snutt-web-dev-plan.md` 참고)
+- 생성된 v2 타입의 `is` boolean 필드 이름(`primary` 등)은 백엔드 명세 버그로 실제 응답과 다를 수 있다. mapper 에서 실제 응답으로 확인하기 전까지 믿지 않는다.
 - 필요한 엔드포인트가 `@sf/snutt-api` 에 없으면 앱에서 fetch 하지 말고 패키지에 추가한다. 스키마는 `packages/snutt-api` 에서 `yarn generate:snutt-timetable` 로 갱신한다.
 
 ## 주의사항

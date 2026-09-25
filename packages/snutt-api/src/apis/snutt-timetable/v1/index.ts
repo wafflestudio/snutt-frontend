@@ -1,5 +1,5 @@
-import { Api, GetApiSpecsParameter } from '..';
-import { SuccessResponse, ErrorResponse } from '../../response';
+import { Api, GetApiSpecsParameter } from '../..';
+import { SuccessResponse, ErrorResponse } from '../../../response';
 import {
   LocalLoginRequest,
   LoginResponse,

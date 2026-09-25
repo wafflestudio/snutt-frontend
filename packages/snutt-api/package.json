@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint ./src",
     "tsc": "tsc",
-    "generate:snutt-timetable": "tsx ./scripts/generate/snutt-timetable.ts"
+    "generate:snutt-timetable": "tsx ./scripts/generate/snutt-timetable.ts && prettier --write src/apis/snutt-timetable/v1/schemas.ts src/apis/snutt-timetable/v2/schemas.ts"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "7.9.0",
