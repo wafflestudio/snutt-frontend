@@ -1,6 +1,9 @@
-// v1 API 스키마. dev 서버 OpenAPI 명세가 v2 만 노출하게 되면서 자동 생성 대상에서 빠졌으므로 수동으로 관리한다.
-// v2 스키마는 schemas.ts (yarn generate:snutt-timetable 로 생성)
-import { Int32, Double, Int64, DateTime } from './types';
+// v1 API 스키마 (수동 관리). v1 엔드포인트(index.ts)와 snutt-webclient 가 사용한다.
+//
+// 같은 폴더의 schemas.ts 는 명세에서 생성한 v1 타입이지만 아직 쓰지 않는다.
+// 백엔드 명세에 실제 응답과 다른 부분이 있어서다. (is 로 시작하는 boolean 필드가 명세에는 is 없이 기록됨. 예: isAdmin → admin)
+// 백엔드가 고치면 schemas.ts 로 교체하고 이 파일을 지운다.
+import { Int32, Double, Int64, DateTime } from '../types';
 
 export type LocalLoginRequest = { id: string; password: string };
 

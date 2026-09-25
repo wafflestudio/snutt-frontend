@@ -1,6 +1,6 @@
 import { ErrorResponse } from '../response';
 import { getSnuttApis } from './snutt';
-import { getSnuttTimetableApis } from './snutt-timetable';
+import { getSnuttTimetableApis } from './snutt-timetable/v1';
 import { getSnuttTimetableV2Apis } from './snutt-timetable/v2';
 
 export type Api = (_: {

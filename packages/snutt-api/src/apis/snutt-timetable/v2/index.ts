@@ -1,5 +1,5 @@
-import { Api, GetApiSpecsParameter } from '..';
-import { SuccessResponse } from '../../response';
+import { Api, GetApiSpecsParameter } from '../..';
+import { SuccessResponse } from '../../../response';
 import {
   // 인증
   LoginLocalRequest,

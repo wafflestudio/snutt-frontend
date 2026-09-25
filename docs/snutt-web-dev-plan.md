@@ -16,15 +16,28 @@ dev 서버 OpenAPI 명세(`https://snutt-api-dev.wafflestudio.com/v3/api-docs`)�
 
 | 파일 | 내용 | 관리 방식 |
 |---|---|---|
-| `src/apis/snutt-timetable/schemas.ts` | v2 스키마 | `yarn generate:snutt-timetable` 자동 생성 |
-| `src/apis/snutt-timetable/legacySchemas.ts` | v1 스키마 (snutt-webclient 용) | 수동 관리 |
-| `src/apis/snutt-timetable/index.ts` | v1 엔드포인트 정의 | 수동 |
-| `src/apis/snutt-timetable/v2.ts` | v2 엔드포인트 정의 | 수동 |
+| `specs/v1.json`, `specs/v2.json` | 받아온 v1(v1compat) / v2 명세 원본. 재생성 시 diff 로 API 변경 확인 | `yarn generate:snutt-timetable` |
+| `src/apis/snutt-timetable/v1/schemas.ts` | 명세에서 생성한 v1 타입 (**아직 사용 안 함**, 아래 명세 버그 참고) | 자동 생성 |
+| `src/apis/snutt-timetable/v1/legacySchemas.ts` | v1 타입. v1 엔드포인트와 snutt-webclient 가 사용 | 수동 관리 |
+| `src/apis/snutt-timetable/v1/index.ts` | v1 엔드포인트 정의 | 수동 |
+| `src/apis/snutt-timetable/v2/schemas.ts` | 명세에서 생성한 v2 타입 | 자동 생성 |
+| `src/apis/snutt-timetable/v2/index.ts` | v2 엔드포인트 정의 | 수동 |
 
 - snutt-web 은 **v2 엔드포인트만** 사용한다. 필요한 엔드포인트를 `@sf/snutt-api`에 v2 스키마 기반으로 추가해 나간다.
 - v1 은 snutt-webclient 교체 시점에 `legacySchemas.ts`와 함께 제거한다.
-- 확인 필요: v1 경로가 서버에서 여전히 살아있는지 (명세에서만 빠진 것인지). 토큰 없이는 404/403 구분 불가.
-- 확인 필요: **v2 인증 방식.** 명세상 v2 API 대부분(135개 중 92개)이 `userId` 를 필수 query 파라미터로 받지만, 명세에 인증 방식(securitySchemes)은 정의돼 있지 않다. 서버가 토큰에서 채우는 값이 명세에 노출된 것으로 보고 `v2.ts` 에서는 제외했다. 로그인 응답(`TokenResponse`)이 `userId`(int64) / `accessToken` / `refreshToken` 으로 바뀐 만큼, 토큰 헤더 이름과 refresh 흐름도 함께 확인한다.
+- v1 은 새 백엔드(snutt-v2)의 호환 계층(`v1compat`)으로 동작 중이다. (2026-09 dev 서버에서 확인)
+- **v1 / v2 인증 헤더가 다르다.** (백엔드 소스 `PlatformKeyInterceptor`, `UserAuthInterceptor` 확인)
+
+  | | v1 | v2 |
+  |---|---|---|
+  | 앱 식별 | `x-access-apikey` | `x-os-type` + `x-client-key` (플랫폼별 key) |
+  | 사용자 토큰 | `x-access-token` | `Authorization: Bearer <accessToken>` |
+
+  v2 의 `userId` 는 서버가 토큰에서 채운다. 클라이언트가 보내지 않는다.
+- **백엔드 명세 버그 2가지** (백엔드에 수정 요청 필요)
+  1. 그룹 명세(`/v3/api-docs/v1compat`, `/v3/api-docs/v2`)에 `components.schemas` 가 없다. `OpenApiConfig` 의 `it.components(...)` 가 components 를 securitySchemes 만으로 덮어쓰기 때문. 생성 스크립트는 전체 명세(`/v3/api-docs`)에서 스키마를 가져와 우회한다.
+  2. `is` 로 시작하는 boolean 필드가 명세에 `is` 없이 기록된다. (실제 응답 `isAdmin`, `isPrimary` → 명세 `admin`, `primary`) 그래서 생성한 v1 타입은 아직 쓰지 않는다. v2 타입의 `primary`, `admin`, `emailVerified` 등도 같은 문제일 가능성이 높다.
+- 명세 대부분에 `required` 가 없어서, 생성 스크립트는 "응답 스키마의 null 불가 필드는 항상 온다"로 본다. (required 가 있는 21개 스키마로 검증: 어긋난 경우 없음)
 
 기획 스펙 대비 v2 매핑 (전체):
 
@@ -228,9 +241,11 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | 기본 시간표 지정 | ✅ 해결: `PUT /v2/timetables/{id}/primary` | |
 | 관심 목록 vs 관심강좌 | 관심 목록 = 빈자리 알림(`/v2/vacancy-notifications`)일 가능성 높음 → 백엔드 확인 | |
 | 로그인 라우트 | `/`에서 조건부 렌더링 대신 `/login` 분리 + redirect | localStorage 토큰이라 조건부 렌더링은 깜빡임 발생 |
-| v1 서버 생존 여부 | 확인 필요 | snutt-webclient 운영 지속 기간에 영향 |
-| v2 인증 방식 | 확인 필요: `userId` query 파라미터, 토큰 헤더, refresh 흐름 | `v2.ts` 는 `userId` 를 보내지 않는 것으로 구현. 틀리면 Phase 1-2 전에 수정 |
+| v1 서버 생존 여부 | ✅ 살아 있음 (새 백엔드의 v1compat 계층) | snutt-webclient 운영 지속 기간에 영향 |
+| v2 인증 방식 | 일부 해결: 헤더는 위 표 참고, `userId` 는 서버가 채움. **남은 것: web 용 `x-client-key` / `x-os-type` 값 발급, refresh 흐름** | web key 가 없어 v2 호출 불가 |
+| 백엔드 명세 버그 | 백엔드에 수정 요청: 그룹 명세 스키마 누락, `is` boolean 필드 이름 | 고쳐지면 v1 을 생성 타입으로 교체, v2 타입 재검증 |
+| v2 `is` boolean 필드 이름 | 1-2 에서 확인: `primary` / `isPrimary` 등 실제 응답 이름 | v2 명세도 같은 버그일 가능성 |
 | 친구 기능 서버 | 확인 필요: 별도 friends-api 가 필요한지, core v2 로 충분한지 | core v2 명세에 친구 API 전체가 있음 |
-| v2 ID 크기 | 1-2 에서 확인: 2^53 초과 여부 | v2 ID 는 `Int64`. domain 은 문자열로 다룸. 초과하면 JSON 파싱 단계에서 정확도가 깨지므로 별도 처리 필요 |
+| v2 ID 크기 | 1-2 에서 확인: 2^53 초과 여부 (v1 로 본 dev ID 는 5자리) | v2 ID 는 `Int64`. domain 은 문자열로 다룸. 초과하면 JSON 파싱 단계에서 정확도가 깨지므로 별도 처리 필요 |
 | `paletteIndex` 시작 번호 | 1-2 에서 확인: 0부터인지 | domain 은 0부터(팔레트 배열 인덱스)로 가정. v1 `colorIndex` 는 1~9 가 팔레트, 0 이 직접 고른 색이었음 |
 | 검색 시간 조건의 끝 시각 | 1-2 에서 확인: 포함인지 제외인지 | domain 은 `[start, end)`. v1 웹클라이언트는 `endMinute` 에 -1 을 해서 보냈음 |
