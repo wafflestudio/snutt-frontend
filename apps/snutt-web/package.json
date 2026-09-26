@@ -2,6 +2,9 @@
   "name": "snutt-web",
   "version": "0.0.0",
   "private": true,
+  "engines": {
+    "node": ">=22.18"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
