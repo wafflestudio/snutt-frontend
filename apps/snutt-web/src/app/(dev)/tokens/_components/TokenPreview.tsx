@@ -1,8 +1,7 @@
 'use client';
 
+import { DevHeader } from '@/app/(dev)/_components/DevHeader';
 import { DESIGN_TOKENS } from '@/shared/lib/design-tokens';
-import { type Theme, THEME_STORAGE_KEY } from '@/shared/lib/theme';
-import { useTheme } from '@/shared/lib/use-theme';
 
 type DesignToken = (typeof DESIGN_TOKENS)[number];
 
@@ -19,40 +18,10 @@ const groupTokens = () => {
   return [...groups];
 };
 
-const THEME_LABELS: Record<Theme, string> = { light: '라이트', dark: '다크' };
-
 export function TokenPreview() {
-  const { theme, setTheme } = useTheme();
-
-  const resetTheme = () => {
-    localStorage.removeItem(THEME_STORAGE_KEY);
-    location.reload();
-  };
-
   return (
     <main className="mx-auto flex max-w-5xl flex-col gap-10 p-10">
-      <header className="flex items-center justify-between">
-        <h1 className="text-xl font-bold">디자인 토큰</h1>
-        <div className="flex gap-2">
-          {(['light', 'dark'] as const).map((t) => (
-            <button
-              key={t}
-              type="button"
-              onClick={() => setTheme(t)}
-              className={`rounded-md border border-line-border px-3 py-1.5 text-sm ${theme === t ? 'bg-snutt-dark-mint1 text-on-bg' : 'text-plain'}`}
-            >
-              {THEME_LABELS[t]}
-            </button>
-          ))}
-          <button
-            type="button"
-            onClick={resetTheme}
-            className="rounded-md border border-line-border px-3 py-1.5 text-sm text-plain"
-          >
-            OS 설정 따르기
-          </button>
-        </div>
-      </header>
+      <DevHeader title="디자인 토큰" />
 
       {groupTokens().map(([group, tokens]) => (
         <section key={group} className="flex flex-col gap-3">

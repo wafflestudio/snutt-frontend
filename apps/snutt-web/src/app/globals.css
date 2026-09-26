@@ -6,6 +6,29 @@
 
 @theme {
   --font-sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+
+  /*
+   * 글자 단계. 임시 값이다. Figma 에 텍스트 스타일이 없어 완료 영역에서 쓰인 값을 묶었다.
+   * 디자이너 문의 A 의 답을 받으면 바꾼다. (docs/snutt-web-design-questions.md)
+   * 이름이 글자 색 토큰(text-normal, text-plain …)과 겹치지 않게 한다.
+   */
+  --text-title1: 22px; /* 학기 제목 */
+  --text-title1--line-height: 1.5;
+  --text-title1--letter-spacing: -0.01em;
+  --text-title2: 20px; /* 강의 상세 · 직접 추가 제목 */
+  --text-title2--line-height: 1.4;
+  --text-title3: 17px; /* 패널 탭 */
+  --text-title3--line-height: 1.5;
+  --text-title3--letter-spacing: -0.01em;
+  --text-headline: 15px; /* 검색 결과 강의명, 버튼 */
+  --text-headline--line-height: 1.2;
+  --text-body: 14px; /* 강의 상세 항목, 입력칸, 전환 버튼 */
+  --text-body--line-height: 1.4;
+  --text-caption1: 13px; /* 교수 / 학점, 좌측 바 라벨 */
+  --text-caption1--line-height: 1.4;
+  --text-caption1--letter-spacing: -0.02em;
+  --text-caption2: 12px; /* 칩, 강의계획서 링크 */
+  --text-caption2--line-height: 1;
 }
 
 @layer base {

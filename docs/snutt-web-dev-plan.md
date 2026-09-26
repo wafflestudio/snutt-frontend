@@ -120,6 +120,7 @@ dev 서버 OpenAPI 명세(`https://snutt-api-dev.wafflestudio.com/v3/api-docs`)�
 ### 기술 리스크
 
 - **React 19 hoisting**: ✅ 0-1 에서 확인. snutt-web 만 React 19 가 nested 로 설치되고 나머지 앱은 React 18 그대로다. 대신 Yarn 1 이 peer 의존성을 설치하지 않아 vitest 가 루트의 vite 5 를 잡는 문제가 있어 `vite` 를 직접 명시했다.
+- **React 19 패키지 설치 위치**: Yarn 1 은 다른 앱에 없는 패키지를 루트로 올려 설치해서 루트의 React 18 을 잡는다. React 에 의존하는 새 패키지(Base UI, Testing Library)는 루트 `package.json` 의 `workspaces.nohoist` 로 snutt-web 안에 설치한다. (2-2 에서 확인)
 - **TypeScript 7 미사용**: TS 7 은 기존 컴파일러 API 를 제공하지 않아 typescript-eslint, Next 빌드 타입 검사와 호환되지 않는다. 6.0 을 쓴다.
 - **이미지 내보내기**: html2canvas 는 Tailwind v4 기본 색상 포맷인 `oklch()`를 파싱하지 못한다. `html-to-image` 또는 `modern-screenshot` 사용.
 - **localStorage 토큰**: 서버에서 인증 상태를 알 수 없으므로 사실상 전부 클라이언트 렌더링이다. SSR 을 억지로 쓰지 않고 라우트 단위 `'use client'`. 배포가 정적 호스팅이면 `output: 'export'` 검토.
@@ -238,7 +239,8 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | | 1-2 | `api/client.ts`(토큰, 에러 변환), mappers, queryOptions, QueryClient provider, MSW 테스트 환경 | 테스트 페이지에서 `GET /v2/timetables` 성공 |  |
 | | 1-3 | ev-api 클라이언트: 강의평 조회·통계·작성·좋아요 엔드포인트 (friends 는 core v2 에 있으면 `@sf/snutt-api` 에 추가) | 8-4, 8-5 에 필요한 엔드포인트 확인 |  |
 | **2. 디자인 시스템** | 2-1 | 색 토큰 (Figma Variables → `yarn generate:tokens` → Tailwind 테마), **라이트 / 다크 테마** 전환 기반, Pretendard. 토큰 확인 페이지 `/tokens` (개발 전용) | 테마 전환 시 전체 색이 토큰으로 바뀜 | ✅ #246 |
-| | 2-2 | 글자 크기 단계(디자이너 문의 A 답을 받은 뒤), 기본 UI: Button, Input, Select, Dialog(확인/취소), Tabs, SegmentedControl, Dropdown, ColorSelect(`색상1~9`), Chip, Toast | |  |
+| | 2-2 | 글자 단계(임시), 아이콘(Material Symbols), Button, IconButton, TextField, SearchField, Chip, Tabs(밑줄 / 세그먼트). 개발 전용 `/ui` 페이지 | `/ui` 에서 라이트 / 다크 모두 확인 | 🚧 |
+| | 2-3 | Base UI 기반 오버레이: Dialog(확인 팝업 / 큰 모달), Dropdown(메뉴), Select, ColorSelect(`색상1~9`). Toast 는 Figma 에 디자인이 없어 필요할 때 만든다 | |  |
 | **3. 인증** | 3-1 | 로컬 로그인, 회원가입, AuthGuard, 토큰 관리 | |  |
 | | 3-2 | 소셜 로그인 (Google / Facebook / Kakao) | |  |
 | | 3-3 | 비밀번호 재설정 (이메일 인증) | |  |

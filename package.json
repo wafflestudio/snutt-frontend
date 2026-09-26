@@ -14,8 +14,18 @@
   "dependencies": {
     "turbo": "1.13.3"
   },
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ]
+  "workspaces": {
+    "packages": [
+      "apps/*",
+      "packages/*"
+    ],
+    "nohoist": [
+      "snutt-web/@base-ui/react",
+      "snutt-web/@base-ui/react/**",
+      "snutt-web/@testing-library/react",
+      "snutt-web/@testing-library/react/**",
+      "snutt-web/@testing-library/jest-dom",
+      "snutt-web/@testing-library/jest-dom/**"
+    ]
+  }
 }
