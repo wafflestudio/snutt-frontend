@@ -17,6 +17,7 @@ yarn tsc      # 타입 검사
 yarn lint     # ESLint
 yarn test     # vitest
 yarn generate:tokens  # design-tokens/*.tokens.json → src/app/tokens.css, src/shared/lib/design-tokens.ts
+yarn generate:icons   # scripts/generate-icons.mts 의 목록 → src/shared/ui/icons.tsx
 ```
 
 루트에서 전체 워크스페이스: `npx turbo run tsc lint test`
@@ -112,11 +113,16 @@ export const timetableQueries = {
 - `api/` 와 화면: 인터페이스 mock 대신 MSW 로 네트워크를 mock 한다. mapper 까지 포함해서 검증된다.
 - 테스트는 `tests/` 에 `src/` 와 같은 폴더 구조로 둔다. (`src/domain/time.ts` → `tests/domain/time.test.ts`)
 - 테스트에서 대상은 `@/` 경로로 import 한다.
+- 컴포넌트 테스트는 Testing Library 로 하고, 파일 첫 줄에 `// @vitest-environment jsdom` 을 둔다. 역할과 이름(`getByRole('button', { name: '닫기' })`)으로 찾는다.
 
 ## 컴포넌트 원칙
 
 - **TimetableGrid** 는 메인(편집), 친구(읽기 전용), 비교, 시간 필터(블록 선택), 검색 hover(미리보기), timetable-picker 에서 모두 쓴다. 용도별 분기를 props 로 늘리지 말고 모드(`readonly` / `editable` / `selectable` / `preview` 레이어)로 조합한다.
 - 강의 상세는 모달이 아니라 인라인 패널이다.
+- 공용 컴포넌트는 `shared/ui/` 에 있다. 개발 서버의 `/ui` 페이지에서 모두 볼 수 있다. 새 화면을 만들 때 여기 있는 것을 먼저 쓴다.
+- 컴포넌트의 색 · 크기는 `variant` / `size` prop 으로만 바꾼다. 바깥에서 받는 `className` 은 여백 · 너비 같은 배치에만 쓴다. (`tailwind-merge` 를 쓰지 않는다. 글자 색 `text-normal` 과 글자 크기 `text-body` 를 같은 종류로 보고 하나를 지운다)
+- 포커스 · 키보드 · 바깥 클릭 처리가 필요한 것(탭, 모달, 드롭다운, 셀렉트)은 Base UI(`@base-ui/react`)로 만들고 모양만 토큰 클래스로 입힌다.
+- 아이콘은 `shared/ui/icons.tsx` 의 컴포넌트를 쓴다. 없으면 `scripts/generate-icons.mts` 에 Material Symbols 이름을 추가하고 `yarn generate:icons` 로 만든다. 아이콘만 있는 버튼은 `IconButton` 에 `label` 을 준다.
 - 데스크톱 전용(최소 1200px). 단 `timetable-picker` 는 RN WebView/iframe 에서 열리므로 모바일 폭 대응이 필요하다.
 
 ## 렌더링
@@ -141,6 +147,8 @@ export const timetableQueries = {
 
 - 다크 테마는 `<html data-theme="dark">` 에서 같은 토큰의 값이 바뀌는 방식이다. 컴포넌트에서 `dark:` 로 색을 따로 지정하지 않는다. 테마를 읽고 바꿀 때는 `useTheme` (`shared/lib/use-theme.ts`) 를 쓴다.
 - 글꼴은 Pretendard (한글 dynamic subset, `layout.tsx` 에서 import).
+- 글자 크기는 `globals.css` 의 글자 단계(`text-title1` ~ `text-caption2`)를 쓴다. 지금은 임시 값이다. (`docs/snutt-web-design-questions.md` A)
+- 글자 색 토큰(`Text/*`)은 `text-*` 에만 쓸 수 있다. 테두리를 글자색과 맞추려면 `border-current` 를 쓴다.
 - 클래스 순서는 `prettier-plugin-tailwindcss` 가 정렬한다.
 - 이미지 내보내기에 html2canvas 를 쓰지 않는다. Tailwind v4 기본 색상 포맷인 `oklch()` 를 지원하지 않는다. `html-to-image` 계열을 쓴다.
 
@@ -158,6 +166,7 @@ export const timetableQueries = {
 - **`vite` devDependency 를 지우지 않는다.** Yarn 1 은 peer 의존성을 설치하지 않아서, 없으면 vitest 가 루트에 hoist 된 snutt-webclient 용 vite 5 를 잡고 실패한다.
 - `@sf/snutt-api` 는 빌드 없이 TS 소스를 export 하므로 `next.config.ts` 의 `transpilePackages` 에서 빼지 않는다.
 - 이 앱만 React 19 이고 나머지 앱은 React 18 이다. 루트에 React 관련 의존성을 추가하지 않는다.
+- **React 에 의존하는 새 패키지는 루트 `package.json` 의 `workspaces.nohoist` 에 추가한다.** Yarn 1 은 다른 앱에 없는 패키지를 루트로 올려 설치하는데, 그러면 루트의 React 18 을 잡는다. (`snutt-web/<패키지>`, `snutt-web/<패키지>/**` 두 줄을 넣고 `yarn install --check-files`) 설치 후 그 패키지가 snutt-web 의 React 19 를 잡는지 확인한다.
 
 ## 커밋 / PR
 
