@@ -3,6 +3,7 @@
 > 기준 문서: [기획 스펙](./snutt-web-planning.md), [디자인 스펙](./snutt-web-design.md)
 > 작성일: 2026-09-23
 > 디자인 반영: 2026-09-26, Figma "웹 업데이트" 페이지의 **완료** 영역 기준. 디자인 스펙과 다른 부분은 [디자인 변경](#디자인-변경-figma-완료-영역) 을 따른다.
+> 디자이너 문의 사항: [snutt-web-design-questions.md](./snutt-web-design-questions.md)
 
 ---
 
