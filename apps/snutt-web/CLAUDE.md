@@ -103,7 +103,7 @@ export const timetableQueries = {
 - 서버 상태: TanStack Query (`api/` 의 queryOptions).
 - UI 상태: `useState` / `useReducer`.
 - 전역 상태: Zustand. 패널↔그리드 hover 미리보기처럼 멀리 떨어진 컴포넌트가 공유하는 휘발성 상태에만 쓴다.
-- 메인 페이지 레이아웃(패널/상세/직접 추가/비교)은 하나의 discriminated union(`MainView`)으로 관리하고 URL search params 와 동기화한다. 불리언 플래그를 여러 개 두지 않는다.
+- 메인 페이지 레이아웃은 하나의 `MainView` 로 관리하고 URL search params 와 동기화한다. 패널(탭/상세/직접 추가, 접힘은 `null`)과 비교는 동시에 열리므로 독립된 두 필드로 두고, 각 필드는 discriminated union 으로 만든다. 불리언 플래그를 여러 개 두지 않는다. (`docs/snutt-web-dev-plan.md` 설계 포인트 2)
 
 ## 테스트
 
@@ -116,7 +116,7 @@ export const timetableQueries = {
 
 - **TimetableGrid** 는 메인(편집), 친구(읽기 전용), 비교, 시간 필터(블록 선택), 검색 hover(미리보기), timetable-picker 에서 모두 쓴다. 용도별 분기를 props 로 늘리지 말고 모드(`readonly` / `editable` / `selectable` / `preview` 레이어)로 조합한다.
 - 강의 상세는 모달이 아니라 인라인 패널이다.
-- 데스크톱 전용(최소 1280px). 단 `timetable-picker` 는 RN WebView/iframe 에서 열리므로 모바일 폭 대응이 필요하다.
+- 데스크톱 전용(최소 1200px). 단 `timetable-picker` 는 RN WebView/iframe 에서 열리므로 모바일 폭 대응이 필요하다.
 
 ## 렌더링
 
