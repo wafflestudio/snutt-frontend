@@ -16,6 +16,7 @@ yarn build    # 프로덕션 빌드 (타입 검사 포함)
 yarn tsc      # 타입 검사
 yarn lint     # ESLint
 yarn test     # vitest
+yarn generate:tokens  # design-tokens/*.tokens.json → src/app/tokens.css, src/shared/lib/design-tokens.ts
 ```
 
 루트에서 전체 워크스페이스: `npx turbo run tsc lint test`
@@ -125,7 +126,21 @@ export const timetableQueries = {
 
 ## 스타일
 
-- Tailwind v4. 디자인 토큰은 `src/app/globals.css` 의 `@theme` 에 정의하고 임의 값(`bg-[#00b8b0]`)을 쓰지 않는다.
+- Tailwind v4. 색은 **디자인 토큰만** 쓴다. 임의 값(`bg-[#00b8b0]`)을 쓰지 않고, Tailwind 기본 색(`red-500` 등)은 꺼 두었다.
+- 토큰은 Figma Variables(`Semantic` 컬렉션)를 내보낸 `design-tokens/*.tokens.json` 에서 `yarn generate:tokens` 로 만든다. 생성된 `src/app/tokens.css`, `src/shared/lib/design-tokens.ts` 는 직접 고치지 않는다. Figma 에서 색이 바뀌면 Variables 를 다시 내보내 JSON 을 바꾸고 생성한다.
+- 토큰 클래스 (전체 매핑은 `scripts/generate-tokens.mts`, 목록은 개발 서버의 `/tokens` 페이지):
+
+  | Figma        | 클래스 예                                           |
+  | ------------ | --------------------------------------------------- |
+  | Text/*       | `text-normal`, `text-plain`, `placeholder:text-med` |
+  | Background/* | `bg-normal`, `bg-light`, `bg-light-field`           |
+  | Line/*       | `border-line-divider`, `bg-line-light`              |
+  | Icon/*       | `text-icon-normal`, `fill-icon-on-item`             |
+  | SNUTT/*      | `bg-snutt-mint`, `text-snutt-dark-mint1`            |
+  | special/*    | `text-warning`                                      |
+
+- 다크 테마는 `<html data-theme="dark">` 에서 같은 토큰의 값이 바뀌는 방식이다. 컴포넌트에서 `dark:` 로 색을 따로 지정하지 않는다. 테마를 읽고 바꿀 때는 `useTheme` (`shared/lib/use-theme.ts`) 를 쓴다.
+- 글꼴은 Pretendard (한글 dynamic subset, `layout.tsx` 에서 import).
 - 클래스 순서는 `prettier-plugin-tailwindcss` 가 정렬한다.
 - 이미지 내보내기에 html2canvas 를 쓰지 않는다. Tailwind v4 기본 색상 포맷인 `oklch()` 를 지원하지 않는다. `html-to-image` 계열을 쓴다.
 

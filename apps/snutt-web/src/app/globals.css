@@ -1,1 +1,23 @@
 @import 'tailwindcss';
+@import './tokens.css';
+
+/* 다크 테마는 OS 설정이 아니라 <html data-theme> 로 정한다. (shared/lib/theme.ts) */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+@theme {
+  --font-sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  [data-theme='dark'] {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-normal font-sans text-normal;
+  }
+}

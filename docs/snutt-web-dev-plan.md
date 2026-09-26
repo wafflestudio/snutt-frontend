@@ -237,8 +237,8 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | **1. 기반** | 1-1 | `domain/` 작성 (webclient entities 참고, v2 기준 정리) + 단위 테스트 | | ✅ #243 |
 | | 1-2 | `api/client.ts`(토큰, 에러 변환), mappers, queryOptions, QueryClient provider, MSW 테스트 환경 | 테스트 페이지에서 `GET /v2/timetables` 성공 |  |
 | | 1-3 | ev-api 클라이언트: 강의평 조회·통계·작성·좋아요 엔드포인트 (friends 는 core v2 에 있으면 `@sf/snutt-api` 에 추가) | 8-4, 8-5 에 필요한 엔드포인트 확인 |  |
-| **2. 디자인 시스템** | 2-1 | 토큰 (primary teal, 텍스트, 강의 색상), 폰트, **라이트 / 다크 테마** | 테마 전환 시 전체 색이 토큰으로 바뀜 |  |
-| | 2-2 | 기본 UI: Button, Input, Select, Dialog(확인/취소), Tabs, SegmentedControl, Dropdown, ColorSelect(`색상1~9`), Chip, Toast | |  |
+| **2. 디자인 시스템** | 2-1 | 색 토큰 (Figma Variables → `yarn generate:tokens` → Tailwind 테마), **라이트 / 다크 테마** 전환 기반, Pretendard. 토큰 확인 페이지 `/tokens` (개발 전용) | 테마 전환 시 전체 색이 토큰으로 바뀜 | 🚧 |
+| | 2-2 | 글자 크기 단계(디자이너 문의 4-5 답을 받은 뒤), 기본 UI: Button, Input, Select, Dialog(확인/취소), Tabs, SegmentedControl, Dropdown, ColorSelect(`색상1~9`), Chip, Toast | |  |
 | **3. 인증** | 3-1 | 로컬 로그인, 회원가입, AuthGuard, 토큰 관리 | |  |
 | | 3-2 | 소셜 로그인 (Google / Facebook / Kakao) | |  |
 | | 3-3 | 비밀번호 재설정 (이메일 인증) | |  |
