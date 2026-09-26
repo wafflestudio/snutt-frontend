@@ -1,0 +1,76 @@
+/* 자동 생성 파일. 직접 수정하지 않는다. (yarn generate:tokens) */
+/* 출처: design-tokens/light.tokens.json, dark.tokens.json (Figma Variables > Semantic) */
+
+@theme static {
+  /* Tailwind 기본 색은 쓰지 않는다. 색은 아래 토큰만 쓴다. */
+  --color-*: initial;
+  --color-snutt-red: #e54459;
+  --color-snutt-orange: #f58d3d;
+  --color-snutt-yellow: #fac42d;
+  --color-snutt-lime: #a6d930;
+  --color-snutt-green: #2bc267;
+  --color-snutt-mint: #1bd0c8;
+  --color-snutt-blue: #1d99e8;
+  --color-snutt-purple: #af56b3;
+  --color-snutt-navy: #4f48c4;
+  --color-snutt-dark-mint2: #1ca6a0;
+  --color-snutt-dark-mint1: #00b8b0;
+  --color-snutt-milk-mint: #b2f6f3;
+  --text-color-normal: #000000;
+  --text-color-plain: #505050;
+  --text-color-assistive: #c4c4c4;
+  --text-color-on-bg: #ffffff;
+  --text-color-alternative: #8a898e;
+  --text-color-med: #a6a6a6;
+  --color-icon-normal: #000000;
+  --color-icon-on-item: #ffffff;
+  --background-color-normal: #ffffff;
+  --background-color-deem: rgb(0 0 0 / 20%);
+  --background-color-light: #f7f7f7;
+  --background-color-light-field: #f2f2f2;
+  --color-line-divider: #c4c4c4;
+  --color-line-cell-border: rgb(0 0 0 / 10%);
+  --color-line-light: #ebebed;
+  --color-line-lightest: #f5f5f5;
+  --color-line-border: #e4e4e5;
+  --color-line-disabled: #dcdcde;
+  --color-line-light-field: #f2f2f2;
+  --color-line-divider-strong: #a6a6a6;
+  --color-warning: #ed6c58;
+}
+
+[data-theme='dark'] {
+  --color-snutt-red: #d95f71;
+  --color-snutt-orange: #df6e3c;
+  --color-snutt-yellow: #ecb721;
+  --color-snutt-lime: #95b03e;
+  --color-snutt-green: #95b03e;
+  --color-snutt-mint: #58c1b7;
+  --color-snutt-blue: #5ba0d7;
+  --color-snutt-purple: #af56b3;
+  --color-snutt-navy: #4f48c4;
+  --color-snutt-dark-mint2: #1ca6a0;
+  --color-snutt-dark-mint1: #00b8b0;
+  --color-snutt-milk-mint: #b2f6f3;
+  --text-color-normal: #ffffff;
+  --text-color-plain: #ffffff;
+  --text-color-assistive: #777777;
+  --text-color-on-bg: #ffffff;
+  --text-color-alternative: #b3b3b3;
+  --text-color-med: #8a898e;
+  --color-icon-normal: #ffffff;
+  --color-icon-on-item: #000000;
+  --background-color-normal: #222222;
+  --background-color-deem: rgb(0 0 0 / 20%);
+  --background-color-light: #2b2b2b;
+  --background-color-light-field: #3c3c3c;
+  --color-line-divider: #505050;
+  --color-line-cell-border: rgb(0 0 0 / 10%);
+  --color-line-light: #3c3c3c;
+  --color-line-lightest: rgb(60 60 60 / 60%);
+  --color-line-border: #3c3c3c;
+  --color-line-disabled: #3c3c3c;
+  --color-line-light-field: #333333;
+  --color-line-divider-strong: #777777;
+  --color-warning: #ed6c58;
+}
