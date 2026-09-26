@@ -239,7 +239,7 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | | 1-2 | `api/client.ts`(토큰, 에러 변환), mappers, queryOptions, QueryClient provider, MSW 테스트 환경 | 테스트 페이지에서 `GET /v2/timetables` 성공 |  |
 | | 1-3 | ev-api 클라이언트: 강의평 조회·통계·작성·좋아요 엔드포인트 (friends 는 core v2 에 있으면 `@sf/snutt-api` 에 추가) | 8-4, 8-5 에 필요한 엔드포인트 확인 |  |
 | **2. 디자인 시스템** | 2-1 | 색 토큰 (Figma Variables → `yarn generate:tokens` → Tailwind 테마), **라이트 / 다크 테마** 전환 기반, Pretendard. 토큰 확인 페이지 `/tokens` (개발 전용) | 테마 전환 시 전체 색이 토큰으로 바뀜 | ✅ #246 |
-| | 2-2 | 글자 단계(임시), 아이콘(Material Symbols), Button, IconButton, TextField, SearchField, Chip, Tabs(밑줄 / 세그먼트). 개발 전용 `/ui` 페이지 | `/ui` 에서 라이트 / 다크 모두 확인 | 🚧 |
+| | 2-2 | 글자 단계(임시), 아이콘(Material Symbols), Button, IconButton, TextField, SearchField, Chip, Tabs(밑줄 / 세그먼트). 개발 전용 `/ui` 페이지 | `/ui` 에서 라이트 / 다크 모두 확인 | ✅ #247 |
 | | 2-3 | Base UI 기반 오버레이: Dialog(확인 팝업 / 큰 모달), Dropdown(메뉴), Select, ColorSelect(`색상1~9`). Toast 는 Figma 에 디자인이 없어 필요할 때 만든다 | |  |
 | **3. 인증** | 3-1 | 로컬 로그인, 회원가입, AuthGuard, 토큰 관리 | |  |
 | | 3-2 | 소셜 로그인 (Google / Facebook / Kakao) | |  |
