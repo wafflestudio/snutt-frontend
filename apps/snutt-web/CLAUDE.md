@@ -164,3 +164,13 @@ export const timetableQueries = {
 - 커밋 메시지는 한국어, `[snutt-web]` 접두사. 패키지 수정은 `[snutt-api]`.
 - PR 은 `docs/snutt-web-dev-plan.md` 의 개발 단위 하나를 기준으로 나눈다.
 - PR 을 올릴 때 개발 플랜의 "개발 단위" 표에서 해당 단위의 상태를 `✅ #PR번호` 로 갱신해 같은 PR 에 포함한다. 작업 중 알게 된 사실(API 차이, 결정 사항, 미결 사항 해소)도 플랜 문서에 반영한다.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
