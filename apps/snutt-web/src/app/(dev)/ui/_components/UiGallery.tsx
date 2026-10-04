@@ -10,26 +10,35 @@ import { SearchField } from '@/shared/ui/SearchField';
 import { Tab, TabList, TabPanel, Tabs } from '@/shared/ui/Tabs';
 import { TextField } from '@/shared/ui/TextField';
 
-const TEXT_SCALE = [
-  ['text-title1', 'text-title1 font-bold', '22px · 학기 제목'],
-  ['text-title2', 'text-title2 font-bold', '20px · 강의 상세 제목'],
-  ['text-title3', 'text-title3 font-bold', '17px · 패널 탭'],
-  ['text-headline', 'text-headline font-bold', '15px · 검색 결과 강의명, 버튼'],
-  ['text-body', 'text-body', '14px · 강의 상세 항목, 입력칸'],
-  ['text-caption1', 'text-caption1', '13px · 교수 / 학점'],
-  ['text-caption2', 'text-caption2 font-medium', '12px · 칩, 강의계획서 링크'],
+const TEXT_STYLES = [
+  ['text-22-bold', '학기 제목'],
+  ['text-17-bold', '선택된 패널 탭'],
+  ['text-17-semibold', '패널 탭'],
+  ['text-15-bold', '검색 결과 강의명'],
+  ['text-15-medium', '버튼 (임시)'],
+  ['text-14-semibold', '좌측 바 라벨, 강의 상세 / 강의평 전환'],
+  ['text-14-medium', ''],
+  ['text-14-regular', '검색창, 입력칸'],
+  ['text-13-medium', '강의계획서 링크'],
+  ['text-13-regular', '교수 / 학점, 학과, 시간, 장소'],
+  ['text-12-medium', '필터 칩'],
 ] as const;
 
 const INITIAL_CHIPS: { label: string; color: ChipColor }[] = [
-  { label: '3학점', color: 'mint' },
-  { label: '교양', color: 'red' },
-  { label: '1학년', color: 'purple' },
+  { label: '전공', color: 'orange' },
+  { label: '4학년', color: 'red' },
+  { label: '3학점', color: 'lime' },
+  { label: '컴퓨터공학부', color: 'mint' },
+  { label: '교양', color: 'blue' },
+  { label: '월요일', color: 'navy' },
+  { label: '영어진행', color: 'purple' },
+  { label: '평점 높은 순', color: 'gray' },
 ];
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="flex flex-col gap-4">
-      <h2 className="text-title3 font-bold">{title}</h2>
+      <h2 className="text-17-bold">{title}</h2>
       {children}
     </section>
   );
@@ -49,13 +58,13 @@ export function UiGallery() {
     <main className="mx-auto flex max-w-5xl flex-col gap-10 p-10">
       <DevHeader title="기본 컴포넌트" />
 
-      <Section title="글자 단계 (임시)">
+      <Section title="글자 스타일">
         <div className="flex flex-col gap-2">
-          {TEXT_SCALE.map(([name, className, description]) => (
-            <div key={name} className="flex items-baseline gap-4">
-              <code className="w-28 shrink-0 text-caption1 text-alternative">{name}</code>
+          {TEXT_STYLES.map(([className, description]) => (
+            <div key={className} className="flex items-baseline gap-4">
+              <code className="w-36 shrink-0 text-13-regular text-alternative">{className}</code>
               <span className={className}>서울대학교 시간표 SNUTT</span>
-              <span className="text-caption1 text-assistive">{description}</span>
+              <span className="text-13-regular text-assistive">{description}</span>
             </div>
           ))}
         </div>
@@ -107,7 +116,7 @@ export function UiGallery() {
           className="max-w-sm"
           trailing={<IconButton label="검색 필터" icon={<Icons.IconFilter />} />}
         />
-        <div className="grid max-w-sm grid-cols-[4rem_1fr] items-center gap-x-4 gap-y-3 text-body">
+        <div className="grid max-w-sm grid-cols-[4rem_1fr] items-center gap-x-4 gap-y-3 text-14-regular">
           <label htmlFor="ui-title" className="text-alternative">
             강의명
           </label>
@@ -144,13 +153,13 @@ export function UiGallery() {
             <Tab value="lectures">강의 목록</Tab>
             <Tab value="bookmark">관심강좌</Tab>
           </TabList>
-          <TabPanel value="search" className="py-3 text-body text-plain">
+          <TabPanel value="search" className="py-3 text-14-regular text-plain">
             검색 패널
           </TabPanel>
-          <TabPanel value="lectures" className="py-3 text-body text-plain">
+          <TabPanel value="lectures" className="py-3 text-14-regular text-plain">
             강의 목록 패널
           </TabPanel>
-          <TabPanel value="bookmark" className="py-3 text-body text-plain">
+          <TabPanel value="bookmark" className="py-3 text-14-regular text-plain">
             관심강좌 패널
           </TabPanel>
         </Tabs>
@@ -167,7 +176,7 @@ export function UiGallery() {
           {Object.entries(Icons).map(([name, Icon]) => (
             <li key={name} className="flex flex-col items-center gap-1 text-plain">
               <Icon className="size-6" />
-              <code className="text-caption2 text-alternative">{name.replace('Icon', '')}</code>
+              <code className="text-12-medium text-alternative">{name.replace('Icon', '')}</code>
             </li>
           ))}
         </ul>

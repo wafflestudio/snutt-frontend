@@ -8,27 +8,56 @@
   --font-sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 
   /*
-   * 글자 단계. 임시 값이다. Figma 에 텍스트 스타일이 없어 완료 영역에서 쓰인 값을 묶었다.
-   * 디자이너 문의 A 의 답을 받으면 바꾼다. (docs/snutt-web-design-questions.md)
-   * 이름이 글자 색 토큰(text-normal, text-plain …)과 겹치지 않게 한다.
+   * 글자 스타일. Figma 텍스트 스타일(`14/SemiBold` 등)을 같은 이름으로 옮겼다. `text-14-semibold` 하나로
+   * 크기 · 굵기 · 줄 높이 · 자간이 정해지므로 font-bold 같은 굵기 클래스를 따로 붙이지 않는다.
+   * Figma 의 줄 높이 Auto 는 Pretendard 기본 줄 높이인 1.2 로 옮겼다.
    */
-  --text-title1: 22px; /* 학기 제목 */
-  --text-title1--line-height: 1.5;
-  --text-title1--letter-spacing: -0.01em;
-  --text-title2: 20px; /* 강의 상세 · 직접 추가 제목 */
-  --text-title2--line-height: 1.4;
-  --text-title3: 17px; /* 패널 탭 */
-  --text-title3--line-height: 1.5;
-  --text-title3--letter-spacing: -0.01em;
-  --text-headline: 15px; /* 검색 결과 강의명, 버튼 */
-  --text-headline--line-height: 1.2;
-  --text-body: 14px; /* 강의 상세 항목, 입력칸, 전환 버튼 */
-  --text-body--line-height: 1.4;
-  --text-caption1: 13px; /* 교수 / 학점, 좌측 바 라벨 */
-  --text-caption1--line-height: 1.4;
-  --text-caption1--letter-spacing: -0.02em;
-  --text-caption2: 12px; /* 칩, 강의계획서 링크 */
-  --text-caption2--line-height: 1;
+  --text-22-bold: 22px; /* 학기 제목 */
+  --text-22-bold--font-weight: 700;
+  --text-22-bold--line-height: 1.5;
+  --text-22-bold--letter-spacing: -0.01em;
+  --text-17-bold: 17px; /* 선택된 패널 탭 */
+  --text-17-bold--font-weight: 700;
+  --text-17-bold--line-height: 1.5;
+  --text-17-bold--letter-spacing: -0.02em;
+  --text-17-semibold: 17px; /* 패널 탭 */
+  --text-17-semibold--font-weight: 600;
+  --text-17-semibold--line-height: 1.5;
+  --text-17-semibold--letter-spacing: -0.01em;
+  --text-15-bold: 15px; /* 검색 결과 강의명 */
+  --text-15-bold--font-weight: 700;
+  --text-15-bold--line-height: 1.2;
+  --text-15-bold--letter-spacing: -0.02em;
+  --text-14-semibold: 14px; /* 좌측 바 라벨, 강의 상세 / 강의평 전환 */
+  --text-14-semibold--font-weight: 600;
+  --text-14-semibold--line-height: 1.5;
+  --text-14-semibold--letter-spacing: -0.04em;
+  --text-14-medium: 14px; /* 자간은 아직 확인하지 못했다 */
+  --text-14-medium--font-weight: 500;
+  --text-14-medium--line-height: 1.4;
+  --text-14-regular: 14px; /* 검색창, 입력칸 */
+  --text-14-regular--font-weight: 400;
+  --text-14-regular--line-height: 1.2;
+  --text-14-regular--letter-spacing: -0.02em;
+  --text-13-medium: 13px; /* 강의계획서 링크 */
+  --text-13-medium--font-weight: 500;
+  --text-13-medium--line-height: 1.2;
+  --text-13-medium--letter-spacing: -0.03em;
+  --text-13-regular: 13px; /* 교수 / 학점, 학과, 시간, 장소 */
+  --text-13-regular--font-weight: 400;
+  --text-13-regular--line-height: 1.2;
+  --text-13-regular--letter-spacing: -0.04em;
+  --text-12-medium: 12px; /* 필터 칩 */
+  --text-12-medium--font-weight: 500;
+  --text-12-medium--line-height: 1.2;
+
+  /*
+   * 아래는 Figma 에 아직 텍스트 스타일이 없는 화면(팝업, 직접 추가)에서 잰 값이다. 임시로 같은 방식의 이름을 붙였다.
+   * (docs/snutt-web-design-questions.md A)
+   */
+  --text-15-medium: 15px; /* 버튼 */
+  --text-15-medium--font-weight: 500;
+  --text-15-medium--line-height: 1.2;
 }
 
 @layer base {

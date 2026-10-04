@@ -120,7 +120,7 @@ export const timetableQueries = {
 - **TimetableGrid** 는 메인(편집), 친구(읽기 전용), 비교, 시간 필터(블록 선택), 검색 hover(미리보기), timetable-picker 에서 모두 쓴다. 용도별 분기를 props 로 늘리지 말고 모드(`readonly` / `editable` / `selectable` / `preview` 레이어)로 조합한다.
 - 강의 상세는 모달이 아니라 인라인 패널이다.
 - 공용 컴포넌트는 `shared/ui/` 에 있다. 개발 서버의 `/ui` 페이지에서 모두 볼 수 있다. 새 화면을 만들 때 여기 있는 것을 먼저 쓴다.
-- 컴포넌트의 색 · 크기는 `variant` / `size` prop 으로만 바꾼다. 바깥에서 받는 `className` 은 여백 · 너비 같은 배치에만 쓴다. (`tailwind-merge` 를 쓰지 않는다. 글자 색 `text-normal` 과 글자 크기 `text-body` 를 같은 종류로 보고 하나를 지운다)
+- 컴포넌트의 색 · 크기는 `variant` / `size` prop 으로만 바꾼다. 바깥에서 받는 `className` 은 여백 · 너비 같은 배치에만 쓴다. (`tailwind-merge` 를 쓰지 않는다. 글자 색 `text-normal` 과 글자 스타일 `text-14-regular` 를 같은 종류로 보고 하나를 지운다)
 - 포커스 · 키보드 · 바깥 클릭 처리가 필요한 것(탭, 모달, 드롭다운, 셀렉트)은 Base UI(`@base-ui/react`)로 만들고 모양만 토큰 클래스로 입힌다.
 - 아이콘은 `shared/ui/icons.tsx` 의 컴포넌트를 쓴다. 없으면 `scripts/generate-icons.mts` 에 Material Symbols 이름을 추가하고 `yarn generate:icons` 로 만든다. 아이콘만 있는 버튼은 `IconButton` 에 `label` 을 준다.
 - 데스크톱 전용(최소 1200px). 단 `timetable-picker` 는 RN WebView/iframe 에서 열리므로 모바일 폭 대응이 필요하다.
@@ -147,7 +147,7 @@ export const timetableQueries = {
 
 - 다크 테마는 `<html data-theme="dark">` 에서 같은 토큰의 값이 바뀌는 방식이다. 컴포넌트에서 `dark:` 로 색을 따로 지정하지 않는다. 테마를 읽고 바꿀 때는 `useTheme` (`shared/lib/use-theme.ts`) 를 쓴다.
 - 글꼴은 Pretendard (한글 dynamic subset, `layout.tsx` 에서 import).
-- 글자 크기는 `globals.css` 의 글자 단계(`text-title1` ~ `text-caption2`)를 쓴다. 지금은 임시 값이다. (`docs/snutt-web-design-questions.md` A)
+- 글자는 `globals.css` 의 글자 스타일을 쓴다. Figma 텍스트 스타일 `14/SemiBold` 는 `text-14-semibold` 이고, 이것 하나로 크기 · 굵기 · 줄 높이 · 자간이 정해진다. `font-bold` 같은 굵기 클래스를 따로 붙이지 않는다. Figma 에 없는 스타일이 필요하면 같은 방식의 이름으로 `globals.css` 에 추가하고 임시라고 적는다.
 - 글자 색 토큰(`Text/*`)은 `text-*` 에만 쓸 수 있다. 테두리를 글자색과 맞추려면 `border-current` 를 쓴다.
 - 클래스 순서는 `prettier-plugin-tailwindcss` 가 정렬한다.
 - 이미지 내보내기에 html2canvas 를 쓰지 않는다. Tailwind v4 기본 색상 포맷인 `oklch()` 를 지원하지 않는다. `html-to-image` 계열을 쓴다.

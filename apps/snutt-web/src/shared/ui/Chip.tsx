@@ -1,15 +1,16 @@
 import { clsx } from 'clsx';
 import { IconClose } from '@/shared/ui/icons';
 
-export type ChipColor = 'red' | 'orange' | 'yellow' | 'lime' | 'green' | 'mint' | 'blue' | 'navy' | 'purple';
+/** Figma `검색 필터칩` 의 8가지. 필터 종류마다 어떤 색을 쓰는지는 디자이너에게 확인 중이다. (docs/snutt-web-design-questions.md) */
+export type ChipColor = 'gray' | 'red' | 'orange' | 'lime' | 'mint' | 'blue' | 'navy' | 'purple';
 
 // Tailwind 가 클래스를 찾을 수 있게 전체 이름으로 적는다
 const COLOR_CLASSES: Record<ChipColor, string> = {
+  // Figma 가 회색 칩 배경에 글자 색 토큰 Text/Assistive 를 쓴다. 글자 색 토큰은 bg-* 로 쓸 수 없어 변수를 직접 쓴다
+  gray: 'bg-(--text-color-assistive)',
   red: 'bg-snutt-red',
   orange: 'bg-snutt-orange',
-  yellow: 'bg-snutt-yellow',
   lime: 'bg-snutt-lime',
-  green: 'bg-snutt-green',
   mint: 'bg-snutt-mint',
   blue: 'bg-snutt-blue',
   navy: 'bg-snutt-navy',
@@ -29,7 +30,7 @@ export function Chip({ label, color, onRemove, className }: ChipProps) {
   return (
     <span
       className={clsx(
-        'inline-flex h-6.5 shrink-0 items-center gap-1.5 rounded-full px-3.5 text-caption2 font-medium whitespace-nowrap text-on-bg',
+        'inline-flex h-6.5 shrink-0 items-center gap-1.5 rounded-full px-3.5 text-12-medium whitespace-nowrap text-on-bg',
         COLOR_CLASSES[color],
         className,
       )}

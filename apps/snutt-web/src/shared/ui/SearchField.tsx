@@ -20,7 +20,7 @@ export function SearchField({ trailing, className, ...props }: SearchFieldProps)
       <IconSearch className="size-5 shrink-0" />
       <input
         type="search"
-        className="h-full min-w-0 flex-1 bg-transparent text-body text-normal outline-none placeholder:text-med"
+        className="h-full min-w-0 flex-1 bg-transparent text-14-regular text-normal outline-none placeholder:text-med"
         {...props}
       />
       {trailing}

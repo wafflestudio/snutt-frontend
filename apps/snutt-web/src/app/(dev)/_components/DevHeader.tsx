@@ -20,14 +20,14 @@ export function DevHeader({ title }: { title: string }) {
 
   return (
     <header className="flex items-center justify-between">
-      <h1 className="text-title2 font-bold">{title}</h1>
+      <h1 className="text-22-bold">{title}</h1>
       <div className="flex gap-2">
         {(['light', 'dark'] as const).map((t) => (
           <button
             key={t}
             type="button"
             onClick={() => setTheme(t)}
-            className={`rounded-md border border-line-border px-3 py-1.5 text-body ${theme === t ? 'bg-snutt-dark-mint1 text-on-bg' : 'text-plain'}`}
+            className={`rounded-md border border-line-border px-3 py-1.5 text-14-regular ${theme === t ? 'bg-snutt-dark-mint1 text-on-bg' : 'text-plain'}`}
           >
             {THEME_LABELS[t]}
           </button>
@@ -35,7 +35,7 @@ export function DevHeader({ title }: { title: string }) {
         <button
           type="button"
           onClick={resetTheme}
-          className="rounded-md border border-line-border px-3 py-1.5 text-body text-plain"
+          className="rounded-md border border-line-border px-3 py-1.5 text-14-regular text-plain"
         >
           OS 설정 따르기
         </button>

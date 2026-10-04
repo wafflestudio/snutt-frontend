@@ -12,9 +12,9 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
 
 const SIZE_CLASSES: Record<ButtonSize, string> = {
   // 직접 추가 폼의 추가 / 취소, 팝업의 확인 / 취소
-  md: 'h-9.5 gap-1.5 rounded-md px-4 text-headline font-medium [&>svg]:size-5',
+  md: 'h-9.5 gap-1.5 rounded-md px-4 text-15-medium [&>svg]:size-5',
   // 헤더의 직접 추가 · 시간표 비교
-  sm: 'h-6 gap-1 rounded-xs px-2 text-caption1 [&>svg]:size-4',
+  sm: 'h-6 gap-1 rounded-xs px-2 text-13-regular [&>svg]:size-4',
 };
 
 export type ButtonProps = ComponentProps<'button'> & {

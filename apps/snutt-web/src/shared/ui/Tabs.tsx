@@ -20,9 +20,9 @@ const LIST_CLASSES: Record<TabsVariant, string> = {
 const TAB_CLASSES: Record<TabsVariant, string> = {
   // 선택된 탭 밑줄은 글자색(text-normal)을 따른다. 글자 색 토큰은 border 에 쓸 수 없어서 border-current 를 쓴다
   underline:
-    '-mb-px border-b-2 border-transparent pb-1 text-title3 font-semibold text-med data-active:border-current data-active:font-bold data-active:text-normal',
+    '-mb-px border-b-2 border-transparent pb-1 text-17-semibold text-med data-active:border-current data-active:text-17-bold data-active:text-normal',
   segmented:
-    'rounded-sm px-2.5 py-0.5 text-body font-semibold text-assistive data-active:bg-normal data-active:text-alternative',
+    'rounded-sm px-2.5 py-0.5 text-14-semibold text-assistive data-active:bg-normal data-active:text-alternative',
 };
 
 export type TabsProps<Value extends string> = {

@@ -9,7 +9,7 @@ export function TextField({ className, ...props }: ComponentProps<'input'>) {
   return (
     <input
       className={clsx(
-        'h-9 w-full min-w-0 rounded-md border border-line-light bg-normal px-3 text-body text-plain',
+        'h-9 w-full min-w-0 rounded-md border border-line-light bg-normal px-3 text-14-regular text-plain',
         'outline-none placeholder:text-assistive focus:border-snutt-mint',
         'disabled:cursor-not-allowed disabled:opacity-40',
         className,
