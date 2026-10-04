@@ -330,6 +330,7 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | 친구 기능 서버 | 확인 필요: 별도 friends-api 가 필요한지, core v2 로 충분한지 | core v2 명세에 친구 API 전체가 있음 |
 | v2 ID 크기 | 1-2 에서 확인: 2^53 초과 여부 (v1 로 본 dev ID 는 5자리) | v2 ID 는 `Int64`. domain 은 문자열로 다룸. 초과하면 JSON 파싱 단계에서 정확도가 깨지므로 별도 처리 필요 |
 | 필터 칩 색 | 디자인 확인 필요: 필터 종류마다 칩 색이 정해져 있는지 | Figma 칩은 8가지 색이고 메인 화면은 전공 orange, 4학년 red, 3학점 lime, 컴퓨터공학부 mint, 평점 높은 순 회색. 필터 종류는 10개라 색보다 많다 |
+| 아이콘 교체 | **나중에 바꿔야 함**: 지금 아이콘은 Figma 에서 내보낼 수 없어 Material Symbols 중 비슷한 것으로 대신했다. 디자이너에게 SVG 를 받으면 바꾼다. 특히 Figma 에서 직접 그린 것으로 보이는 좌측 바 아이콘(`Icon/Tab/timetable`: 검색 · 강의평 · 친구 시간표 · 더보기), 검색 아이콘(`Icon/glass`), 필터 아이콘(`ic/condition/normal`), 로고(`SnuttLogo`, 지금은 snutt-webclient 의 벡터) | 바꿀 곳: `scripts/generate-icons.mts`(Material Symbols 이름) 또는 받은 SVG 로 `shared/ui/` 컴포넌트 교체. 디자이너 문의 C |
 | 강의 시간 겹침 | 그리드는 v1 처럼 겹쳐도 칸을 나누지 않는다(기획상 겹치지 않음). 5-1 에서 v2 강의 추가 · 수정의 `forced` 가 겹치는 강의를 지우는지, 겹친 채로 넣는지 백엔드에 확인 | 겹친 채로 넣는다면 가려진 강의를 고를 방법이 필요 |
 | `paletteIndex` 시작 번호 | 1-2 에서 확인: 0부터인지 | domain 은 0부터(팔레트 배열 인덱스)로 가정. v1 `colorIndex` 는 1~9 가 팔레트, 0 이 직접 고른 색이었음. Figma 색상 드롭다운은 `색상1~9` (표시용 번호는 index + 1) |
 | 검색 시간 조건의 끝 시각 | 1-2 에서 확인: 포함인지 제외인지 | domain 은 `[start, end)`. v1 웹클라이언트는 `endMinute` 에 -1 을 해서 보냈음 |

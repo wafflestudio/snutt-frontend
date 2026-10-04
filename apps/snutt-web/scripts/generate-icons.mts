@@ -7,6 +7,10 @@
  * 파일 이름은 https://fonts.google.com/icons 의 아이콘 이름이고, 채운 모양은 `-fill` 을 붙인다.
  *
  * Figma 파일에서 아이콘을 내보낼 수 없어 레이어 이름과 모양으로 골랐다. (docs/snutt-web-design-questions.md C)
+ *
+ * 임시: 디자이너에게 SVG 를 받으면 바꿔야 한다. (docs/snutt-web-dev-plan.md 미결 사항 "아이콘 교체")
+ * 특히 Figma 에서 직접 그린 것으로 보이는 좌측 바 아이콘(IconSearch, IconReviewFill, IconGroupFill, IconMoreHorizontal)과
+ * 필터 아이콘(IconFilter)은 모양이 다를 수 있다.
  */
 import fs from 'node:fs';
 import { createRequire } from 'node:module';

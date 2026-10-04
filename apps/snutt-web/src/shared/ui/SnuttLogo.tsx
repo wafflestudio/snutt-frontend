@@ -1,6 +1,9 @@
 import type { SVGProps } from 'react';
 
-/** SNUTT 로고 (snutt-webclient `ic-logo` 와 같은 모양, 색은 SNUTT 토큰) */
+/**
+ * SNUTT 로고 (snutt-webclient `ic-logo` 와 같은 모양, 색은 SNUTT 토큰)
+ * 임시: Figma 의 로고는 내보낼 수 없어 기존 벡터를 썼다. 받으면 바꾼다. (개발 플랜 미결 사항 "아이콘 교체")
+ */
 export function SnuttLogo(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 27 27" aria-hidden {...props}>
