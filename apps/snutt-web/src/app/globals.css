@@ -52,12 +52,18 @@
   --text-12-medium--line-height: 1.2;
 
   /*
-   * 아래는 Figma 에 아직 텍스트 스타일이 없는 화면(팝업, 직접 추가)에서 잰 값이다. 임시로 같은 방식의 이름을 붙였다.
+   * 아래는 Figma 에 아직 텍스트 스타일이 없는 화면(팝업, 직접 추가, 시간표 블록)에서 잰 값이다. 임시로 같은 방식의 이름을 붙였다.
    * (docs/snutt-web-design-questions.md A)
    */
   --text-15-medium: 15px; /* 버튼 */
   --text-15-medium--font-weight: 500;
   --text-15-medium--line-height: 1.2;
+  --text-12-regular: 12px; /* 시간표 블록 강의명. Figma 는 Noto Sans KR (디자이너 문의 A-2) */
+  --text-12-regular--font-weight: 400;
+  --text-12-regular--line-height: 1.33;
+  --text-12-bold: 12px; /* 시간표 블록 장소 */
+  --text-12-bold--font-weight: 700;
+  --text-12-bold--line-height: 1;
 }
 
 @layer base {

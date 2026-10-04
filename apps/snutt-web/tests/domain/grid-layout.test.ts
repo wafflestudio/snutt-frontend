@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getGridRange, getHourMarks, type GridRange, layoutGridBlocks } from '@/domain/grid-layout';
+import { getGridRange, getHourMarks, type GridRange, layoutGridBlocks, toGridEntries } from '@/domain/grid-layout';
 import type { DayTimeRange } from '@/domain/time';
 
 const t = (day: DayTimeRange['day'], startHour: number, endHour: number): DayTimeRange => ({
@@ -10,8 +10,8 @@ const t = (day: DayTimeRange['day'], startHour: number, endHour: number): DayTim
 });
 
 describe('getGridRange', () => {
-  it('강의가 없으면 기본 범위(월~일, 9~22시)', () => {
-    expect(getGridRange([])).toEqual({ days: [0, 1, 2, 3, 4, 5, 6], startMinute: 540, endMinute: 1320 });
+  it('강의가 없으면 기본 범위(월~금, 9~22시)', () => {
+    expect(getGridRange([])).toEqual({ days: [0, 1, 2, 3, 4], startMinute: 540, endMinute: 1320 });
   });
 
   it('기본 범위 안의 강의는 범위를 바꾸지 않는다', () => {
@@ -34,17 +34,21 @@ describe('getGridRange', () => {
     expect(getGridRange([], { startHour: 8, endHour: 20 })).toMatchObject({ startMinute: 480, endMinute: 1200 });
   });
 
-  describe("days: 'auto'", () => {
+  describe('요일', () => {
     it('평일 강의만 있으면 월~금', () => {
-      expect(getGridRange([t(2, 10, 11)], { days: 'auto' }).days).toEqual([0, 1, 2, 3, 4]);
+      expect(getGridRange([t(2, 10, 11)]).days).toEqual([0, 1, 2, 3, 4]);
     });
 
     it('토요일 강의가 있으면 월~토', () => {
-      expect(getGridRange([t(5, 10, 11)], { days: 'auto' }).days).toEqual([0, 1, 2, 3, 4, 5]);
+      expect(getGridRange([t(5, 10, 11)]).days).toEqual([0, 1, 2, 3, 4, 5]);
     });
 
     it('일요일 강의가 있으면 월~일', () => {
-      expect(getGridRange([t(6, 10, 11)], { days: 'auto' }).days).toEqual([0, 1, 2, 3, 4, 5, 6]);
+      expect(getGridRange([t(6, 10, 11)]).days).toEqual([0, 1, 2, 3, 4, 5, 6]);
+    });
+
+    it("days: 'all' 이면 강의가 없어도 월~일", () => {
+      expect(getGridRange([], { days: 'all' }).days).toEqual([0, 1, 2, 3, 4, 5, 6]);
     });
   });
 });
@@ -55,19 +59,36 @@ describe('getHourMarks', () => {
   });
 });
 
+describe('toGridEntries', () => {
+  it('수업 시간마다 항목 하나를 만든다', () => {
+    const a = { id: 'a', classTimes: [t(0, 10, 11), t(2, 10, 11)] };
+    const b = { id: 'b', classTimes: [t(1, 9, 10)] };
+    expect(toGridEntries([a, b])).toEqual([
+      { item: a, time: t(0, 10, 11) },
+      { item: a, time: t(2, 10, 11) },
+      { item: b, time: t(1, 9, 10) },
+    ]);
+  });
+
+  it('수업 시간이 없는 강의는 항목이 없다', () => {
+    expect(toGridEntries([{ classTimes: [] }])).toEqual([]);
+  });
+});
+
 describe('layoutGridBlocks', () => {
   // 월~금, 9~19시 (10시간 = 600분)
   const range: GridRange = { days: [0, 1, 2, 3, 4], startMinute: 540, endMinute: 1140 };
   const entry = (item: string, time: DayTimeRange) => ({ item, time });
-  const summary = (blocks: ReturnType<typeof layoutGridBlocks<string>>) =>
-    blocks
-      .map(({ item, column, top, height, lane, laneCount }) => ({ item, column, top, height, lane, laneCount }))
-      .sort((a, b) => a.item.localeCompare(b.item));
 
   it('요일은 column, 시간은 전체 높이에 대한 비율로 배치한다', () => {
-    expect(summary(layoutGridBlocks([entry('a', t(2, 10, 12))], range))).toEqual([
-      { item: 'a', column: 2, top: 0.1, height: 0.2, lane: 0, laneCount: 1 },
+    expect(layoutGridBlocks([entry('a', t(2, 10, 12))], range)).toEqual([
+      { item: 'a', time: t(2, 10, 12), column: 2, top: 0.1, height: 0.2 },
     ]);
+  });
+
+  it('정시가 아닌 시각도 그대로 비율로 바꾼다', () => {
+    const [block] = layoutGridBlocks([entry('a', { day: 0, startMinute: 543, endMinute: 603 })], range);
+    expect(block).toMatchObject({ top: 3 / 600, height: 60 / 600 });
   });
 
   it('범위에 없는 요일의 블록은 제외한다', () => {
@@ -84,47 +105,11 @@ describe('layoutGridBlocks', () => {
     expect(layoutGridBlocks([entry('a', t(0, 7, 9))], range)).toEqual([]);
   });
 
-  it('겹치지 않는 블록은 모두 lane 0', () => {
-    const blocks = layoutGridBlocks([entry('a', t(0, 10, 11)), entry('b', t(0, 11, 12))], range);
-    expect(blocks.every((b) => b.lane === 0 && b.laneCount === 1)).toBe(true);
-  });
-
-  it('겹치는 블록은 lane 을 나눈다', () => {
-    expect(summary(layoutGridBlocks([entry('a', t(0, 10, 12)), entry('b', t(0, 11, 13))], range))).toMatchObject([
-      { item: 'a', lane: 0, laneCount: 2 },
-      { item: 'b', lane: 1, laneCount: 2 },
+  it('겹치는 블록도 칸을 나누지 않고 들어온 순서대로 둔다', () => {
+    const blocks = layoutGridBlocks([entry('a', t(0, 10, 12)), entry('b', t(0, 11, 13))], range);
+    expect(blocks.map(({ item, column }) => ({ item, column }))).toEqual([
+      { item: 'a', column: 0 },
+      { item: 'b', column: 0 },
     ]);
-  });
-
-  it('비는 lane 은 재사용한다: a(10-12), b(10-11), c(11-12) → c 는 b 자리', () => {
-    const blocks = summary(
-      layoutGridBlocks([entry('a', t(0, 10, 12)), entry('b', t(0, 10, 11)), entry('c', t(0, 11, 12))], range),
-    );
-    expect(blocks).toMatchObject([
-      { item: 'a', lane: 0, laneCount: 2 },
-      { item: 'b', lane: 1, laneCount: 2 },
-      { item: 'c', lane: 1, laneCount: 2 },
-    ]);
-  });
-
-  it('세 블록이 모두 겹치면 lane 3개', () => {
-    const blocks = layoutGridBlocks(
-      [entry('a', t(0, 10, 13)), entry('b', t(0, 11, 13)), entry('c', t(0, 12, 13))],
-      range,
-    );
-    expect(blocks.map((b) => b.laneCount)).toEqual([3, 3, 3]);
-    expect(new Set(blocks.map((b) => b.lane))).toEqual(new Set([0, 1, 2]));
-  });
-
-  it('겹침 묶음이 끝나면 다음 블록부터 laneCount 를 새로 센다', () => {
-    const blocks = summary(
-      layoutGridBlocks([entry('a', t(0, 10, 12)), entry('b', t(0, 11, 12)), entry('c', t(0, 14, 15))], range),
-    );
-    expect(blocks.find((b) => b.item === 'c')).toMatchObject({ lane: 0, laneCount: 1 });
-  });
-
-  it('다른 요일끼리는 lane 에 영향이 없다', () => {
-    const blocks = layoutGridBlocks([entry('a', t(0, 10, 12)), entry('b', t(1, 10, 12))], range);
-    expect(blocks.every((b) => b.laneCount === 1)).toBe(true);
   });
 });

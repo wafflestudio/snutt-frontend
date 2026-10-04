@@ -8,10 +8,10 @@ type GridRangeOptions = {
   startHour?: number;
   endHour?: number;
   /**
+   * auto (기본): 월~금 + 강의가 있는 가장 늦은 요일까지 (토요일 강의가 있으면 월~토)
    * all: 월~일 전부
-   * auto: 월~금 + 강의가 있는 가장 늦은 요일까지 (토요일 강의가 있으면 월~토)
    */
-  days?: 'all' | 'auto';
+  days?: 'auto' | 'all';
 };
 
 const FRIDAY: Day = 4;
@@ -22,7 +22,7 @@ export const DEFAULT_GRID_END_HOUR = 22;
 /** 기본 범위를 보여주되, 범위를 벗어나는 강의가 있으면 정시 단위로 넓힌다 */
 export const getGridRange = (
   times: readonly DayTimeRange[],
-  { startHour = DEFAULT_GRID_START_HOUR, endHour = DEFAULT_GRID_END_HOUR, days = 'all' }: GridRangeOptions = {},
+  { startHour = DEFAULT_GRID_START_HOUR, endHour = DEFAULT_GRID_END_HOUR, days = 'auto' }: GridRangeOptions = {},
 ): GridRange => {
   const earliest = Math.min(startHour * MINUTES_PER_HOUR, ...times.map((t) => t.startMinute));
   const latest = Math.max(endHour * MINUTES_PER_HOUR, ...times.map((t) => t.endMinute));
@@ -39,75 +39,36 @@ export const getGridRange = (
 export const getHourMarks = ({ startMinute, endMinute }: GridRange) =>
   Array.from({ length: (endMinute - startMinute) / MINUTES_PER_HOUR }, (_, i) => startMinute + i * MINUTES_PER_HOUR);
 
-export type GridEntry<T> = { item: T; time: DayTimeRange };
+/** 그리드에 올릴 항목. time 은 장소가 붙은 ClassTime 처럼 DayTimeRange 를 넓힌 타입이어도 된다. */
+export type GridEntry<T, Time extends DayTimeRange = DayTimeRange> = { item: T; time: Time };
+
+/** 강의 하나가 수업 시간마다 블록 하나가 되도록 편다. (월 · 수 수업이면 블록 2개) */
+export const toGridEntries = <T extends { classTimes: readonly DayTimeRange[] }>(
+  items: readonly T[],
+): GridEntry<T, T['classTimes'][number]>[] => items.flatMap((item) => item.classTimes.map((time) => ({ item, time })));
 
 /**
  * 그리드 위 블록의 위치. top / height 는 그리드 전체 높이에 대한 비율(0~1)이다.
- * 같은 요일에 시간이 겹치는 블록은 lane 을 나눠 나란히 놓는다. (너비 = 1 / laneCount)
+ * 기획상 시간표 안의 강의는 시간이 겹치지 않으므로 칸을 나누지 않는다. 겹치면 뒤 항목이 위에 그려진다. (v1 과 같음)
  */
-export type GridBlock<T> = GridEntry<T> & {
+export type GridBlock<T, Time extends DayTimeRange = DayTimeRange> = GridEntry<T, Time> & {
   column: number;
   top: number;
   height: number;
-  lane: number;
-  laneCount: number;
 };
 
-type ClippedEntry<T> = { entry: GridEntry<T>; start: number; end: number };
-
-export const layoutGridBlocks = <T>(entries: readonly GridEntry<T>[], range: GridRange): GridBlock<T>[] => {
+/** 항목을 요일(column)과 시간(top / height)으로 배치한다. 범위 밖 요일은 빼고, 범위를 벗어난 시간은 잘라낸다. */
+export const layoutGridBlocks = <T, Time extends DayTimeRange>(
+  entries: readonly GridEntry<T, Time>[],
+  range: GridRange,
+): GridBlock<T, Time>[] => {
   const total = range.endMinute - range.startMinute;
 
-  // 1. 범위 밖을 잘라내고 요일(column)별로 나눈다
-  const byColumn = new Map<number, ClippedEntry<T>[]>();
-  for (const entry of entries) {
+  return entries.flatMap((entry) => {
     const column = range.days.indexOf(entry.time.day);
     const start = Math.max(entry.time.startMinute, range.startMinute);
     const end = Math.min(entry.time.endMinute, range.endMinute);
-    if (column === -1 || start >= end) continue;
-    const list = byColumn.get(column) ?? [];
-    list.push({ entry, start, end });
-    byColumn.set(column, list);
-  }
-
-  // 2. 요일마다 겹치는 것끼리 묶고, 3. 묶음 안에서 lane 을 배정한다
-  return [...byColumn].flatMap(([column, clipped]) =>
-    groupOverlapping(clipped).flatMap((cluster) => {
-      const lanes = assignLanes(cluster);
-      const laneCount = Math.max(...lanes) + 1;
-      return cluster.map(({ entry, start, end }, i) => ({
-        ...entry,
-        column,
-        top: (start - range.startMinute) / total,
-        height: (end - start) / total,
-        lane: lanes[i],
-        laneCount,
-      }));
-    }),
-  );
-};
-
-/** 시작 시각 순으로 정렬한 뒤, 앞 블록들과 이어서 겹치는 것끼리 묶는다 */
-const groupOverlapping = <T>(items: readonly ClippedEntry<T>[]) => {
-  const sorted = [...items].sort((a, b) => a.start - b.start || b.end - a.end);
-  const clusters: ClippedEntry<T>[][] = [];
-  let clusterEnd = -Infinity;
-
-  for (const item of sorted) {
-    if (item.start >= clusterEnd) clusters.push([]);
-    clusters[clusters.length - 1].push(item);
-    clusterEnd = Math.max(clusterEnd, item.end);
-  }
-  return clusters;
-};
-
-/** 각 블록을 이미 비어 있는 가장 앞 lane 에 넣는다. 블록별 lane 번호를 돌려준다 */
-const assignLanes = <T>(cluster: readonly ClippedEntry<T>[]) => {
-  const laneEnds: number[] = [];
-  return cluster.map(({ start, end }) => {
-    const free = laneEnds.findIndex((laneEnd) => laneEnd <= start);
-    const lane = free === -1 ? laneEnds.length : free;
-    laneEnds[lane] = end;
-    return lane;
+    if (column === -1 || start >= end) return [];
+    return [{ ...entry, column, top: (start - range.startMinute) / total, height: (end - start) / total }];
   });
 };
