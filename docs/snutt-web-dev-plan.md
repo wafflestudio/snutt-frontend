@@ -52,6 +52,16 @@ Figma 의 완료 영역(`home` 섹션: 메인, 비교, 필터, 강의 상세, �
 **텍스트 스타일**: Figma 에 `크기/굵기` 이름의 텍스트 스타일이 생겼다(메인 화면과 위 컴포넌트에만 적용, 강의 상세 · 강의평 등 다른 화면은 아직 값이 직접 들어가 있다). 코드에서는 `text-14-semibold` 처럼 같은 이름으로 쓴다(#247).
 `22/Bold`, `17/Bold`, `17/SemiBold`, `15/Bold`, `14/SemiBold`, `14/Medium`, `14/Regular`, `13/Medium`, `13/Regular`, `12/Medium` 10개다.
 
+**오버레이** (2-3 에서 확인, 컴포넌트로 묶여 있지 않아 화면에서 쟀다):
+
+| Figma | 내용 | 코드 |
+|---|---|---|
+| `팝업 예시` 의 `alert` | 폭 264, 둥글기 10, 안쪽 여백 위 36 · 나머지 12. 질문(14px, 가운데) 아래 24px 에 취소(`Background/light`) · 확인(`SNUTT/mint`) 버튼 116 × 38. 딤 `#000000 · 20%` | `ConfirmDialog` |
+| `필터` 모달 | 695 × 648, 둥글기 15, 흰 배경, 그림자 `0 0 50px 10px #041E1D · 10%`, 닫기 아이콘 30px | `Dialog` (내용은 5-3) |
+| 강의 상세의 색상 드롭다운 | 폭 159, 둥글기 8, 그림자 `0 0 10px #000 · 10%`. 한 줄 49px(여백 16), 글자 13px, 오른쪽에 글자색 · 배경색 견본 20px 두 칸, 줄 사이 선. 색이 이전 hex(`GRAY2` 등) | `Select`, `ColorSelect`, `Menu` 가 같은 모양 |
+
+학기 드롭다운, 헤더 `···` 메뉴, 직접 추가의 요일 · 시간 선택은 펼친 모양이 없어 색상 드롭다운 모양을 같이 쓴다. (디자인 문의 4-6)
+
 ---
 
 ## 0. 전제 및 리스크
@@ -275,7 +285,7 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | | 1-3 | ev-api 클라이언트: 강의평 조회·통계·작성·좋아요 엔드포인트 (friends 는 core v2 에 있으면 `@sf/snutt-api` 에 추가) | 8-4, 8-5 에 필요한 엔드포인트 확인 |  |
 | **2. 디자인 시스템** | 2-1 | 색 토큰 (Figma Variables → `yarn generate:tokens` → Tailwind 테마), **라이트 / 다크 테마** 전환 기반, Pretendard. 토큰 확인 페이지 `/tokens` (개발 전용) | 테마 전환 시 전체 색이 토큰으로 바뀜 | ✅ #246 |
 | | 2-2 | 글자 스타일(Figma 텍스트 스타일), 아이콘(Material Symbols), Button, IconButton, TextField, SearchField, Chip, Tabs(밑줄 / 세그먼트). 개발 전용 `/ui` 페이지 | `/ui` 에서 라이트 / 다크 모두 확인 | ✅ #247 |
-| | 2-3 | Base UI 기반 오버레이: Dialog(확인 팝업 / 큰 모달), Dropdown(메뉴), Select, ColorSelect(`색상1~9`). Toast 는 Figma 에 디자인이 없어 필요할 때 만든다 | |  |
+| | 2-3 | Base UI 기반 오버레이: ConfirmDialog(확인 팝업), Dialog(큰 모달), Menu(··· 같은 동작 목록), Select, ColorSelect(`색상1~9`). Toast 는 Figma 에 디자인이 없어 필요할 때 만든다 | |  |
 | **3. 인증** | 3-1 | 로컬 로그인, 회원가입, AuthGuard, 토큰 관리 | |  |
 | | 3-2 | 소셜 로그인 (Google / Facebook / Kakao) | |  |
 | | 3-3 | 비밀번호 재설정 (이메일 인증) | |  |
