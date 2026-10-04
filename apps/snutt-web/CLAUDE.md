@@ -105,7 +105,7 @@ export const timetableQueries = {
 - 서버 상태: TanStack Query (`api/` 의 queryOptions).
 - UI 상태: `useState` / `useReducer`.
 - 전역 상태: Zustand. 패널↔그리드 hover 미리보기처럼 멀리 떨어진 컴포넌트가 공유하는 휘발성 상태에만 쓴다.
-- 메인 페이지 레이아웃은 하나의 `MainView` 로 관리하고 URL search params 와 동기화한다. 패널(탭/상세/직접 추가, 접힘은 `null`)과 비교는 동시에 열리므로 독립된 두 필드로 두고, 각 필드는 discriminated union 으로 만든다. 불리언 플래그를 여러 개 두지 않는다. (`docs/snutt-web-dev-plan.md` 설계 포인트 2)
+- 메인 페이지 레이아웃은 하나의 `MainView`(`features/main/main-view.ts`)로 관리하고 URL search params 와 동기화한다. 읽고 바꿀 때는 `useMainView` 를 쓰고, 이 hook 을 쓰는 컴포넌트는 `Suspense` 안에 둔다(프로덕션 빌드에서 필요). 패널(탭/상세/직접 추가, 접힘은 `null`)과 비교는 동시에 열리므로 독립된 두 필드로 두고, 각 필드는 discriminated union 으로 만든다. 불리언 플래그를 여러 개 두지 않는다. (`docs/snutt-web-dev-plan.md` 설계 포인트 2)
 
 ## 테스트
 
