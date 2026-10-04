@@ -117,7 +117,7 @@ export const timetableQueries = {
 
 ## 컴포넌트 원칙
 
-- **TimetableGrid** 는 메인(편집), 친구(읽기 전용), 비교, 시간 필터(블록 선택), 검색 hover(미리보기), timetable-picker 에서 모두 쓴다. 용도별 분기를 props 로 늘리지 말고 모드(`readonly` / `editable` / `selectable` / `preview` 레이어)로 조합한다.
+- **TimetableGrid** 는 메인(편집), 친구(읽기 전용), 비교, 시간 필터(블록 선택), 검색 hover(미리보기), timetable-picker 에서 모두 쓴다. 용도별 분기를 props 로 늘리지 말고 레이어로 조합한다. `TimetableGrid` 는 틀(요일, 시각, 선)만 그리고, 블록은 children 레이어(`LectureLayer` 등)가 `useGridRange` 로 범위를 읽어 그린다. 읽기 전용은 `onLectureClick` 을 넘기지 않는 것으로 정한다.
 - 강의 상세는 모달이 아니라 인라인 패널이다.
 - 공용 컴포넌트는 `shared/ui/` 에 있다. 개발 서버의 `/ui` 페이지에서 모두 볼 수 있다. 새 화면을 만들 때 여기 있는 것을 먼저 쓴다.
 - 컴포넌트의 색 · 크기는 `variant` / `size` prop 으로만 바꾼다. 바깥에서 받는 `className` 은 여백 · 너비 같은 배치에만 쓴다. (`tailwind-merge` 를 쓰지 않는다. 글자 색 `text-normal` 과 글자 스타일 `text-14-regular` 를 같은 종류로 보고 하나를 지운다)
