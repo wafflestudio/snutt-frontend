@@ -154,6 +154,7 @@ export const timetableQueries = {
 
 ## 주의사항
 
+- **Node 22 (22.18 이상)** 을 쓴다. 버전은 루트 `.nvmrc` 로 정하고 CI 도 같은 파일을 쓴다. 22.18 부터 `.mts` 스크립트(`yarn generate:*`)를 TS 설정 없이 실행할 수 있다.
 - **TypeScript 7 로 올리지 않는다.** TS 7 은 기존 컴파일러 API 를 제공하지 않아 typescript-eslint 와 Next 빌드 타입 검사가 동작하지 않는다.
 - **`vite` devDependency 를 지우지 않는다.** Yarn 1 은 peer 의존성을 설치하지 않아서, 없으면 vitest 가 루트에 hoist 된 snutt-webclient 용 vite 5 를 잡고 실패한다.
 - `@sf/snutt-api` 는 빌드 없이 TS 소스를 export 하므로 `next.config.ts` 의 `transpilePackages` 에서 빼지 않는다.

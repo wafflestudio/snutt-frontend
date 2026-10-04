@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
 
       - name: copy yarn.lock
         run: cp ../../yarn.lock ./yarn.lock

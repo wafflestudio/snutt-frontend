@@ -120,6 +120,7 @@ dev 서버 OpenAPI 명세(`https://snutt-api-dev.wafflestudio.com/v3/api-docs`)�
 ### 기술 리스크
 
 - **React 19 hoisting**: ✅ 0-1 에서 확인. snutt-web 만 React 19 가 nested 로 설치되고 나머지 앱은 React 18 그대로다. 대신 Yarn 1 이 peer 의존성을 설치하지 않아 vitest 가 루트의 vite 5 를 잡는 문제가 있어 `vite` 를 직접 명시했다.
+- **Node 버전 고정**: 저장소에 Node 버전이 정해져 있지 않아 CI 는 러너 기본 Node 를 썼다. 루트 `.nvmrc`(22) 와 테스트 워크플로의 `actions/setup-node` 로 고정했다. 배포 워크플로는 러너 기본 Node 그대로다(별도 확인 필요). Node 24 는 전체 앱 확인 후 올린다.
 - **TypeScript 7 미사용**: TS 7 은 기존 컴파일러 API 를 제공하지 않아 typescript-eslint, Next 빌드 타입 검사와 호환되지 않는다. 6.0 을 쓴다.
 - **이미지 내보내기**: html2canvas 는 Tailwind v4 기본 색상 포맷인 `oklch()`를 파싱하지 못한다. `html-to-image` 또는 `modern-screenshot` 사용.
 - **localStorage 토큰**: 서버에서 인증 상태를 알 수 없으므로 사실상 전부 클라이언트 렌더링이다. SSR 을 억지로 쓰지 않고 라우트 단위 `'use client'`. 배포가 정적 호스팅이면 `output: 'export'` 검토.
