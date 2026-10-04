@@ -13,7 +13,7 @@ export type TabsVariant = 'underline' | 'segmented';
 const VariantContext = createContext<TabsVariant>('underline');
 
 const LIST_CLASSES: Record<TabsVariant, string> = {
-  underline: 'flex gap-4 border-b border-line-light',
+  underline: 'flex gap-3.75 border-b border-line-light', // Figma `상단 탭`: 간격 15px
   segmented: 'inline-flex gap-0.75 rounded-md bg-light-field p-0.75',
 };
 
