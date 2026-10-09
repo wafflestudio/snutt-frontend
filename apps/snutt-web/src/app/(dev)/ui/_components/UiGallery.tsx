@@ -2,11 +2,17 @@
 
 import { useState, type ReactNode } from 'react';
 import { DevHeader } from '@/app/(dev)/_components/DevHeader';
+import { SAMPLE_PALETTE } from '@/app/(dev)/_components/sample-palette';
+import type { LectureColor } from '@/domain/color';
 import { Button } from '@/shared/ui/Button';
 import { Chip, type ChipColor } from '@/shared/ui/Chip';
+import { ColorSelect } from '@/shared/ui/ColorSelect';
+import { ConfirmDialog, Dialog, DialogCloseButton, DialogTitle } from '@/shared/ui/Dialog';
 import { IconButton } from '@/shared/ui/IconButton';
 import * as Icons from '@/shared/ui/icons';
+import { Menu, MenuItem } from '@/shared/ui/Menu';
 import { SearchField } from '@/shared/ui/SearchField';
+import { Select } from '@/shared/ui/Select';
 import { Tab, TabList, TabPanel, Tabs } from '@/shared/ui/Tabs';
 import { TextField } from '@/shared/ui/TextField';
 
@@ -35,6 +41,16 @@ const INITIAL_CHIPS: { label: string; color: ChipColor }[] = [
   { label: '평점 높은 순', color: 'gray' },
 ];
 
+const DAY_OPTIONS = ['월', '화', '수', '목', '금', '토', '일'].map((label, value) => ({ value, label }));
+
+// 30분 간격. 직접 추가의 시간 표시(`오전 9:00`)와 같은 형식
+const TIME_OPTIONS = Array.from({ length: 31 }, (_, i) => {
+  const minute = 8 * 60 + i * 30;
+  const hour = Math.floor(minute / 60);
+  const label = `${hour < 12 ? '오전' : '오후'} ${hour % 12 || 12}:${String(minute % 60).padStart(2, '0')}`;
+  return { value: minute, label };
+});
+
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="flex flex-col gap-4">
@@ -53,6 +69,12 @@ export function UiGallery() {
   const [detailTab, setDetailTab] = useState<'info' | 'review'>('info');
   const [bookmarked, setBookmarked] = useState(false);
   const [chips, setChips] = useState(INITIAL_CHIPS);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [lastAction, setLastAction] = useState('');
+  const [day, setDay] = useState(0);
+  const [startMinute, setStartMinute] = useState(9 * 60);
+  const [color, setColor] = useState<LectureColor>({ type: 'palette', index: 0 });
 
   return (
     <main className="mx-auto flex max-w-5xl flex-col gap-10 p-10">
@@ -169,6 +191,65 @@ export function UiGallery() {
             <Tab value="review">강의평</Tab>
           </TabList>
         </Tabs>
+      </Section>
+
+      <Section title="Dialog">
+        <Row>
+          <Button variant="outline" onClick={() => setConfirmOpen(true)}>
+            확인 팝업
+          </Button>
+          <Button variant="outline" onClick={() => setModalOpen(true)}>
+            큰 모달
+          </Button>
+          <span className="text-13-regular text-alternative">{lastAction}</span>
+        </Row>
+        <ConfirmDialog
+          open={confirmOpen}
+          onOpenChange={setConfirmOpen}
+          message="관심강좌 탭으로 이동하시겠습니까?"
+          onConfirm={() => setLastAction('확인을 눌렀다')}
+        />
+        <Dialog open={modalOpen} onOpenChange={setModalOpen} className="flex h-162 w-173.75 flex-col p-5">
+          <div className="flex items-center justify-between">
+            <DialogTitle>필터</DialogTitle>
+            <DialogCloseButton />
+          </div>
+          <p className="mt-4 text-14-regular text-plain">필터 내용은 5-3 에서 만든다.</p>
+        </Dialog>
+      </Section>
+
+      <Section title="Menu">
+        <Row>
+          <Menu align="end" trigger={<IconButton label="시간표 메뉴" icon={<Icons.IconMoreHorizontal />} />}>
+            <MenuItem onClick={() => setLastAction('기본 시간표로 지정')}>기본 시간표로 지정</MenuItem>
+            <MenuItem onClick={() => setLastAction('이름 변경')}>이름 변경</MenuItem>
+            <MenuItem onClick={() => setLastAction('삭제')}>삭제</MenuItem>
+          </Menu>
+          <span className="text-13-regular text-alternative">{lastAction}</span>
+        </Row>
+      </Section>
+
+      <Section title="Select · ColorSelect">
+        <div className="grid max-w-sm grid-cols-[4rem_1fr] items-center gap-x-4 gap-y-3 text-14-regular">
+          <label htmlFor="ui-color" className="text-alternative">
+            색상
+          </label>
+          <ColorSelect id="ui-color" palette={SAMPLE_PALETTE} value={color} onValueChange={setColor} />
+          <span className="text-alternative">시간</span>
+          <div className="flex gap-2">
+            <Select aria-label="요일" options={DAY_OPTIONS} value={day} onValueChange={setDay} className="w-16" />
+            <Select aria-label="시작 시간" options={TIME_OPTIONS} value={startMinute} onValueChange={setStartMinute} />
+          </div>
+        </div>
+        <Row>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setColor({ type: 'custom', color: { bg: '#ffd8d8', fg: '#c43a3a' } })}
+          >
+            앱에서 직접 고른 색으로 바꾸기
+          </Button>
+        </Row>
       </Section>
 
       <Section title="아이콘">

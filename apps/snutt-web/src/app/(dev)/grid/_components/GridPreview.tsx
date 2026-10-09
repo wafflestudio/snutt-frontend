@@ -2,26 +2,13 @@
 
 import { useMemo, useState } from 'react';
 import { DevHeader } from '@/app/(dev)/_components/DevHeader';
-import type { ColorPair } from '@/domain/color';
+import { SAMPLE_PALETTE } from '@/app/(dev)/_components/sample-palette';
 import { getGridRange } from '@/domain/grid-layout';
 import type { ClassTime, TimetableLecture } from '@/domain/lecture';
 import { type Day, toMinute } from '@/domain/time';
 import { LectureLayer } from '@/shared/timetable-grid/LectureLayer';
 import { TimetableGrid } from '@/shared/timetable-grid/TimetableGrid';
 import { Tab, TabList, Tabs } from '@/shared/ui/Tabs';
-
-// 서버의 기본 테마(SNUTT)와 같은 색. 실제로는 시간표 테마 API 에서 받는다
-const PALETTE: ColorPair[] = [
-  '#e54459',
-  '#f58d3d',
-  '#fac42d',
-  '#a6d930',
-  '#2bc267',
-  '#1bd0c8',
-  '#1d99e8',
-  '#4f48c4',
-  '#af56b3',
-].map((bg) => ({ bg, fg: '#ffffff' }));
 
 const time = (day: Day, start: string, end: string, place: string | null = '058-331'): ClassTime => {
   const [startHour, startMinute] = start.split(':').map(Number);
@@ -95,7 +82,7 @@ export function GridPreview() {
       <TimetableGrid range={range}>
         <LectureLayer
           lectures={lectures}
-          palette={PALETTE}
+          palette={SAMPLE_PALETTE}
           onLectureClick={readonly ? undefined : (l) => setClicked(l.title)}
         />
       </TimetableGrid>
