@@ -90,25 +90,28 @@ export function MainScreen() {
                     onRemove={() => timetables.remove(selected.id)}
                   />
                 )}
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => setView({ ...view, panel: { type: 'custom-form' } })}
-                >
-                  <IconEdit />
-                  직접 추가
-                </Button>
+                {/* 비교 중에는 Figma `top` 의 `메인 시간표` 변형처럼 탭 · + · ··· 만 둔다 */}
                 {!view.compare && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    // 같은 학기에 다른 시간표가 있어야 비교할 수 있다
-                    disabled={others.length === 0}
-                    onClick={() => setView({ ...view, compare: { right: others[0].id } })}
-                  >
-                    <IconCompare />
-                    시간표 비교
-                  </Button>
+                  <>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setView({ ...view, panel: { type: 'custom-form' } })}
+                    >
+                      <IconEdit />
+                      직접 추가
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      // 같은 학기에 다른 시간표가 있어야 비교할 수 있다
+                      disabled={others.length === 0}
+                      onClick={() => setView({ ...view, compare: { right: others[0].id } })}
+                    >
+                      <IconCompare />
+                      시간표 비교
+                    </Button>
+                  </>
                 )}
               </div>
             </>
@@ -138,6 +141,7 @@ export function MainScreen() {
                   className="shrink-0"
                   onClick={() => setView({ ...view, compare: null })}
                 >
+                  <IconCompare />
                   비교 종료
                 </Button>
               </>
@@ -160,7 +164,8 @@ type TimetableColumnProps = {
 function TimetableColumn({ timetable, range, header, className }: TimetableColumnProps) {
   return (
     <div className={clsx('flex min-w-0 flex-1 flex-col', className)}>
-      <header className="flex h-14.25 shrink-0 items-center justify-between gap-2.5 px-5">{header}</header>
+      {/* Figma `top`: 높이 56, 여백 13 · 20 */}
+      <header className="flex h-14 shrink-0 items-center justify-between gap-2.5 px-5">{header}</header>
       <div className="min-h-0 flex-1 overflow-y-auto">
         <TimetableGrid range={range}>
           {/* 색은 시간표 테마에서 받는다 (1-2 이후). 강의를 누르면 상세를 여는 것은 6-1 */}
