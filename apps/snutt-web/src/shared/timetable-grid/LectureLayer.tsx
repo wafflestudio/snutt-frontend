@@ -28,7 +28,7 @@ export function LectureLayer({ lectures, palette, onLectureClick }: LectureLayer
         const color = resolveLectureColor(lecture.color, palette);
         const key = `${lecture.id}-${time.day}-${time.startMinute}`;
         const className = clsx(
-          'absolute flex flex-col items-center justify-center gap-0.5 overflow-hidden px-1.5 text-center break-keep',
+          'absolute flex flex-col items-center justify-center gap-px overflow-hidden px-3 text-center break-keep',
           onLectureClick &&
             'cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-current',
         );

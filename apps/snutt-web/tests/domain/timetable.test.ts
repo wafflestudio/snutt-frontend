@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'vitest';
 
 import type { ClassTime, TimetableLecture } from '@/domain/lecture';
-import { findConflictingLectures, getTotalCredit, hasLecture } from '@/domain/timetable';
+import {
+  findConflictingLectures,
+  getNewTimetableTitle,
+  getTotalCredit,
+  hasLecture,
+  pickDefaultTimetable,
+} from '@/domain/timetable';
 
 const lecture = (id: string, classTimes: ClassTime[], overrides: Partial<TimetableLecture> = {}): TimetableLecture => ({
   id,
@@ -74,5 +80,34 @@ describe('hasLecture', () => {
     const lectures = [lecture('a', []), lecture('custom', [], { lectureId: null })];
     expect(hasLecture(lectures, 'lecture-a')).toBe(true);
     expect(hasLecture(lectures, 'lecture-b')).toBe(false);
+  });
+});
+
+describe('pickDefaultTimetable', () => {
+  it('기본 시간표가 있으면 그것을 고른다', () => {
+    const timetables = [
+      { id: 'a', isPrimary: false },
+      { id: 'b', isPrimary: true },
+    ];
+    expect(pickDefaultTimetable(timetables)?.id).toBe('b');
+  });
+
+  it('기본 시간표가 없으면 첫 시간표', () => {
+    expect(pickDefaultTimetable([{ id: 'a', isPrimary: false }])?.id).toBe('a');
+  });
+
+  it('시간표가 없으면 null', () => {
+    expect(pickDefaultTimetable([])).toBeNull();
+  });
+});
+
+describe('getNewTimetableTitle', () => {
+  it('시간표가 없으면 시간표 1', () => {
+    expect(getNewTimetableTitle([])).toBe('시간표 1');
+  });
+
+  it('비어 있는 가장 작은 번호를 쓴다', () => {
+    expect(getNewTimetableTitle(['시간표 1', '시간표 3'])).toBe('시간표 2');
+    expect(getNewTimetableTitle(['시간표 1', '시간표 2', '나의 시간표'])).toBe('시간표 3');
   });
 });

@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { DevHeader } from '@/app/(dev)/_components/DevHeader';
-import { SAMPLE_PALETTE } from '@/app/(dev)/_components/sample-palette';
+import { SAMPLE_PALETTE } from '@/features/main/sample-data';
 import { getGridRange } from '@/domain/grid-layout';
 import type { ClassTime, TimetableLecture } from '@/domain/lecture';
 import { type Day, toMinute } from '@/domain/time';

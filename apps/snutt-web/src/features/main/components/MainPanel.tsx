@@ -5,21 +5,26 @@ import { Button } from '@/shared/ui/Button';
 import { IconClose } from '@/shared/ui/icons';
 import { IconButton } from '@/shared/ui/IconButton';
 import { Tab, TabList, TabPanel, Tabs } from '@/shared/ui/Tabs';
+import type { Semester } from '@/domain/semester';
 import { DEFAULT_PANEL, type LectureDetail, type PanelView } from '@/features/main/main-view';
+import { SemesterSelect } from './SemesterSelect';
 
 type MainPanelProps = {
   panel: PanelView;
   onChange: (panel: PanelView) => void;
+  semesters: readonly Semester[];
+  semester: Semester;
+  onSemesterChange: (semester: Semester) => void;
 };
 
 /*
  * 각 패널의 내용은 해당 단위에서 채운다. 지금은 화면 전환만 확인할 수 있는 자리다.
- *   목록 탭: 검색 5-1, 강의 목록 7-2, 관심강좌 7-1 / 학기 선택 4-3
+ *   목록 탭: 검색 5-1, 강의 목록 7-2, 관심강좌 7-1
  *   강의 상세: 6-1, 강의평 8-4 / 직접 추가: 6-4
  */
 
 /** 패널 자리. 목록(+ 옆에 강의 상세) 또는 직접 추가 폼을 보여 준다. 폭은 Figma 기준 430px 고정. */
-export function MainPanel({ panel, onChange }: MainPanelProps) {
+export function MainPanel({ panel, onChange, semesters, semester, onSemesterChange }: MainPanelProps) {
   if (panel.type === 'custom-form') {
     return (
       <PanelColumn label="직접 추가">
@@ -36,7 +41,12 @@ export function MainPanel({ panel, onChange }: MainPanelProps) {
   return (
     <>
       <PanelColumn label="강의 목록">
-        <p className="text-22-bold text-assistive">학기 선택 (4-3)</p>
+        <SemesterSelect
+          semesters={semesters}
+          value={semester}
+          onValueChange={onSemesterChange}
+          className="self-start"
+        />
         <Tabs value={tab} onValueChange={(next) => onChange({ type: 'list', tab: next, detail: null })}>
           <TabList>
             <Tab value="search">검색</Tab>

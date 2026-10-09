@@ -1,23 +1,24 @@
 # snutt-web 디자인 문의
 
-> 기준: Figma `SNUTT_web(171016~)` "웹 업데이트" 페이지의 **완료** 영역, Variables `Semantic` 컬렉션 (2026-09-26 확인, 2026-10-04 `Web 컴포넌트` 섹션과 텍스트 스타일 반영)
+> 기준: Figma `SNUTT_web(171016~)` "웹 업데이트" 페이지의 **완료** 영역, Variables `Semantic` 컬렉션 (2026-09-26 확인, 2026-10-04 `Web 컴포넌트` 섹션과 텍스트 스타일 반영, 2026-10-09 10-07 수정분 반영)
 > 개발 플랜: [snutt-web-dev-plan.md](./snutt-web-dev-plan.md)
 
 snutt-web 개발 중 디자인에서 확인이 필요한 내용입니다. 답을 받으면 항목마다 결과를 적고 개발 플랜에 반영합니다.
 
 **Figma 링크** (요소 위치는 항목마다 프레임 이름으로 적었습니다)
 
-| 프레임    | 링크                                                                                                                    |
-| --------- | ----------------------------------------------------------------------------------------------------------------------- |
-| Variables | [Semantic](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?view=variables&var-set-id=3034-18970) |
-| 메인      | [home(1200 ~)](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3177-71539)               |
-| 강의 상세 | [강의 상세](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3177-82418)                  |
-| 강의평    | [강의평](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3177-80835)                     |
-| 강의 편집 | [강의 편집](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3177-84278)                  |
-| 필터      | [필터](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3177-90077)                       |
-| 직접 추가 | [직접 추가](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3177-87728)                  |
-| 팝업      | [팝업 예시](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3177-93870)                  |
-| 컴포넌트  | [Web 컴포넌트](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3214-8621)                |
+| 프레임              | 링크                                                                                                                    |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Variables           | [Semantic](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?view=variables&var-set-id=3034-18970) |
+| 메인                | [home(1200 ~)](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3177-71539)               |
+| 강의 상세           | [강의 상세](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3177-82418)                  |
+| 강의평              | [강의평](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3177-80835)                     |
+| 강의 편집           | [강의 편집](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3177-84278)                  |
+| 필터                | [필터](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3177-90077)                       |
+| 직접 추가           | [직접 추가](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3177-87728)                  |
+| 팝업                | [팝업 예시](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3177-93870)                  |
+| 컴포넌트            | [Web 컴포넌트](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3214-8621)                |
+| 강의평 탭 (작업 중) | [강의평 메인](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3258-28072)                |
 
 ---
 
@@ -113,7 +114,7 @@ Variable 에 연결만 하면 됩니다.
 | `#727272`       | 라벨 · 입력값 · 요일 선택 글자 (직접 추가)                                                                                                                                           | `Text/Plain`(`#505050`) 또는 `Text/alternative`(`#8A898E`) |
 | `#C5C5C7`       | `(없음)` (강의 상세, 직접 추가)                                                                                                                                                      | `Text/Assistive`(`#C4C4C4`)                                |
 | `#F3F4F5`       | 검색창 배경 (메인) / `강의 상세 / 강의평` 전환 배경 (강의 상세)                                                                                                                      | `Background/lightField`(`#F2F2F2`)                         |
-| `#F2F4F6`       | 정렬(추천순) 선택 배경 (강의평)                                                                                                                                                      | `Background/lightField`(`#F2F2F2`)                         |
+| `#F2F4F6`       | 정렬(추천순) 선택 배경 (강의평) / 선택된 시간표 탭 배경 (메인)                                                                                                                       | `Background/lightField`(`#F2F2F2`)                         |
 | `#F6F7F9`       | 좌측 바 배경 (메인)                                                                                                                                                                  | `Background/light`(`#F7F7F7`)                              |
 | `#DDE1E5`       | 좌측 바 경계선 (메인)                                                                                                                                                                | `Line/border`(`#E4E4E5`)                                   |
 | `#E9E9EA`       | 입력칸 · 선택칸 테두리 (직접 추가)                                                                                                                                                   | `Line/light`(`#EBEBED`)                                    |
@@ -166,26 +167,28 @@ Variable 에 연결만 하면 됩니다.
 
 ## 4. 화면
 
-| #   | 내용                                                                                                                                                                                                                                                                                                                                                                   |
-| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 4-1 | 다크 모드 화면 시안이 있을까요? 없다면 Variables 의 Dark 값만으로 구현하겠습니다                                                                                                                                                                                                                                                                                       |
-| 4-2 | 검색 패널의 `강의 목록` 탭에는 무엇이 들어가나요? 현재 시간표에 담긴 강의 목록으로 이해했습니다                                                                                                                                                                                                                                                                        |
-| 4-3 | 좌측 바의 `강의평` 아이콘을 누르면 어떤 화면이 열리나요?                                                                                                                                                                                                                                                                                                               |
-| 4-4 | 필터 칩 색이 필터 종류마다 정해져 있나요? `검색 필터칩` 은 8가지 색(회색 + 7색)이고 메인 화면은 전공 orange, 4학년 red, 3학점 lime, 컴퓨터공학부 mint, 평점 높은 순 회색입니다. 필터 종류(정렬기준, 분류, 학과, 학년, 학점, 구분, 교양영역, (구)교양영역, 시간, 기타)는 10개라 색보다 많습니다                                                                         |
-| 4-5 | `LNB` 컴포넌트 안에 숨겨진 `dock_to_right` 아이콘(24px)이 있습니다. 패널 접기 버튼을 좌측 바로 옮길 계획인지 궁금합니다. 지금은 패널과 그리드 경계의 `<` / `>` 버튼으로 이해하고 있습니다                                                                                                                                                                              |
-| 4-6 | 펼친 목록의 디자인이 강의 상세의 색상 드롭다운 하나뿐입니다. 학기 드롭다운(`2026년 2학기 ⌄`), 시간표 헤더의 `···` 메뉴, 직접 추가의 요일 · 시간 선택은 펼친 모양이 없어 색상 드롭다운 모양(둥글기 8px, 그림자, 한 줄 49px, 줄 사이 선)을 같이 쓰고 있습니다. 같은 모양으로 가도 될까요? 색상 드롭다운도 `GRAY2`, `GRAY10` 같은 이전 색이라 Variables 연결이 필요합니다 |
+| #   | 내용                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 4-1 | 다크 모드 화면 시안이 있을까요? 없다면 Variables 의 Dark 값만으로 구현하겠습니다                                                                                                                                                                                                                                                                                                                                             |
+| 4-2 | 검색 패널의 `강의 목록` 탭에는 무엇이 들어가나요? 현재 시간표에 담긴 강의 목록으로 이해했습니다                                                                                                                                                                                                                                                                                                                              |
+| 4-3 | ✅ (10-07) 좌측 바의 `강의평` 아이콘을 누르면 어떤 화면이 열리나요? → 작업 중 영역의 `강의평 메인` · `강의평 상세` 로 확인했습니다. 완료 영역으로 옮겨지면 개발하겠습니다                                                                                                                                                                                                                                                    |
+| 4-4 | 필터 칩 색이 필터 종류마다 정해져 있나요? `검색 필터칩` 은 8가지 색(회색 + 7색)이고 메인 화면은 전공 orange, 4학년 red, 3학점 lime, 컴퓨터공학부 mint, 평점 높은 순 회색입니다. 필터 종류(정렬기준, 분류, 학과, 학년, 학점, 구분, 교양영역, (구)교양영역, 시간, 기타)는 10개라 색보다 많습니다                                                                                                                               |
+| 4-5 | `LNB` 컴포넌트 안에 숨겨진 `dock_to_right` 아이콘(24px)이 있습니다. 패널 접기 버튼을 좌측 바로 옮길 계획인지 궁금합니다. 지금은 패널과 그리드 경계의 `<` / `>` 버튼으로 이해하고 있습니다                                                                                                                                                                                                                                    |
+| 4-6 | (10-07 일부 해결) 펼친 목록은 새 `드롭다운` 컴포넌트(테두리 1px, 한 줄 42px, 15px, 줄 사이 선 없음)로 학기 드롭다운 · `···` 메뉴 · 요일 · 시간 선택 · 색상 선택을 모두 맞췄습니다. 강의 상세의 색상 드롭다운만 이전 모양(줄 사이 선, 한 줄 49px, 13px)이고 `GRAY2`, `GRAY10` 같은 이전 색입니다. 색상 드롭다운도 `드롭다운` 모양으로 바뀌는 것으로 보면 될까요?                                                              |
+| 4-7 | 시간표 탭 관리의 팝업 디자인이 없습니다. 새 시간표 이름 입력(+), 이름 변경, 삭제 확인을 `팝업 예시` 모양(질문 자리에 제목과 입력칸)으로 만들었습니다. 헤더 `···` 메뉴에는 이름 변경 · 기본 시간표로 지정(해제) · 삭제를 넣었는데, 시간표 복사 등 더 들어갈 항목이 있을까요? 또 지금 Figma 헤더에는 공유 · 다운로드 아이콘이 보이지 않습니다(`···` · 직접 추가 · 시간표 비교). 빠진 것인지 다른 곳으로 옮긴 것인지 궁금합니다 |
 
 ## 5. 개발에서 임시로 정한 것
 
 답을 받기 전까지 개발은 아래 값으로 진행합니다. 답을 받으면 이 표에서 바꿀 곳을 찾아 고칩니다.
 
-| 항목                    | 임시 결정                                                                                                         | 바꿀 곳                                       |
-| ----------------------- | ----------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
-| 글자 스타일 (A)         | Figma 텍스트 스타일 10개를 같은 이름으로 씀. 버튼 글자는 `15/Medium` 을 임시로 추가                               | `apps/snutt-web/src/app/globals.css`          |
-| 필터 칩 색 (4-4)        | 메인 화면 예시대로 쓰고, 나머지 필터 종류는 개발에서 임시로 정함                                                  | 검색 패널 (5-1)                               |
-| 아이콘 (C)              | Material Symbols Outlined. 모양이 가장 비슷한 것을 고름                                                           | `apps/snutt-web/scripts/generate-icons.mts`   |
-| 토큰이 없는 색 (B, 2-2) | 표의 "가까운 토큰"을 씀 (예: 헤더 아이콘 `#979797` → `Text/med`, 입력칸 테두리 `#E9E9EA` → `Line/light`)          | 각 컴포넌트 (`apps/snutt-web/src/shared/ui/`) |
-| 전환 버튼 글자 (2-4)    | 선택 `Text/alternative`, 비선택 `Text/Assistive`                                                                  | `Tabs.tsx`                                    |
-| 펼친 목록 (4-6)         | 색상 드롭다운 모양을 메뉴 · 셀렉트에 같이 씀. 글자 `Text/Plain`, 고른 항목 `Text/Normal`, 줄 사이 `Line/lightest` | `apps/snutt-web/src/shared/ui/popup.ts`       |
-| 모서리 둥글기           | 입력칸 5px → 6px, 헤더 버튼 2px 는 그대로                                                                         | 각 컴포넌트                                   |
-| Variables 값 (1장)      | Figma 값 그대로                                                                                                   | `apps/snutt-web/design-tokens/*.tokens.json`  |
+| 항목                    | 임시 결정                                                                                                | 바꿀 곳                                                            |
+| ----------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| 글자 스타일 (A)         | Figma 텍스트 스타일 10개를 같은 이름으로 씀. 버튼 글자는 `15/Medium` 을 임시로 추가                      | `apps/snutt-web/src/app/globals.css`                               |
+| 필터 칩 색 (4-4)        | 메인 화면 예시대로 쓰고, 나머지 필터 종류는 개발에서 임시로 정함                                         | 검색 패널 (5-1)                                                    |
+| 아이콘 (C)              | Material Symbols Outlined. 모양이 가장 비슷한 것을 고름                                                  | `apps/snutt-web/scripts/generate-icons.mts`                        |
+| 토큰이 없는 색 (B, 2-2) | 표의 "가까운 토큰"을 씀 (예: 헤더 아이콘 `#979797` → `Text/med`, 입력칸 테두리 `#E9E9EA` → `Line/light`) | 각 컴포넌트 (`apps/snutt-web/src/shared/ui/`)                      |
+| 전환 버튼 글자 (2-4)    | 선택 `Text/alternative`, 비선택 `Text/Assistive`                                                         | `Tabs.tsx`                                                         |
+| 펼친 목록 (4-6)         | Figma `드롭다운` 모양을 색상 선택까지 모든 메뉴 · 셀렉트에 씀                                            | `apps/snutt-web/src/shared/ui/popup.ts`                            |
+| 시간표 탭 팝업 (4-7)    | 확인 팝업 모양에 입력칸을 넣어 씀. + 를 누르면 `시간표 N` 이 채워진 이름 입력 팝업을 연다                | `apps/snutt-web/src/features/main/components/TimetableActions.tsx` |
+| 모서리 둥글기           | 입력칸 5px → 6px, 헤더 버튼 2px 는 그대로                                                                | 각 컴포넌트                                                        |
+| Variables 값 (1장)      | Figma 값 그대로                                                                                          | `apps/snutt-web/design-tokens/*.tokens.json`                       |

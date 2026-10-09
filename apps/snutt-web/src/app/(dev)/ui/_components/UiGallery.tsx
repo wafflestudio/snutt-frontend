@@ -2,12 +2,12 @@
 
 import { useState, type ReactNode } from 'react';
 import { DevHeader } from '@/app/(dev)/_components/DevHeader';
-import { SAMPLE_PALETTE } from '@/app/(dev)/_components/sample-palette';
+import { SAMPLE_PALETTE } from '@/features/main/sample-data';
 import type { LectureColor } from '@/domain/color';
 import { Button } from '@/shared/ui/Button';
 import { Chip, type ChipColor } from '@/shared/ui/Chip';
 import { ColorSelect } from '@/shared/ui/ColorSelect';
-import { ConfirmDialog, Dialog, DialogCloseButton, DialogTitle } from '@/shared/ui/Dialog';
+import { ConfirmDialog, Dialog, DialogCloseButton, DialogTitle, PromptDialog } from '@/shared/ui/Dialog';
 import { IconButton } from '@/shared/ui/IconButton';
 import * as Icons from '@/shared/ui/icons';
 import { Menu, MenuItem } from '@/shared/ui/Menu';
@@ -21,6 +21,7 @@ const TEXT_STYLES = [
   ['text-17-bold', '선택된 패널 탭'],
   ['text-17-semibold', '패널 탭'],
   ['text-15-bold', '검색 결과 강의명'],
+  ['text-15-regular', '펼친 목록 (메뉴, 셀렉트)'],
   ['text-15-medium', '버튼 (임시)'],
   ['text-14-semibold', '좌측 바 라벨, 강의 상세 / 강의평 전환'],
   ['text-14-medium', ''],
@@ -40,6 +41,11 @@ const INITIAL_CHIPS: { label: string; color: ChipColor }[] = [
   { label: '영어진행', color: 'purple' },
   { label: '평점 높은 순', color: 'gray' },
 ];
+
+const SEMESTER_OPTIONS = ['2026년 2학기', '2026년 여름학기', '2026년 1학기', '2025년 겨울학기'].map((label) => ({
+  value: label,
+  label,
+}));
 
 const DAY_OPTIONS = ['월', '화', '수', '목', '금', '토', '일'].map((label, value) => ({ value, label }));
 
@@ -67,14 +73,17 @@ function Row({ children }: { children: ReactNode }) {
 export function UiGallery() {
   const [panelTab, setPanelTab] = useState<'search' | 'lectures' | 'bookmark'>('search');
   const [detailTab, setDetailTab] = useState<'info' | 'review'>('info');
+  const [timetableTab, setTimetableTab] = useState('1');
   const [bookmarked, setBookmarked] = useState(false);
   const [chips, setChips] = useState(INITIAL_CHIPS);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [promptOpen, setPromptOpen] = useState(false);
   const [lastAction, setLastAction] = useState('');
   const [day, setDay] = useState(0);
   const [startMinute, setStartMinute] = useState(9 * 60);
   const [color, setColor] = useState<LectureColor>({ type: 'palette', index: 0 });
+  const [semester, setSemester] = useState(SEMESTER_OPTIONS[0].value);
 
   return (
     <main className="mx-auto flex max-w-5xl flex-col gap-10 p-10">
@@ -191,6 +200,16 @@ export function UiGallery() {
             <Tab value="review">강의평</Tab>
           </TabList>
         </Tabs>
+        <Tabs value={timetableTab} onValueChange={setTimetableTab} variant="pill">
+          <TabList>
+            <Tab value="1">
+              <Icons.IconCheckCircleFill className="size-3.75 text-snutt-mint" />
+              시간표 1
+            </Tab>
+            <Tab value="2">시간표 2</Tab>
+            <Tab value="3">시간표 3</Tab>
+          </TabList>
+        </Tabs>
       </Section>
 
       <Section title="Dialog">
@@ -201,6 +220,9 @@ export function UiGallery() {
           <Button variant="outline" onClick={() => setModalOpen(true)}>
             큰 모달
           </Button>
+          <Button variant="outline" onClick={() => setPromptOpen(true)}>
+            이름 입력
+          </Button>
           <span className="text-13-regular text-alternative">{lastAction}</span>
         </Row>
         <ConfirmDialog
@@ -208,6 +230,13 @@ export function UiGallery() {
           onOpenChange={setConfirmOpen}
           message="관심강좌 탭으로 이동하시겠습니까?"
           onConfirm={() => setLastAction('확인을 눌렀다')}
+        />
+        <PromptDialog
+          open={promptOpen}
+          onOpenChange={setPromptOpen}
+          title="시간표 이름 변경"
+          defaultValue="시간표 1"
+          onSubmit={(value) => setLastAction(`이름: ${value}`)}
         />
         <Dialog open={modalOpen} onOpenChange={setModalOpen} className="flex h-162 w-173.75 flex-col p-5">
           <div className="flex items-center justify-between">
@@ -230,6 +259,14 @@ export function UiGallery() {
       </Section>
 
       <Section title="Select · ColorSelect">
+        <Select
+          variant="title"
+          aria-label="학기"
+          options={SEMESTER_OPTIONS}
+          value={semester}
+          onValueChange={setSemester}
+          className="self-start"
+        />
         <div className="grid max-w-sm grid-cols-[4rem_1fr] items-center gap-x-4 gap-y-3 text-14-regular">
           <label htmlFor="ui-color" className="text-alternative">
             색상
