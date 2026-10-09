@@ -106,6 +106,7 @@ export const timetableQueries = {
 - UI 상태: `useState` / `useReducer`.
 - 전역 상태: Zustand. 패널↔그리드 hover 미리보기처럼 멀리 떨어진 컴포넌트가 공유하는 휘발성 상태에만 쓴다.
 - 메인 페이지 레이아웃은 하나의 `MainView`(`features/main/main-view.ts`)로 관리하고 URL search params 와 동기화한다. 읽고 바꿀 때는 `useMainView` 를 쓰고, 이 hook 을 쓰는 컴포넌트는 `Suspense` 안에 둔다(프로덕션 빌드에서 필요). 패널(탭/상세/직접 추가, 접힘은 `null`)과 비교는 동시에 열리므로 독립된 두 필드로 두고, 각 필드는 discriminated union 으로 만든다. 불리언 플래그를 여러 개 두지 않는다. (`docs/snutt-web-dev-plan.md` 설계 포인트 2)
+- 학기 선택과 시간표 목록 · 고른 시간표는 `useTimetables`(`features/main/use-timetables.ts`)에 있다. 1-2 전까지는 예시 데이터(`features/main/sample-data.ts`)를 메모리에서 고치고, API 를 연결하면 같은 모양의 query · mutation 으로 바꾼다.
 
 ## 테스트
 
@@ -122,7 +123,7 @@ export const timetableQueries = {
 - 공용 컴포넌트는 `shared/ui/` 에 있다. 개발 서버의 `/ui` 페이지에서 모두 볼 수 있다. 새 화면을 만들 때 여기 있는 것을 먼저 쓴다.
 - 컴포넌트의 색 · 크기는 `variant` / `size` prop 으로만 바꾼다. 바깥에서 받는 `className` 은 여백 · 너비 같은 배치에만 쓴다. (`tailwind-merge` 를 쓰지 않는다. 글자 색 `text-normal` 과 글자 스타일 `text-14-regular` 를 같은 종류로 보고 하나를 지운다)
 - 포커스 · 키보드 · 바깥 클릭 처리가 필요한 것(탭, 모달, 드롭다운, 셀렉트)은 Base UI(`@base-ui/react`)로 만들고 모양만 토큰 클래스로 입힌다.
-- 오버레이: 묻고 확인받을 때는 `ConfirmDialog`, 큰 창은 `Dialog`, 동작 목록(···)은 `Menu`, 값 하나를 고를 때는 `Select` (강의 색은 `ColorSelect`). Dialog 의 열림(`open`)과 Select 의 값(`value`)은 부모가 갖고, Menu 는 스스로 열고 닫는다.
+- 오버레이: 묻고 확인받을 때는 `ConfirmDialog`, 한 줄을 입력받을 때는 `PromptDialog`, 큰 창은 `Dialog`, 동작 목록(···)은 `Menu`, 값 하나를 고를 때는 `Select` (강의 색은 `ColorSelect`). Dialog 의 열림(`open`)과 Select 의 값(`value`)은 부모가 갖고, Menu 는 스스로 열고 닫는다.
 - 아이콘은 `shared/ui/icons.tsx` 의 컴포넌트를 쓴다. 없으면 `scripts/generate-icons.mts` 에 Material Symbols 이름을 추가하고 `yarn generate:icons` 로 만든다. 아이콘만 있는 버튼은 `IconButton` 에 `label` 을 준다.
 - 데스크톱 전용(최소 1200px). 단 `timetable-picker` 는 RN WebView/iframe 에서 열리므로 모바일 폭 대응이 필요하다.
 
