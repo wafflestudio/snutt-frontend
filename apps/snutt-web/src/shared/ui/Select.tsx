@@ -101,7 +101,7 @@ export function Select<Value extends string | number>({
         </BaseSelect.Icon>
       </BaseSelect.Trigger>
       <BaseSelect.Portal>
-        {/* 목록이 버튼을 덮지 않고 아래로 펼쳐진다 (Figma 색상 드롭다운) */}
+        {/* 목록이 버튼을 덮지 않고 아래로 펼쳐진다 (Figma `드롭다운`) */}
         <BaseSelect.Positioner alignItemWithTrigger={false} sideOffset={4} align="start" className="z-50">
           <BaseSelect.Popup className={clsx(POPUP_CLASSES, 'min-w-(--anchor-width)')}>
             <BaseSelect.List>
@@ -110,7 +110,7 @@ export function Select<Value extends string | number>({
                   key={option.value}
                   value={option.value}
                   label={option.label}
-                  className={clsx(POPUP_ITEM_CLASSES, 'data-selected:text-normal')}
+                  className={POPUP_ITEM_CLASSES}
                 >
                   <BaseSelect.ItemText>{option.label}</BaseSelect.ItemText>
                   {option.trailing}

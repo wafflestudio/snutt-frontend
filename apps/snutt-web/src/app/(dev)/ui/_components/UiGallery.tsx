@@ -21,6 +21,7 @@ const TEXT_STYLES = [
   ['text-17-bold', '선택된 패널 탭'],
   ['text-17-semibold', '패널 탭'],
   ['text-15-bold', '검색 결과 강의명'],
+  ['text-15-regular', '펼친 목록 (메뉴, 셀렉트)'],
   ['text-15-medium', '버튼 (임시)'],
   ['text-14-semibold', '좌측 바 라벨, 강의 상세 / 강의평 전환'],
   ['text-14-medium', ''],

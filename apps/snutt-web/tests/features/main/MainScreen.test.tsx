@@ -78,9 +78,12 @@ describe('MainScreen', () => {
     await userEvent.click(screen.getByRole('button', { name: '시간표 비교' }));
     expect(screen.getAllByText('월')).toHaveLength(2);
     expect(panel('강의 목록')).toBeInTheDocument();
+    // 비교 중 왼쪽 헤더에는 탭 · + · ··· 만 있다 (Figma `top` 의 `메인 시간표`)
+    expect(screen.queryByRole('button', { name: '직접 추가' })).not.toBeInTheDocument();
 
     await userEvent.click(screen.getByRole('button', { name: '비교 종료' }));
     expect(screen.getAllByText('월')).toHaveLength(1);
+    expect(screen.getByRole('button', { name: '직접 추가' })).toBeInTheDocument();
   });
 
   it('URL 에 강의가 있으면 목록 옆에 강의 상세를 열고, 닫을 수 있다', async () => {

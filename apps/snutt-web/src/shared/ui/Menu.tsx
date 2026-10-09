@@ -24,7 +24,7 @@ export function Menu({ trigger, children, align = 'start', className }: MenuProp
       <BaseMenu.Trigger render={trigger} />
       <BaseMenu.Portal>
         <BaseMenu.Positioner sideOffset={4} align={align} className="z-50">
-          <BaseMenu.Popup className={clsx(POPUP_CLASSES, 'min-w-40', className)}>{children}</BaseMenu.Popup>
+          <BaseMenu.Popup className={clsx(POPUP_CLASSES, 'min-w-36', className)}>{children}</BaseMenu.Popup>
         </BaseMenu.Positioner>
       </BaseMenu.Portal>
     </BaseMenu.Root>
