@@ -4,6 +4,7 @@ import {
   compareDayTimeRange,
   type DayTimeRange,
   formatDayTimeRange,
+  formatMeridiemMinute,
   formatMinute,
   isOverlapping,
   isValidDayTimeRange,
@@ -24,6 +25,18 @@ describe('formatMinute', () => {
     [1439, '23:59'],
     [1440, '24:00'],
   ])('%i → %s', (minute, expected) => expect(formatMinute(minute)).toBe(expected));
+});
+
+describe('formatMeridiemMinute', () => {
+  it.each([
+    [0, '오전 12:00'],
+    [540, '오전 9:00'],
+    [705, '오전 11:45'],
+    [720, '오후 12:00'],
+    [780, '오후 1:00'],
+    [1435, '오후 11:55'],
+    [1440, '오전 12:00'],
+  ])('%i → %s', (minute, expected) => expect(formatMeridiemMinute(minute)).toBe(expected));
 });
 
 describe('formatDayTimeRange', () => {

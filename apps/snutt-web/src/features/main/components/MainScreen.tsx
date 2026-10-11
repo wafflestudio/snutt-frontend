@@ -8,9 +8,11 @@ import { LectureLayer } from '@/shared/timetable-grid/LectureLayer';
 import { TimetableGrid } from '@/shared/timetable-grid/TimetableGrid';
 import { Button } from '@/shared/ui/Button';
 import { IconChevronLeft, IconChevronRight, IconCompare, IconEdit } from '@/shared/ui/icons';
+import { DEFAULT_PANEL } from '@/features/main/main-view';
 import { SAMPLE_PALETTE } from '@/features/main/sample-data';
 import { useMainView } from '@/features/main/use-main-view';
 import { useTimetables } from '@/features/main/use-timetables';
+import { CustomLectureForm } from './CustomLectureForm';
 import { MainPanel } from './MainPanel';
 import { AddTimetableButton, TimetableMenu } from './TimetableActions';
 import { TimetableTabs } from './TimetableTabs';
@@ -39,14 +41,30 @@ export function MainScreen() {
 
   return (
     <>
-      {view.panel && (
-        <MainPanel
-          panel={view.panel}
-          onChange={(panel) => setView({ ...view, panel })}
-          semesters={timetables.semesters}
-          semester={timetables.semester}
-          onSemesterChange={timetables.selectSemester}
+      {view.panel?.type === 'custom-form' ? (
+        <CustomLectureForm
+          // 다른 시간표로 바꾸면 입력을 처음부터 다시 받는다
+          key={selected?.id}
+          timetable={selected}
+          palette={SAMPLE_PALETTE}
+          onSubmit={(input) => {
+            if (!selected) return;
+            timetables.addCustomLecture(selected.id, input);
+            setView({ ...view, panel: DEFAULT_PANEL });
+          }}
+          onBack={() => setView({ ...view, panel: DEFAULT_PANEL })}
+          onClose={() => setView({ ...view, panel: null })}
         />
+      ) : (
+        view.panel && (
+          <MainPanel
+            panel={view.panel}
+            onChange={(panel) => setView({ ...view, panel })}
+            semesters={timetables.semesters}
+            semester={timetables.semester}
+            onSemesterChange={timetables.selectSemester}
+          />
+        )
       )}
 
       <section className="relative flex min-w-0 flex-1">

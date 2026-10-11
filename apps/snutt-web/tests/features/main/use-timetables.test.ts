@@ -55,4 +55,20 @@ describe('timetablesReducer', () => {
       selectedId: null,
     });
   });
+
+  it('직접 추가한 강의는 그 시간표의 끝에 강의 정보 없이 붙는다', () => {
+    const input = {
+      title: '스터디',
+      instructor: null,
+      credit: null,
+      remark: null,
+      classTimes: [{ day: 5 as const, startMinute: 600, endMinute: 660, place: null }],
+      color: { type: 'palette' as const, index: 1 },
+    };
+    const next = timetablesReducer(state(), { type: 'add-custom-lecture', id: 'b', lectureId: 'x', input });
+    expect(next.timetables.find((t) => t.id === 'b')?.lectures).toEqual([
+      expect.objectContaining({ ...input, id: 'x', lectureId: null }),
+    ]);
+    expect(next.timetables.find((t) => t.id === 'a')?.lectures).toEqual([]);
+  });
 });

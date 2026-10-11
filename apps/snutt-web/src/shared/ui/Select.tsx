@@ -20,8 +20,9 @@ export type SelectOption<Value extends string | number> = {
 export type SelectVariant = 'field' | 'title';
 
 const TRIGGER_CLASSES: Record<SelectVariant, string> = {
+  // Figma (직접 추가의 요일 · 시간): 높이 36, 여백 왼쪽 6 · 오른쪽 7~9. 요일 칸이 50px 이라 여백이 좁다
   field: clsx(
-    'flex h-9 w-full min-w-0 justify-between gap-2 rounded-md border border-line-light bg-normal px-3 text-14-regular text-plain',
+    'flex h-9 min-w-0 justify-between gap-1 rounded-md border border-line-light bg-normal pr-2 pl-1.5 text-14-regular text-plain',
     'focus-visible:border-snutt-mint data-popup-open:border-snutt-mint',
   ),
   // Figma: 22/Bold, 화살표(Text/Normal)와 간격 10px. 아이콘 상자의 여백만큼 간격을 줄였다
@@ -30,7 +31,7 @@ const TRIGGER_CLASSES: Record<SelectVariant, string> = {
 };
 
 const ICON_CLASSES: Record<SelectVariant, string> = {
-  field: 'text-alternative [&>svg]:size-4',
+  field: 'text-alternative [&>svg]:size-3',
   title: 'text-normal [&>svg]:size-5',
 };
 
@@ -45,7 +46,7 @@ export type SelectProps<Value extends string | number> = {
   'aria-label'?: string;
   disabled?: boolean;
   variant?: SelectVariant;
-  /** 버튼의 너비 같은 배치 */
+  /** 버튼의 너비 같은 배치. field 도 너비를 정하지 않으므로 `w-full`, `flex-1` 처럼 넘긴다 */
   className?: string;
 };
 

@@ -18,8 +18,10 @@ import { TextField } from '@/shared/ui/TextField';
 
 const TEXT_STYLES = [
   ['text-22-bold', '학기 제목'],
+  ['text-20-bold', '직접 추가 제목 (임시)'],
   ['text-17-bold', '선택된 패널 탭'],
   ['text-17-semibold', '패널 탭'],
+  ['text-16-semibold', '직접 추가 섹션 제목 (임시)'],
   ['text-15-bold', '검색 결과 강의명'],
   ['text-15-regular', '펼친 목록 (메뉴, 셀렉트)'],
   ['text-15-medium', '버튼 (임시)'],
@@ -271,11 +273,23 @@ export function UiGallery() {
           <label htmlFor="ui-color" className="text-alternative">
             색상
           </label>
-          <ColorSelect id="ui-color" palette={SAMPLE_PALETTE} value={color} onValueChange={setColor} />
+          <ColorSelect
+            id="ui-color"
+            palette={SAMPLE_PALETTE}
+            value={color}
+            onValueChange={setColor}
+            className="w-full"
+          />
           <span className="text-alternative">시간</span>
           <div className="flex gap-2">
             <Select aria-label="요일" options={DAY_OPTIONS} value={day} onValueChange={setDay} className="w-16" />
-            <Select aria-label="시작 시간" options={TIME_OPTIONS} value={startMinute} onValueChange={setStartMinute} />
+            <Select
+              aria-label="시작 시간"
+              options={TIME_OPTIONS}
+              value={startMinute}
+              onValueChange={setStartMinute}
+              className="flex-1"
+            />
           </div>
         </div>
         <Row>
