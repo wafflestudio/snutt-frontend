@@ -22,7 +22,10 @@ const lecture = (id: string, classTimes: ClassTime[], overrides: Partial<Timetab
   department: null,
   academicYear: null,
   category: null,
+  categoryPre2025: null,
   classification: null,
+  quota: null,
+  freshmanQuota: null,
   color: { type: 'palette', index: 0 },
   ...overrides,
 });

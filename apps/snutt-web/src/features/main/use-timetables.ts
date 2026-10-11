@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useReducer } from 'react';
-import { type CustomLectureInput, toCustomTimetableLecture } from '@/domain/lecture';
+import { type CustomLectureInput, type TimetableLectureId, toCustomTimetableLecture } from '@/domain/lecture';
 import { isSameSemester, type Semester } from '@/domain/semester';
 import {
   getTotalCredit,
@@ -26,7 +26,9 @@ export type TimetablesAction =
   | { type: 'rename'; id: TimetableId; title: string }
   | { type: 'remove'; id: TimetableId }
   | { type: 'set-primary'; id: TimetableId; isPrimary: boolean }
-  | { type: 'add-custom-lecture'; id: TimetableId; lectureId: string; input: CustomLectureInput };
+  | { type: 'add-custom-lecture'; id: TimetableId; lectureId: TimetableLectureId; input: CustomLectureInput }
+  | { type: 'update-lecture'; id: TimetableId; lectureId: TimetableLectureId; change: Partial<CustomLectureInput> }
+  | { type: 'remove-lecture'; id: TimetableId; lectureId: TimetableLectureId };
 
 const update = (timetables: Timetable[], id: TimetableId, change: (timetable: Timetable) => Timetable) =>
   timetables.map((timetable) => (timetable.id === id ? change(timetable) : timetable));
@@ -56,6 +58,24 @@ export function timetablesReducer(state: TimetablesState, action: TimetablesActi
         timetables: update(state.timetables, action.id, (t) => ({ ...t, lectures: [...t.lectures, lecture] })),
       };
     }
+    case 'update-lecture':
+      return {
+        ...state,
+        timetables: update(state.timetables, action.id, (t) => ({
+          ...t,
+          lectures: t.lectures.map((lecture) =>
+            lecture.id === action.lectureId ? { ...lecture, ...action.change } : lecture,
+          ),
+        })),
+      };
+    case 'remove-lecture':
+      return {
+        ...state,
+        timetables: update(state.timetables, action.id, (t) => ({
+          ...t,
+          lectures: t.lectures.filter((lecture) => lecture.id !== action.lectureId),
+        })),
+      };
     case 'rename':
       return { ...state, timetables: update(state.timetables, action.id, (t) => ({ ...t, title: action.title })) };
     case 'remove':
@@ -129,6 +149,11 @@ export function useTimetables() {
     /** 시간 충돌은 부르는 쪽(직접 추가 폼)에서 먼저 확인한다 */
     addCustomLecture: (id: TimetableId, input: CustomLectureInput) =>
       dispatch({ type: 'add-custom-lecture', id, lectureId: crypto.randomUUID(), input }),
+    /** 강의 상세의 색상 (6-2 에서 편집한 값도 여기로 넘긴다) */
+    updateLecture: (id: TimetableId, lectureId: TimetableLectureId, change: Partial<CustomLectureInput>) =>
+      dispatch({ type: 'update-lecture', id, lectureId, change }),
+    removeLecture: (id: TimetableId, lectureId: TimetableLectureId) =>
+      dispatch({ type: 'remove-lecture', id, lectureId }),
     setPrimary: (id: TimetableId, isPrimary: boolean) => dispatch({ type: 'set-primary', id, isPrimary }),
   };
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { type ColorPair, type LectureColor } from '@/domain/color';
-import { Select } from './Select';
+import { Select, type SelectVariant } from './Select';
 
 /** 강의 색 견본: 글자색 · 배경색 두 칸 (Figma 색상 드롭다운, 각 20px) */
 export function ColorSwatch({ color }: { color: ColorPair }) {
@@ -20,6 +20,8 @@ export type ColorSelectProps = {
   onValueChange: (color: LectureColor) => void;
   id?: string;
   'aria-label'?: string;
+  /** field: 직접 추가의 입력칸, compact: 강의 상세의 견본만 있는 버튼 */
+  variant?: Extract<SelectVariant, 'field' | 'compact'>;
   className?: string;
 };
 
@@ -33,6 +35,7 @@ export function ColorSelect({
   onValueChange,
   id,
   'aria-label': ariaLabel,
+  variant = 'field',
   className,
 }: ColorSelectProps) {
   return (
@@ -47,13 +50,14 @@ export function ColorSelect({
       placeholder={
         value.type === 'custom' && (
           <span className="flex items-center gap-2 text-plain">
-            직접 고른 색
+            <span className={variant === 'compact' ? 'sr-only' : undefined}>직접 고른 색</span>
             <ColorSwatch color={value.color} />
           </span>
         )
       }
       id={id}
       aria-label={ariaLabel}
+      variant={variant}
       className={className}
     />
   );

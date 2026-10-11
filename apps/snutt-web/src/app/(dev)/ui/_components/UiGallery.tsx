@@ -18,11 +18,12 @@ import { TextField } from '@/shared/ui/TextField';
 
 const TEXT_STYLES = [
   ['text-22-bold', '학기 제목'],
-  ['text-20-bold', '직접 추가 제목 (임시)'],
+  ['text-20-bold', '강의 상세 · 직접 추가 제목 (임시)'],
   ['text-17-bold', '선택된 패널 탭'],
   ['text-17-semibold', '패널 탭'],
   ['text-16-semibold', '직접 추가 섹션 제목 (임시)'],
   ['text-15-bold', '검색 결과 강의명'],
+  ['text-15-semibold', '강의 상세 소제목 (임시)'],
   ['text-15-regular', '펼친 목록 (메뉴, 셀렉트)'],
   ['text-15-medium', '버튼 (임시)'],
   ['text-14-semibold', '좌측 바 라벨, 강의 상세 / 강의평 전환'],
