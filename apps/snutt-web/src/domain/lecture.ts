@@ -47,6 +47,25 @@ export type TimetableLecture = LectureInfo & {
 
 export const isCustomLecture = (lecture: TimetableLecture) => lecture.lectureId === null;
 
+/** 직접 추가 폼에서 받는 값 (v2 `POST /v2/timetables/{id}/lectures/custom` 의 본문과 같은 항목) */
+export type CustomLectureInput = Pick<
+  TimetableLecture,
+  'title' | 'instructor' | 'credit' | 'remark' | 'classTimes' | 'color'
+>;
+
+/** 직접 추가한 강의. 수강편람에만 있는 값(강좌번호, 학과 등)은 null 이다. */
+export const toCustomTimetableLecture = (id: TimetableLectureId, input: CustomLectureInput): TimetableLecture => ({
+  ...input,
+  id,
+  lectureId: null,
+  department: null,
+  academicYear: null,
+  category: null,
+  classification: null,
+  courseNumber: null,
+  lectureNumber: null,
+});
+
 /** ['월 10:00~11:15', '수 10:00~11:15'] */
 export const getClassTimeTexts = (lecture: Pick<LectureInfo, 'classTimes'>) =>
   [...lecture.classTimes].sort(compareDayTimeRange).map(formatDayTimeRange);

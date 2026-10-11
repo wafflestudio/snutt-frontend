@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getClassTimeTexts, getSyllabusUrl } from '@/domain/lecture';
+import { getClassTimeTexts, getSyllabusUrl, isCustomLecture, toCustomTimetableLecture } from '@/domain/lecture';
 
 describe('getClassTimeTexts', () => {
   it('요일, 시작 시각 순으로 정렬해 표시한다', () => {
@@ -38,5 +38,20 @@ describe('getSyllabusUrl', () => {
   it('강좌번호나 분반이 없으면(직접 추가한 강의) null', () => {
     expect(getSyllabusUrl({ courseNumber: null, lectureNumber: '001' }, { year: 2026, term: 1 })).toBeNull();
     expect(getSyllabusUrl({ courseNumber: '033.001', lectureNumber: null }, { year: 2026, term: 1 })).toBeNull();
+  });
+});
+
+describe('toCustomTimetableLecture', () => {
+  it('직접 추가한 강의는 lectureId 와 수강편람 값이 null 이다', () => {
+    const lecture = toCustomTimetableLecture('t1', {
+      title: '동아리',
+      instructor: null,
+      credit: null,
+      remark: '매주',
+      classTimes: [{ day: 4, startMinute: 1080, endMinute: 1200, place: null }],
+      color: { type: 'palette', index: 2 },
+    });
+    expect(lecture).toMatchObject({ id: 't1', title: '동아리', remark: '매주', courseNumber: null, department: null });
+    expect(isCustomLecture(lecture)).toBe(true);
   });
 });

@@ -23,6 +23,13 @@ export const formatMinute = (minute: number) => {
   return `${String(hour).padStart(2, '0')}:${String(rest).padStart(2, '0')}`;
 };
 
+/** 오전 · 오후 표기 (직접 추가의 시간 선택). 540 → '오전 9:00', 780 → '오후 1:00', 0 · 1440 → '오전 12:00' */
+export const formatMeridiemMinute = (minute: number) => {
+  const hour = Math.floor(minute / MINUTES_PER_HOUR) % 24;
+  const rest = minute % MINUTES_PER_HOUR;
+  return `${hour < 12 ? '오전' : '오후'} ${hour % 12 || 12}:${String(rest).padStart(2, '0')}`;
+};
+
 /** { day: 0, startMinute: 600, endMinute: 675 } → '월 10:00~11:15' */
 export const formatDayTimeRange = ({ day, startMinute, endMinute }: DayTimeRange) =>
   `${DAY_LABELS[day]} ${formatMinute(startMinute)}~${formatMinute(endMinute)}`;

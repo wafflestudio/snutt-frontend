@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useReducer } from 'react';
+import { type CustomLectureInput, toCustomTimetableLecture } from '@/domain/lecture';
 import { isSameSemester, type Semester } from '@/domain/semester';
 import {
   getTotalCredit,
@@ -24,7 +25,8 @@ export type TimetablesAction =
   | { type: 'create'; id: TimetableId; title: string }
   | { type: 'rename'; id: TimetableId; title: string }
   | { type: 'remove'; id: TimetableId }
-  | { type: 'set-primary'; id: TimetableId; isPrimary: boolean };
+  | { type: 'set-primary'; id: TimetableId; isPrimary: boolean }
+  | { type: 'add-custom-lecture'; id: TimetableId; lectureId: string; input: CustomLectureInput };
 
 const update = (timetables: Timetable[], id: TimetableId, change: (timetable: Timetable) => Timetable) =>
   timetables.map((timetable) => (timetable.id === id ? change(timetable) : timetable));
@@ -46,6 +48,13 @@ export function timetablesReducer(state: TimetablesState, action: TimetablesActi
         lectures: [],
       };
       return { ...state, timetables: [...state.timetables, timetable], selectedId: action.id };
+    }
+    case 'add-custom-lecture': {
+      const lecture = toCustomTimetableLecture(action.lectureId, action.input);
+      return {
+        ...state,
+        timetables: update(state.timetables, action.id, (t) => ({ ...t, lectures: [...t.lectures, lecture] })),
+      };
     }
     case 'rename':
       return { ...state, timetables: update(state.timetables, action.id, (t) => ({ ...t, title: action.title })) };
@@ -117,6 +126,9 @@ export function useTimetables() {
     create: (title: string) => dispatch({ type: 'create', id: crypto.randomUUID(), title }),
     rename: (id: TimetableId, title: string) => dispatch({ type: 'rename', id, title }),
     remove: (id: TimetableId) => dispatch({ type: 'remove', id }),
+    /** 시간 충돌은 부르는 쪽(직접 추가 폼)에서 먼저 확인한다 */
+    addCustomLecture: (id: TimetableId, input: CustomLectureInput) =>
+      dispatch({ type: 'add-custom-lecture', id, lectureId: crypto.randomUUID(), input }),
     setPrimary: (id: TimetableId, isPrimary: boolean) => dispatch({ type: 'set-primary', id, isPrimary }),
   };
 }

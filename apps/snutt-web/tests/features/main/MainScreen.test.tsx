@@ -73,6 +73,25 @@ describe('MainScreen', () => {
     expect(panel('강의 목록')).toBeInTheDocument();
   });
 
+  it('직접 추가한 강의는 고른 시간표에 들어가고, 패널은 목록으로 돌아온다', async () => {
+    render(<MainScreen />);
+    await userEvent.click(screen.getByRole('button', { name: '직접 추가' }));
+    await userEvent.type(screen.getByLabelText('강의명'), '스터디');
+
+    // 처음 시간(월 9:00 ~ 10:00)은 시간표 1 의 경영전략과 겹친다
+    await userEvent.click(screen.getByRole('button', { name: '추가' }));
+    expect(screen.getByRole('alert')).toHaveTextContent('‘경영전략’ 강의와 시간이 겹칩니다');
+
+    await userEvent.click(screen.getByRole('combobox', { name: '요일' }));
+    await userEvent.click(await screen.findByRole('option', { name: '토' }));
+    await userEvent.click(screen.getByRole('button', { name: '추가' }));
+
+    expect(panel('강의 목록')).toBeInTheDocument();
+    expect(screen.getByText('스터디')).toBeInTheDocument();
+    expect(screen.getByText('토')).toBeInTheDocument(); // 토요일 강의가 생겨 그리드가 토요일까지 늘어난다
+    expect(tabNames('시간표')[0]).toBe('시간표 1, 기본 시간표(15학점)'); // 학점이 없는 강의
+  });
+
   it('시간표 비교를 열면 시간표가 두 개가 되고, 패널은 그대로다', async () => {
     render(<MainScreen />);
     await userEvent.click(screen.getByRole('button', { name: '시간표 비교' }));
