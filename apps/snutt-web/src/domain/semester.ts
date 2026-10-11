@@ -13,6 +13,9 @@ export const TERM_SHORT_LABELS: Record<Term, string> = { 1: '1', 2: 'S', 3: '2',
 /** { year: 2026, term: 2 } → '2026 여름학기' */
 export const formatSemester = ({ year, term }: Semester) => `${year} ${TERM_LABELS[term]}`;
 
+/** 학기 드롭다운 표기 (Figma `연도 선택`). { year: 2026, term: 3 } → '2026년 2학기' */
+export const formatSemesterTitle = ({ year, term }: Semester) => `${year}년 ${TERM_LABELS[term]}`;
+
 export const isSameSemester = (a: Semester, b: Semester) => a.year === b.year && a.term === b.term;
 
 /** 오래된 학기가 앞에 오도록 정렬 */

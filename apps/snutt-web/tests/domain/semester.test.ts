@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   compareSemester,
   formatSemester,
+  formatSemesterTitle,
   isSameSemester,
   parseSemesterKey,
   type Semester,
@@ -16,6 +17,13 @@ describe('formatSemester', () => {
     [{ year: 2026, term: 3 }, '2026 2학기'],
     [{ year: 2026, term: 4 }, '2026 겨울학기'],
   ] as const)('%o → %s', (semester, expected) => expect(formatSemester(semester)).toBe(expected));
+});
+
+describe('formatSemesterTitle', () => {
+  it.each([
+    [{ year: 2026, term: 3 }, '2026년 2학기'],
+    [{ year: 2026, term: 4 }, '2026년 겨울학기'],
+  ] as const)('%o → %s', (semester, expected) => expect(formatSemesterTitle(semester)).toBe(expected));
 });
 
 describe('compareSemester', () => {
