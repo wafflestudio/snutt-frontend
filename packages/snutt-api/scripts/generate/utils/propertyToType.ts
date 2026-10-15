@@ -5,7 +5,7 @@ type Schema = OpenAPIV3_1.SchemaObject | OpenAPIV3_1.ReferenceObject;
 
 /**
  * 필드가 항상 존재하는지 판단하는 기준.
- * 백엔드 명세 대부분에 required 가 빠져 있어서, required 가 없을 때는 다음 규칙을 쓴다.
+ * 스키마의 required 를 우선 쓰고, required 가 없는 스키마(명세에 몇 개 남아 있다)는 다음 규칙을 쓴다.
  * - response: 응답에 쓰이는 스키마. null 이 될 수 없는 필드는 항상 온다고 본다 (Kotlin non-null)
  * - request: 요청에만 쓰이는 스키마. 기본값이 있어 생략 가능한 필드가 있으므로 모두 optional
  */
