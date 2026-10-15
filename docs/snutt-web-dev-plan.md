@@ -291,7 +291,7 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | | 0-2 | `CLAUDE.md` + 앱 구조 확정 (경계 규칙 ESLint 강제) | | ✅ #242 |
 | | 0-3 | v2 매핑표 완성 + 필요한 v2 엔드포인트를 `@sf/snutt-api`에 추가 | 기획 스펙 기능 전부 엔드포인트 확인 | ✅ #241 |
 | **1. 기반** | 1-1 | `domain/` 작성 (webclient entities 참고, v2 기준 정리) + 단위 테스트 | | ✅ #243 |
-| | 1-2a | `api/client.ts`(헤더, 토큰 저장, 에러 변환), mappers, queryOptions, QueryClient provider, MSW 테스트 환경. 확인용 아이디 로그인과 개발 페이지 `/api-check` | 테스트 페이지에서 `GET /v2/timetables` 성공 |  |
+| | 1-2a | `api/client.ts`(헤더, 토큰 저장, 에러 변환), mappers, queryOptions, QueryClient provider, MSW 테스트 환경. 확인용 아이디 로그인과 개발 페이지 `/api-check` | 테스트 페이지에서 `GET /v2/timetables` 성공 | ✅ #258 |
 | | 1-2b | 메인 화면의 `useTimetables` 를 query · mutation 으로 바꾸고, 처음 학기 · 시간표는 `GET /v2/timetables/recent` 로 정한다 | 메인 화면이 실제 시간표를 보여 주고 고친다 |  |
 | | 1-3 | ev-api 클라이언트: 강의평 조회·통계·작성·좋아요 엔드포인트 (friends 는 core v2 에 있으면 `@sf/snutt-api` 에 추가) | 8-4, 8-5 에 필요한 엔드포인트 확인 |  |
 | **2. 디자인 시스템** | 2-1 | 색 토큰 (Figma Variables → `yarn generate:tokens` → Tailwind 테마), **라이트 / 다크 테마** 전환 기반, Pretendard. 토큰 확인 페이지 `/tokens` (개발 전용) | 테마 전환 시 전체 색이 토큰으로 바뀜 | ✅ #246 |
