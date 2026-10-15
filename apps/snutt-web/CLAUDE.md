@@ -68,19 +68,24 @@ src/
 ### API 층
 
 ```ts
-// api/timetable.ts
+// api/timetables.ts
 export const timetableQueries = {
   all: () => ['timetables'] as const,
-  detail: (id: string) =>
+  detail: (id: TimetableId) =>
     queryOptions({
-      queryKey: [...timetableQueries.all(), id],
-      queryFn: async () => toTimetable(await call('GET /v2/timetables/:timetableId', { params: { timetableId: id } })),
+      queryKey: [...timetableQueries.all(), 'detail', id],
+      queryFn: async () =>
+        toTimetable(await callApi('GET /v2/timetables/:timetableId', { params: { timetableId: id } })),
     }),
 };
 ```
 
+- 서버 호출은 `callApi('<메서드> <경로>', { params, query, body })` 로 한다. 엔드포인트 이름과 인자 타입은 `@sf/snutt-api` 의 v2 정의를 따른다. 토큰은 `callApi` 가 붙이므로 넘기지 않는다.
+- 접속 주소와 앱 key 는 `.env.local` 의 `NEXT_PUBLIC_API_BASE_URL`, `NEXT_PUBLIC_CLIENT_KEY` (git 에 올리지 않는다). `x-os-type` 은 `web` 고정.
+- 실제 서버와의 연결은 개발 서버의 `/api-check` 페이지에서 로그인해서 확인한다.
+
 - query key 와 queryFn 은 `queryOptions` 팩토리로 리소스별 파일 한 곳에 모은다. 컴포넌트에서 query key 를 직접 쓰지 않는다.
-- 에러는 **throw** 로 통일한다. 결과 래퍼(`{ type: 'success' | 'error' }`)를 만들지 않는다. errcode → 사용자 메시지 변환은 `client.ts` 에서 한 번만 한다.
+- 에러는 **throw** 로 통일한다. 결과 래퍼(`{ type: 'success' | 'error' }`)를 만들지 않는다. 2xx 가 아닌 응답은 `client.ts` 가 `ApiError` 로 바꾼다. v2 에러는 RFC 7807 형식이라 `type`(`/problems/timetable-not-found` 등)으로 종류를 가르고, 사용자에게는 서버가 준 `detail` 을 보여 준다.
 - **토큰 처리는 `api/client.ts` 한 곳에만** 둔다. 저장 위치, 헤더, 401 / refresh 처리를 다른 곳에 흩지 않는다. (BFF 전환 가능성 대비)
 - DI context 는 환경마다 달라지는 것(토큰 저장소, timetable-picker 의 RN WebView 브리지 등)에만 쓴다.
 - 수정 요청(PATCH)은 사용자가 바꾼 필드만 보낸다.
@@ -112,6 +117,8 @@ export const timetableQueries = {
 
 - `domain/`: vitest 단위 테스트. 시간 계산, 충돌, 그리드 배치는 경계값까지 테스트한다.
 - `api/` 와 화면: 인터페이스 mock 대신 MSW 로 네트워크를 mock 한다. mapper 까지 포함해서 검증된다.
+  - 테스트마다 `server.use(http.get(api('/v2/timetables'), () => HttpResponse.json(...)))` 로 응답을 정한다 (`tests/msw/server.ts`). 정하지 않은 요청은 실패한다.
+  - 응답 예시는 `tests/msw/fixtures.ts` 에 v2 타입(`SnuttV2.*`)으로 둔다. 서버는 null 인 필드를 보내지 않으므로 예시에서도 뺀다.
 - 테스트는 `tests/` 에 `src/` 와 같은 폴더 구조로 둔다. (`src/domain/time.ts` → `tests/domain/time.test.ts`)
 - 테스트에서 대상은 `@/` 경로로 import 한다.
 - 컴포넌트 테스트는 Testing Library 로 하고, 파일 첫 줄에 `// @vitest-environment jsdom` 을 둔다. 역할과 이름(`getByRole('button', { name: '닫기' })`)으로 찾는다.
