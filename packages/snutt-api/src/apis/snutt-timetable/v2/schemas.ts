@@ -2,7 +2,7 @@
 // 출처: https://snutt-api-dev.wafflestudio.com/v3/api-docs/v2
 import { Int64, Int32, Double, LocalDate } from '../types';
 
-export type TimetableModifyThemeRequest = { themeId?: Int64 };
+export type TimetableModifyThemeRequest = { themeId: Int64 };
 
 export type ClassPlaceAndTime = { day: 0 | 1 | 2 | 3 | 4 | 5 | 6; place: string; startMinute: Int32; endMinute: Int32 };
 
@@ -37,13 +37,23 @@ export type TimetableResponse = {
   semester: 1 | 2 | 3 | 4;
   title: string;
   themeId: Int64;
+  isPrimary: boolean;
   updatedAt: Int64;
   lectures: TimetableLectureResponse[];
-  primary: boolean;
+};
+
+export type TimetableBriefResponse = {
+  id: Int64;
+  year: Int32;
+  semester: 1 | 2 | 3 | 4;
+  title: string;
+  isPrimary: boolean;
+  updatedAt: Int64;
+  totalCredit: Int32;
 };
 
 export type TimetableLectureReminderModifyRequest = {
-  option?: 'NONE' | 'TEN_MINUTES_BEFORE' | 'ZERO_MINUTE' | 'TEN_MINUTES_AFTER';
+  option: 'NONE' | 'TEN_MINUTES_BEFORE' | 'ZERO_MINUTE' | 'TEN_MINUTES_AFTER';
 };
 
 export type TimetableLectureReminderResponse = {
@@ -52,53 +62,47 @@ export type TimetableLectureReminderResponse = {
   option: 'NONE' | 'TEN_MINUTES_BEFORE' | 'ZERO_MINUTE' | 'TEN_MINUTES_AFTER';
 };
 
-export type SocialTokenRequest = { token?: string };
+export type SocialTokenRequest = { token: string };
 
-export type AuthProvidersResponse = { authProviders: string[]; accessToken: string; refreshToken: string };
+export type AuthProvidersResponse = {
+  authProviders: ('LOCAL' | 'FACEBOOK' | 'APPLE' | 'GOOGLE' | 'KAKAO')[];
+  accessToken: string;
+  refreshToken: string;
+};
 
 export type PushPreferenceDto = { pushPreferences: PushPreferenceItem[] };
 
 export type PushPreferenceItem = {
   type: 'NORMAL' | 'LECTURE_UPDATE' | 'VACANCY_NOTIFICATION' | 'DIARY';
-  enabled: boolean;
+  isEnabled: boolean;
 };
 
-export type AttachLocalRequest = { localId?: string; password?: string };
+export type AttachLocalRequest = { localId: string; password: string };
 
-export type SendVerificationEmailRequest = { email?: string };
+export type SendVerificationEmailRequest = { email: string };
 
-export type VerificationCodeRequest = { code?: string };
+export type VerificationCodeRequest = { code: string };
 
-export type EmailVerificationResultResponse = { emailVerified: boolean };
+export type EmailVerificationResultResponse = { isEmailVerified: boolean };
 
-export type TimetableAddRequest = { year?: Int32; semester?: 1 | 2 | 3 | 4; title: string };
+export type TimetableAddRequest = { year: Int32; semester: 1 | 2 | 3 | 4; title: string };
 
-export type TimetableBriefResponse = {
-  id: Int64;
-  year: Int32;
-  semester: 1 | 2 | 3 | 4;
-  title: string;
-  updatedAt: Int64;
-  totalCredit: Int32;
-  primary: boolean;
-};
+export type TimetableLectureAddRequest = { lectureId: Int64; isForced: boolean };
 
-export type TimetableLectureAddRequest = { lectureId?: Int64; forced?: boolean };
-
-export type ResetLectureRequestBody = { forced?: boolean };
+export type ResetLectureRequestBody = { isForced: boolean };
 
 export type CustomTimetableLectureAddRequest = {
-  courseTitle?: string;
+  courseTitle: string;
   instructor?: string | null;
   credit?: Int32 | null;
-  classPlaceAndTimes?: ClassPlaceAndTime[];
+  classPlaceAndTimes: ClassPlaceAndTime[];
   remark?: string | null;
   customColor?: ColorSet | null;
   paletteIndex?: Int32 | null;
-  forced?: boolean;
+  isForced: boolean;
 };
 
-export type ThemeAddRequest = { name: string; colors?: ColorSet[] };
+export type ThemeAddRequest = { name: string; colors: ColorSet[] };
 
 export type ThemeResponse = {
   id: Int64;
@@ -107,10 +111,10 @@ export type ThemeResponse = {
   kind: 'BUILTIN' | 'CUSTOM' | 'DOWNLOADED';
   builtinCode?: string | null;
   publicationId?: Int64 | null;
-  default: boolean;
+  isDefault: boolean;
 };
 
-export type ThemePublishRequest = { name: string; authorAnonymous?: boolean };
+export type ThemePublishRequest = { name: string; authorAnonymous: boolean };
 
 export type ThemePublicationResponse = {
   id: Int64;
@@ -125,11 +129,11 @@ export type ThemePublicationResponse = {
 
 export type EvaluationWriteRequestBody = {
   content: string;
-  gradeSatisfaction?: Double;
-  teachingSkill?: Double;
-  gains?: Double;
-  lifeBalance?: Double;
-  rating?: Double;
+  gradeSatisfaction: Double;
+  teachingSkill: Double;
+  gains: Double;
+  lifeBalance: Double;
+  rating: Double;
 };
 
 export type EvaluationResponse = {
@@ -144,19 +148,16 @@ export type EvaluationResponse = {
   lifeBalance?: Double | null;
   rating: Double;
   likeCount: Int64;
+  isLiked: boolean;
   fromSnuev: boolean;
   year: Int32;
   semester: 1 | 2 | 3 | 4;
-  hidden: boolean;
-  reported: boolean;
-  liked: boolean;
-  modifiable: boolean;
-  reportable: boolean;
+  isModifiable: boolean;
 };
 
 export type LectureSearchRequest = {
-  year?: Int32;
-  semester?: 1 | 2 | 3 | 4;
+  year: Int32;
+  semester: 1 | 2 | 3 | 4;
   query?: string | null;
   classification?: string[] | null;
   credit?: Int32[] | null;
@@ -169,11 +170,11 @@ export type LectureSearchRequest = {
   times?: SearchTime[] | null;
   timesToExclude?: SearchTime[] | null;
   cursor?: string | null;
-  limit?: Int32;
-  sort?: string | null;
+  limit: Int32;
+  sort: 'DEFAULT' | 'RATING_DESC' | 'COUNT_DESC';
 };
 
-export type SearchTime = { day?: 0 | 1 | 2 | 3 | 4 | 5 | 6; startMinute?: Int32; endMinute?: Int32 };
+export type SearchTime = { day: 0 | 1 | 2 | 3 | 4 | 5 | 6; startMinute: Int32; endMinute: Int32 };
 
 export type CursorPageLectureResponse = {
   content: LectureResponse[];
@@ -207,7 +208,7 @@ export type LectureResponse = {
   evaluationSummary?: LectureEvSummaryResponse | null;
 };
 
-export type FriendRequest = { nickname: string; nicknameTag?: string };
+export type FriendRequest = { nickname: string; nicknameTag: string };
 
 export type FriendResponse = {
   id: Int64;
@@ -223,15 +224,15 @@ export type FeedbackPostRequest = { email?: string | null; message: string };
 export type EvaluationReportRequestBody = { content: string };
 
 export type DiarySubmissionRequestDto = {
-  lectureId?: Int64;
-  dailyClassTypes?: string[];
-  questionAnswers?: QuestionAnswer[];
-  comment?: string;
+  lectureId: Int64;
+  dailyClassTypes: string[];
+  questionAnswers: QuestionAnswer[];
+  comment: string;
 };
 
-export type QuestionAnswer = { questionId?: Int64; answerIndex?: Int32 };
+export type QuestionAnswer = { questionId: Int64; answerIndex: Int32 };
 
-export type DiaryQuestionnaireRequestDto = { lectureId?: Int64; dailyClassTypes?: string[] };
+export type DiaryQuestionnaireRequestDto = { lectureId: Int64; dailyClassTypes: string[] };
 
 export type DiaryQuestionResponse = {
   id: Int64;
@@ -261,9 +262,15 @@ export type TokenResponse = { userId: Int64; accessToken: string; refreshToken: 
 
 export type RefreshRequest = { refreshToken: string };
 
-export type RequestPasswordResetRequest = { email: string };
+export type VerifyPasswordResetCodeRequest = { localId: string; code: string };
 
-export type ConfirmPasswordResetRequest = { email: string; code: string; newPassword: string };
+export type VerifyPasswordResetCodeResponse = { resetToken: string };
+
+export type RequestPasswordResetRequest = { localId: string };
+
+export type RequestPasswordResetResponse = { email: string };
+
+export type ConfirmPasswordResetRequest = { resetToken: string; newPassword: string };
 
 export type LogoutRequest = { refreshToken: string; fcmRegistrationId?: string | null };
 
@@ -294,9 +301,9 @@ export type InsertNotificationRequest = {
   userId?: Int64 | null;
   title: string;
   message: string;
-  type?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+  type: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
   deeplink?: string | null;
-  sendPush?: boolean;
+  sendPush: boolean;
 };
 
 export type FileUploadUri = { uploadUri: string; fileOriginUri: string; fileUri: string };
@@ -304,14 +311,14 @@ export type FileUploadUri = { uploadUri: string; fileOriginUri: string; fileUri:
 export type AdminDiaryQuestionWriteRequest = {
   question: string;
   shortQuestion: string;
-  answers?: string[];
-  shortAnswers?: string[];
-  targetDailyClassTypes?: string[];
+  answers: string[];
+  shortAnswers: string[];
+  targetDailyClassTypes: string[];
 };
 
 export type AdminConfigWriteRequest = {
-  value?: JsonNode;
-  osType?: 'ios' | 'android' | 'web';
+  value: JsonNode;
+  osType: 'ios' | 'android' | 'web' | 'unknown';
   minVersion?: string | null;
   maxVersion?: string | null;
 };
@@ -346,7 +353,7 @@ export type JsonNode = {
 export type AdminConfigResponse = {
   id: Int64;
   name: string;
-  osType: 'ios' | 'android' | 'web';
+  osType: 'ios' | 'android' | 'web' | 'unknown';
   value: JsonNode;
   minVersion?: string | null;
   maxVersion?: string | null;
@@ -361,19 +368,19 @@ export type UserResponse = {
   nickname: string;
   nicknameTag: string;
   email?: string | null;
-  authProviders: string[];
-  admin: boolean;
-  emailVerified: boolean;
+  isEmailVerified: boolean;
+  authProviders: ('LOCAL' | 'FACEBOOK' | 'APPLE' | 'GOOGLE' | 'KAKAO')[];
+  isAdmin: boolean;
 };
 
-export type ChangePasswordRequest = { currentPassword?: string; newPassword?: string };
+export type ChangePasswordRequest = { currentPassword: string; newPassword: string };
 
 export type ChangePasswordResponse = { accessToken: string; refreshToken: string };
 
 export type TimetableModifyRequest = { title: string };
 
 export type TimetableLectureModifyRequest = {
-  resetFields?: (
+  resetFields: (
     | 'courseTitle'
     | 'instructor'
     | 'credit'
@@ -395,7 +402,7 @@ export type TimetableLectureModifyRequest = {
   category?: string | null;
   classification?: string | null;
   categoryPre2025?: string | null;
-  forced?: boolean;
+  isForced: boolean;
 };
 
 export type ThemeModifyRequest = { name?: string | null; colors?: ColorSet[] | null };
@@ -479,15 +486,13 @@ export type CourseTagListResponse = {
   credit: Int32[];
   category: string[];
   categoryPre2025: string[];
-  semesters: SemesterResponse[];
+  semesters: YearAndSemesterResponse[];
   updatedAt?: Int64 | null;
 };
 
-export type SemesterResponse = { year: Int32; semester: 1 | 2 | 3 | 4 };
+export type YearAndSemesterResponse = { year: Int32; semester: 1 | 2 | 3 | 4 };
 
 export type SemesterStatusResponse = { current?: YearAndSemesterResponse | null; next: YearAndSemesterResponse };
-
-export type YearAndSemesterResponse = { year: Int32; semester: 1 | 2 | 3 | 4 };
 
 export type PopupResponse = {
   id: Int64;
@@ -516,8 +521,6 @@ export type NotificationResponse = {
 };
 
 export type NotificationCountResponse = { count: Int64 };
-
-export type FriendCoursebookResponse = { year: Int32; semester: 1 | 2 | 3 | 4 };
 
 export type FriendRequestLinkResponse = { requestToken: string };
 
@@ -552,7 +555,7 @@ export type DiarySubmissionsOfYearSemesterResponse = {
 
 export type DiaryDailyClassTypeResponse = { id: Int64; name: string };
 
-export type CourseEvaluationSummaryResponse = { avgRating?: Double | null; count: Int64 };
+export type CourseEvaluationSummaryResponse = { avgRating?: Double | null; evalCount: Int64 };
 
 export type CourseResponse = {
   id: Int64;
@@ -588,7 +591,7 @@ export type CourseLectureResponse = {
 
 export type CourseEvaluationDetailsResponse = {
   courseId: Int64;
-  count: Int64;
+  evalCount: Int64;
   avgGradeSatisfaction?: Double | null;
   avgTeachingSkill?: Double | null;
   avgGains?: Double | null;
@@ -598,7 +601,7 @@ export type CourseEvaluationDetailsResponse = {
 
 export type CoursebookResponse = { id: Int64; year: Int32; semester: 1 | 2 | 3 | 4; updatedAt: Int64 };
 
-export type CoursebookOfficialResponse = { url: string; proxyUrl?: string | null };
+export type CoursebookOfficialResponse = { url: string };
 
 export type BuildingResponse = {
   id: Int64;
@@ -623,16 +626,16 @@ export type AdminSocialAccountsResponse = {
 export type AdminUserSearchResponse = {
   id: Int64;
   email?: string | null;
+  isEmailVerified: boolean;
   nickname: string;
   nicknameTag: string;
   localId?: string | null;
+  isAdmin: boolean;
   active: boolean;
   createdAt: Int64;
   lastLoginAt: Int64;
-  authProviders: string[];
+  authProviders: ('LOCAL' | 'FACEBOOK' | 'APPLE' | 'GOOGLE' | 'KAKAO')[];
   socialAccounts: AdminSocialAccountsResponse;
-  admin: boolean;
-  emailVerified: boolean;
 };
 
 export type AdminRegistrationPeriodResponse = {

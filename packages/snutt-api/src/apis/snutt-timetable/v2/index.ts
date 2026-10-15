@@ -45,6 +45,8 @@ import {
   ThemeModifyRequest,
 } from './schemas';
 
+type AuthProvider = AuthProvidersResponse['authProviders'][number];
+
 const toQueryString = (query?: Record<string, string | undefined>) => {
   const entries = Object.entries(query ?? {}).filter((entry): entry is [string, string] => entry[1] !== undefined);
   return entries.length > 0 ? `?${new URLSearchParams(entries)}` : '';
@@ -59,7 +61,13 @@ export const getSnuttTimetableV2Apis = ({ callWithToken, callWithoutToken }: Get
         path: '/v2/auth/login',
         body,
       }),
-    'POST /v2/auth/login/:provider': ({ body, params }: { body: SocialLoginRequest; params: { provider: string } }) =>
+    'POST /v2/auth/login/:provider': ({
+      body,
+      params,
+    }: {
+      body: SocialLoginRequest;
+      params: { provider: AuthProvider };
+    }) =>
       callWithoutToken<SuccessResponse<TokenResponse>>({
         method: 'post',
         path: `/v2/auth/login/${params.provider}`,
@@ -99,7 +107,7 @@ export const getSnuttTimetableV2Apis = ({ callWithToken, callWithoutToken }: Get
     }: {
       token: string;
       body: SocialTokenRequest;
-      params: { provider: string };
+      params: { provider: AuthProvider };
     }) =>
       callWithToken<SuccessResponse<AuthProvidersResponse>>({
         method: 'post',
@@ -107,7 +115,13 @@ export const getSnuttTimetableV2Apis = ({ callWithToken, callWithoutToken }: Get
         body,
         token,
       }),
-    'DELETE /v2/users/me/social/:provider': ({ token, params }: { token: string; params: { provider: string } }) =>
+    'DELETE /v2/users/me/social/:provider': ({
+      token,
+      params,
+    }: {
+      token: string;
+      params: { provider: AuthProvider };
+    }) =>
       callWithToken<SuccessResponse<AuthProvidersResponse>>({
         method: 'delete',
         path: `/v2/users/me/social/${params.provider}`,
@@ -135,18 +149,10 @@ export const getSnuttTimetableV2Apis = ({ callWithToken, callWithoutToken }: Get
         path: `/v2/timetables`,
         token,
       }),
-    'POST /v2/timetables': ({
-      token,
-      body,
-      query,
-    }: {
-      token: string;
-      body: TimetableAddRequest;
-      query?: { source?: string };
-    }) =>
+    'POST /v2/timetables': ({ token, body }: { token: string; body: TimetableAddRequest }) =>
       callWithToken<SuccessResponse<TimetableBriefResponse[]>>({
         method: 'post',
-        path: `/v2/timetables${toQueryString(query)}`,
+        path: `/v2/timetables`,
         body,
         token,
       }),
@@ -202,7 +208,7 @@ export const getSnuttTimetableV2Apis = ({ callWithToken, callWithoutToken }: Get
       token: string;
       params: { timetableId: string };
     }) =>
-      callWithToken<SuccessResponse<never>>({
+      callWithToken<SuccessResponse<TimetableBriefResponse[]>>({
         method: 'put',
         path: `/v2/timetables/${params.timetableId}/primary`,
         token,
@@ -214,7 +220,7 @@ export const getSnuttTimetableV2Apis = ({ callWithToken, callWithoutToken }: Get
       token: string;
       params: { timetableId: string };
     }) =>
-      callWithToken<SuccessResponse<never>>({
+      callWithToken<SuccessResponse<TimetableBriefResponse[]>>({
         method: 'delete',
         path: `/v2/timetables/${params.timetableId}/primary`,
         token,
@@ -316,12 +322,11 @@ export const getSnuttTimetableV2Apis = ({ callWithToken, callWithoutToken }: Get
       }),
 
     // ── 강의 검색 ────────────────────────────────────────────────────────────
-    'POST /v2/lectures/search': ({ body, token }: { body: LectureSearchRequest; token: string }) =>
-      callWithToken<SuccessResponse<CursorPageLectureResponse>>({
+    'POST /v2/lectures/search': ({ body }: { body: LectureSearchRequest }) =>
+      callWithoutToken<SuccessResponse<CursorPageLectureResponse>>({
         method: 'post',
         path: '/v2/lectures/search',
         body,
-        token,
       }),
 
     // ── 즐겨찾기 ─────────────────────────────────────────────────────────────
@@ -406,7 +411,7 @@ export const getSnuttTimetableV2Apis = ({ callWithToken, callWithoutToken }: Get
       query,
     }: {
       token: string;
-      query?: { cursor?: string; limit?: string; explicit?: string };
+      query?: { cursor?: string; limit?: string; explicit?: 'true' | 'false' };
     }) =>
       callWithToken<SuccessResponse<CursorPageNotificationResponse>>({
         method: 'get',
@@ -421,15 +426,23 @@ export const getSnuttTimetableV2Apis = ({ callWithToken, callWithoutToken }: Get
       }),
 
     // ── 검색 태그 ────────────────────────────────────────────────────────────
-    'GET /v2/tags/:year/:semester': ({ params }: { params: { year: string; semester: string } }) =>
-      callWithoutToken<SuccessResponse<TagListResponse>>({
+    'GET /v2/tags/:year/:semester': ({
+      token,
+      params,
+    }: {
+      token: string;
+      params: { year: string; semester: string };
+    }) =>
+      callWithToken<SuccessResponse<TagListResponse>>({
         method: 'get',
         path: `/v2/tags/${params.year}/${params.semester}`,
+        token,
       }),
-    'GET /v2/tags/courses': () =>
-      callWithoutToken<SuccessResponse<CourseTagListResponse>>({
+    'GET /v2/tags/courses': ({ token }: { token: string }) =>
+      callWithToken<SuccessResponse<CourseTagListResponse>>({
         method: 'get',
         path: '/v2/tags/courses',
+        token,
       }),
 
     // ── 수강편람 / 학기 ──────────────────────────────────────────────────────
@@ -457,7 +470,7 @@ export const getSnuttTimetableV2Apis = ({ callWithToken, callWithoutToken }: Get
         token,
       }),
     'POST /v2/themes': ({ token, body }: { token: string; body: ThemeAddRequest }) =>
-      callWithToken<SuccessResponse<ThemeResponse>>({
+      callWithToken<SuccessResponse<ThemeResponse[]>>({
         method: 'post',
         path: `/v2/themes`,
         body,
@@ -478,32 +491,32 @@ export const getSnuttTimetableV2Apis = ({ callWithToken, callWithoutToken }: Get
       body: ThemeModifyRequest;
       params: { themeId: string };
     }) =>
-      callWithToken<SuccessResponse<ThemeResponse>>({
+      callWithToken<SuccessResponse<ThemeResponse[]>>({
         method: 'patch',
         path: `/v2/themes/${params.themeId}`,
         body,
         token,
       }),
     'DELETE /v2/themes/:themeId': ({ token, params }: { token: string; params: { themeId: string } }) =>
-      callWithToken<SuccessResponse<never>>({
+      callWithToken<SuccessResponse<ThemeResponse[]>>({
         method: 'delete',
         path: `/v2/themes/${params.themeId}`,
         token,
       }),
     'POST /v2/themes/:themeId/copy': ({ token, params }: { token: string; params: { themeId: string } }) =>
-      callWithToken<SuccessResponse<ThemeResponse>>({
+      callWithToken<SuccessResponse<ThemeResponse[]>>({
         method: 'post',
         path: `/v2/themes/${params.themeId}/copy`,
         token,
       }),
     'POST /v2/themes/:themeId/default': ({ token, params }: { token: string; params: { themeId: string } }) =>
-      callWithToken<SuccessResponse<ThemeResponse>>({
+      callWithToken<SuccessResponse<ThemeResponse[]>>({
         method: 'post',
         path: `/v2/themes/${params.themeId}/default`,
         token,
       }),
     'DELETE /v2/themes/:themeId/default': ({ token, params }: { token: string; params: { themeId: string } }) =>
-      callWithToken<SuccessResponse<ThemeResponse>>({
+      callWithToken<SuccessResponse<ThemeResponse[]>>({
         method: 'delete',
         path: `/v2/themes/${params.themeId}/default`,
         token,

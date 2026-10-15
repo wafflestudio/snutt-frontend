@@ -11,6 +11,76 @@
     }
   ],
   "paths": {
+    "/v1/user/password": {
+      "put": {
+        "tags": [
+          "v-1-compat-user-controller"
+        ],
+        "operationId": "changePassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LegacyChangePasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/LegacyTokenResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "legacyApiKey": [],
+            "legacyToken": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "v-1-compat-user-controller"
+        ],
+        "operationId": "attachLocal",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LegacyAttachLocalRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/LegacyTokenResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "legacyApiKey": [],
+            "legacyToken": []
+          }
+        ]
+      }
+    },
     "/v1/tables/{timetableId}": {
       "get": {
         "tags": [
@@ -156,124 +226,6 @@
                   "items": {
                     "$ref": "#/components/schemas/LegacyTimetableBriefDto"
                   }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      },
-      "patch": {
-        "tags": [
-          "v-1-compat-timetable-controller"
-        ],
-        "operationId": "modifyTimetable_1",
-        "parameters": [
-          {
-            "name": "timetableId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LegacyTimetableModifyRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/LegacyTimetableBriefDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/v1/user/password": {
-      "put": {
-        "tags": [
-          "v-1-compat-user-controller"
-        ],
-        "operationId": "changePassword",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LegacyChangePasswordRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyTokenResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      },
-      "post": {
-        "tags": [
-          "v-1-compat-user-controller"
-        ],
-        "operationId": "attachLocal",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LegacyAttachLocalRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyTokenResponse"
                 }
               }
             }
@@ -1990,14 +1942,7 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PushPreferenceDto"
-                }
-              }
-            }
+            "description": "OK"
           }
         },
         "security": [
@@ -4529,7 +4474,7 @@
     "/v1/tags/{year}/{semester}/update_time": {
       "get": {
         "tags": [
-          "v-1-compat-tag-update-time-controller"
+          "v-1-compat-tag-controller"
         ],
         "operationId": "getTagListUpdateTime",
         "parameters": [
@@ -4844,7 +4789,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/LegacyListResponseLegacyPopupDto"
+                  "$ref": "#/components/schemas/LegacyPageResponseLegacyPopupDto"
                 }
               }
             }
@@ -5169,7 +5114,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/LegacyLectureEvSummaryResponse"
+                  "$ref": "#/components/schemas/LegacyEvSummary"
                 }
               }
             }
@@ -6998,7 +6943,7 @@
         ]
       }
     },
-    "/ev/v1/evaluations/me": {
+    "/v1/ev-service/v1/evaluations/users/me": {
       "get": {
         "tags": [
           "v-1-compat-ev-controller"
@@ -7034,156 +6979,12 @@
         ]
       }
     },
-    "/v1/ev-service/v1/evaluations/users/me": {
-      "get": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "getMyEvaluations_3",
-        "parameters": [
-          {
-            "name": "cursor",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvCursorPageLegacyEvaluationWithLectureDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/ev-service/v1/evaluations/me": {
-      "get": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "getMyEvaluations_4",
-        "parameters": [
-          {
-            "name": "cursor",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvCursorPageLegacyEvaluationWithLectureDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
     "/ev-service/v1/evaluations/users/me": {
       "get": {
         "tags": [
           "v-1-compat-ev-controller"
         ],
-        "operationId": "getMyEvaluations_5",
-        "parameters": [
-          {
-            "name": "cursor",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvCursorPageLegacyEvaluationWithLectureDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/v1/ev-service/v1/evaluations/me": {
-      "get": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "getMyEvaluations_6",
-        "parameters": [
-          {
-            "name": "cursor",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvCursorPageLegacyEvaluationWithLectureDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/v1/ev/v1/evaluations/me": {
-      "get": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "getMyEvaluations_7",
+        "operationId": "getMyEvaluations_3",
         "parameters": [
           {
             "name": "cursor",
@@ -7818,7 +7619,7 @@
         ]
       }
     },
-    "/v1/admin/registration-periods/{year}/{semester}": {
+    "/v1/admin/registrationPeriods/{year}/{semester}": {
       "get": {
         "tags": [
           "v-1-admin-controller"
@@ -7870,116 +7671,12 @@
         ]
       }
     },
-    "/admin/registration-periods/{year}/{semester}": {
-      "get": {
-        "tags": [
-          "v-1-admin-controller"
-        ],
-        "operationId": "getSemesterRegistrationPeriod_1",
-        "parameters": [
-          {
-            "name": "year",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "semester",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "enum": [
-                1,
-                2,
-                3,
-                4
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/SemesterRegistrationPeriod"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/v1/admin/registrationPeriods/{year}/{semester}": {
-      "get": {
-        "tags": [
-          "v-1-admin-controller"
-        ],
-        "operationId": "getSemesterRegistrationPeriod_2",
-        "parameters": [
-          {
-            "name": "year",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "semester",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "enum": [
-                1,
-                2,
-                3,
-                4
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/SemesterRegistrationPeriod"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
     "/admin/registrationPeriods/{year}/{semester}": {
       "get": {
         "tags": [
           "v-1-admin-controller"
         ],
-        "operationId": "getSemesterRegistrationPeriod_3",
+        "operationId": "getSemesterRegistrationPeriod_1",
         "parameters": [
           {
             "name": "year",
@@ -8061,64 +7758,6 @@
           "v-1-admin-controller"
         ],
         "operationId": "getSemesterRegistrationPeriods_1",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SemesterRegistrationPeriod"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/admin/registration-periods": {
-      "get": {
-        "tags": [
-          "v-1-admin-controller"
-        ],
-        "operationId": "getSemesterRegistrationPeriods_2",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SemesterRegistrationPeriod"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/v1/admin/registration-periods": {
-      "get": {
-        "tags": [
-          "v-1-admin-controller"
-        ],
-        "operationId": "getSemesterRegistrationPeriods_3",
         "responses": {
           "200": {
             "description": "OK",
@@ -8229,70 +7868,12 @@
         ]
       }
     },
-    "/admin/diary/daily-class-types": {
-      "get": {
-        "tags": [
-          "v-1-admin-controller"
-        ],
-        "operationId": "getAllDiaryDailyClassTypes_1",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DiaryDailyClassType"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/v1/admin/diary/daily-class-types": {
-      "get": {
-        "tags": [
-          "v-1-admin-controller"
-        ],
-        "operationId": "getAllDiaryDailyClassTypes_2",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DiaryDailyClassType"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
     "/v1/admin/diary/dailyClassTypes": {
       "get": {
         "tags": [
           "v-1-admin-controller"
         ],
-        "operationId": "getAllDiaryDailyClassTypes_3",
+        "operationId": "getAllDiaryDailyClassTypes_1",
         "responses": {
           "200": {
             "description": "OK",
@@ -8411,45 +7992,48 @@
     }
   },
   "components": {
-    "securitySchemes": {
-      "legacyApiKey": {
-        "type": "apiKey",
-        "name": "x-access-apikey",
-        "in": "header"
-      },
-      "legacyToken": {
-        "type": "apiKey",
-        "name": "x-access-token",
-        "in": "header"
-      }
-    },
     "schemas": {
+      "LegacyChangePasswordRequest": {
+        "type": "object",
+        "properties": {
+          "old_password": {
+            "type": "string"
+          },
+          "new_password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "new_password",
+          "old_password"
+        ]
+      },
+      "LegacyTokenResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "token"
+        ]
+      },
       "LegacyTimetableModifyRequest": {
         "type": "object",
         "properties": {
           "title": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "title"
+        ]
       },
       "LegacyTimetableBriefDto": {
         "type": "object",
         "properties": {
           "_id": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time",
-            "writeOnly": true
-          },
-          "total_credit": {
-            "type": "integer",
-            "format": "int32",
-            "writeOnly": true
-          },
-          "id": {
             "type": "string"
           },
           "year": {
@@ -8469,45 +8053,27 @@
           "title": {
             "type": "string"
           },
-          "updatedAt": {
+          "isPrimary": {
+            "type": "boolean"
+          },
+          "updated_at": {
             "type": "string",
             "format": "date-time"
           },
-          "totalCredit": {
+          "total_credit": {
             "type": "integer",
             "format": "int32"
-          },
-          "primary": {
-            "type": "boolean"
           }
-        }
-      },
-      "LegacyChangePasswordRequest": {
-        "type": "object",
-        "properties": {
-          "old_password": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "new_password": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "currentPassword": {
-            "type": "string"
-          },
-          "newPassword": {
-            "type": "string"
-          }
-        }
-      },
-      "LegacyTokenResponse": {
-        "type": "object",
-        "properties": {
-          "token": {
-            "type": "string"
-          }
-        }
+        },
+        "required": [
+          "_id",
+          "isPrimary",
+          "semester",
+          "title",
+          "total_credit",
+          "updated_at",
+          "year"
+        ]
       },
       "LegacyTimetableModifyThemeRequest": {
         "type": "object",
@@ -8531,24 +8097,6 @@
       "LegacyClassPlaceAndTimeFullDto": {
         "type": "object",
         "properties": {
-          "start_time": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "end_time": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "len": {
-            "type": "number",
-            "format": "double",
-            "writeOnly": true
-          },
-          "start": {
-            "type": "number",
-            "format": "double",
-            "writeOnly": true
-          },
           "day": {
             "type": "integer",
             "format": "int32"
@@ -8564,21 +8112,31 @@
             "type": "integer",
             "format": "int32"
           },
-          "startTime": {
+          "start_time": {
             "type": "string"
           },
-          "endTime": {
+          "end_time": {
             "type": "string"
           },
-          "periodLength": {
+          "len": {
             "type": "number",
             "format": "double"
           },
-          "startPeriod": {
+          "start": {
             "type": "number",
             "format": "double"
           }
-        }
+        },
+        "required": [
+          "day",
+          "endMinute",
+          "end_time",
+          "len",
+          "place",
+          "start",
+          "startMinute",
+          "start_time"
+        ]
       },
       "LegacyColorSetDto": {
         "type": "object",
@@ -8604,38 +8162,18 @@
             "type": "integer",
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "evLectureId"
+        ]
       },
       "LegacyTimetableDto": {
         "type": "object",
         "properties": {
           "_id": {
-            "type": "string",
-            "writeOnly": true
+            "type": "string"
           },
           "user_id": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "lecture_list": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LegacyTimetableLectureDto"
-            },
-            "writeOnly": true
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time",
-            "writeOnly": true
-          },
-          "id": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "userId": {
             "type": "string"
           },
           "year": {
@@ -8652,7 +8190,7 @@
               4
             ]
           },
-          "lectures": {
+          "lecture_list": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/LegacyTimetableLectureDto"
@@ -8671,75 +8209,33 @@
               "null"
             ]
           },
-          "updatedAt": {
+          "isPrimary": {
+            "type": "boolean"
+          },
+          "updated_at": {
             "type": "string",
             "format": "date-time"
-          },
-          "primary": {
-            "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "isPrimary",
+          "lecture_list",
+          "semester",
+          "theme",
+          "title",
+          "updated_at",
+          "user_id",
+          "year"
+        ]
       },
       "LegacyTimetableLectureDto": {
         "type": "object",
         "properties": {
           "_id": {
-            "type": "string",
-            "writeOnly": true
+            "type": "string"
           },
           "academic_year": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "class_time_json": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LegacyClassPlaceAndTimeFullDto"
-            },
-            "writeOnly": true
-          },
-          "lecture_number": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "freshman_quota": {
-            "type": "integer",
-            "format": "int32",
-            "writeOnly": true
-          },
-          "course_number": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "course_title": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "colorIndex": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "lecture_id": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "categoryPre2025": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "id": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "academicYear": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string"
           },
           "category": {
             "type": [
@@ -8747,7 +8243,7 @@
               "null"
             ]
           },
-          "classPlaceAndTimes": {
+          "class_time_json": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/LegacyClassPlaceAndTimeFullDto"
@@ -8778,11 +8274,8 @@
               "null"
             ]
           },
-          "lectureNumber": {
-            "type": [
-              "string",
-              "null"
-            ]
+          "lecture_number": {
+            "type": "string"
           },
           "quota": {
             "type": [
@@ -8791,11 +8284,8 @@
             ],
             "format": "int32"
           },
-          "freshmanQuota": {
-            "type": [
-              "integer",
-              "null"
-            ],
+          "freshman_quota": {
+            "type": "integer",
             "format": "int32"
           },
           "remark": {
@@ -8804,13 +8294,10 @@
               "null"
             ]
           },
-          "courseNumber": {
-            "type": [
-              "string",
-              "null"
-            ]
+          "course_number": {
+            "type": "string"
           },
-          "courseTitle": {
+          "course_title": {
             "type": "string"
           },
           "color": {
@@ -8823,11 +8310,12 @@
               }
             ]
           },
-          "lectureId": {
-            "type": [
-              "string",
-              "null"
-            ]
+          "colorIndex": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "lecture_id": {
+            "type": "string"
           },
           "snuttEvLecture": {
             "oneOf": [
@@ -8838,8 +8326,19 @@
                 "type": "null"
               }
             ]
+          },
+          "categoryPre2025": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
-        }
+        },
+        "required": [
+          "class_time_json",
+          "colorIndex",
+          "course_title"
+        ]
       },
       "LegacyClassTimeRequest": {
         "type": "object",
@@ -8871,7 +8370,12 @@
             "type": "integer",
             "format": "int32"
           }
-        }
+        },
+        "required": [
+          "day",
+          "endMinute",
+          "startMinute"
+        ]
       },
       "LegacyColorRequest": {
         "type": "object",
@@ -8894,35 +8398,10 @@
         "type": "object",
         "properties": {
           "course_title": {
-            "type": "string",
-            "writeOnly": true
+            "type": "string"
           },
           "academic_year": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "class_time_json": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LegacyClassTimeRequest"
-            },
-            "writeOnly": true
-          },
-          "is_forced": {
-            "type": "boolean",
-            "writeOnly": true
-          },
-          "courseTitle": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "academicYear": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string"
           },
           "category": {
             "type": [
@@ -8955,11 +8434,8 @@
             ],
             "format": "int32"
           },
-          "classPlaceAndTimes": {
-            "type": [
-              "array",
-              "null"
-            ],
+          "class_time_json": {
+            "type": "array",
             "items": {
               "$ref": "#/components/schemas/LegacyClassTimeRequest"
             }
@@ -8987,7 +8463,7 @@
             ],
             "format": "int32"
           },
-          "forced": {
+          "is_forced": {
             "type": "boolean"
           }
         }
@@ -8996,10 +8472,6 @@
         "type": "object",
         "properties": {
           "is_forced": {
-            "type": "boolean",
-            "writeOnly": true
-          },
-          "forced": {
             "type": "boolean"
           }
         }
@@ -9016,7 +8488,10 @@
               "TEN_MINUTES_AFTER"
             ]
           }
-        }
+        },
+        "required": [
+          "option"
+        ]
       },
       "LegacyReminderDto": {
         "type": "object",
@@ -9036,179 +8511,12 @@
               "TEN_MINUTES_AFTER"
             ]
           }
-        }
-      },
-      "PushPreferenceDto": {
-        "type": "object",
-        "properties": {
-          "pushPreferences": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PushPreferenceItem"
-            }
-          }
-        }
-      },
-      "PushPreferenceItem": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "NORMAL",
-              "LECTURE_UPDATE",
-              "VACANCY_NOTIFICATION",
-              "DIARY"
-            ]
-          },
-          "enabled": {
-            "type": "boolean"
-          }
-        }
-      },
-      "SendVerificationEmailRequest": {
-        "type": "object",
-        "properties": {
-          "email": {
-            "type": "string"
-          }
-        }
-      },
-      "VerificationCodeRequest": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "string"
-          }
-        }
-      },
-      "SearchTime": {
-        "type": "object",
-        "properties": {
-          "day": {
-            "type": "integer",
-            "format": "int32",
-            "enum": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6
-            ]
-          },
-          "startMinute": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "endMinute": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
-      "QuestionAnswer": {
-        "type": "object",
-        "properties": {
-          "questionId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "answerIndex": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
-      "JsonNode": {
-        "type": "object",
-        "properties": {
-          "empty": {
-            "type": "boolean"
-          },
-          "array": {
-            "type": "boolean"
-          },
-          "null": {
-            "type": "boolean"
-          },
-          "object": {
-            "type": "boolean"
-          },
-          "float": {
-            "type": "boolean"
-          },
-          "number": {
-            "type": "boolean"
-          },
-          "nodeType": {
-            "type": "string",
-            "enum": [
-              "ARRAY",
-              "BINARY",
-              "BOOLEAN",
-              "MISSING",
-              "NULL",
-              "NUMBER",
-              "OBJECT",
-              "POJO",
-              "STRING"
-            ]
-          },
-          "string": {
-            "type": "boolean"
-          },
-          "integralNumber": {
-            "type": "boolean"
-          },
-          "missingNode": {
-            "type": "boolean"
-          },
-          "valueNode": {
-            "type": "boolean"
-          },
-          "container": {
-            "type": "boolean"
-          },
-          "pojo": {
-            "type": "boolean"
-          },
-          "floatingPointNumber": {
-            "type": "boolean"
-          },
-          "short": {
-            "type": "boolean"
-          },
-          "int": {
-            "type": "boolean"
-          },
-          "long": {
-            "type": "boolean"
-          },
-          "double": {
-            "type": "boolean"
-          },
-          "bigDecimal": {
-            "type": "boolean"
-          },
-          "bigInteger": {
-            "type": "boolean"
-          },
-          "textual": {
-            "type": "boolean",
-            "deprecated": true
-          },
-          "boolean": {
-            "type": "boolean"
-          },
-          "binary": {
-            "type": "boolean"
-          },
-          "embeddedValue": {
-            "type": "boolean"
-          }
-        }
+        },
+        "required": [
+          "courseTitle",
+          "option",
+          "timetableLectureId"
+        ]
       },
       "LegacySocialTokenRequest": {
         "type": "object",
@@ -9216,7 +8524,10 @@
           "token": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "token"
+        ]
       },
       "LegacyAttachLocalRequest": {
         "type": "object",
@@ -9227,7 +8538,22 @@
           "password": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "id",
+          "password"
+        ]
+      },
+      "SendVerificationEmailRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ]
       },
       "LegacyOkResponse": {
         "type": "object",
@@ -9235,7 +8561,21 @@
           "message": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "VerificationCodeRequest": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ]
       },
       "LegacyEmailVerificationResponse": {
         "type": "object",
@@ -9243,7 +8583,10 @@
           "is_email_verified": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "is_email_verified"
+        ]
       },
       "LegacyThemeAddRequest": {
         "type": "object",
@@ -9257,7 +8600,11 @@
               "$ref": "#/components/schemas/LegacyColorRequest"
             }
           }
-        }
+        },
+        "required": [
+          "colors",
+          "name"
+        ]
       },
       "LegacyThemeDto": {
         "type": "object",
@@ -9287,6 +8634,12 @@
               "$ref": "#/components/schemas/LegacyColorSetDto"
             }
           },
+          "isDefault": {
+            "type": "boolean"
+          },
+          "isCustom": {
+            "type": "boolean"
+          },
           "origin": {
             "oneOf": [
               {
@@ -9315,14 +8668,16 @@
                 "type": "null"
               }
             ]
-          },
-          "default": {
-            "type": "boolean"
-          },
-          "custom": {
-            "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "isCustom",
+          "isDefault",
+          "name",
+          "status",
+          "theme",
+          "userId"
+        ]
       },
       "LegacyThemeOriginDto": {
         "type": "object",
@@ -9333,7 +8688,11 @@
           "authorId": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "authorId",
+          "originId"
+        ]
       },
       "LegacyThemePublishInfoDto": {
         "type": "object",
@@ -9351,7 +8710,11 @@
             "type": "integer",
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "downloads",
+          "publishName"
+        ]
       },
       "LegacyThemePublishRequest": {
         "type": "object",
@@ -9359,10 +8722,14 @@
           "publishName": {
             "type": "string"
           },
-          "anonymous": {
+          "isAnonymous": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "isAnonymous",
+          "publishName"
+        ]
       },
       "LegacyThemeDownloadRequest": {
         "type": "object",
@@ -9370,7 +8737,10 @@
           "name": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "name"
+        ]
       },
       "LegacyPageResponseLegacyThemeDto": {
         "type": "object",
@@ -9385,7 +8755,11 @@
             "type": "integer",
             "format": "int32"
           }
-        }
+        },
+        "required": [
+          "content",
+          "totalCount"
+        ]
       },
       "LegacyTimetableAddRequest": {
         "type": "object",
@@ -9407,27 +8781,17 @@
           "title": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "semester",
+          "title",
+          "year"
+        ]
       },
       "LegacyCustomLectureRequest": {
         "type": "object",
         "properties": {
           "course_title": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "class_time_json": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LegacyClassTimeRequest"
-            },
-            "writeOnly": true
-          },
-          "is_forced": {
-            "type": "boolean",
-            "writeOnly": true
-          },
-          "courseTitle": {
             "type": "string"
           },
           "instructor": {
@@ -9443,11 +8807,8 @@
             ],
             "format": "int32"
           },
-          "classPlaceAndTimes": {
-            "type": [
-              "array",
-              "null"
-            ],
+          "class_time_json": {
+            "type": "array",
             "items": {
               "$ref": "#/components/schemas/LegacyClassTimeRequest"
             }
@@ -9475,28 +8836,17 @@
             ],
             "format": "int32"
           },
-          "forced": {
+          "is_forced": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "course_title"
+        ]
       },
       "LegacySearchQuery": {
         "type": "object",
         "properties": {
-          "course_number": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "writeOnly": true
-          },
-          "academic_year": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "writeOnly": true
-          },
           "year": {
             "type": "integer",
             "format": "int32"
@@ -9536,20 +8886,14 @@
               "format": "int32"
             }
           },
-          "courseNumber": {
-            "type": [
-              "array",
-              "null"
-            ],
+          "course_number": {
+            "type": "array",
             "items": {
               "type": "string"
             }
           },
-          "academicYear": {
-            "type": [
-              "array",
-              "null"
-            ],
+          "academic_year": {
+            "type": "array",
             "items": {
               "type": "string"
             }
@@ -9629,7 +8973,44 @@
               "type": "string"
             }
           }
-        }
+        },
+        "required": [
+          "limit",
+          "page",
+          "semester",
+          "year"
+        ]
+      },
+      "SearchTime": {
+        "type": "object",
+        "properties": {
+          "day": {
+            "type": "integer",
+            "format": "int32",
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          },
+          "startMinute": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "endMinute": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "day",
+          "endMinute",
+          "startMinute"
+        ]
       },
       "LegacyEvSummary": {
         "type": "object",
@@ -9649,49 +9030,20 @@
             "type": "integer",
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "evLectureId",
+          "evaluationCount"
+        ]
       },
       "LegacyLectureDto": {
         "type": "object",
         "properties": {
           "_id": {
-            "type": "string",
-            "writeOnly": true
+            "type": "string"
           },
           "academic_year": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "class_time_json": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LegacyClassPlaceAndTimeFullDto"
-            },
-            "writeOnly": true
-          },
-          "lecture_number": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "course_number": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "course_title": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "id": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "academicYear": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string"
           },
           "category": {
             "type": [
@@ -9699,7 +9051,7 @@
               "null"
             ]
           },
-          "classPlaceAndTimes": {
+          "class_time_json": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/LegacyClassPlaceAndTimeFullDto"
@@ -9730,11 +9082,8 @@
               "null"
             ]
           },
-          "lectureNumber": {
-            "type": [
-              "string",
-              "null"
-            ]
+          "lecture_number": {
+            "type": "string"
           },
           "quota": {
             "type": [
@@ -9764,13 +9113,10 @@
             "type": "integer",
             "format": "int32"
           },
-          "courseNumber": {
-            "type": [
-              "string",
-              "null"
-            ]
+          "course_number": {
+            "type": "string"
           },
-          "courseTitle": {
+          "course_title": {
             "type": "string"
           },
           "registrationCount": {
@@ -9796,7 +9142,50 @@
               "null"
             ]
           }
-        }
+        },
+        "required": [
+          "class_time_json",
+          "course_title",
+          "registrationCount",
+          "semester",
+          "wasFull",
+          "year"
+        ]
+      },
+      "PushPreferenceDto": {
+        "type": "object",
+        "properties": {
+          "pushPreferences": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PushPreferenceItem"
+            }
+          }
+        },
+        "required": [
+          "pushPreferences"
+        ]
+      },
+      "PushPreferenceItem": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "NORMAL",
+              "LECTURE_UPDATE",
+              "VACANCY_NOTIFICATION",
+              "DIARY"
+            ]
+          },
+          "isEnabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "isEnabled",
+          "type"
+        ]
       },
       "LegacyFriendRequest": {
         "type": "object",
@@ -9804,7 +9193,10 @@
           "nickname": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "nickname"
+        ]
       },
       "LegacyFriendDto": {
         "type": "object",
@@ -9828,7 +9220,13 @@
             "type": "string",
             "format": "date-time"
           }
-        }
+        },
+        "required": [
+          "createdAt",
+          "id",
+          "nickname",
+          "userId"
+        ]
       },
       "LegacyFriendNicknameDto": {
         "type": "object",
@@ -9842,7 +9240,10 @@
               "null"
             ]
           }
-        }
+        },
+        "required": [
+          "nickname"
+        ]
       },
       "LegacyFeedbackRequest": {
         "type": "object",
@@ -9856,7 +9257,10 @@
           "message": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "message"
+        ]
       },
       "LegacyEvaluationWriteRequest": {
         "type": "object",
@@ -9864,11 +9268,11 @@
           "content": {
             "type": "string"
           },
-          "gradeSatisfaction": {
+          "grade_satisfaction": {
             "type": "number",
             "format": "double"
           },
-          "teachingSkill": {
+          "teaching_skill": {
             "type": "number",
             "format": "double"
           },
@@ -9876,7 +9280,7 @@
             "type": "number",
             "format": "double"
           },
-          "lifeBalance": {
+          "life_balance": {
             "type": "number",
             "format": "double"
           },
@@ -9884,7 +9288,15 @@
             "type": "number",
             "format": "double"
           }
-        }
+        },
+        "required": [
+          "content",
+          "gains",
+          "grade_satisfaction",
+          "life_balance",
+          "rating",
+          "teaching_skill"
+        ]
       },
       "LegacyEvaluationCreateResponse": {
         "type": "object",
@@ -9896,27 +9308,18 @@
             ],
             "format": "int64"
           },
-          "userId": {
-            "type": [
-              "string",
-              "null"
-            ]
+          "user_id": {
+            "type": "string"
           },
           "content": {
             "type": "string"
           },
-          "gradeSatisfaction": {
-            "type": [
-              "number",
-              "null"
-            ],
+          "grade_satisfaction": {
+            "type": "number",
             "format": "double"
           },
-          "teachingSkill": {
-            "type": [
-              "number",
-              "null"
-            ],
+          "teaching_skill": {
+            "type": "number",
             "format": "double"
           },
           "gains": {
@@ -9926,31 +9329,36 @@
             ],
             "format": "double"
           },
-          "lifeBalance": {
-            "type": [
-              "number",
-              "null"
-            ],
+          "life_balance": {
+            "type": "number",
             "format": "double"
           },
           "rating": {
             "type": "number",
             "format": "double"
           },
-          "likeCount": {
+          "like_count": {
             "type": "integer",
             "format": "int64"
           },
-          "fromSnuev": {
+          "is_hidden": {
             "type": "boolean"
           },
-          "hidden": {
+          "is_reported": {
             "type": "boolean"
           },
-          "reported": {
+          "from_snuev": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "content",
+          "from_snuev",
+          "is_hidden",
+          "is_reported",
+          "like_count",
+          "rating"
+        ]
       },
       "LegacyEvaluationReportRequest": {
         "type": "object",
@@ -9958,7 +9366,10 @@
           "content": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "content"
+        ]
       },
       "LegacyEvaluationReportResponse": {
         "type": "object",
@@ -9970,23 +9381,25 @@
             ],
             "format": "int64"
           },
-          "lectureEvaluationId": {
+          "lecture_evaluation_id": {
             "type": "integer",
             "format": "int64"
           },
-          "userId": {
-            "type": [
-              "string",
-              "null"
-            ]
+          "user_id": {
+            "type": "string"
           },
           "content": {
             "type": "string"
           },
-          "hidden": {
+          "is_hidden": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "content",
+          "is_hidden",
+          "lecture_evaluation_id"
+        ]
       },
       "LegacyDiarySubmissionRequest": {
         "type": "object",
@@ -10010,7 +9423,30 @@
           "comment": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "comment",
+          "dailyClassTypes",
+          "lectureId",
+          "questionAnswers"
+        ]
+      },
+      "QuestionAnswer": {
+        "type": "object",
+        "properties": {
+          "questionId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "answerIndex": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "answerIndex",
+          "questionId"
+        ]
       },
       "LegacyDiaryQuestionnaireRequest": {
         "type": "object",
@@ -10025,7 +9461,11 @@
               "type": "string"
             }
           }
-        }
+        },
+        "required": [
+          "dailyClassTypes",
+          "lectureId"
+        ]
       },
       "LegacyDiaryQuestionDto": {
         "type": "object",
@@ -10042,7 +9482,12 @@
               "type": "string"
             }
           }
-        }
+        },
+        "required": [
+          "answers",
+          "id",
+          "question"
+        ]
       },
       "LegacyDiaryQuestionnaireResponse": {
         "type": "object",
@@ -10066,7 +9511,11 @@
               }
             ]
           }
-        }
+        },
+        "required": [
+          "courseTitle",
+          "questions"
+        ]
       },
       "LegacyDiaryTargetLectureDto": {
         "type": "object",
@@ -10080,21 +9529,22 @@
           "courseTitle": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "courseTitle"
+        ]
       },
       "LegacyBookmarkLectureRequest": {
         "type": "object",
         "properties": {
           "lecture_id": {
             "type": "integer",
-            "format": "int64",
-            "writeOnly": true
-          },
-          "lectureId": {
-            "type": "integer",
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "lecture_id"
+        ]
       },
       "LegacyTokenExchangeRequest": {
         "type": "object",
@@ -10102,7 +9552,10 @@
           "legacyToken": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "legacyToken"
+        ]
       },
       "LegacyTokenExchangeResponse": {
         "type": "object",
@@ -10116,7 +9569,12 @@
           "refreshToken": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "accessToken",
+          "refreshToken",
+          "userId"
+        ]
       },
       "LegacyLocalRegisterRequest": {
         "type": "object",
@@ -10133,16 +9591,16 @@
               "null"
             ]
           }
-        }
+        },
+        "required": [
+          "id",
+          "password"
+        ]
       },
       "LegacyLoginResponse": {
         "type": "object",
         "properties": {
           "user_id": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "userId": {
             "type": "string"
           },
           "token": {
@@ -10151,16 +9609,17 @@
           "message": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "message",
+          "token",
+          "user_id"
+        ]
       },
       "LegacyResetPasswordRequest": {
         "type": "object",
         "properties": {
           "user_id": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "userId": {
             "type": "string"
           },
           "password": {
@@ -10169,25 +9628,26 @@
           "code": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "code",
+          "password",
+          "user_id"
+        ]
       },
       "LegacyVerifyResetCodeRequest": {
         "type": "object",
         "properties": {
           "user_id": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "localId": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string"
           },
           "code": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "code"
+        ]
       },
       "LegacySendEmailRequest": {
         "type": "object",
@@ -10195,19 +9655,21 @@
           "email": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "email"
+        ]
       },
       "LegacyMaskedEmailRequest": {
         "type": "object",
         "properties": {
           "user_id": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "userId": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "user_id"
+        ]
       },
       "LegacyMaskedEmailResponse": {
         "type": "object",
@@ -10215,20 +9677,16 @@
           "email": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "email"
+        ]
       },
       "LegacyLogoutRequest": {
         "type": "object",
         "properties": {
           "registration_id": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "registrationId": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string"
           }
         }
       },
@@ -10241,7 +9699,11 @@
           "password": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "id",
+          "password"
+        ]
       },
       "LegacySocialLoginRequest": {
         "type": "object",
@@ -10249,43 +9711,10 @@
           "token": {
             "type": "string"
           }
-        }
-      },
-      "RegistrationDate": {
-        "type": "object",
-        "properties": {
-          "date": {
-            "type": "string",
-            "format": "date"
-          },
-          "vacantSeatRegistrationTimes": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/RegistrationTimeSlot"
-            }
-          },
-          "phase": {
-            "type": "string",
-            "enum": [
-              "CURRENT_STUDENT",
-              "FRESHMAN",
-              "COURSE_CHANGE"
-            ]
-          }
-        }
-      },
-      "RegistrationTimeSlot": {
-        "type": "object",
-        "properties": {
-          "startMinute": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "endMinute": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
+        },
+        "required": [
+          "token"
+        ]
       },
       "LegacyUpdateUserRequest": {
         "type": "object",
@@ -10310,13 +9739,19 @@
               "null"
             ]
           }
-        }
+        },
+        "required": [
+          "nickname"
+        ]
       },
       "LegacyUserDto": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string"
+          },
+          "isAdmin": {
+            "type": "boolean"
           },
           "regDate": {
             "type": "string",
@@ -10346,11 +9781,15 @@
           },
           "nickname": {
             "$ref": "#/components/schemas/LegacyNicknameDto"
-          },
-          "admin": {
-            "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "id",
+          "isAdmin",
+          "nickname",
+          "notificationCheckedAt",
+          "regDate"
+        ]
       },
       "LegacyThemeModifyRequest": {
         "type": "object",
@@ -10378,7 +9817,10 @@
           "displayName": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "displayName"
+        ]
       },
       "LegacyEvaluationUpdateRequest": {
         "type": "object",
@@ -10389,18 +9831,12 @@
               "null"
             ]
           },
-          "gradeSatisfaction": {
-            "type": [
-              "number",
-              "null"
-            ],
+          "grade_satisfaction": {
+            "type": "number",
             "format": "double"
           },
-          "teachingSkill": {
-            "type": [
-              "number",
-              "null"
-            ],
+          "teaching_skill": {
+            "type": "number",
             "format": "double"
           },
           "gains": {
@@ -10410,11 +9846,8 @@
             ],
             "format": "double"
           },
-          "lifeBalance": {
-            "type": [
-              "number",
-              "null"
-            ],
+          "life_balance": {
+            "type": "number",
             "format": "double"
           },
           "rating": {
@@ -10424,11 +9857,8 @@
             ],
             "format": "double"
           },
-          "semesterLectureId": {
-            "type": [
-              "string",
-              "null"
-            ]
+          "semester_lecture_id": {
+            "type": "string"
           }
         }
       },
@@ -10442,27 +9872,18 @@
             ],
             "format": "int64"
           },
-          "userId": {
-            "type": [
-              "string",
-              "null"
-            ]
+          "user_id": {
+            "type": "string"
           },
           "content": {
             "type": "string"
           },
-          "gradeSatisfaction": {
-            "type": [
-              "number",
-              "null"
-            ],
+          "grade_satisfaction": {
+            "type": "number",
             "format": "double"
           },
-          "teachingSkill": {
-            "type": [
-              "number",
-              "null"
-            ],
+          "teaching_skill": {
+            "type": "number",
             "format": "double"
           },
           "gains": {
@@ -10472,22 +9893,28 @@
             ],
             "format": "double"
           },
-          "lifeBalance": {
-            "type": [
-              "number",
-              "null"
-            ],
+          "life_balance": {
+            "type": "number",
             "format": "double"
           },
           "rating": {
             "type": "number",
             "format": "double"
           },
-          "likeCount": {
+          "like_count": {
             "type": "integer",
             "format": "int64"
           },
-          "fromSnuev": {
+          "is_hidden": {
+            "type": "boolean"
+          },
+          "is_reported": {
+            "type": "boolean"
+          },
+          "is_liked": {
+            "type": "boolean"
+          },
+          "from_snuev": {
             "type": "boolean"
           },
           "year": {
@@ -10498,26 +9925,31 @@
             "type": "integer",
             "format": "int32"
           },
-          "lectureId": {
+          "lecture_id": {
             "type": "integer",
             "format": "int64"
           },
-          "hidden": {
+          "is_modifiable": {
             "type": "boolean"
           },
-          "reported": {
-            "type": "boolean"
-          },
-          "liked": {
-            "type": "boolean"
-          },
-          "modifiable": {
-            "type": "boolean"
-          },
-          "reportable": {
+          "is_reportable": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "content",
+          "from_snuev",
+          "is_hidden",
+          "is_liked",
+          "is_modifiable",
+          "is_reportable",
+          "is_reported",
+          "lecture_id",
+          "like_count",
+          "rating",
+          "semester",
+          "year"
+        ]
       },
       "LegacyVacancyLecturesResponse": {
         "type": "object",
@@ -10528,7 +9960,10 @@
               "$ref": "#/components/schemas/LegacyLectureDto"
             }
           }
-        }
+        },
+        "required": [
+          "lectures"
+        ]
       },
       "LegacyExistsResponse": {
         "type": "object",
@@ -10536,7 +9971,10 @@
           "exists": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "exists"
+        ]
       },
       "LegacySocialProvidersResponse": {
         "type": "object",
@@ -10556,18 +9994,20 @@
           "apple": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "apple",
+          "facebook",
+          "google",
+          "kakao",
+          "local"
+        ]
       },
       "LegacyUserInfoDto": {
         "type": "object",
         "properties": {
-          "local_id": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "fb_name": {
-            "type": "string",
-            "writeOnly": true
+          "isAdmin": {
+            "type": "boolean"
           },
           "regDate": {
             "type": "string",
@@ -10583,38 +10023,22 @@
               "null"
             ]
           },
-          "localId": {
-            "type": [
-              "string",
-              "null"
-            ]
+          "local_id": {
+            "type": "string"
           },
-          "fbName": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "admin": {
-            "type": "boolean"
+          "fb_name": {
+            "type": "string"
           }
-        }
+        },
+        "required": [
+          "isAdmin",
+          "notificationCheckedAt",
+          "regDate"
+        ]
       },
       "LegacyTagListResponse": {
         "type": "object",
         "properties": {
-          "academic_year": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "writeOnly": true
-          },
-          "updated_at": {
-            "type": "integer",
-            "format": "int64",
-            "writeOnly": true
-          },
           "classification": {
             "type": "array",
             "items": {
@@ -10627,7 +10051,7 @@
               "type": "string"
             }
           },
-          "academicYear": {
+          "academic_year": {
             "type": "array",
             "items": {
               "type": "string"
@@ -10657,7 +10081,7 @@
               "type": "string"
             }
           },
-          "updatedAt": {
+          "updated_at": {
             "type": "integer",
             "format": "int64"
           },
@@ -10667,21 +10091,30 @@
               "type": "string"
             }
           }
-        }
+        },
+        "required": [
+          "academic_year",
+          "category",
+          "categoryPre2025",
+          "classification",
+          "credit",
+          "department",
+          "instructor",
+          "sortCriteria",
+          "updated_at"
+        ]
       },
       "LegacyTagUpdateTimeResponse": {
         "type": "object",
         "properties": {
           "updated_at": {
             "type": "integer",
-            "format": "int64",
-            "writeOnly": true
-          },
-          "updatedAt": {
-            "type": "integer",
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "updated_at"
+        ]
       },
       "LegacySemesterStatusResponse": {
         "type": "object",
@@ -10699,7 +10132,10 @@
           "next": {
             "$ref": "#/components/schemas/LegacyYearAndSemesterDto"
           }
-        }
+        },
+        "required": [
+          "next"
+        ]
       },
       "LegacyYearAndSemesterDto": {
         "type": "object",
@@ -10718,9 +10154,13 @@
               4
             ]
           }
-        }
+        },
+        "required": [
+          "semester",
+          "year"
+        ]
       },
-      "LegacyListResponseLegacyPopupDto": {
+      "LegacyPageResponseLegacyPopupDto": {
         "type": "object",
         "properties": {
           "content": {
@@ -10733,20 +10173,15 @@
             "type": "integer",
             "format": "int32"
           }
-        }
+        },
+        "required": [
+          "content",
+          "totalCount"
+        ]
       },
       "LegacyPopupDto": {
         "type": "object",
         "properties": {
-          "image_url": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "hidden_days": {
-            "type": "integer",
-            "format": "int32",
-            "writeOnly": true
-          },
           "id": {
             "type": "string"
           },
@@ -10756,7 +10191,7 @@
           "imageUri": {
             "type": "string"
           },
-          "imageUrl": {
+          "image_url": {
             "type": "string"
           },
           "linkUrl": {
@@ -10772,39 +10207,26 @@
             ],
             "format": "int32"
           },
-          "hiddenDaysSnake": {
-            "type": [
-              "integer",
-              "null"
-            ],
+          "hidden_days": {
+            "type": "integer",
             "format": "int32"
           }
-        }
+        },
+        "required": [
+          "id",
+          "imageUri",
+          "image_url",
+          "key"
+        ]
       },
       "LegacyNotificationDto": {
         "type": "object",
         "properties": {
           "_id": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "user_id": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "writeOnly": true
-          },
-          "id": {
             "type": "string"
           },
-          "userId": {
-            "type": [
-              "string",
-              "null"
-            ]
+          "user_id": {
+            "type": "string"
           },
           "title": {
             "type": "string"
@@ -10822,11 +10244,18 @@
               "null"
             ]
           },
-          "createdAt": {
+          "created_at": {
             "type": "string",
             "format": "date-time"
           }
-        }
+        },
+        "required": [
+          "_id",
+          "created_at",
+          "message",
+          "title",
+          "type"
+        ]
       },
       "LegacyNotificationCountResponse": {
         "type": "object",
@@ -10835,7 +10264,10 @@
             "type": "integer",
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "count"
+        ]
       },
       "LegacyPageResponseLegacyFriendDto": {
         "type": "object",
@@ -10850,7 +10282,11 @@
             "type": "integer",
             "format": "int32"
           }
-        }
+        },
+        "required": [
+          "content",
+          "totalCount"
+        ]
       },
       "LegacyFriendCoursebookDto": {
         "type": "object",
@@ -10863,7 +10299,11 @@
             "type": "integer",
             "format": "int32"
           }
-        }
+        },
+        "required": [
+          "semester",
+          "year"
+        ]
       },
       "LegacyFriendClassPlaceAndTimeDto": {
         "type": "object",
@@ -10895,16 +10335,12 @@
             "type": "integer",
             "format": "int32"
           }
-        }
-      },
-      "LegacyFriendEvLectureIdDto": {
-        "type": "object",
-        "properties": {
-          "evLectureId": {
-            "type": "integer",
-            "format": "int64"
-          }
-        }
+        },
+        "required": [
+          "day",
+          "endMinute",
+          "startMinute"
+        ]
       },
       "LegacyFriendTimetableDto": {
         "type": "object",
@@ -10943,15 +10379,7 @@
           },
           "theme": {
             "type": "integer",
-            "format": "int32",
-            "enum": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5
-            ]
+            "format": "int32"
           },
           "themeId": {
             "type": [
@@ -10959,14 +10387,24 @@
               "null"
             ]
           },
+          "isPrimary": {
+            "type": "boolean"
+          },
           "updatedAt": {
             "type": "string",
             "format": "date-time"
-          },
-          "primary": {
-            "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "isPrimary",
+          "lectures",
+          "semester",
+          "theme",
+          "title",
+          "updatedAt",
+          "userId",
+          "year"
+        ]
       },
       "LegacyFriendTimetableLectureDto": {
         "type": "object",
@@ -11075,23 +10513,18 @@
               "null"
             ]
           },
-          "snuttEvLecture": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/LegacyFriendEvLectureIdDto"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
           "categoryPre2025": {
             "type": [
               "string",
               "null"
             ]
           }
-        }
+        },
+        "required": [
+          "classPlaceAndTimes",
+          "colorIndex",
+          "courseTitle"
+        ]
       },
       "LegacyFriendLinkResponse": {
         "type": "object",
@@ -11099,30 +10532,10 @@
           "requestToken": {
             "type": "string"
           }
-        }
-      },
-      "LegacyLectureEvSummaryResponse": {
-        "type": "object",
-        "properties": {
-          "evLectureId": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "format": "int64"
-          },
-          "avgRating": {
-            "type": [
-              "number",
-              "null"
-            ],
-            "format": "double"
-          },
-          "evaluationCount": {
-            "type": "integer",
-            "format": "int64"
-          }
-        }
+        },
+        "required": [
+          "requestToken"
+        ]
       },
       "LegacyTakenLectureDto": {
         "type": "object",
@@ -11146,7 +10559,7 @@
               "null"
             ]
           },
-          "courseNumber": {
+          "course_number": {
             "type": "string"
           },
           "credit": {
@@ -11156,11 +10569,8 @@
             ],
             "format": "int32"
           },
-          "academicYear": {
-            "type": [
-              "string",
-              "null"
-            ]
+          "academic_year": {
+            "type": "string"
           },
           "category": {
             "type": [
@@ -11174,15 +10584,22 @@
               "null"
             ]
           },
-          "takenYear": {
+          "taken_year": {
             "type": "integer",
             "format": "int32"
           },
-          "takenSemester": {
+          "taken_semester": {
             "type": "integer",
             "format": "int32"
           }
-        }
+        },
+        "required": [
+          "course_number",
+          "instructor",
+          "taken_semester",
+          "taken_year",
+          "title"
+        ]
       },
       "LegacyTakenLecturesResponse": {
         "type": "object",
@@ -11193,11 +10610,15 @@
               "$ref": "#/components/schemas/LegacyTakenLectureDto"
             }
           },
-          "totalCount": {
+          "total_count": {
             "type": "integer",
             "format": "int32"
           }
-        }
+        },
+        "required": [
+          "content",
+          "total_count"
+        ]
       },
       "LegacyEvTagDto": {
         "type": "object",
@@ -11219,7 +10640,12 @@
             "type": "integer",
             "format": "int32"
           }
-        }
+        },
+        "required": [
+          "id",
+          "name",
+          "ordering"
+        ]
       },
       "LegacyEvTagGroupDto": {
         "type": "object",
@@ -11247,18 +10673,27 @@
               "$ref": "#/components/schemas/LegacyEvTagDto"
             }
           }
-        }
+        },
+        "required": [
+          "id",
+          "name",
+          "ordering",
+          "tags"
+        ]
       },
       "LegacySearchTagGroupsResponse": {
         "type": "object",
         "properties": {
-          "tagGroups": {
+          "tag_groups": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/LegacyEvTagGroupDto"
             }
           }
-        }
+        },
+        "required": [
+          "tag_groups"
+        ]
       },
       "LegacyEvCursorPageLegacyEvaluationWithLectureDto": {
         "type": "object",
@@ -11282,14 +10717,16 @@
           "last": {
             "type": "boolean"
           },
-          "totalCount": {
-            "type": [
-              "integer",
-              "null"
-            ],
+          "total_count": {
+            "type": "integer",
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "content",
+          "last",
+          "size"
+        ]
       },
       "LegacyEvaluationCourseDto": {
         "type": "object",
@@ -11307,7 +10744,11 @@
           "instructor": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "instructor",
+          "title"
+        ]
       },
       "LegacyEvaluationWithLectureDto": {
         "type": "object",
@@ -11319,27 +10760,18 @@
             ],
             "format": "int64"
           },
-          "userId": {
-            "type": [
-              "string",
-              "null"
-            ]
+          "user_id": {
+            "type": "string"
           },
           "content": {
             "type": "string"
           },
-          "gradeSatisfaction": {
-            "type": [
-              "number",
-              "null"
-            ],
+          "grade_satisfaction": {
+            "type": "number",
             "format": "double"
           },
-          "teachingSkill": {
-            "type": [
-              "number",
-              "null"
-            ],
+          "teaching_skill": {
+            "type": "number",
             "format": "double"
           },
           "gains": {
@@ -11349,22 +10781,28 @@
             ],
             "format": "double"
           },
-          "lifeBalance": {
-            "type": [
-              "number",
-              "null"
-            ],
+          "life_balance": {
+            "type": "number",
             "format": "double"
           },
           "rating": {
             "type": "number",
             "format": "double"
           },
-          "likeCount": {
+          "like_count": {
             "type": "integer",
             "format": "int64"
           },
-          "fromSnuev": {
+          "is_hidden": {
+            "type": "boolean"
+          },
+          "is_reported": {
+            "type": "boolean"
+          },
+          "is_liked": {
+            "type": "boolean"
+          },
+          "from_snuev": {
             "type": "boolean"
           },
           "year": {
@@ -11385,22 +10823,26 @@
               }
             ]
           },
-          "hidden": {
+          "is_modifiable": {
             "type": "boolean"
           },
-          "reported": {
-            "type": "boolean"
-          },
-          "liked": {
-            "type": "boolean"
-          },
-          "modifiable": {
-            "type": "boolean"
-          },
-          "reportable": {
+          "is_reportable": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "content",
+          "from_snuev",
+          "is_hidden",
+          "is_liked",
+          "is_modifiable",
+          "is_reportable",
+          "is_reported",
+          "like_count",
+          "rating",
+          "semester",
+          "year"
+        ]
       },
       "LegacyMyLectureEvaluationsResponse": {
         "type": "object",
@@ -11411,7 +10853,10 @@
               "$ref": "#/components/schemas/LegacyEvaluationWithSemesterDto"
             }
           }
-        }
+        },
+        "required": [
+          "evaluations"
+        ]
       },
       "LegacyEvCursorPageLegacyEvaluationWithSemesterDto": {
         "type": "object",
@@ -11435,58 +10880,48 @@
           "last": {
             "type": "boolean"
           },
-          "totalCount": {
-            "type": [
-              "integer",
-              "null"
-            ],
+          "total_count": {
+            "type": "integer",
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "content",
+          "last",
+          "size"
+        ]
       },
       "LegacyEvAveragesDto": {
         "type": "object",
         "properties": {
-          "avgGradeSatisfaction": {
-            "type": [
-              "number",
-              "null"
-            ],
+          "avg_grade_satisfaction": {
+            "type": "number",
             "format": "double"
           },
-          "avgTeachingSkill": {
-            "type": [
-              "number",
-              "null"
-            ],
+          "avg_teaching_skill": {
+            "type": "number",
             "format": "double"
           },
-          "avgGains": {
-            "type": [
-              "number",
-              "null"
-            ],
+          "avg_gains": {
+            "type": "number",
             "format": "double"
           },
-          "avgLifeBalance": {
-            "type": [
-              "number",
-              "null"
-            ],
+          "avg_life_balance": {
+            "type": "number",
             "format": "double"
           },
-          "avgRating": {
-            "type": [
-              "number",
-              "null"
-            ],
+          "avg_rating": {
+            "type": "number",
             "format": "double"
           },
-          "evaluationCount": {
+          "evaluation_count": {
             "type": "integer",
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "evaluation_count"
+        ]
       },
       "LegacyEvLectureSummaryResponse": {
         "type": "object",
@@ -11513,7 +10948,7 @@
               "null"
             ]
           },
-          "courseNumber": {
+          "course_number": {
             "type": "string"
           },
           "credit": {
@@ -11523,11 +10958,8 @@
             ],
             "format": "int32"
           },
-          "academicYear": {
-            "type": [
-              "string",
-              "null"
-            ]
+          "academic_year": {
+            "type": "string"
           },
           "category": {
             "type": [
@@ -11544,7 +10976,12 @@
           "evaluation": {
             "$ref": "#/components/schemas/LegacyEvAveragesDto"
           }
-        }
+        },
+        "required": [
+          "course_number",
+          "evaluation",
+          "title"
+        ]
       },
       "LegacyCourseWithSemestersResponse": {
         "type": "object",
@@ -11568,7 +11005,7 @@
               "null"
             ]
           },
-          "courseNumber": {
+          "course_number": {
             "type": "string"
           },
           "credit": {
@@ -11578,11 +11015,8 @@
             ],
             "format": "int32"
           },
-          "academicYear": {
-            "type": [
-              "string",
-              "null"
-            ]
+          "academic_year": {
+            "type": "string"
           },
           "category": {
             "type": [
@@ -11596,13 +11030,19 @@
               "null"
             ]
           },
-          "semesterLectures": {
+          "semester_lectures": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/LegacySemesterLectureDto"
             }
           }
-        }
+        },
+        "required": [
+          "course_number",
+          "instructor",
+          "semester_lectures",
+          "title"
+        ]
       },
       "LegacySemesterLectureDto": {
         "type": "object",
@@ -11623,10 +11063,10 @@
             "type": "integer",
             "format": "int32"
           },
-          "extraInfo": {
+          "extra_info": {
             "type": "string"
           },
-          "academicYear": {
+          "academic_year": {
             "type": "string"
           },
           "category": {
@@ -11635,10 +11075,21 @@
           "classification": {
             "type": "string"
           },
-          "myEvaluationExists": {
+          "my_evaluation_exists": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "academic_year",
+          "category",
+          "classification",
+          "credit",
+          "extra_info",
+          "id",
+          "my_evaluation_exists",
+          "semester",
+          "year"
+        ]
       },
       "LegacyLectureIdResponse": {
         "type": "object",
@@ -11657,7 +11108,11 @@
             "type": "integer",
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "evLectureId",
+          "id"
+        ]
       },
       "LegacyCourseDto": {
         "type": "object",
@@ -11681,7 +11136,7 @@
               "null"
             ]
           },
-          "courseNumber": {
+          "course_number": {
             "type": "string"
           },
           "credit": {
@@ -11691,11 +11146,8 @@
             ],
             "format": "int32"
           },
-          "academicYear": {
-            "type": [
-              "string",
-              "null"
-            ]
+          "academic_year": {
+            "type": "string"
           },
           "category": {
             "type": [
@@ -11712,23 +11164,29 @@
           "evaluation": {
             "$ref": "#/components/schemas/LegacyCourseEvaluationSummaryDto"
           }
-        }
+        },
+        "required": [
+          "course_number",
+          "evaluation",
+          "instructor",
+          "title"
+        ]
       },
       "LegacyCourseEvaluationSummaryDto": {
         "type": "object",
         "properties": {
-          "avgRating": {
-            "type": [
-              "number",
-              "null"
-            ],
+          "avg_rating": {
+            "type": "number",
             "format": "double"
           },
-          "evaluationCount": {
+          "evaluation_count": {
             "type": "integer",
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "evaluation_count"
+        ]
       },
       "LegacyCourseSearchResponse": {
         "type": "object",
@@ -11750,11 +11208,18 @@
           "last": {
             "type": "boolean"
           },
-          "totalCount": {
+          "total_count": {
             "type": "integer",
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "content",
+          "last",
+          "page",
+          "size",
+          "total_count"
+        ]
       },
       "LegacyDiarySemesterSubmissionsDto": {
         "type": "object",
@@ -11773,7 +11238,12 @@
               "$ref": "#/components/schemas/LegacyDiarySubmissionDto"
             }
           }
-        }
+        },
+        "required": [
+          "semester",
+          "submissions",
+          "year"
+        ]
       },
       "LegacyDiaryShortQuestionReplyDto": {
         "type": "object",
@@ -11784,7 +11254,11 @@
           "answer": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "answer",
+          "question"
+        ]
       },
       "LegacyDiarySubmissionDto": {
         "type": "object",
@@ -11810,7 +11284,15 @@
           "comment": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "comment",
+          "courseTitle",
+          "date",
+          "id",
+          "lectureId",
+          "shortQuestionReplies"
+        ]
       },
       "LegacyDiaryDailyClassTypeDto": {
         "type": "object",
@@ -11821,16 +11303,15 @@
           "name": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
       },
       "LegacyCoursebookDto": {
         "type": "object",
         "properties": {
-          "updated_at": {
-            "type": "string",
-            "format": "date-time",
-            "writeOnly": true
-          },
           "year": {
             "type": "integer",
             "format": "int32"
@@ -11839,11 +11320,16 @@
             "type": "integer",
             "format": "int32"
           },
-          "updatedAt": {
+          "updated_at": {
             "type": "string",
             "format": "date-time"
           }
-        }
+        },
+        "required": [
+          "semester",
+          "updated_at",
+          "year"
+        ]
       },
       "LegacyCoursebookOfficialResponse": {
         "type": "object",
@@ -11860,6 +11346,99 @@
           "url": {
             "type": "string"
           }
+        },
+        "required": [
+          "noProxyUrl",
+          "url"
+        ]
+      },
+      "JsonNode": {
+        "type": "object",
+        "properties": {
+          "empty": {
+            "type": "boolean"
+          },
+          "array": {
+            "type": "boolean"
+          },
+          "null": {
+            "type": "boolean"
+          },
+          "object": {
+            "type": "boolean"
+          },
+          "float": {
+            "type": "boolean"
+          },
+          "number": {
+            "type": "boolean"
+          },
+          "nodeType": {
+            "type": "string",
+            "enum": [
+              "ARRAY",
+              "BINARY",
+              "BOOLEAN",
+              "MISSING",
+              "NULL",
+              "NUMBER",
+              "OBJECT",
+              "POJO",
+              "STRING"
+            ]
+          },
+          "string": {
+            "type": "boolean"
+          },
+          "integralNumber": {
+            "type": "boolean"
+          },
+          "missingNode": {
+            "type": "boolean"
+          },
+          "valueNode": {
+            "type": "boolean"
+          },
+          "container": {
+            "type": "boolean"
+          },
+          "pojo": {
+            "type": "boolean"
+          },
+          "floatingPointNumber": {
+            "type": "boolean"
+          },
+          "short": {
+            "type": "boolean"
+          },
+          "int": {
+            "type": "boolean"
+          },
+          "long": {
+            "type": "boolean"
+          },
+          "double": {
+            "type": "boolean"
+          },
+          "bigDecimal": {
+            "type": "boolean"
+          },
+          "bigInteger": {
+            "type": "boolean"
+          },
+          "textual": {
+            "type": "boolean",
+            "deprecated": true
+          },
+          "boolean": {
+            "type": "boolean"
+          },
+          "binary": {
+            "type": "boolean"
+          },
+          "embeddedValue": {
+            "type": "boolean"
+          }
         }
       },
       "LegacyGeoCoordinateDto": {
@@ -11873,15 +11452,15 @@
             "type": "number",
             "format": "double"
           }
-        }
+        },
+        "required": [
+          "latitude",
+          "longitude"
+        ]
       },
       "LegacyLectureBuildingDto": {
         "type": "object",
         "properties": {
-          "locationInDMS": {
-            "$ref": "#/components/schemas/LegacyGeoCoordinateDto",
-            "writeOnly": true
-          },
           "id": {
             "type": "string"
           },
@@ -11897,15 +11476,8 @@
           "campus": {
             "type": "string"
           },
-          "locationInDms": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/LegacyGeoCoordinateDto"
-              },
-              {
-                "type": "null"
-              }
-            ]
+          "locationInDMS": {
+            "$ref": "#/components/schemas/LegacyGeoCoordinateDto"
           },
           "locationInDecimal": {
             "oneOf": [
@@ -11917,7 +11489,14 @@
               }
             ]
           }
-        }
+        },
+        "required": [
+          "buildingNameEng",
+          "buildingNameKor",
+          "buildingNumber",
+          "campus",
+          "id"
+        ]
       },
       "LegacyPageResponseLegacyLectureBuildingDto": {
         "type": "object",
@@ -11932,49 +11511,20 @@
             "type": "integer",
             "format": "int32"
           }
-        }
+        },
+        "required": [
+          "content",
+          "totalCount"
+        ]
       },
       "LegacyBookmarkLectureDto": {
         "type": "object",
         "properties": {
           "_id": {
-            "type": "string",
-            "writeOnly": true
+            "type": "string"
           },
           "academic_year": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "class_time_json": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LegacyClassPlaceAndTimeFullDto"
-            },
-            "writeOnly": true
-          },
-          "lecture_number": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "course_number": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "course_title": {
-            "type": "string",
-            "writeOnly": true
-          },
-          "id": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "academicYear": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string"
           },
           "category": {
             "type": [
@@ -11982,7 +11532,7 @@
               "null"
             ]
           },
-          "classPlaceAndTimes": {
+          "class_time_json": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/LegacyClassPlaceAndTimeFullDto"
@@ -12013,11 +11563,8 @@
               "null"
             ]
           },
-          "lectureNumber": {
-            "type": [
-              "string",
-              "null"
-            ]
+          "lecture_number": {
+            "type": "string"
           },
           "quota": {
             "type": [
@@ -12039,13 +11586,10 @@
               "null"
             ]
           },
-          "courseNumber": {
-            "type": [
-              "string",
-              "null"
-            ]
+          "course_number": {
+            "type": "string"
           },
-          "courseTitle": {
+          "course_title": {
             "type": "string"
           },
           "snuttEvLecture": {
@@ -12064,7 +11608,11 @@
               "null"
             ]
           }
-        }
+        },
+        "required": [
+          "class_time_json",
+          "course_title"
+        ]
       },
       "LegacyBookmarksResponse": {
         "type": "object",
@@ -12083,7 +11631,12 @@
               "$ref": "#/components/schemas/LegacyBookmarkLectureDto"
             }
           }
-        }
+        },
+        "required": [
+          "lectures",
+          "semester",
+          "year"
+        ]
       },
       "LegacyAdminUserSearchResponse": {
         "type": "object",
@@ -12097,6 +11650,9 @@
               "null"
             ]
           },
+          "isEmailVerified": {
+            "type": "boolean"
+          },
           "nickname": {
             "type": "string"
           },
@@ -12105,6 +11661,9 @@
               "string",
               "null"
             ]
+          },
+          "isAdmin": {
+            "type": "boolean"
           },
           "active": {
             "type": "boolean"
@@ -12132,14 +11691,19 @@
           },
           "socialAccounts": {
             "$ref": "#/components/schemas/LegacySocialAccounts"
-          },
-          "admin": {
-            "type": "boolean"
-          },
-          "emailVerified": {
-            "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "active",
+          "authProviders",
+          "id",
+          "isAdmin",
+          "isEmailVerified",
+          "lastLoginTimestamp",
+          "nickname",
+          "regDate",
+          "socialAccounts"
+        ]
       },
       "LegacySocialAccounts": {
         "type": "object",
@@ -12170,30 +11734,54 @@
           }
         }
       },
+      "RegistrationDate": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "vacantSeatRegistrationTimes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RegistrationTimeSlot"
+            }
+          },
+          "phase": {
+            "type": "string",
+            "enum": [
+              "CURRENT_STUDENT",
+              "FRESHMAN",
+              "COURSE_CHANGE"
+            ]
+          }
+        },
+        "required": [
+          "date",
+          "phase",
+          "vacantSeatRegistrationTimes"
+        ]
+      },
+      "RegistrationTimeSlot": {
+        "type": "object",
+        "properties": {
+          "startMinute": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "endMinute": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "endMinute",
+          "startMinute"
+        ]
+      },
       "SemesterRegistrationPeriod": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "format": "int64"
-          },
-          "createdAt": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
-          },
           "year": {
             "type": "integer",
             "format": "int32"
@@ -12213,12 +11801,7 @@
             "items": {
               "$ref": "#/components/schemas/RegistrationDate"
             }
-          }
-        }
-      },
-      "DiaryQuestion": {
-        "type": "object",
-        "properties": {
+          },
           "id": {
             "type": [
               "integer",
@@ -12239,7 +11822,17 @@
               "null"
             ],
             "format": "date-time"
-          },
+          }
+        },
+        "required": [
+          "registrationPeriodList",
+          "semester",
+          "year"
+        ]
+      },
+      "DiaryQuestion": {
+        "type": "object",
+        "properties": {
           "question": {
             "type": "string"
           },
@@ -12260,12 +11853,7 @@
           },
           "active": {
             "type": "boolean"
-          }
-        }
-      },
-      "DiaryDailyClassType": {
-        "type": "object",
-        "properties": {
+          },
           "id": {
             "type": [
               "integer",
@@ -12286,14 +11874,63 @@
               "null"
             ],
             "format": "date-time"
-          },
+          }
+        },
+        "required": [
+          "active",
+          "answerList",
+          "question",
+          "shortAnswerList",
+          "shortQuestion"
+        ]
+      },
+      "DiaryDailyClassType": {
+        "type": "object",
+        "properties": {
           "name": {
             "type": "string"
           },
           "active": {
             "type": "boolean"
+          },
+          "id": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "createdAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
           }
-        }
+        },
+        "required": [
+          "active",
+          "name"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "legacyApiKey": {
+        "type": "apiKey",
+        "name": "x-access-apikey",
+        "in": "header"
+      },
+      "legacyToken": {
+        "type": "apiKey",
+        "name": "x-access-token",
+        "in": "header"
       }
     }
   }

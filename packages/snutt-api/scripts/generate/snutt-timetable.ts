@@ -68,25 +68,24 @@ const collectSchemas = (paths: Document['paths'], schemas: Schemas) => {
 };
 
 const run = async () => {
-  // 그룹 명세(/v3/api-docs/<그룹>)는 components.schemas 가 비어 있다.
-  // (백엔드 OpenApiConfig 가 components 를 securitySchemes 만으로 덮어씀) 그래서 스키마는 전체 명세에서 가져온다.
-  const full = await fetchSpec('/v3/api-docs');
   const scalarTypeNames = [
     ...(await fs.readFile(path.resolve(timetableApiDir, 'types.ts'), 'utf-8')).matchAll(/export type (\w+)/g),
   ].map(([, name]) => name);
 
   for (const group of GROUPS) {
     const spec = await fetchSpec(`/v3/api-docs/${group.name}`);
-    const allSchemas = { ...full.components?.schemas, ...spec.components?.schemas } as Schemas;
-    const collected = collectSchemas(spec.paths, allSchemas);
+    const collected = collectSchemas(spec.paths, (spec.components?.schemas ?? {}) as Schemas);
 
-    // 1. 명세 원본 기록 (스키마를 채워 넣어 그 자체로 완결된 명세로 만든다)
+    // 1. 명세 원본 기록 (경로가 참조하는 스키마만 남긴다)
     const snapshot: Document = {
       ...spec,
       components: { ...spec.components, schemas: Object.fromEntries(collected.map((c) => [c.name, c.schema])) },
     };
     await fs.mkdir(path.resolve(packageRoot, 'specs'), { recursive: true });
-    await fs.writeFile(path.resolve(packageRoot, `specs/${group.version}.json`), JSON.stringify(snapshot, null, 2) + '\n');
+    await fs.writeFile(
+      path.resolve(packageRoot, `specs/${group.version}.json`),
+      JSON.stringify(snapshot, null, 2) + '\n',
+    );
 
     // 2. 타입 생성
     const schemaString = collected

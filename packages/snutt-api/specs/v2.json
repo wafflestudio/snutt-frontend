@@ -108,7 +108,17 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TimetableBriefResponse"
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -137,7 +147,17 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TimetableBriefResponse"
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -323,7 +343,14 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "LOCAL",
+                "FACEBOOK",
+                "APPLE",
+                "GOOGLE",
+                "KAKAO"
+              ]
             }
           }
         ],
@@ -368,7 +395,14 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "LOCAL",
+                "FACEBOOK",
+                "APPLE",
+                "GOOGLE",
+                "KAKAO"
+              ]
             }
           }
         ],
@@ -528,31 +562,6 @@
       }
     },
     "/v2/users/me/email/verification": {
-      "get": {
-        "tags": [
-          "user-controller"
-        ],
-        "operationId": "getEmailVerification",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmailVerificationResultResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "osType": [],
-            "clientKey": [],
-            "bearer": []
-          }
-        ]
-      },
       "post": {
         "tags": [
           "user-controller"
@@ -766,17 +775,6 @@
           "timetable-controller"
         ],
         "operationId": "addTimetable",
-        "parameters": [
-          {
-            "name": "source",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1144,7 +1142,10 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/ThemeResponse"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThemeResponse"
+                  }
                 }
               }
             }
@@ -1230,7 +1231,10 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/ThemeResponse"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThemeResponse"
+                  }
                 }
               }
             }
@@ -1266,7 +1270,10 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/ThemeResponse"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThemeResponse"
+                  }
                 }
               }
             }
@@ -1304,7 +1311,10 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/ThemeResponse"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThemeResponse"
+                  }
                 }
               }
             }
@@ -1342,7 +1352,10 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/ThemeResponse"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThemeResponse"
+                  }
                 }
               }
             }
@@ -1485,7 +1498,12 @@
             "in": "query",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "ACTIVE",
+                "REQUESTING",
+                "REQUESTED"
+              ]
             }
           }
         ],
@@ -1529,7 +1547,14 @@
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendResponse"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1591,7 +1616,14 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendResponse"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1731,15 +1763,7 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "integer",
-                  "format": "int64"
-                }
-              }
-            }
+            "description": "OK"
           }
         },
         "security": [
@@ -1770,7 +1794,14 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvaluationResponse"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1799,7 +1830,14 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvaluationResponse"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -2042,6 +2080,42 @@
         ]
       }
     },
+    "/v2/auth/password/reset/verify": {
+      "post": {
+        "tags": [
+          "auth-controller"
+        ],
+        "operationId": "verifyPasswordResetCode",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyPasswordResetCodeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerifyPasswordResetCodeResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "osType": [],
+            "clientKey": []
+          }
+        ]
+      }
+    },
     "/v2/auth/password/reset/request": {
       "post": {
         "tags": [
@@ -2060,7 +2134,14 @@
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestPasswordResetResponse"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -2177,7 +2258,14 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "LOCAL",
+                "FACEBOOK",
+                "APPLE",
+                "GOOGLE",
+                "KAKAO"
+              ]
             }
           }
         ],
@@ -2319,7 +2407,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "POPUP"
+              ]
             }
           },
           {
@@ -3059,7 +3150,17 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThemeResponse"
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -3102,7 +3203,10 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/ThemeResponse"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ThemeResponse"
+                  }
                 }
               }
             }
@@ -3146,7 +3250,14 @@
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendResponse"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -3623,11 +3734,12 @@
         "operationId": "getMyLatestLectures",
         "parameters": [
           {
-            "name": "filter",
+            "name": "excludeEvaluated",
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean",
+              "default": false
             }
           }
         ],
@@ -4247,9 +4359,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 0
+              "type": "boolean",
+              "default": false
             }
           }
         ],
@@ -4418,7 +4529,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/FriendCoursebookResponse"
+                    "$ref": "#/components/schemas/YearAndSemesterResponse"
                   }
                 }
               }
@@ -4491,7 +4602,7 @@
         ]
       }
     },
-    "/v2/evaluations/tags/{tagKey}": {
+    "/v2/evaluations/tags/{tag}": {
       "get": {
         "tags": [
           "evaluation-controller"
@@ -4499,11 +4610,19 @@
         "operationId": "getEvaluationsByTag",
         "parameters": [
           {
-            "name": "tagKey",
+            "name": "tag",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "RECENT",
+                "LIBERAL_EDUCATION",
+                "RECOMMENDED",
+                "WELL_TAUGHT",
+                "SWEET",
+                "HARD_BUT_WORTH"
+              ]
             }
           },
           {
@@ -4980,7 +5099,12 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "default": "LATEST",
+              "enum": [
+                "LATEST",
+                "RECOMMENDED"
+              ]
             }
           },
           {
@@ -5648,23 +5772,6 @@
     }
   },
   "components": {
-    "securitySchemes": {
-      "osType": {
-        "type": "apiKey",
-        "name": "x-os-type",
-        "in": "header"
-      },
-      "clientKey": {
-        "type": "apiKey",
-        "name": "x-client-key",
-        "in": "header"
-      },
-      "bearer": {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
-      }
-    },
     "schemas": {
       "TimetableModifyThemeRequest": {
         "type": "object",
@@ -5673,7 +5780,10 @@
             "type": "integer",
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "themeId"
+        ]
       },
       "ClassPlaceAndTime": {
         "type": "object",
@@ -5702,7 +5812,13 @@
             "type": "integer",
             "format": "int32"
           }
-        }
+        },
+        "required": [
+          "day",
+          "endMinute",
+          "place",
+          "startMinute"
+        ]
       },
       "ColorSet": {
         "type": "object",
@@ -5713,7 +5829,11 @@
           "foregroundColor": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "backgroundColor",
+          "foregroundColor"
+        ]
       },
       "TimetableLectureResponse": {
         "type": "object",
@@ -5837,7 +5957,14 @@
             "type": "integer",
             "format": "int32"
           }
-        }
+        },
+        "required": [
+          "classPlaceAndTimes",
+          "color",
+          "courseTitle",
+          "id",
+          "paletteIndex"
+        ]
       },
       "TimetableResponse": {
         "type": "object",
@@ -5867,6 +5994,9 @@
             "type": "integer",
             "format": "int64"
           },
+          "isPrimary": {
+            "type": "boolean"
+          },
           "updatedAt": {
             "type": "integer",
             "format": "int64"
@@ -5876,159 +6006,17 @@
             "items": {
               "$ref": "#/components/schemas/TimetableLectureResponse"
             }
-          },
-          "primary": {
-            "type": "boolean"
-          }
-        }
-      },
-      "TimetableLectureReminderModifyRequest": {
-        "type": "object",
-        "properties": {
-          "option": {
-            "type": "string",
-            "enum": [
-              "NONE",
-              "TEN_MINUTES_BEFORE",
-              "ZERO_MINUTE",
-              "TEN_MINUTES_AFTER"
-            ]
-          }
-        }
-      },
-      "TimetableLectureReminderResponse": {
-        "type": "object",
-        "properties": {
-          "timetableLectureId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "courseTitle": {
-            "type": "string"
-          },
-          "option": {
-            "type": "string",
-            "enum": [
-              "NONE",
-              "TEN_MINUTES_BEFORE",
-              "ZERO_MINUTE",
-              "TEN_MINUTES_AFTER"
-            ]
-          }
-        }
-      },
-      "SocialTokenRequest": {
-        "type": "object",
-        "properties": {
-          "token": {
-            "type": "string"
-          }
-        }
-      },
-      "AuthProvidersResponse": {
-        "type": "object",
-        "properties": {
-          "authProviders": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "accessToken": {
-            "type": "string"
-          },
-          "refreshToken": {
-            "type": "string"
-          }
-        }
-      },
-      "PushPreferenceDto": {
-        "type": "object",
-        "properties": {
-          "pushPreferences": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PushPreferenceItem"
-            }
-          }
-        }
-      },
-      "PushPreferenceItem": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "NORMAL",
-              "LECTURE_UPDATE",
-              "VACANCY_NOTIFICATION",
-              "DIARY"
-            ]
-          },
-          "enabled": {
-            "type": "boolean"
-          }
-        }
-      },
-      "AttachLocalRequest": {
-        "type": "object",
-        "properties": {
-          "localId": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          }
-        }
-      },
-      "SendVerificationEmailRequest": {
-        "type": "object",
-        "properties": {
-          "email": {
-            "type": "string"
-          }
-        }
-      },
-      "VerificationCodeRequest": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "string"
-          }
-        }
-      },
-      "EmailVerificationResultResponse": {
-        "type": "object",
-        "properties": {
-          "emailVerified": {
-            "type": "boolean"
-          }
-        }
-      },
-      "TimetableAddRequest": {
-        "type": "object",
-        "properties": {
-          "year": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "semester": {
-            "type": "integer",
-            "format": "int32",
-            "enum": [
-              1,
-              2,
-              3,
-              4
-            ]
-          },
-          "title": {
-            "type": "string",
-            "minLength": 1
           }
         },
         "required": [
-          "title"
+          "id",
+          "isPrimary",
+          "lectures",
+          "semester",
+          "themeId",
+          "title",
+          "updatedAt",
+          "year"
         ]
       },
       "TimetableBriefResponse": {
@@ -6055,6 +6043,9 @@
           "title": {
             "type": "string"
           },
+          "isPrimary": {
+            "type": "boolean"
+          },
           "updatedAt": {
             "type": "integer",
             "format": "int64"
@@ -6062,11 +6053,211 @@
           "totalCredit": {
             "type": "integer",
             "format": "int32"
+          }
+        },
+        "required": [
+          "id",
+          "isPrimary",
+          "semester",
+          "title",
+          "totalCredit",
+          "updatedAt",
+          "year"
+        ]
+      },
+      "TimetableLectureReminderModifyRequest": {
+        "type": "object",
+        "properties": {
+          "option": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "TEN_MINUTES_BEFORE",
+              "ZERO_MINUTE",
+              "TEN_MINUTES_AFTER"
+            ]
+          }
+        },
+        "required": [
+          "option"
+        ]
+      },
+      "TimetableLectureReminderResponse": {
+        "type": "object",
+        "properties": {
+          "timetableLectureId": {
+            "type": "integer",
+            "format": "int64"
           },
-          "primary": {
+          "courseTitle": {
+            "type": "string"
+          },
+          "option": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "TEN_MINUTES_BEFORE",
+              "ZERO_MINUTE",
+              "TEN_MINUTES_AFTER"
+            ]
+          }
+        },
+        "required": [
+          "courseTitle",
+          "option",
+          "timetableLectureId"
+        ]
+      },
+      "SocialTokenRequest": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "token"
+        ]
+      },
+      "AuthProvidersResponse": {
+        "type": "object",
+        "properties": {
+          "authProviders": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "LOCAL",
+                "FACEBOOK",
+                "APPLE",
+                "GOOGLE",
+                "KAKAO"
+              ]
+            }
+          },
+          "accessToken": {
+            "type": "string"
+          },
+          "refreshToken": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "accessToken",
+          "authProviders",
+          "refreshToken"
+        ]
+      },
+      "PushPreferenceDto": {
+        "type": "object",
+        "properties": {
+          "pushPreferences": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PushPreferenceItem"
+            }
+          }
+        },
+        "required": [
+          "pushPreferences"
+        ]
+      },
+      "PushPreferenceItem": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "NORMAL",
+              "LECTURE_UPDATE",
+              "VACANCY_NOTIFICATION",
+              "DIARY"
+            ]
+          },
+          "isEnabled": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "isEnabled",
+          "type"
+        ]
+      },
+      "AttachLocalRequest": {
+        "type": "object",
+        "properties": {
+          "localId": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "localId",
+          "password"
+        ]
+      },
+      "SendVerificationEmailRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "VerificationCodeRequest": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ]
+      },
+      "EmailVerificationResultResponse": {
+        "type": "object",
+        "properties": {
+          "isEmailVerified": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "isEmailVerified"
+        ]
+      },
+      "TimetableAddRequest": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "semester": {
+            "type": "integer",
+            "format": "int32",
+            "enum": [
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "semester",
+          "title",
+          "year"
+        ]
       },
       "TimetableLectureAddRequest": {
         "type": "object",
@@ -6075,18 +6266,25 @@
             "type": "integer",
             "format": "int64"
           },
-          "forced": {
+          "isForced": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "isForced",
+          "lectureId"
+        ]
       },
       "ResetLectureRequestBody": {
         "type": "object",
         "properties": {
-          "forced": {
+          "isForced": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "isForced"
+        ]
       },
       "CustomTimetableLectureAddRequest": {
         "type": "object",
@@ -6136,10 +6334,15 @@
             ],
             "format": "int32"
           },
-          "forced": {
+          "isForced": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "classPlaceAndTimes",
+          "courseTitle",
+          "isForced"
+        ]
       },
       "ThemeAddRequest": {
         "type": "object",
@@ -6156,6 +6359,7 @@
           }
         },
         "required": [
+          "colors",
           "name"
         ]
       },
@@ -6196,10 +6400,17 @@
             ],
             "format": "int64"
           },
-          "default": {
+          "isDefault": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "colors",
+          "id",
+          "isDefault",
+          "kind",
+          "name"
+        ]
       },
       "ThemePublishRequest": {
         "type": "object",
@@ -6213,6 +6424,7 @@
           }
         },
         "required": [
+          "authorAnonymous",
           "name"
         ]
       },
@@ -6255,7 +6467,15 @@
             "type": "integer",
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "authorAnonymous",
+          "colors",
+          "downloadCount",
+          "id",
+          "listed",
+          "name"
+        ]
       },
       "EvaluationWriteRequestBody": {
         "type": "object",
@@ -6286,7 +6506,12 @@
           }
         },
         "required": [
-          "content"
+          "content",
+          "gains",
+          "gradeSatisfaction",
+          "lifeBalance",
+          "rating",
+          "teachingSkill"
         ]
       },
       "EvaluationResponse": {
@@ -6345,6 +6570,9 @@
             "type": "integer",
             "format": "int64"
           },
+          "isLiked": {
+            "type": "boolean"
+          },
           "fromSnuev": {
             "type": "boolean"
           },
@@ -6362,22 +6590,24 @@
               4
             ]
           },
-          "hidden": {
-            "type": "boolean"
-          },
-          "reported": {
-            "type": "boolean"
-          },
-          "liked": {
-            "type": "boolean"
-          },
-          "modifiable": {
-            "type": "boolean"
-          },
-          "reportable": {
+          "isModifiable": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "content",
+          "courseId",
+          "courseTitle",
+          "fromSnuev",
+          "id",
+          "instructor",
+          "isLiked",
+          "isModifiable",
+          "likeCount",
+          "rating",
+          "semester",
+          "year"
+        ]
       },
       "LectureSearchRequest": {
         "type": "object",
@@ -6501,17 +6731,23 @@
           },
           "limit": {
             "type": "integer",
-            "format": "int32",
-            "maximum": 100,
-            "minimum": 1
+            "format": "int32"
           },
           "sort": {
-            "type": [
-              "string",
-              "null"
+            "type": "string",
+            "enum": [
+              "DEFAULT",
+              "RATING_DESC",
+              "COUNT_DESC"
             ]
           }
-        }
+        },
+        "required": [
+          "limit",
+          "semester",
+          "sort",
+          "year"
+        ]
       },
       "SearchTime": {
         "type": "object",
@@ -6537,7 +6773,12 @@
             "type": "integer",
             "format": "int32"
           }
-        }
+        },
+        "required": [
+          "day",
+          "endMinute",
+          "startMinute"
+        ]
       },
       "CursorPageLectureResponse": {
         "type": "object",
@@ -6568,7 +6809,12 @@
             ],
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "content",
+          "last",
+          "size"
+        ]
       },
       "LectureEvSummaryResponse": {
         "type": "object",
@@ -6584,7 +6830,10 @@
             "type": "integer",
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "evalCount"
+        ]
       },
       "LectureResponse": {
         "type": "object",
@@ -6696,7 +6945,18 @@
               }
             ]
           }
-        }
+        },
+        "required": [
+          "classPlaceAndTimes",
+          "courseNumber",
+          "courseTitle",
+          "credit",
+          "id",
+          "lectureNumber",
+          "quota",
+          "semester",
+          "year"
+        ]
       },
       "FriendRequest": {
         "type": "object",
@@ -6711,7 +6971,8 @@
           }
         },
         "required": [
-          "nickname"
+          "nickname",
+          "nicknameTag"
         ]
       },
       "FriendResponse": {
@@ -6741,7 +7002,14 @@
             "type": "integer",
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "createdAt",
+          "id",
+          "nickname",
+          "nicknameTag",
+          "userId"
+        ]
       },
       "FeedbackPostRequest": {
         "type": "object",
@@ -6795,7 +7063,13 @@
           "comment": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "comment",
+          "dailyClassTypes",
+          "lectureId",
+          "questionAnswers"
+        ]
       },
       "QuestionAnswer": {
         "type": "object",
@@ -6808,7 +7082,11 @@
             "type": "integer",
             "format": "int32"
           }
-        }
+        },
+        "required": [
+          "answerIndex",
+          "questionId"
+        ]
       },
       "DiaryQuestionnaireRequestDto": {
         "type": "object",
@@ -6823,7 +7101,11 @@
               "type": "string"
             }
           }
-        }
+        },
+        "required": [
+          "dailyClassTypes",
+          "lectureId"
+        ]
       },
       "DiaryQuestionResponse": {
         "type": "object",
@@ -6850,7 +7132,14 @@
               "type": "string"
             }
           }
-        }
+        },
+        "required": [
+          "answers",
+          "id",
+          "question",
+          "shortAnswers",
+          "shortQuestion"
+        ]
       },
       "DiaryQuestionnaireResponse": {
         "type": "object",
@@ -6874,7 +7163,11 @@
               }
             ]
           }
-        }
+        },
+        "required": [
+          "courseTitle",
+          "questions"
+        ]
       },
       "DiaryTargetLectureResponse": {
         "type": "object",
@@ -6905,7 +7198,12 @@
               "$ref": "#/components/schemas/ClassPlaceAndTime"
             }
           }
-        }
+        },
+        "required": [
+          "classPlaceAndTimes",
+          "courseTitle",
+          "lectureId"
+        ]
       },
       "RegisterLocalRequest": {
         "type": "object",
@@ -6943,7 +7241,12 @@
           "refreshToken": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "accessToken",
+          "refreshToken",
+          "userId"
+        ]
       },
       "RefreshRequest": {
         "type": "object",
@@ -6957,12 +7260,51 @@
           "refreshToken"
         ]
       },
+      "VerifyPasswordResetCodeRequest": {
+        "type": "object",
+        "properties": {
+          "localId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "code": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "code",
+          "localId"
+        ]
+      },
+      "VerifyPasswordResetCodeResponse": {
+        "type": "object",
+        "properties": {
+          "resetToken": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "resetToken"
+        ]
+      },
       "RequestPasswordResetRequest": {
         "type": "object",
         "properties": {
-          "email": {
+          "localId": {
             "type": "string",
             "minLength": 1
+          }
+        },
+        "required": [
+          "localId"
+        ]
+      },
+      "RequestPasswordResetResponse": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
           }
         },
         "required": [
@@ -6972,11 +7314,7 @@
       "ConfirmPasswordResetRequest": {
         "type": "object",
         "properties": {
-          "email": {
-            "type": "string",
-            "minLength": 1
-          },
-          "code": {
+          "resetToken": {
             "type": "string",
             "minLength": 1
           },
@@ -6986,9 +7324,8 @@
           }
         },
         "required": [
-          "code",
-          "email",
-          "newPassword"
+          "newPassword",
+          "resetToken"
         ]
       },
       "LogoutRequest": {
@@ -7114,7 +7451,14 @@
             "type": "integer",
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "createdAt",
+          "id",
+          "imageOriginUri",
+          "popupKey",
+          "updatedAt"
+        ]
       },
       "InsertNotificationRequest": {
         "type": "object",
@@ -7160,7 +7504,9 @@
         },
         "required": [
           "message",
-          "title"
+          "sendPush",
+          "title",
+          "type"
         ]
       },
       "FileUploadUri": {
@@ -7175,7 +7521,12 @@
           "fileUri": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "fileOriginUri",
+          "fileUri",
+          "uploadUri"
+        ]
       },
       "AdminDiaryQuestionWriteRequest": {
         "type": "object",
@@ -7208,8 +7559,11 @@
           }
         },
         "required": [
+          "answers",
           "question",
-          "shortQuestion"
+          "shortAnswers",
+          "shortQuestion",
+          "targetDailyClassTypes"
         ]
       },
       "AdminConfigWriteRequest": {
@@ -7223,7 +7577,8 @@
             "enum": [
               "ios",
               "android",
-              "web"
+              "web",
+              "unknown"
             ]
           },
           "minVersion": {
@@ -7238,7 +7593,11 @@
               "null"
             ]
           }
-        }
+        },
+        "required": [
+          "osType",
+          "value"
+        ]
       },
       "JsonNode": {
         "type": "object",
@@ -7344,7 +7703,8 @@
             "enum": [
               "ios",
               "android",
-              "web"
+              "web",
+              "unknown"
             ]
           },
           "value": {
@@ -7370,7 +7730,15 @@
             "type": "integer",
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "createdAt",
+          "id",
+          "name",
+          "osType",
+          "updatedAt",
+          "value"
+        ]
       },
       "UpdateUserRequest": {
         "type": "object",
@@ -7403,19 +7771,34 @@
               "null"
             ]
           },
+          "isEmailVerified": {
+            "type": "boolean"
+          },
           "authProviders": {
             "type": "array",
             "items": {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "LOCAL",
+                "FACEBOOK",
+                "APPLE",
+                "GOOGLE",
+                "KAKAO"
+              ]
             }
           },
-          "admin": {
-            "type": "boolean"
-          },
-          "emailVerified": {
+          "isAdmin": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "authProviders",
+          "id",
+          "isAdmin",
+          "isEmailVerified",
+          "nickname",
+          "nicknameTag"
+        ]
       },
       "ChangePasswordRequest": {
         "type": "object",
@@ -7426,7 +7809,11 @@
           "newPassword": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "currentPassword",
+          "newPassword"
+        ]
       },
       "ChangePasswordResponse": {
         "type": "object",
@@ -7437,7 +7824,11 @@
           "refreshToken": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "accessToken",
+          "refreshToken"
+        ]
       },
       "TimetableModifyRequest": {
         "type": "object",
@@ -7547,10 +7938,14 @@
               "null"
             ]
           },
-          "forced": {
+          "isForced": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "isForced",
+          "resetFields"
+        ]
       },
       "ThemeModifyRequest": {
         "type": "object",
@@ -7659,7 +8054,12 @@
               "COURSE_CHANGE"
             ]
           }
-        }
+        },
+        "required": [
+          "date",
+          "phase",
+          "vacantSeatRegistrationTimes"
+        ]
       },
       "RegistrationTimeSlot": {
         "type": "object",
@@ -7672,7 +8072,11 @@
             "type": "integer",
             "format": "int32"
           }
-        }
+        },
+        "required": [
+          "endMinute",
+          "startMinute"
+        ]
       },
       "VacancyNotificationLectureResponse": {
         "type": "object",
@@ -7718,7 +8122,17 @@
           "wasFull": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "courseNumber",
+          "courseTitle",
+          "credit",
+          "id",
+          "lectureNumber",
+          "quota",
+          "registrationCount",
+          "wasFull"
+        ]
       },
       "VacancyNotificationLecturesResponse": {
         "type": "object",
@@ -7729,7 +8143,10 @@
               "$ref": "#/components/schemas/VacancyNotificationLectureResponse"
             }
           }
-        }
+        },
+        "required": [
+          "lectures"
+        ]
       },
       "TakenLectureResponse": {
         "type": "object",
@@ -7796,7 +8213,16 @@
               4
             ]
           }
-        }
+        },
+        "required": [
+          "courseNumber",
+          "id",
+          "instructor",
+          "lectureId",
+          "takenSemester",
+          "takenYear",
+          "title"
+        ]
       },
       "CursorPageThemePublicationResponse": {
         "type": "object",
@@ -7827,7 +8253,12 @@
             ],
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "content",
+          "last",
+          "size"
+        ]
       },
       "SortCriterionResponse": {
         "type": "object",
@@ -7838,7 +8269,11 @@
           "label": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "label",
+          "value"
+        ]
       },
       "TagListResponse": {
         "type": "object",
@@ -7899,7 +8334,17 @@
             ],
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "academicYear",
+          "category",
+          "categoryPre2025",
+          "classification",
+          "credit",
+          "department",
+          "instructor",
+          "sortCriteria"
+        ]
       },
       "CourseTagListResponse": {
         "type": "object",
@@ -7944,7 +8389,7 @@
           "semesters": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/SemesterResponse"
+              "$ref": "#/components/schemas/YearAndSemesterResponse"
             }
           },
           "updatedAt": {
@@ -7954,44 +8399,16 @@
             ],
             "format": "int64"
           }
-        }
-      },
-      "SemesterResponse": {
-        "type": "object",
-        "properties": {
-          "year": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "semester": {
-            "type": "integer",
-            "format": "int32",
-            "enum": [
-              1,
-              2,
-              3,
-              4
-            ]
-          }
-        }
-      },
-      "SemesterStatusResponse": {
-        "type": "object",
-        "properties": {
-          "current": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/YearAndSemesterResponse"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "next": {
-            "$ref": "#/components/schemas/YearAndSemesterResponse"
-          }
-        }
+        },
+        "required": [
+          "academicYear",
+          "category",
+          "categoryPre2025",
+          "classification",
+          "credit",
+          "department",
+          "semesters"
+        ]
       },
       "YearAndSemesterResponse": {
         "type": "object",
@@ -8010,7 +8427,32 @@
               4
             ]
           }
-        }
+        },
+        "required": [
+          "semester",
+          "year"
+        ]
+      },
+      "SemesterStatusResponse": {
+        "type": "object",
+        "properties": {
+          "current": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/YearAndSemesterResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "next": {
+            "$ref": "#/components/schemas/YearAndSemesterResponse"
+          }
+        },
+        "required": [
+          "next"
+        ]
       },
       "PopupResponse": {
         "type": "object",
@@ -8038,7 +8480,12 @@
             ],
             "format": "int32"
           }
-        }
+        },
+        "required": [
+          "id",
+          "imageUri",
+          "popupKey"
+        ]
       },
       "CursorPageNotificationResponse": {
         "type": "object",
@@ -8069,7 +8516,12 @@
             ],
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "content",
+          "last",
+          "size"
+        ]
       },
       "NotificationResponse": {
         "type": "object",
@@ -8115,7 +8567,14 @@
             "type": "integer",
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "createdAt",
+          "id",
+          "message",
+          "title",
+          "type"
+        ]
       },
       "NotificationCountResponse": {
         "type": "object",
@@ -8124,26 +8583,10 @@
             "type": "integer",
             "format": "int64"
           }
-        }
-      },
-      "FriendCoursebookResponse": {
-        "type": "object",
-        "properties": {
-          "year": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "semester": {
-            "type": "integer",
-            "format": "int32",
-            "enum": [
-              1,
-              2,
-              3,
-              4
-            ]
-          }
-        }
+        },
+        "required": [
+          "count"
+        ]
       },
       "FriendRequestLinkResponse": {
         "type": "object",
@@ -8151,7 +8594,10 @@
           "requestToken": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "requestToken"
+        ]
       },
       "EvaluationTagResponse": {
         "type": "object",
@@ -8165,7 +8611,12 @@
           "description": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "description",
+          "key",
+          "title"
+        ]
       },
       "CursorPageEvaluationResponse": {
         "type": "object",
@@ -8196,7 +8647,12 @@
             ],
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "content",
+          "last",
+          "size"
+        ]
       },
       "DiaryShortQuestionReplyResponse": {
         "type": "object",
@@ -8211,7 +8667,12 @@
           "shortAnswer": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "questionId",
+          "shortAnswer",
+          "shortQuestion"
+        ]
       },
       "DiarySubmissionSummaryResponse": {
         "type": "object",
@@ -8257,7 +8718,16 @@
               "$ref": "#/components/schemas/DiaryShortQuestionReplyResponse"
             }
           }
-        }
+        },
+        "required": [
+          "comment",
+          "courseTitle",
+          "createdAt",
+          "id",
+          "semester",
+          "shortQuestionReplies",
+          "year"
+        ]
       },
       "DiarySubmissionsOfYearSemesterResponse": {
         "type": "object",
@@ -8282,7 +8752,12 @@
               "$ref": "#/components/schemas/DiarySubmissionSummaryResponse"
             }
           }
-        }
+        },
+        "required": [
+          "semester",
+          "submissions",
+          "year"
+        ]
       },
       "DiaryDailyClassTypeResponse": {
         "type": "object",
@@ -8294,7 +8769,11 @@
           "name": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
       },
       "CourseEvaluationSummaryResponse": {
         "type": "object",
@@ -8306,11 +8785,14 @@
             ],
             "format": "double"
           },
-          "count": {
+          "evalCount": {
             "type": "integer",
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "evalCount"
+        ]
       },
       "CourseResponse": {
         "type": "object",
@@ -8331,7 +8813,14 @@
           "evaluation": {
             "$ref": "#/components/schemas/CourseEvaluationSummaryResponse"
           }
-        }
+        },
+        "required": [
+          "courseNumber",
+          "evaluation",
+          "id",
+          "instructor",
+          "title"
+        ]
       },
       "CursorPageCourseResponse": {
         "type": "object",
@@ -8362,7 +8851,12 @@
             ],
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "content",
+          "last",
+          "size"
+        ]
       },
       "CourseDetailResponse": {
         "type": "object",
@@ -8376,7 +8870,11 @@
               "$ref": "#/components/schemas/CourseLectureResponse"
             }
           }
-        }
+        },
+        "required": [
+          "course",
+          "lectures"
+        ]
       },
       "CourseLectureResponse": {
         "type": "object",
@@ -8436,7 +8934,16 @@
           "myEvaluationExists": {
             "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "courseTitle",
+          "credit",
+          "id",
+          "lectureNumber",
+          "myEvaluationExists",
+          "semester",
+          "year"
+        ]
       },
       "CourseEvaluationDetailsResponse": {
         "type": "object",
@@ -8445,7 +8952,7 @@
             "type": "integer",
             "format": "int64"
           },
-          "count": {
+          "evalCount": {
             "type": "integer",
             "format": "int64"
           },
@@ -8484,7 +8991,11 @@
             ],
             "format": "double"
           }
-        }
+        },
+        "required": [
+          "courseId",
+          "evalCount"
+        ]
       },
       "CoursebookResponse": {
         "type": "object",
@@ -8511,21 +9022,24 @@
             "type": "integer",
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "id",
+          "semester",
+          "updatedAt",
+          "year"
+        ]
       },
       "CoursebookOfficialResponse": {
         "type": "object",
         "properties": {
           "url": {
             "type": "string"
-          },
-          "proxyUrl": {
-            "type": [
-              "string",
-              "null"
-            ]
           }
-        }
+        },
+        "required": [
+          "url"
+        ]
       },
       "BuildingResponse": {
         "type": "object",
@@ -8561,7 +9075,14 @@
               }
             ]
           }
-        }
+        },
+        "required": [
+          "buildingNameEng",
+          "buildingNameKor",
+          "buildingNumber",
+          "campus",
+          "id"
+        ]
       },
       "GeoCoordinate": {
         "type": "object",
@@ -8574,7 +9095,11 @@
             "type": "number",
             "format": "double"
           }
-        }
+        },
+        "required": [
+          "latitude",
+          "longitude"
+        ]
       },
       "BookmarkResponse": {
         "type": "object",
@@ -8599,7 +9124,12 @@
               "$ref": "#/components/schemas/LectureResponse"
             }
           }
-        }
+        },
+        "required": [
+          "lectures",
+          "semester",
+          "year"
+        ]
       },
       "AdminSocialAccountsResponse": {
         "type": "object",
@@ -8643,6 +9173,9 @@
               "null"
             ]
           },
+          "isEmailVerified": {
+            "type": "boolean"
+          },
           "nickname": {
             "type": "string"
           },
@@ -8654,6 +9187,9 @@
               "string",
               "null"
             ]
+          },
+          "isAdmin": {
+            "type": "boolean"
           },
           "active": {
             "type": "boolean"
@@ -8669,19 +9205,32 @@
           "authProviders": {
             "type": "array",
             "items": {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "LOCAL",
+                "FACEBOOK",
+                "APPLE",
+                "GOOGLE",
+                "KAKAO"
+              ]
             }
           },
           "socialAccounts": {
             "$ref": "#/components/schemas/AdminSocialAccountsResponse"
-          },
-          "admin": {
-            "type": "boolean"
-          },
-          "emailVerified": {
-            "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "active",
+          "authProviders",
+          "createdAt",
+          "id",
+          "isAdmin",
+          "isEmailVerified",
+          "lastLoginAt",
+          "nickname",
+          "nicknameTag",
+          "socialAccounts"
+        ]
       },
       "AdminRegistrationPeriodResponse": {
         "type": "object",
@@ -8718,7 +9267,15 @@
             "type": "integer",
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "createdAt",
+          "id",
+          "registrationPeriods",
+          "semester",
+          "updatedAt",
+          "year"
+        ]
       },
       "AdminDiaryQuestionResponse": {
         "type": "object",
@@ -8756,7 +9313,17 @@
             "type": "integer",
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "active",
+          "answers",
+          "createdAt",
+          "id",
+          "question",
+          "shortAnswers",
+          "shortQuestion",
+          "updatedAt"
+        ]
       },
       "AdminDiaryDailyClassTypeResponse": {
         "type": "object",
@@ -8779,7 +9346,31 @@
             "type": "integer",
             "format": "int64"
           }
-        }
+        },
+        "required": [
+          "active",
+          "createdAt",
+          "id",
+          "name",
+          "updatedAt"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "osType": {
+        "type": "apiKey",
+        "name": "x-os-type",
+        "in": "header"
+      },
+      "clientKey": {
+        "type": "apiKey",
+        "name": "x-client-key",
+        "in": "header"
+      },
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   }

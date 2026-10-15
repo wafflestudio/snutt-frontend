@@ -2,7 +2,9 @@
 .turbo
 node_modules
 .vscode
-.claude/
+# 프로젝트 스킬만 공유한다
+.claude/*
+!.claude/skills/
 
 # 테스트 계정 등 로컬 비밀 값. .claude/ 규칙을 풀더라도 항상 제외
 .claude/.env
