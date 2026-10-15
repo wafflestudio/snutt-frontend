@@ -5,9 +5,6 @@ import { createContext, type CSSProperties, type ReactNode, use } from 'react';
 import { getHourMarks, type GridBlock, type GridRange } from '@/domain/grid-layout';
 import { DAY_LABELS, MINUTES_PER_HOUR } from '@/domain/time';
 
-/** Figma `course`: 한 시간 칸 높이 */
-const HOUR_HEIGHT = 59;
-
 const RangeContext = createContext<GridRange | null>(null);
 
 /** 레이어에서 그리드 범위를 읽는다. TimetableGrid 안에서만 쓸 수 있다. */
@@ -35,6 +32,8 @@ export type TimetableGridProps = {
 /**
  * 시간표 그리드의 틀(요일, 시각, 선). 블록은 children 레이어가 그린다.
  * 용도(메인, 친구, 비교, 시간 필터, 미리보기)에 따라 레이어를 골라 겹친다. props 로 용도를 나누지 않는다.
+ * 높이는 부르는 쪽이 className 으로 정하고(메인은 `h-full`), 시간 칸은 그 높이를 고르게 나눠 스크롤 없이 다 보인다.
+ * 강의 시간이 넓어 칸이 늘어나면 한 칸이 낮아진다. (Figma `course` 는 13칸에 한 칸 59px)
  */
 export function TimetableGrid({ range, children, className }: TimetableGridProps) {
   const hours = getHourMarks(range);
@@ -42,7 +41,10 @@ export function TimetableGrid({ range, children, className }: TimetableGridProps
   return (
     <div
       className={clsx('grid border-t border-line-light bg-normal', className)}
-      style={{ gridTemplateColumns: `35px repeat(${range.days.length}, minmax(0, 1fr))` }}
+      style={{
+        gridTemplateColumns: `35px repeat(${range.days.length}, minmax(0, 1fr))`,
+        gridTemplateRows: 'auto minmax(0, 1fr)',
+      }}
     >
       <div />
       {range.days.map((day) => (
@@ -51,19 +53,15 @@ export function TimetableGrid({ range, children, className }: TimetableGridProps
         </div>
       ))}
 
-      <div>
+      <div className="flex flex-col">
         {hours.map((minute) => (
-          <div
-            key={minute}
-            className="border-t border-line-light pt-1.25 pl-4 text-14-regular text-med"
-            style={{ height: HOUR_HEIGHT }}
-          >
+          <div key={minute} className="flex-1 border-t border-line-light pt-1.25 pl-4 text-14-regular text-med">
             {minute / MINUTES_PER_HOUR}
           </div>
         ))}
       </div>
 
-      <div className="relative col-span-full col-start-2" style={{ height: hours.length * HOUR_HEIGHT }}>
+      <div className="relative col-span-full col-start-2">
         <div aria-hidden className="absolute inset-0 flex flex-col">
           {hours.map((minute) => (
             <div key={minute} className="relative flex-1 border-t border-line-light">

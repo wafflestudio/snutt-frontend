@@ -82,7 +82,7 @@ export function GridPreview() {
         <span className="text-14-regular text-assistive">클릭한 강의: {clicked ?? '없음'}</span>
       </div>
 
-      <TimetableGrid range={range}>
+      <TimetableGrid range={range} className="h-200">
         <LectureLayer
           lectures={lectures}
           palette={SAMPLE_PALETTE}

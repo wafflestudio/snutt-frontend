@@ -255,8 +255,9 @@ function TimetableColumn({ timetable, palette, range, header, onLectureClick, cl
     <div className={clsx('flex min-w-0 flex-1 flex-col', className)}>
       {/* Figma `top`: 높이 56, 여백 13 · 20 */}
       <header className="flex h-14 shrink-0 items-center justify-between gap-2.5 px-5">{header}</header>
-      <div className="min-h-0 flex-1 overflow-y-auto">
-        <TimetableGrid range={range}>
+      {/* 그리드는 남은 높이에 맞춰 칸을 나눈다. 스크롤하지 않는다 */}
+      <div className="min-h-0 flex-1">
+        <TimetableGrid range={range} className="h-full">
           {timetable && (
             <LectureLayer lectures={timetable.lectures} palette={palette} onLectureClick={onLectureClick} />
           )}
