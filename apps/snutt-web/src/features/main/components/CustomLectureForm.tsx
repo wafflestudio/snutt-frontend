@@ -8,11 +8,10 @@ import { type Day, DAY_LABELS, DAYS, formatMeridiemMinute, isOverlapping, toMinu
 import { findConflictingLectures, type Timetable } from '@/domain/timetable';
 import { Button } from '@/shared/ui/Button';
 import { ColorSelect } from '@/shared/ui/ColorSelect';
-import { IconButton } from '@/shared/ui/IconButton';
-import { IconAdd, IconChevronLeft, IconClose, IconRemove } from '@/shared/ui/icons';
+import { IconAdd, IconRemove } from '@/shared/ui/icons';
 import { Select } from '@/shared/ui/Select';
 import { TextArea, TextField } from '@/shared/ui/TextField';
-import { PanelColumn } from './PanelColumn';
+import { PanelColumn, PanelNav } from './PanelColumn';
 
 // 시간은 5분 단위로 고른다. 수업은 보통 :15, :45, :50 에 끝나서 30분 단위로는 부족하다
 const TIME_STEP = 5;
@@ -109,10 +108,7 @@ export function CustomLectureForm({ timetable, palette, onSubmit, onBack, onClos
 
   return (
     <PanelColumn label="직접 추가">
-      <div className="flex items-center justify-between px-5 pt-5">
-        <IconButton label="목록으로" icon={<IconChevronLeft />} onClick={onBack} />
-        <IconButton label="패널 접기" icon={<IconClose />} onClick={onClose} />
-      </div>
+      <PanelNav backLabel="목록으로" onBack={onBack} onClose={onClose} />
 
       <form noValidate onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col">
         {/* Figma: 왼쪽 여백 30, 오른쪽 32 */}

@@ -3,6 +3,7 @@
 import { clsx } from 'clsx';
 import { type ReactNode, useMemo } from 'react';
 import { getGridRange, type GridRange } from '@/domain/grid-layout';
+import type { TimetableLecture } from '@/domain/lecture';
 import { getNewTimetableTitle, type Timetable } from '@/domain/timetable';
 import { LectureLayer } from '@/shared/timetable-grid/LectureLayer';
 import { TimetableGrid } from '@/shared/timetable-grid/TimetableGrid';
@@ -13,6 +14,7 @@ import { SAMPLE_PALETTE } from '@/features/main/sample-data';
 import { useMainView } from '@/features/main/use-main-view';
 import { useTimetables } from '@/features/main/use-timetables';
 import { CustomLectureForm } from './CustomLectureForm';
+import { LectureDetailPanel } from './LectureDetailPanel';
 import { MainPanel } from './MainPanel';
 import { AddTimetableButton, TimetableMenu } from './TimetableActions';
 import { TimetableTabs } from './TimetableTabs';
@@ -27,6 +29,19 @@ export function MainScreen() {
   const others = timetables.timetables.filter((timetable) => timetable.id !== selected?.id);
   const compareRight = view.compare && (others.find(({ id }) => id === view.compare?.right) ?? others[0] ?? null);
   const compareTimetable = compareRight && timetables.getTimetable(compareRight.id);
+
+  // 강의 상세는 지금은 고른 시간표의 강의만 연다 (검색 결과의 상세는 5-1). 없는 강의면 열지 않는다
+  const listPanel = view.panel?.type === 'list' ? view.panel : null;
+  const detailLecture = listPanel?.detail && selected?.lectures.find(({ id }) => id === listPanel.detail?.lectureId);
+  const openDetail = (lecture: TimetableLecture) =>
+    setView({
+      ...view,
+      panel: {
+        type: 'list',
+        tab: listPanel?.tab ?? 'search',
+        detail: { lectureId: lecture.id, view: 'info', editing: false },
+      },
+    });
 
   // 비교할 때는 두 시간표의 줄이 맞도록 두 시간표의 강의를 합친 범위를 같이 쓴다
   const range = useMemo(
@@ -56,14 +71,33 @@ export function MainScreen() {
           onClose={() => setView({ ...view, panel: null })}
         />
       ) : (
-        view.panel && (
-          <MainPanel
-            panel={view.panel}
-            onChange={(panel) => setView({ ...view, panel })}
-            semesters={timetables.semesters}
-            semester={timetables.semester}
-            onSemesterChange={timetables.selectSemester}
-          />
+        listPanel && (
+          <>
+            <MainPanel
+              panel={listPanel}
+              onChange={(panel) => setView({ ...view, panel })}
+              semesters={timetables.semesters}
+              semester={timetables.semester}
+              onSemesterChange={timetables.selectSemester}
+            />
+            {selected && listPanel.detail && detailLecture && (
+              <LectureDetailPanel
+                // 다른 강의를 열면 삭제 확인 같은 상태를 처음부터 다시 둔다
+                key={detailLecture.id}
+                detail={listPanel.detail}
+                lecture={detailLecture}
+                semester={selected.semester}
+                palette={SAMPLE_PALETTE}
+                onChange={(detail) => setView({ ...view, panel: { ...listPanel, detail } })}
+                onClose={() => setView({ ...view, panel: null })}
+                onColorChange={(color) => timetables.updateLecture(selected.id, detailLecture.id, { color })}
+                onRemove={() => {
+                  timetables.removeLecture(selected.id, detailLecture.id);
+                  setView({ ...view, panel: { ...listPanel, detail: null } });
+                }}
+              />
+            )}
+          </>
         )
       )}
 
@@ -82,6 +116,7 @@ export function MainScreen() {
         <TimetableColumn
           timetable={selected}
           range={range}
+          onLectureClick={openDetail}
           header={
             <>
               {/* Figma: 탭과 + 사이 10px */}
@@ -176,18 +211,22 @@ type TimetableColumnProps = {
   timetable: Timetable | null;
   range: GridRange;
   header: ReactNode;
+  /** 없으면 강의 블록을 누를 수 없다 (비교의 오른쪽) */
+  onLectureClick?: (lecture: TimetableLecture) => void;
   className?: string;
 };
 
-function TimetableColumn({ timetable, range, header, className }: TimetableColumnProps) {
+function TimetableColumn({ timetable, range, header, onLectureClick, className }: TimetableColumnProps) {
   return (
     <div className={clsx('flex min-w-0 flex-1 flex-col', className)}>
       {/* Figma `top`: 높이 56, 여백 13 · 20 */}
       <header className="flex h-14 shrink-0 items-center justify-between gap-2.5 px-5">{header}</header>
       <div className="min-h-0 flex-1 overflow-y-auto">
         <TimetableGrid range={range}>
-          {/* 색은 시간표 테마에서 받는다 (1-2 이후). 강의를 누르면 상세를 여는 것은 6-1 */}
-          {timetable && <LectureLayer lectures={timetable.lectures} palette={SAMPLE_PALETTE} />}
+          {/* 색은 시간표 테마에서 받는다 (1-2 이후) */}
+          {timetable && (
+            <LectureLayer lectures={timetable.lectures} palette={SAMPLE_PALETTE} onLectureClick={onLectureClick} />
+          )}
         </TimetableGrid>
       </div>
     </div>

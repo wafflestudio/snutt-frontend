@@ -16,8 +16,9 @@ export type SelectOption<Value extends string | number> = {
 /**
  * - field: 테두리 있는 입력칸 (직접 추가의 요일 · 시간, 색상)
  * - title: 테두리 없는 제목 글자 (패널 위의 학기 선택, Figma `연도 선택`)
+ * - compact: 글자와 화살표 없이 trailing 만 보이는 버튼 (강의 상세의 색상 견본). 글자는 스크린 리더만 읽는다
  */
-export type SelectVariant = 'field' | 'title';
+export type SelectVariant = 'field' | 'title' | 'compact';
 
 const TRIGGER_CLASSES: Record<SelectVariant, string> = {
   // Figma (직접 추가의 요일 · 시간): 높이 36, 여백 왼쪽 6 · 오른쪽 7~9. 요일 칸이 50px 이라 여백이 좁다
@@ -28,11 +29,14 @@ const TRIGGER_CLASSES: Record<SelectVariant, string> = {
   // Figma: 22/Bold, 화살표(Text/Normal)와 간격 10px. 아이콘 상자의 여백만큼 간격을 줄였다
   title:
     'inline-flex gap-1 rounded-sm text-22-bold text-normal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-snutt-mint',
+  compact:
+    'inline-flex rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-snutt-mint',
 };
 
 const ICON_CLASSES: Record<SelectVariant, string> = {
   field: 'text-alternative [&>svg]:size-3',
   title: 'text-normal [&>svg]:size-5',
+  compact: 'hidden',
 };
 
 export type SelectProps<Value extends string | number> = {
@@ -89,7 +93,7 @@ export function Select<Value extends string | number>({
           {() =>
             selected ? (
               <>
-                <span className="truncate">{selected.label}</span>
+                <span className={variant === 'compact' ? 'sr-only' : 'truncate'}>{selected.label}</span>
                 {selected.trailing}
               </>
             ) : (

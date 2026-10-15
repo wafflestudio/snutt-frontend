@@ -71,4 +71,32 @@ describe('timetablesReducer', () => {
     ]);
     expect(next.timetables.find((t) => t.id === 'a')?.lectures).toEqual([]);
   });
+
+  it('강의를 고치고 지우는 것은 그 시간표의 그 강의에만 적용된다', () => {
+    const input = {
+      title: '스터디',
+      instructor: null,
+      credit: null,
+      remark: null,
+      classTimes: [],
+      color: { type: 'palette' as const, index: 1 },
+    };
+    const added = timetablesReducer(state(), { type: 'add-custom-lecture', id: 'b', lectureId: 'x', input });
+    const withTwo = timetablesReducer(added, { type: 'add-custom-lecture', id: 'b', lectureId: 'y', input });
+    const lectures = (s: TimetablesState) => s.timetables.find((t) => t.id === 'b')?.lectures ?? [];
+
+    const recolored = timetablesReducer(withTwo, {
+      type: 'update-lecture',
+      id: 'b',
+      lectureId: 'x',
+      change: { color: { type: 'palette', index: 6 } },
+    });
+    expect(lectures(recolored).map(({ id, color }) => [id, color])).toEqual([
+      ['x', { type: 'palette', index: 6 }],
+      ['y', { type: 'palette', index: 1 }],
+    ]);
+
+    const removed = timetablesReducer(recolored, { type: 'remove-lecture', id: 'b', lectureId: 'x' });
+    expect(lectures(removed).map(({ id }) => id)).toEqual(['y']);
+  });
 });

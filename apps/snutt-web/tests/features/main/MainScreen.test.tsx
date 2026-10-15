@@ -3,6 +3,7 @@ import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MainScreen } from '@/features/main/components/MainScreen';
+import { SAMPLE_PALETTE } from '@/features/main/sample-data';
 
 // Next 라우터 대신 window.location 을 읽는다. pushState 로 URL 이 바뀌면 다시 그린다. (실제 Next 와 같은 동작)
 vi.mock('next/navigation', async () => {
@@ -105,17 +106,52 @@ describe('MainScreen', () => {
     expect(screen.getByRole('button', { name: '직접 추가' })).toBeInTheDocument();
   });
 
-  it('URL 에 강의가 있으면 목록 옆에 강의 상세를 열고, 닫을 수 있다', async () => {
-    window.history.replaceState(null, '', '/?lecture=l1');
-    render(<MainScreen />);
-    expect(panel('강의 목록')).toBeInTheDocument();
-    expect(panel('강의 상세')).toBeInTheDocument();
+  describe('강의 상세', () => {
+    const block = (title: string) => screen.getByRole('button', { name: new RegExp(`^${title},`) });
 
-    await userEvent.click(screen.getByRole('tab', { name: '강의평' }));
-    expect(window.location.search).toBe('?lecture=l1&view=review');
+    it('시간표의 강의를 누르면 목록 옆에 강의 상세를 열고, `<` 로 닫는다', async () => {
+      render(<MainScreen />);
+      await userEvent.click(block('경영전략'));
+      expect(window.location.search).toBe('?lecture=1-1');
+      expect(panel('강의 목록')).toBeInTheDocument();
+      expect(within(panel('강의 상세')!).getByRole('heading', { name: '경영전략' })).toBeInTheDocument();
 
-    await userEvent.click(screen.getByRole('button', { name: '강의 상세 닫기' }));
-    expect(panel('강의 상세')).not.toBeInTheDocument();
+      await userEvent.click(screen.getByRole('tab', { name: '강의평' }));
+      expect(window.location.search).toBe('?lecture=1-1&view=review');
+
+      await userEvent.click(screen.getByRole('button', { name: '목록으로' }));
+      expect(panel('강의 상세')).not.toBeInTheDocument();
+      expect(window.location.search).toBe('');
+    });
+
+    it('URL 의 강의가 고른 시간표에 없으면 상세를 열지 않는다', () => {
+      window.history.replaceState(null, '', '/?lecture=none');
+      render(<MainScreen />);
+      expect(panel('강의 목록')).toBeInTheDocument();
+      expect(panel('강의 상세')).not.toBeInTheDocument();
+    });
+
+    it('색을 바꾸면 블록 색이 바뀌고, 삭제하면 블록과 학점이 빠지고 상세가 닫힌다', async () => {
+      render(<MainScreen />);
+      await userEvent.click(block('경영전략'));
+
+      await userEvent.click(screen.getByRole('combobox', { name: '색상' }));
+      await userEvent.click(await screen.findByRole('option', { name: '색상7' }));
+      expect(block('경영전략')).toHaveStyle({ backgroundColor: SAMPLE_PALETTE[6].bg });
+
+      await userEvent.click(within(panel('강의 상세')!).getByRole('button', { name: '삭제' }));
+      await userEvent.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: '삭제' }));
+      expect(screen.queryByRole('button', { name: /^경영전략,/ })).not.toBeInTheDocument();
+      expect(tabNames('시간표')[0]).toBe('시간표 1, 기본 시간표(12학점)');
+      expect(panel('강의 상세')).not.toBeInTheDocument();
+    });
+
+    it('비교하는 오른쪽 시간표의 강의는 누를 수 없다', async () => {
+      render(<MainScreen />);
+      await userEvent.click(screen.getByRole('button', { name: '시간표 비교' }));
+      expect(screen.queryByRole('button', { name: /^자료구조,/ })).not.toBeInTheDocument();
+      expect(screen.getAllByText('자료구조')).toHaveLength(2);
+    });
   });
 
   describe('시간표 탭', () => {

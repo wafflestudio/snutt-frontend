@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import { getClassTimeTexts, getSyllabusUrl, isCustomLecture, toCustomTimetableLecture } from '@/domain/lecture';
+import {
+  formatQuota,
+  getClassTimeTexts,
+  getSyllabusUrl,
+  isCustomLecture,
+  toCustomTimetableLecture,
+} from '@/domain/lecture';
 
 describe('getClassTimeTexts', () => {
   it('요일, 시작 시각 순으로 정렬해 표시한다', () => {
@@ -53,5 +59,17 @@ describe('toCustomTimetableLecture', () => {
     });
     expect(lecture).toMatchObject({ id: 't1', title: '동아리', remark: '매주', courseNumber: null, department: null });
     expect(isCustomLecture(lecture)).toBe(true);
+  });
+});
+
+describe('formatQuota', () => {
+  it('정원 뒤 괄호에 재학생 정원(정원 - 신입생 정원)을 쓴다', () => {
+    expect(formatQuota({ quota: 80, freshmanQuota: 20 })).toBe('80(60)');
+    expect(formatQuota({ quota: 60, freshmanQuota: 0 })).toBe('60(60)');
+  });
+
+  it('신입생 정원을 모르면 정원만, 정원을 모르면 null', () => {
+    expect(formatQuota({ quota: 40, freshmanQuota: null })).toBe('40');
+    expect(formatQuota({ quota: null, freshmanQuota: null })).toBeNull();
   });
 });

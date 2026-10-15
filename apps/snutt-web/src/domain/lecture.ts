@@ -20,7 +20,12 @@ type LectureInfo = {
   department: string | null;
   academicYear: string | null;
   category: string | null;
+  /** 2025년 이전 교양영역 (강의 상세의 `(구)교양영역`) */
+  categoryPre2025: string | null;
   classification: string | null;
+  quota: number | null;
+  /** 정원 중 신입생 몫. 재학생 정원은 quota - freshmanQuota */
+  freshmanQuota: number | null;
 };
 
 /** 수강편람 강의 (검색 결과, 관심강좌) */
@@ -30,8 +35,6 @@ export type Lecture = LectureInfo & {
   credit: number;
   courseNumber: string;
   lectureNumber: string;
-  quota: number | null;
-  freshmanQuota: number | null;
   evaluation: LectureEvaluation | null;
 };
 
@@ -61,10 +64,19 @@ export const toCustomTimetableLecture = (id: TimetableLectureId, input: CustomLe
   department: null,
   academicYear: null,
   category: null,
+  categoryPre2025: null,
   classification: null,
+  quota: null,
+  freshmanQuota: null,
   courseNumber: null,
   lectureNumber: null,
 });
+
+/** 강의 상세의 `정원(재학생)`. 신입생 정원을 모르면 정원만 쓴다. 40, 10 → '40(30)' */
+export const formatQuota = ({ quota, freshmanQuota }: Pick<LectureInfo, 'quota' | 'freshmanQuota'>) => {
+  if (quota === null) return null;
+  return freshmanQuota === null ? String(quota) : `${quota}(${quota - freshmanQuota})`;
+};
 
 /** ['월 10:00~11:15', '수 10:00~11:15'] */
 export const getClassTimeTexts = (lecture: Pick<LectureInfo, 'classTimes'>) =>
