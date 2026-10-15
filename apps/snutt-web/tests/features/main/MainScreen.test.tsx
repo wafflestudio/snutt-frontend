@@ -1,9 +1,14 @@
 // @vitest-environment jsdom
-import { render, screen, within } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { http, HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MainScreen } from '@/features/main/components/MainScreen';
-import { SAMPLE_PALETTE } from '@/features/main/sample-data';
+import { SAMPLE_PALETTE, SAMPLE_SEMESTERS, SAMPLE_TIMETABLES } from '@/features/main/sample-data';
+import { fakeSnutt } from '../../msw/fake-snutt';
+import { problem } from '../../msw/fixtures';
+import { api, server } from '../../msw/server';
 
 // Next 라우터 대신 window.location 을 읽는다. pushState 로 URL 이 바뀌면 다시 그린다. (실제 Next 와 같은 동작)
 vi.mock('next/navigation', async () => {
@@ -23,6 +28,10 @@ vi.mock('next/navigation', async () => {
 const originalPushState = window.history.pushState.bind(window.history);
 
 beforeEach(() => {
+  // 예시 시간표를 가진 가짜 서버. 처음 화면은 2026년 2학기의 기본 시간표(시간표 1)
+  server.use(
+    ...fakeSnutt({ timetables: SAMPLE_TIMETABLES, semesters: SAMPLE_SEMESTERS, palette: SAMPLE_PALETTE }).handlers,
+  );
   window.history.replaceState(null, '', '/');
   vi.spyOn(window.history, 'pushState').mockImplementation((...args) => {
     originalPushState(...args);
@@ -31,6 +40,17 @@ beforeEach(() => {
 });
 
 afterEach(() => vi.restoreAllMocks());
+
+/** MainScreen 을 그리고, 학기 · 시간표를 다 받을 때까지 기다린다 */
+const renderMain = async () => {
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  render(
+    <QueryClientProvider client={queryClient}>
+      <MainScreen />
+    </QueryClientProvider>,
+  );
+  await screen.findByRole('combobox', { name: '학기' });
+};
 
 const panel = (name: string) => screen.queryByRole('complementary', { name });
 const tabList = (name: string) => within(screen.getByRole('tablist', { name }));
@@ -45,15 +65,15 @@ const openTimetableMenu = async (item: string) => {
 };
 
 describe('MainScreen', () => {
-  it('처음에는 검색 탭 목록과 시간표를 보여 준다', () => {
-    render(<MainScreen />);
+  it('처음에는 검색 탭 목록과 시간표를 보여 준다', async () => {
+    await renderMain();
     expect(panel('강의 목록')).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: '검색', selected: true })).toBeInTheDocument();
     expect(screen.getAllByText('월')).toHaveLength(1);
   });
 
   it('패널을 접었다 펼치면 보던 탭으로 돌아온다', async () => {
-    render(<MainScreen />);
+    await renderMain();
     await userEvent.click(screen.getByRole('tab', { name: '강의 목록' }));
     expect(window.location.search).toBe('?tab=lectures');
 
@@ -65,7 +85,7 @@ describe('MainScreen', () => {
   });
 
   it('직접 추가는 목록 자리를 대신하고, 취소하면 목록으로 돌아온다', async () => {
-    render(<MainScreen />);
+    await renderMain();
     await userEvent.click(screen.getByRole('button', { name: '직접 추가' }));
     expect(panel('직접 추가')).toBeInTheDocument();
     expect(panel('강의 목록')).not.toBeInTheDocument();
@@ -75,7 +95,7 @@ describe('MainScreen', () => {
   });
 
   it('직접 추가한 강의는 고른 시간표에 들어가고, 패널은 목록으로 돌아온다', async () => {
-    render(<MainScreen />);
+    await renderMain();
     await userEvent.click(screen.getByRole('button', { name: '직접 추가' }));
     await userEvent.type(screen.getByLabelText('강의명'), '스터디');
 
@@ -87,14 +107,14 @@ describe('MainScreen', () => {
     await userEvent.click(await screen.findByRole('option', { name: '토' }));
     await userEvent.click(screen.getByRole('button', { name: '추가' }));
 
+    expect(await screen.findByText('스터디')).toBeInTheDocument();
     expect(panel('강의 목록')).toBeInTheDocument();
-    expect(screen.getByText('스터디')).toBeInTheDocument();
     expect(screen.getByText('토')).toBeInTheDocument(); // 토요일 강의가 생겨 그리드가 토요일까지 늘어난다
     expect(tabNames('시간표')[0]).toBe('시간표 1, 기본 시간표(15학점)'); // 학점이 없는 강의
   });
 
   it('시간표 비교를 열면 시간표가 두 개가 되고, 패널은 그대로다', async () => {
-    render(<MainScreen />);
+    await renderMain();
     await userEvent.click(screen.getByRole('button', { name: '시간표 비교' }));
     expect(screen.getAllByText('월')).toHaveLength(2);
     expect(panel('강의 목록')).toBeInTheDocument();
@@ -106,11 +126,46 @@ describe('MainScreen', () => {
     expect(screen.getByRole('button', { name: '직접 추가' })).toBeInTheDocument();
   });
 
+  it('로그인하지 않았으면 시간표 대신 로그인이 필요하다고 알린다', async () => {
+    server.use(
+      http.get(api('/v2/timetables'), () =>
+        HttpResponse.json(problem(401, 'missing-access-token', '로그인 실패', '다시 로그인해 주세요'), { status: 401 }),
+      ),
+    );
+    render(
+      <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
+        <MainScreen />
+      </QueryClientProvider>,
+    );
+    expect(await screen.findByText('로그인이 필요합니다')).toBeInTheDocument();
+    expect(screen.queryByRole('combobox', { name: '학기' })).not.toBeInTheDocument();
+  });
+
+  it('서버가 거절하면 서버 메시지를 알리고, 직접 추가 폼은 입력을 그대로 둔다', async () => {
+    server.use(
+      http.post(api('/v2/timetables/:timetableId/lectures/custom'), () =>
+        HttpResponse.json(problem(400, 'invalid-lecture', '잘못된 강의', '강의 정보를 확인해 주세요'), { status: 400 }),
+      ),
+    );
+    await renderMain();
+    await userEvent.click(screen.getByRole('button', { name: '직접 추가' }));
+    await userEvent.type(screen.getByLabelText('강의명'), '스터디');
+    await userEvent.click(screen.getByRole('combobox', { name: '요일' }));
+    await userEvent.click(await screen.findByRole('option', { name: '토' }));
+    await userEvent.click(screen.getByRole('button', { name: '추가' }));
+
+    const notice = await screen.findByRole('alertdialog', { name: '강의 정보를 확인해 주세요' });
+    await userEvent.click(within(notice).getByRole('button', { name: '확인' }));
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    expect(panel('직접 추가')).toBeInTheDocument();
+    expect(screen.getByLabelText('강의명')).toHaveValue('스터디');
+  });
+
   describe('강의 상세', () => {
     const block = (title: string) => screen.getByRole('button', { name: new RegExp(`^${title},`) });
 
     it('시간표의 강의를 누르면 목록 옆에 강의 상세를 열고, `<` 로 닫는다', async () => {
-      render(<MainScreen />);
+      await renderMain();
       await userEvent.click(block('경영전략'));
       expect(window.location.search).toBe('?lecture=1-1');
       expect(panel('강의 목록')).toBeInTheDocument();
@@ -124,86 +179,86 @@ describe('MainScreen', () => {
       expect(window.location.search).toBe('');
     });
 
-    it('URL 의 강의가 고른 시간표에 없으면 상세를 열지 않는다', () => {
+    it('URL 의 강의가 고른 시간표에 없으면 상세를 열지 않는다', async () => {
       window.history.replaceState(null, '', '/?lecture=none');
-      render(<MainScreen />);
+      await renderMain();
       expect(panel('강의 목록')).toBeInTheDocument();
       expect(panel('강의 상세')).not.toBeInTheDocument();
     });
 
     it('색을 바꾸면 블록 색이 바뀌고, 삭제하면 블록과 학점이 빠지고 상세가 닫힌다', async () => {
-      render(<MainScreen />);
+      await renderMain();
       await userEvent.click(block('경영전략'));
 
       await userEvent.click(screen.getByRole('combobox', { name: '색상' }));
       await userEvent.click(await screen.findByRole('option', { name: '색상7' }));
-      expect(block('경영전략')).toHaveStyle({ backgroundColor: SAMPLE_PALETTE[6].bg });
+      await waitFor(() => expect(block('경영전략')).toHaveStyle({ backgroundColor: SAMPLE_PALETTE[6].bg }));
 
       await userEvent.click(within(panel('강의 상세')!).getByRole('button', { name: '삭제' }));
       await userEvent.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: '삭제' }));
-      expect(screen.queryByRole('button', { name: /^경영전략,/ })).not.toBeInTheDocument();
+      await waitFor(() => expect(screen.queryByRole('button', { name: /^경영전략,/ })).not.toBeInTheDocument());
       expect(tabNames('시간표')[0]).toBe('시간표 1, 기본 시간표(12학점)');
       expect(panel('강의 상세')).not.toBeInTheDocument();
     });
 
     it('비교하는 오른쪽 시간표의 강의는 누를 수 없다', async () => {
-      render(<MainScreen />);
+      await renderMain();
       await userEvent.click(screen.getByRole('button', { name: '시간표 비교' }));
+      expect(await screen.findAllByText('자료구조')).toHaveLength(2);
       expect(screen.queryByRole('button', { name: /^자료구조,/ })).not.toBeInTheDocument();
-      expect(screen.getAllByText('자료구조')).toHaveLength(2);
     });
   });
 
   describe('시간표 탭', () => {
     it('학기의 기본 시간표를 먼저 보여 주고, 고른 탭에만 학점을 쓴다', async () => {
-      render(<MainScreen />);
+      await renderMain();
       expect(tabNames('시간표')).toEqual(['시간표 1, 기본 시간표(15학점)', '시간표 2', '시간표 3']);
       expect(screen.getByText('경영전략')).toBeInTheDocument();
 
       await userEvent.click(screen.getByRole('tab', { name: '시간표 2' }));
       expect(tabNames('시간표')).toEqual(['시간표 1, 기본 시간표', '시간표 2(9학점)', '시간표 3']);
-      expect(screen.getAllByText('자료구조')).toHaveLength(2); // 월 · 수 블록
+      expect(await screen.findAllByText('자료구조')).toHaveLength(2); // 월 · 수 블록
       expect(screen.queryByText('경영전략')).not.toBeInTheDocument();
     });
 
     it('+ 로 이름을 정해 새 시간표를 만들면 그 시간표를 고른다', async () => {
-      render(<MainScreen />);
+      await renderMain();
       await userEvent.click(screen.getByRole('button', { name: '새 시간표' }));
       expect(await screen.findByRole('textbox', { name: '새 시간표 이름' })).toHaveValue('시간표 4');
 
       await userEvent.click(screen.getByRole('button', { name: '만들기' }));
-      expect(screen.getByRole('tab', { name: '시간표 4(0학점)', selected: true })).toBeInTheDocument();
+      expect(await screen.findByRole('tab', { name: '시간표 4(0학점)', selected: true })).toBeInTheDocument();
     });
 
     it('··· 메뉴로 이름을 바꾸고, 기본 시간표로 지정하고, 삭제한다', async () => {
-      render(<MainScreen />);
+      await renderMain();
       await userEvent.click(screen.getByRole('tab', { name: '시간표 2' }));
 
       await openTimetableMenu('이름 변경');
       await userEvent.clear(await screen.findByRole('textbox', { name: '시간표 이름 변경' }));
       await userEvent.keyboard('전공{Enter}');
-      expect(tabNames('시간표')).toEqual(['시간표 1, 기본 시간표', '전공(9학점)', '시간표 3']);
+      await waitFor(() => expect(tabNames('시간표')).toEqual(['시간표 1, 기본 시간표', '전공(9학점)', '시간표 3']));
 
       await openTimetableMenu('기본 시간표로 지정');
-      expect(tabNames('시간표')).toEqual(['시간표 1', '전공, 기본 시간표(9학점)', '시간표 3']);
+      await waitFor(() => expect(tabNames('시간표')).toEqual(['시간표 1', '전공, 기본 시간표(9학점)', '시간표 3']));
 
       await openTimetableMenu('삭제');
       expect(await screen.findByText('‘전공’ 시간표를 삭제하시겠습니까?')).toBeInTheDocument();
       await userEvent.click(screen.getByRole('button', { name: '삭제' }));
       // 기본 시간표가 없으면 첫 시간표를 고른다
-      expect(tabNames('시간표')).toEqual(['시간표 1(15학점)', '시간표 3']);
+      await waitFor(() => expect(tabNames('시간표')).toEqual(['시간표 1(15학점)', '시간표 3']));
     });
 
     it('기본 시간표를 해제할 수 있다', async () => {
-      render(<MainScreen />);
+      await renderMain();
       await openTimetableMenu('기본 시간표 해제');
-      expect(tabNames('시간표')).toEqual(['시간표 1(15학점)', '시간표 2', '시간표 3']);
+      await waitFor(() => expect(tabNames('시간표')).toEqual(['시간표 1(15학점)', '시간표 2', '시간표 3']));
     });
   });
 
   describe('학기 선택', () => {
     it('학기를 바꾸면 그 학기의 시간표를 보여 준다', async () => {
-      render(<MainScreen />);
+      await renderMain();
       const semester = screen.getByRole('combobox', { name: '학기' });
       expect(semester).toHaveTextContent('2026년 2학기');
 
@@ -213,7 +268,7 @@ describe('MainScreen', () => {
     });
 
     it('여름 · 겨울학기도 고를 수 있고, 시간표가 없는 학기에는 + 만 있다', async () => {
-      render(<MainScreen />);
+      await renderMain();
       await userEvent.click(screen.getByRole('combobox', { name: '학기' }));
       await userEvent.click(await screen.findByRole('option', { name: '2026년 여름학기' }));
 
@@ -225,7 +280,7 @@ describe('MainScreen', () => {
   });
 
   it('비교하는 쪽에는 왼쪽에서 고른 시간표가 없고, 왼쪽에서 그 시간표를 고르면 다른 시간표로 바뀐다', async () => {
-    render(<MainScreen />);
+    await renderMain();
     await userEvent.click(screen.getByRole('button', { name: '시간표 비교' }));
     expect(tabNames('비교할 시간표')).toEqual(['시간표 2(9학점)', '시간표 3']);
     // 시간표 2 는 10시부터지만 시간표 1 에 맞춰 두 그리드 모두 9시부터 그린다

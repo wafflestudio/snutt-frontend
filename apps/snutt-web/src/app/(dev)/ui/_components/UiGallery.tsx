@@ -7,7 +7,7 @@ import type { LectureColor } from '@/domain/color';
 import { Button } from '@/shared/ui/Button';
 import { Chip, type ChipColor } from '@/shared/ui/Chip';
 import { ColorSelect } from '@/shared/ui/ColorSelect';
-import { ConfirmDialog, Dialog, DialogCloseButton, DialogTitle, PromptDialog } from '@/shared/ui/Dialog';
+import { ConfirmDialog, Dialog, DialogCloseButton, DialogTitle, NoticeDialog, PromptDialog } from '@/shared/ui/Dialog';
 import { IconButton } from '@/shared/ui/IconButton';
 import * as Icons from '@/shared/ui/icons';
 import { Menu, MenuItem } from '@/shared/ui/Menu';
@@ -80,6 +80,7 @@ export function UiGallery() {
   const [bookmarked, setBookmarked] = useState(false);
   const [chips, setChips] = useState(INITIAL_CHIPS);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [noticeOpen, setNoticeOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [promptOpen, setPromptOpen] = useState(false);
   const [lastAction, setLastAction] = useState('');
@@ -226,6 +227,9 @@ export function UiGallery() {
           <Button variant="outline" onClick={() => setPromptOpen(true)}>
             이름 입력
           </Button>
+          <Button variant="outline" onClick={() => setNoticeOpen(true)}>
+            알림 팝업
+          </Button>
           <span className="text-13-regular text-alternative">{lastAction}</span>
         </Row>
         <ConfirmDialog
@@ -234,6 +238,7 @@ export function UiGallery() {
           message="관심강좌 탭으로 이동하시겠습니까?"
           onConfirm={() => setLastAction('확인을 눌렀다')}
         />
+        <NoticeDialog open={noticeOpen} onOpenChange={setNoticeOpen} message="존재하지 않는 시간표입니다" />
         <PromptDialog
           open={promptOpen}
           onOpenChange={setPromptOpen}

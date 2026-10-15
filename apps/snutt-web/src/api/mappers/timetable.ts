@@ -1,6 +1,6 @@
 import type { SnuttV2 } from '@sf/snutt-api';
 import type { ColorPair, LectureColor, Theme } from '@/domain/color';
-import type { ClassTime, TimetableLecture } from '@/domain/lecture';
+import type { ClassTime, CustomLectureInput, TimetableLecture } from '@/domain/lecture';
 import type { Semester } from '@/domain/semester';
 import type { Timetable, TimetableSummary } from '@/domain/timetable';
 
@@ -74,3 +74,59 @@ export const toTheme = (theme: SnuttV2.ThemeResponse): Theme => ({
   name: theme.name,
   colors: theme.colors.map(toColorPair),
 });
+
+// domain → v2 요청
+
+const toColorSet = ({ bg, fg }: ColorPair): SnuttV2.ColorSet => ({ backgroundColor: bg, foregroundColor: fg });
+
+/** 팔레트 색이면 paletteIndex, 직접 고른 색이면 customColor 를 보낸다. paletteIndex 를 받으면 서버가 customColor 를 지운다 */
+export const toColorRequest = (color: LectureColor) =>
+  color.type === 'palette'
+    ? { paletteIndex: color.index, customColor: null }
+    : { paletteIndex: null, customColor: toColorSet(color.color) };
+
+const toClassPlaceAndTime = ({ day, startMinute, endMinute, place }: ClassTime): SnuttV2.ClassPlaceAndTime => ({
+  day,
+  startMinute,
+  endMinute,
+  place: place ?? '',
+});
+
+/** 시간이 겹치는 강의는 서버가 거절한다 (isForced: false). 겹칠 때 확인받고 넣는 흐름은 5-1 */
+export const toCustomLectureRequest = (input: CustomLectureInput): SnuttV2.CustomTimetableLectureAddRequest => ({
+  courseTitle: input.title,
+  instructor: input.instructor,
+  credit: input.credit,
+  remark: input.remark,
+  classPlaceAndTimes: input.classTimes.map(toClassPlaceAndTime),
+  ...toColorRequest(input.color),
+  isForced: false,
+});
+
+/**
+ * 바뀐 필드만 보낸다 (CLAUDE.md "수정 요청(PATCH)은 사용자가 바꾼 필드만").
+ * 이 요청에서 null 은 "바꾸지 않음"이라, 값을 지울 때는 resetFields 에 넣는다.
+ * (직접 추가한 강의는 null 이 되고, 수강편람 강의는 수강편람 값으로 돌아간다. dev 서버에서 확인, 2026-10-15)
+ */
+export const toLectureModifyRequest = (change: Partial<CustomLectureInput>): SnuttV2.TimetableLectureModifyRequest => {
+  const resetFields: SnuttV2.TimetableLectureModifyRequest['resetFields'] = [];
+  const nullable = (key: 'instructor' | 'credit' | 'remark') => {
+    if (!(key in change)) return {};
+    if (change[key] === null) {
+      resetFields.push(key);
+      return {};
+    }
+    return { [key]: change[key] };
+  };
+
+  return {
+    ...(change.title !== undefined && { courseTitle: change.title }),
+    ...nullable('instructor'),
+    ...nullable('credit'),
+    ...nullable('remark'),
+    ...(change.classTimes && { classPlaceAndTimes: change.classTimes.map(toClassPlaceAndTime) }),
+    ...(change.color && toColorRequest(change.color)),
+    resetFields,
+    isForced: false,
+  };
+};

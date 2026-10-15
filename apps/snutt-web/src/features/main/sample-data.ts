@@ -5,8 +5,8 @@ import type { Timetable } from '@/domain/timetable';
 import { type Day, toMinute } from '@/domain/time';
 
 /*
- * 1-2 (API) 전까지 메인 화면과 개발 페이지에서 쓰는 예시 데이터.
- * API 를 연결하면 시간표는 `GET /v2/timetables`, 학기는 `GET /v2/coursebooks`, 색은 시간표 테마에서 받는다.
+ * 개발 페이지(`/grid`, `/ui`)와 테스트에서 쓰는 예시 데이터. 메인 화면은 서버에서 받는다.
+ * 테스트는 이 시간표로 가짜 서버(`tests/msw/fake-snutt.ts`)를 만든다.
  */
 
 // 서버의 기본 테마(SNUTT)와 같은 색

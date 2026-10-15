@@ -111,7 +111,7 @@ export const timetableQueries = {
 - UI 상태: `useState` / `useReducer`.
 - 전역 상태: Zustand. 패널↔그리드 hover 미리보기처럼 멀리 떨어진 컴포넌트가 공유하는 휘발성 상태에만 쓴다.
 - 메인 페이지 레이아웃은 하나의 `MainView`(`features/main/main-view.ts`)로 관리하고 URL search params 와 동기화한다. 읽고 바꿀 때는 `useMainView` 를 쓰고, 이 hook 을 쓰는 컴포넌트는 `Suspense` 안에 둔다(프로덕션 빌드에서 필요). 패널(탭/상세/직접 추가, 접힘은 `null`)과 비교는 동시에 열리므로 독립된 두 필드로 두고, 각 필드는 discriminated union 으로 만든다. 불리언 플래그를 여러 개 두지 않는다. (`docs/snutt-web-dev-plan.md` 설계 포인트 2)
-- 학기 선택과 시간표 목록 · 고른 시간표는 `useTimetables`(`features/main/use-timetables.ts`)에 있다. 1-2 전까지는 예시 데이터(`features/main/sample-data.ts`)를 메모리에서 고치고, API 를 연결하면 같은 모양의 query · mutation 으로 바꾼다.
+- 학기 선택과 시간표 목록 · 고른 시간표는 `useTimetables`(`features/main/use-timetables.ts`)에 있다. 목록 · 상세는 query 이고, 바꾸는 동작은 `api/timetables.ts` 의 mutation 이 서버 응답으로 캐시를 바꾼다. 고른 학기 · 시간표만 화면 상태로 둔다. 실패한 동작은 `failure` 로 받아 알림 팝업으로 보여 준다.
 
 ## 테스트
 
@@ -119,6 +119,7 @@ export const timetableQueries = {
 - `api/` 와 화면: 인터페이스 mock 대신 MSW 로 네트워크를 mock 한다. mapper 까지 포함해서 검증된다.
   - 테스트마다 `server.use(http.get(api('/v2/timetables'), () => HttpResponse.json(...)))` 로 응답을 정한다 (`tests/msw/server.ts`). 정하지 않은 요청은 실패한다.
   - 응답 예시는 `tests/msw/fixtures.ts` 에 v2 타입(`SnuttV2.*`)으로 둔다. 서버는 null 인 필드를 보내지 않으므로 예시에서도 뺀다.
+  - 메인 화면처럼 여러 요청이 오가는 화면은 메모리에 시간표를 두는 가짜 서버(`tests/msw/fake-snutt.ts`)를 `server.use(...fakeSnutt({...}).handlers)` 로 쓴다.
 - 테스트는 `tests/` 에 `src/` 와 같은 폴더 구조로 둔다. (`src/domain/time.ts` → `tests/domain/time.test.ts`)
 - 테스트에서 대상은 `@/` 경로로 import 한다.
 - 컴포넌트 테스트는 Testing Library 로 하고, 파일 첫 줄에 `// @vitest-environment jsdom` 을 둔다. 역할과 이름(`getByRole('button', { name: '닫기' })`)으로 찾는다.
