@@ -82,12 +82,14 @@ export const timetableQueries = {
 
 - 서버 호출은 `callApi('<메서드> <경로>', { params, query, body })` 로 한다. 엔드포인트 이름과 인자 타입은 `@sf/snutt-api` 의 v2 정의를 따른다. 토큰은 `callApi` 가 붙이므로 넘기지 않는다.
 - 접속 주소와 앱 key 는 `.env.local` 의 `NEXT_PUBLIC_API_BASE_URL`, `NEXT_PUBLIC_CLIENT_KEY` (git 에 올리지 않는다). `x-os-type` 은 `web` 고정.
-- 실제 서버와의 연결은 개발 서버의 `/api-check` 페이지에서 로그인해서 확인한다.
+- 실제 서버와의 연결은 개발 서버의 `/login` 에서 로그인해서 확인한다. (`/api-check` 는 응답을 그대로 보는 개발 페이지)
 
 - query key 와 queryFn 은 `queryOptions` 팩토리로 리소스별 파일 한 곳에 모은다. 컴포넌트에서 query key 를 직접 쓰지 않는다.
   - 커서로 쪽을 나눠 받는 목록(강의 검색)은 `infiniteQueryOptions` 로 만들고, 쪽마다 `{ 목록, next }` 를 돌려준다 (`api/lectures.ts`).
 - 에러는 **throw** 로 통일한다. 결과 래퍼(`{ type: 'success' | 'error' }`)를 만들지 않는다. 2xx 가 아닌 응답은 `client.ts` 가 `ApiError` 로 바꾼다. v2 에러는 RFC 7807 형식이라 `type`(`/problems/timetable-not-found` 등)으로 종류를 가르고, 사용자에게는 서버가 준 `detail` 을 보여 준다.
 - **토큰 처리는 `api/client.ts` 한 곳에만** 둔다. 저장 위치, 헤더, 401 / refresh 처리를 다른 곳에 흩지 않는다. (BFF 전환 가능성 대비)
+  - 토큰을 붙인 요청이 401 이면 `callApi` 가 refresh 하고 한 번 다시 보낸다. refresh token 은 쓸 때마다 바뀌므로 동시에 401 을 받아도 갱신은 한 번만 한다. 갱신하지 못하면 토큰을 지운다.
+  - 로그인 여부는 `useSignedIn` 으로 읽는다(토큰이 바뀌면 다른 탭까지 다시 그린다). 로그인이 필요한 화면은 `(main)` 레이아웃의 `RequireSignIn` 이, 로그인 · 회원가입은 `(auth)` 레이아웃의 `RedirectIfSignedIn` 이 막는다. 토큰이 지워지면 로그인 화면으로 간다.
 - DI context 는 환경마다 달라지는 것(토큰 저장소, timetable-picker 의 RN WebView 브리지 등)에만 쓴다.
 - 수정 요청(PATCH)은 사용자가 바꾼 필드만 보낸다.
 - **값이 없는 필드는 domain 에서도 `null` 로 둔다.** `''` / `0` 으로 바꾸지 않는다. 서버 값과 같게 유지해야 그대로 되돌려 보내도 데이터가 바뀌지 않는다.

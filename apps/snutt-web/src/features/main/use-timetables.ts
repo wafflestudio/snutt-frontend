@@ -3,6 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { ApiError } from '@/api/client';
+import { getFailureMessage } from '@/api/errors';
 import { semesterQueries } from '@/api/semesters';
 import { themeQueries } from '@/api/themes';
 import {
@@ -22,10 +23,6 @@ import { pickDefaultTimetable, type Timetable, type TimetableId, type TimetableS
 
 /** 화면 상태: 불러오는 중 · 로그인 필요 · 불러오지 못함 · 준비됨 */
 export type TimetablesStatus = 'loading' | 'unauthorized' | 'error' | 'ready';
-
-/** 실패한 요청을 사용자에게 알릴 말. 서버가 준 메시지(detail)가 있으면 그것을 쓴다 */
-export const getFailureMessage = (error: Error) =>
-  error instanceof ApiError ? (error.detail ?? error.title) : '요청을 처리하지 못했습니다. 잠시 후 다시 시도해 주세요';
 
 /** 시간이 겹치는 강의를 담으려 할 때 서버가 주는 에러 */
 const isTimeOverlap = (error: Error) => error instanceof ApiError && error.type === '/problems/lecture-time-overlap';

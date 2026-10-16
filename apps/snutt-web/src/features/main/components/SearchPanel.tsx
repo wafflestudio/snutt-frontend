@@ -3,6 +3,7 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { bookmarkQueries, useAddBookmark, useRemoveBookmark } from '@/api/bookmarks';
+import { getFailureMessage } from '@/api/errors';
 import { lectureQueries } from '@/api/lectures';
 import type { Lecture, TimetableLecture } from '@/domain/lecture';
 import type { Semester } from '@/domain/semester';
@@ -10,7 +11,6 @@ import type { Timetable } from '@/domain/timetable';
 import { useDebouncedValue } from '@/shared/lib/use-debounced-value';
 import { ConfirmDialog } from '@/shared/ui/Dialog';
 import { SearchField } from '@/shared/ui/SearchField';
-import { getFailureMessage } from '@/features/main/use-timetables';
 import { LectureCell } from './LectureCell';
 
 /** 검색어를 다 친 뒤 이만큼 기다렸다가 검색한다 (ms) */

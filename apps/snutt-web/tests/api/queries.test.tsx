@@ -4,8 +4,8 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import type { ReactNode } from 'react';
 import { afterEach, describe, expect, it } from 'vitest';
-import { useLocalLogin, useLogout } from '@/api/auth';
-import { ApiError, clearAuthTokens, getAuthTokens } from '@/api/client';
+import { useLocalLogin, useLogout, useRegister } from '@/api/auth';
+import { ApiError, clearAuthTokens, getAuthTokens, setAuthTokens } from '@/api/client';
 import { createQueryClient, shouldRetry } from '@/api/query-client';
 import { themeQueries } from '@/api/themes';
 import { timetableQueries } from '@/api/timetables';
@@ -80,12 +80,13 @@ describe('로그인 · 로그아웃', () => {
     expect(queryClient.getQueryData(timetableQueries.list().queryKey)).toBeUndefined();
   });
 
-  it('로그인 실패는 서버 메시지를 담은 에러', async () => {
+  it('로그인 실패는 서버 메시지를 담은 에러 (dev 서버: 403 password-mismatch)', async () => {
     server.use(
       http.post(api('/v2/auth/login'), () =>
-        HttpResponse.json(problem(401, 'wrong-password', '로그인 실패', '아이디나 비밀번호가 올바르지 않습니다'), {
-          status: 401,
-        }),
+        HttpResponse.json(
+          problem(403, 'password-mismatch', '로그인 실패', '잘못된 비밀번호입니다. 다시 입력해 주세요'),
+          { status: 403 },
+        ),
       ),
     );
     const { wrapper } = setup();
@@ -93,17 +94,53 @@ describe('로그인 · 로그아웃', () => {
     act(() => result.current.mutate({ localId: 'snutt', password: 'wrong' }));
     await waitFor(() => expect(result.current.isError).toBe(true));
 
-    expect(result.current.error).toMatchObject({ status: 401, detail: '아이디나 비밀번호가 올바르지 않습니다' });
+    expect(result.current.error).toMatchObject({ status: 403, detail: '잘못된 비밀번호입니다. 다시 입력해 주세요' });
     expect(getAuthTokens()).toBeNull();
   });
 
-  it('로그아웃하면 토큰과 데이터를 지운다', () => {
+  it('가입하면 바로 로그인된다', async () => {
+    let body: unknown;
+    server.use(
+      http.post(api('/v2/auth/register'), async ({ request }) => {
+        body = await request.json();
+        return HttpResponse.json(TOKEN_RESPONSE);
+      }),
+    );
+    const { wrapper } = setup();
+    const { result } = renderHook(() => useRegister(), { wrapper });
+    act(() => result.current.mutate({ localId: 'snutt', password: 'abc123', email: null }));
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    expect(body).toEqual({ localId: 'snutt', password: 'abc123', email: null });
+    expect(getAuthTokens()).toEqual({ accessToken: 'test-access-token', refreshToken: 'test-refresh-token' });
+  });
+
+  it('로그아웃하면 서버에서 refresh token 을 폐기하고, 토큰과 데이터를 지운다', async () => {
+    let body: unknown;
+    server.use(
+      http.post(api('/v2/auth/logout'), async ({ request }) => {
+        body = await request.json();
+        return new HttpResponse(null, { status: 200 });
+      }),
+    );
+    setAuthTokens({ accessToken: 'access', refreshToken: 'refresh' });
     const { queryClient, wrapper } = setup();
     queryClient.setQueryData(timetableQueries.list().queryKey, []);
     const { result } = renderHook(() => useLogout(), { wrapper });
 
-    act(() => result.current());
+    await act(() => result.current());
+    expect(body).toEqual({ refreshToken: 'refresh' });
     expect(getAuthTokens()).toBeNull();
     expect(queryClient.getQueryData(timetableQueries.list().queryKey)).toBeUndefined();
+  });
+
+  it('서버 로그아웃이 실패해도 이 브라우저에서는 로그아웃한다', async () => {
+    server.use(http.post(api('/v2/auth/logout'), () => new HttpResponse(null, { status: 500 })));
+    setAuthTokens({ accessToken: 'access', refreshToken: 'refresh' });
+    const { wrapper } = setup();
+    const { result } = renderHook(() => useLogout(), { wrapper });
+
+    await act(() => result.current());
+    expect(getAuthTokens()).toBeNull();
   });
 });
