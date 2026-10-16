@@ -11,6 +11,7 @@ import type { Timetable } from '@/domain/timetable';
 import { useDebouncedValue } from '@/shared/lib/use-debounced-value';
 import { ConfirmDialog } from '@/shared/ui/Dialog';
 import { SearchField } from '@/shared/ui/SearchField';
+import { preview } from '@/features/main/preview-store';
 import { LectureCell } from './LectureCell';
 
 /** 검색어를 다 친 뒤 이만큼 기다렸다가 검색한다 (ms) */
@@ -40,6 +41,9 @@ export function SearchPanel({ semester, timetable, onAdd, onRemove, onFailure }:
   const addBookmark = useAddBookmark();
   const removeBookmark = useRemoveBookmark();
   const isBookmarked = (lecture: Lecture) => bookmarks.data?.some(({ id }) => id === lecture.id) ?? false;
+
+  // 커서를 올린 강의는 시간표에 미리 보여 준다. 검색 탭이 사라지면(학기 변경) 지운다
+  useEffect(() => preview.clear, []);
 
   // 시간이 겹쳐서 덮어쓸지 묻는 중인 강의
   const [overlap, setOverlap] = useState<{ lecture: Lecture; message: string } | null>(null);
@@ -87,6 +91,7 @@ export function SearchPanel({ semester, timetable, onAdd, onRemove, onFailure }:
                   canAdd={timetable !== null}
                   bookmarked={bookmarked}
                   onAddToggle={() => (added ? onRemove(added) : add(lecture))}
+                  onPreviewChange={(previewing) => (previewing ? preview.show(lecture) : preview.hide(lecture))}
                   onBookmarkToggle={() =>
                     (bookmarked ? removeBookmark : addBookmark).mutate(lecture, { onError: onFailure })
                   }

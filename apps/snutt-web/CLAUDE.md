@@ -112,7 +112,8 @@ export const timetableQueries = {
 
 - 서버 상태: TanStack Query (`api/` 의 queryOptions).
 - UI 상태: `useState` / `useReducer`.
-- 전역 상태: Zustand. 패널↔그리드 hover 미리보기처럼 멀리 떨어진 컴포넌트가 공유하는 휘발성 상태에만 쓴다.
+- 전역 상태: 패널↔그리드 hover 미리보기처럼 멀리 떨어진 컴포넌트가 공유하는 휘발성 상태에만 둔다. `useSyncExternalStore` 로 작은 store 를 만든다 (예: `features/main/preview-store.ts`). 자주 바뀌는 값은 그것을 그리는 작은 컴포넌트에서만 구독해 화면 전체를 다시 그리지 않게 한다.
+  - Zustand 는 넣지 않는다. snutt-web 에 넣으면(nohoist 포함) Yarn 1 hoisting 이 바뀌어 루트 `@types/react` 가 19 가 되고 snutt-ev-webview 의 타입 검사가 깨진다 (2026-10-16 확인).
 - 메인 페이지 레이아웃은 하나의 `MainView`(`features/main/main-view.ts`)로 관리하고 URL search params 와 동기화한다. 읽고 바꿀 때는 `useMainView` 를 쓰고, 이 hook 을 쓰는 컴포넌트는 `Suspense` 안에 둔다(프로덕션 빌드에서 필요). 패널(탭/상세/직접 추가, 접힘은 `null`)과 비교는 동시에 열리므로 독립된 두 필드로 두고, 각 필드는 discriminated union 으로 만든다. 불리언 플래그를 여러 개 두지 않는다. (`docs/snutt-web-dev-plan.md` 설계 포인트 2)
 - 학기 선택과 시간표 목록 · 고른 시간표는 `useTimetables`(`features/main/use-timetables.ts`)에 있다. 목록 · 상세는 query 이고, 바꾸는 동작은 `api/timetables.ts` 의 mutation 이 서버 응답으로 캐시를 바꾼다. 고른 학기 · 시간표만 화면 상태로 둔다. 실패한 동작은 `failure` 로 받아 알림 팝업으로 보여 준다.
 
