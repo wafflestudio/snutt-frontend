@@ -93,9 +93,22 @@ export function Tab({ value, children }: { value: string; children: ReactNode })
   );
 }
 
-export function TabPanel({ value, children, className }: { value: string; children: ReactNode; className?: string }) {
+export type TabPanelProps = {
+  value: string;
+  children: ReactNode;
+  /** 다른 탭을 고른 동안에도 내용을 지우지 않고 숨겨 둔다 (검색어 · 스크롤 위치를 남긴다) */
+  keepMounted?: boolean;
+  className?: string;
+};
+
+export function TabPanel({ value, children, keepMounted, className }: TabPanelProps) {
   return (
-    <BaseTabs.Panel value={value} className={clsx('outline-none', className)}>
+    <BaseTabs.Panel
+      value={value}
+      keepMounted={keepMounted}
+      // 숨긴 패널에는 hidden 속성이 붙지만 className 의 display(flex 등)가 이기므로 data-hidden 으로 다시 숨긴다
+      className={clsx('outline-none data-hidden:hidden', className)}
+    >
       {children}
     </BaseTabs.Panel>
   );

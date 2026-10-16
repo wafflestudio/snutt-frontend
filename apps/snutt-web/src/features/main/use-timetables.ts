@@ -8,6 +8,7 @@ import { themeQueries } from '@/api/themes';
 import {
   timetableQueries,
   useAddCustomLecture,
+  useAddLecture,
   useCreateTimetable,
   useRemoveLecture,
   useRemoveTimetable,
@@ -15,7 +16,7 @@ import {
   useSetPrimaryTimetable,
   useUpdateLecture,
 } from '@/api/timetables';
-import type { CustomLectureInput, TimetableLectureId } from '@/domain/lecture';
+import type { CustomLectureInput, LectureId, TimetableLectureId } from '@/domain/lecture';
 import { isSameSemester, type Semester } from '@/domain/semester';
 import { pickDefaultTimetable, type Timetable, type TimetableId, type TimetableSummary } from '@/domain/timetable';
 
@@ -25,6 +26,9 @@ export type TimetablesStatus = 'loading' | 'unauthorized' | 'error' | 'ready';
 /** 실패한 요청을 사용자에게 알릴 말. 서버가 준 메시지(detail)가 있으면 그것을 쓴다 */
 export const getFailureMessage = (error: Error) =>
   error instanceof ApiError ? (error.detail ?? error.title) : '요청을 처리하지 못했습니다. 잠시 후 다시 시도해 주세요';
+
+/** 시간이 겹치는 강의를 담으려 할 때 서버가 주는 에러 */
+const isTimeOverlap = (error: Error) => error instanceof ApiError && error.type === '/problems/lecture-time-overlap';
 
 /**
  * 시간표 상세. 이름과 기본 여부는 목록(summary)을 따른다.
@@ -83,6 +87,7 @@ export function useTimetables() {
   const renameTimetable = useRenameTimetable();
   const removeTimetable = useRemoveTimetable();
   const setPrimaryTimetable = useSetPrimaryTimetable();
+  const addLecture = useAddLecture();
   const addCustomLecture = useAddCustomLecture();
   const updateLecture = useUpdateLecture();
   const removeLecture = useRemoveLecture();
@@ -105,6 +110,8 @@ export function useTimetables() {
     /** 마지막으로 실패한 동작의 메시지. 보여 준 뒤 dismissFailure 로 지운다 */
     failure,
     dismissFailure: () => setFailure(null),
+    /** 시간표 밖의 요청(관심강좌 등)이 실패했을 때도 같은 알림으로 보여 준다 */
+    notifyFailure: onError,
 
     selectSemester: (next: Semester) => {
       setSemesterChoice(next);
@@ -129,6 +136,19 @@ export function useTimetables() {
     rename: (id: TimetableId, title: string) => renameTimetable.mutate({ id, title }, { onError }),
     remove: (id: TimetableId) => removeTimetable.mutate(id, { onError }),
     setPrimary: (id: TimetableId, isPrimary: boolean) => setPrimaryTimetable.mutate({ id, isPrimary }, { onError }),
+    /**
+     * 수강편람 강의를 담는다. 시간이 겹치면 onOverlap 에 서버 메시지(`'…' 강의와 시간이 겹칩니다. 강의를 덮어씌우겠습니까?`)를 주고,
+     * 확인받은 뒤 force 로 다시 부르면 서버가 겹치는 강의를 빼고 넣는다
+     */
+    addLecture: (
+      id: TimetableId,
+      lectureId: LectureId,
+      { force = false, onOverlap }: { force?: boolean; onOverlap: (message: string) => void },
+    ) =>
+      addLecture.mutate(
+        { id, lectureId, isForced: force },
+        { onError: (failed) => (isTimeOverlap(failed) ? onOverlap(getFailureMessage(failed)) : onError(failed)) },
+      ),
     /** 시간 충돌은 부르는 쪽(직접 추가 폼)에서 먼저 확인한다. 성공하면 onSuccess 를 부른다 */
     addCustomLecture: (id: TimetableId, input: CustomLectureInput, onSuccess?: () => void) =>
       addCustomLecture.mutate({ id, input }, { onSuccess, onError }),

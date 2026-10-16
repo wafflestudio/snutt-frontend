@@ -1,6 +1,6 @@
 import type { LectureColor } from './color';
 import type { Semester, Term } from './semester';
-import { compareDayTimeRange, type DayTimeRange, formatDayTimeRange } from './time';
+import { compareDayTimeRange, DAY_LABELS, type DayTimeRange, formatDayTimeRange, formatMinute } from './time';
 
 /** 수강편람 강의 ID */
 export type LectureId = string;
@@ -81,6 +81,25 @@ export const formatQuota = ({ quota, freshmanQuota }: Pick<LectureInfo, 'quota' 
 /** ['월 10:00~11:15', '수 10:00~11:15'] */
 export const getClassTimeTexts = (lecture: Pick<LectureInfo, 'classTimes'>) =>
   [...lecture.classTimes].sort(compareDayTimeRange).map(formatDayTimeRange);
+
+/** 검색 결과 한 줄의 시간 (Figma `cell`). '화(09:30~10:45), 목(09:30~10:45)'. 시간이 없으면 null */
+export const getClassTimeSummary = (lecture: Pick<LectureInfo, 'classTimes'>) =>
+  lecture.classTimes.length === 0
+    ? null
+    : [...lecture.classTimes]
+        .sort(compareDayTimeRange)
+        .map(
+          ({ day, startMinute, endMinute }) =>
+            `${DAY_LABELS[day]}(${formatMinute(startMinute)}~${formatMinute(endMinute)})`,
+        )
+        .join(', ');
+
+/** 검색 결과 한 줄의 장소. 시간 순서대로 같은 장소도 그대로 둔다 ('302-209, 302-209'). 장소가 하나도 없으면 null */
+export const getPlaceSummary = (lecture: Pick<LectureInfo, 'classTimes'>) =>
+  [...lecture.classTimes]
+    .sort(compareDayTimeRange)
+    .flatMap(({ place }) => (place ? [place] : []))
+    .join(', ') || null;
 
 const SUGANG_SEMESTER_CODES: Record<Term, { openShtmFg: string; openDetaShtmFg: string }> = {
   1: { openShtmFg: 'U000200001', openDetaShtmFg: 'U000300001' },

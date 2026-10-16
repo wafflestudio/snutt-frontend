@@ -6,6 +6,7 @@ import { type ReactNode, useMemo } from 'react';
 import type { ColorPair } from '@/domain/color';
 import { getGridRange, type GridRange } from '@/domain/grid-layout';
 import type { TimetableLecture } from '@/domain/lecture';
+import { toSemesterKey } from '@/domain/semester';
 import { getNewTimetableTitle, type Timetable } from '@/domain/timetable';
 import { LectureLayer } from '@/shared/timetable-grid/LectureLayer';
 import { TimetableGrid } from '@/shared/timetable-grid/TimetableGrid';
@@ -18,6 +19,7 @@ import { getFailureMessage, useTimetableDetail, useTimetables } from '@/features
 import { CustomLectureForm } from './CustomLectureForm';
 import { LectureDetailPanel } from './LectureDetailPanel';
 import { MainPanel } from './MainPanel';
+import { SearchPanel } from './SearchPanel';
 import { AddTimetableButton, TimetableMenu } from './TimetableActions';
 import { TimetableTabs } from './TimetableTabs';
 
@@ -109,6 +111,17 @@ export function MainScreen() {
               semesters={timetables.semesters}
               semester={timetables.semester}
               onSemesterChange={timetables.selectSemester}
+              search={
+                <SearchPanel
+                  // 학기를 바꾸면 검색어를 지운다
+                  key={toSemesterKey(timetables.semester)}
+                  semester={timetables.semester}
+                  timetable={selected}
+                  onAdd={(lecture, options) => selected && timetables.addLecture(selected.id, lecture.id, options)}
+                  onRemove={(lecture) => selected && timetables.removeLecture(selected.id, lecture.id)}
+                  onFailure={timetables.notifyFailure}
+                />
+              }
             />
             {selected && listPanel.detail && detailLecture && (
               <LectureDetailPanel

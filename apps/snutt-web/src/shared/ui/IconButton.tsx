@@ -4,8 +4,10 @@ import type { ComponentProps, ReactNode } from 'react';
 export type IconButtonVariant = 'circle' | 'ghost';
 
 const VARIANT_CLASSES: Record<IconButtonVariant, string> = {
-  // 검색 결과의 관심강좌 · 담기 (30px 원)
-  circle: 'size-7.5 rounded-full border border-line-border [&>svg]:size-4',
+  // 검색 결과의 관심강좌 · 담기 (Figma `관심강좌 버튼`: 30px 원). 아이콘 크기는 버튼마다 달라서(16 · 22) 아이콘에 준다.
+  // 배경 #FFFFFF · 60% 는 토큰이 없어 Background/normal 로, 호버 배경 #000000 · 10% 는 같은 값인 Line/cellBorder 로 쓴다 (디자인 문의 2-1, 2-2)
+  circle:
+    'size-7.5 rounded-full border border-line-border bg-normal hover:bg-line-cell-border hover:text-icon-normal aria-pressed:text-icon-normal',
   // 닫기 · 뒤로 · 더보기처럼 테두리 없는 아이콘
   ghost: 'size-7 rounded-sm hover:bg-light [&>svg]:size-5',
 };

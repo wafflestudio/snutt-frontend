@@ -133,11 +133,11 @@ export function UiGallery() {
             variant="circle"
             label={bookmarked ? '관심강좌에서 빼기' : '관심강좌에 담기'}
             aria-pressed={bookmarked}
-            icon={bookmarked ? <Icons.IconBookmarkFill /> : <Icons.IconBookmark />}
+            icon={<Icons.IconBookmarkFill className="size-4" />}
             onClick={() => setBookmarked((b) => !b)}
           />
-          <IconButton variant="circle" label="시간표에 담기" icon={<Icons.IconAdd />} />
-          <IconButton variant="circle" label="시간표에서 빼기" icon={<Icons.IconRemove />} />
+          <IconButton variant="circle" label="시간표에 담기" icon={<Icons.IconAdd className="size-5.5" />} />
+          <IconButton variant="circle" label="시간표에서 빼기" icon={<Icons.IconRemove className="size-5.5" />} />
           <IconButton label="뒤로" icon={<Icons.IconChevronLeft />} />
           <IconButton label="닫기" icon={<Icons.IconClose />} />
           <IconButton label="더보기" icon={<Icons.IconMoreHorizontal />} />

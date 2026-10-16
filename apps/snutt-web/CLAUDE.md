@@ -85,6 +85,7 @@ export const timetableQueries = {
 - 실제 서버와의 연결은 개발 서버의 `/api-check` 페이지에서 로그인해서 확인한다.
 
 - query key 와 queryFn 은 `queryOptions` 팩토리로 리소스별 파일 한 곳에 모은다. 컴포넌트에서 query key 를 직접 쓰지 않는다.
+  - 커서로 쪽을 나눠 받는 목록(강의 검색)은 `infiniteQueryOptions` 로 만들고, 쪽마다 `{ 목록, next }` 를 돌려준다 (`api/lectures.ts`).
 - 에러는 **throw** 로 통일한다. 결과 래퍼(`{ type: 'success' | 'error' }`)를 만들지 않는다. 2xx 가 아닌 응답은 `client.ts` 가 `ApiError` 로 바꾼다. v2 에러는 RFC 7807 형식이라 `type`(`/problems/timetable-not-found` 등)으로 종류를 가르고, 사용자에게는 서버가 준 `detail` 을 보여 준다.
 - **토큰 처리는 `api/client.ts` 한 곳에만** 둔다. 저장 위치, 헤더, 401 / refresh 처리를 다른 곳에 흩지 않는다. (BFF 전환 가능성 대비)
 - DI context 는 환경마다 달라지는 것(토큰 저장소, timetable-picker 의 RN WebView 브리지 등)에만 쓴다.
