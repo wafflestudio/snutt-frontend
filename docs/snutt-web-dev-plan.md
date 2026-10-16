@@ -130,7 +130,8 @@ dev 서버 OpenAPI 명세(`https://snutt-api-dev.wafflestudio.com/v3/api-docs`)�
 | 관심강좌 담기 여부 | `GET /v2/bookmarks/lectures/{lectureId}/state` | |
 | 빈자리 알림 | `GET /v2/vacancy-notifications/lectures`, `POST, DELETE .../{lectureId}` | 현재 디자인에서 쓰지 않음 (관심 목록 탭이 빠짐) |
 | 빈자리 알림 등록 여부 | `GET /v2/vacancy-notifications/lectures/{lectureId}/state` | |
-| 로그인/회원가입 | `POST /v2/auth/login`, `/v2/auth/login/{provider}`, `/v2/auth/register` | |
+| 로그인/회원가입 | `POST /v2/auth/login`, `/v2/auth/login/{provider}`, `/v2/auth/register` | 로그인 실패는 403 `password-mismatch` · `unregistered-local-id`, 가입 실패는 400 `invalid-password`(영문 · 숫자를 포함한 6~20자) · 409 `duplicate-local-id`. 서버 문구를 그대로 보여 준다 (dev 서버 확인) |
+| 토큰 갱신 · 로그아웃 | `POST /v2/auth/refresh`, `POST /v2/auth/logout` | access token 은 2시간 JWT. refresh token 은 갱신할 때마다 새것으로 바뀌고 쓴 것은 401 `invalid-refresh-token`. 로그아웃은 refresh token 만 폐기하고 access token 은 만료까지 남는다 (dev 서버 확인) |
 | 내 정보 | `GET, PATCH, DELETE /v2/users/me` | |
 | 소셜 연동/해제 | `POST, DELETE /v2/users/me/social/{provider}` | |
 | 비밀번호 | `POST, PATCH /v2/users/me/password` | |
@@ -223,6 +224,7 @@ apps/snutt-web/src/
 대신 Node 서버 운영이 필요하고(theme-market 처럼 컨테이너 배포), iframe / RN WebView 로 열리는 timetable-picker 에서는 쿠키 인증이 제한될 수 있다.
 
 - v2 인증 방식(토큰 헤더, refresh 흐름) 확인 후 **Phase 3(인증) 전에 결정**한다. Phase 1~2 는 영향 없음.
+- 3-1 은 BFF 없이 브라우저 저장(localStorage)과 클라이언트 갱신으로 진행했다. 배포 방식(정적 호스팅 / Node 서버)이 정해질 때 다시 본다. 토큰을 다루는 곳이 `api/client.ts` 하나라 바꿀 때 고칠 곳은 그 파일과 `useSignedIn` 이다.
 - 어느 쪽이든 전환 비용을 줄이기 위해 **토큰 처리는 `api/client.ts` 한 곳에만** 둔다.
 
 ### 설계 포인트
@@ -297,7 +299,7 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | **2. 디자인 시스템** | 2-1 | 색 토큰 (Figma Variables → `yarn generate:tokens` → Tailwind 테마), **라이트 / 다크 테마** 전환 기반, Pretendard. 토큰 확인 페이지 `/tokens` (개발 전용) | 테마 전환 시 전체 색이 토큰으로 바뀜 | ✅ #246 |
 | | 2-2 | 글자 스타일(Figma 텍스트 스타일), 아이콘(Material Symbols), Button, IconButton, TextField, SearchField, Chip, Tabs(밑줄 / 세그먼트). 개발 전용 `/ui` 페이지 | `/ui` 에서 라이트 / 다크 모두 확인 | ✅ #247 |
 | | 2-3 | Base UI 기반 오버레이: ConfirmDialog(확인 팝업), Dialog(큰 모달), Menu(··· 같은 동작 목록), Select, ColorSelect(`색상1~9`). Toast 는 Figma 에 디자인이 없어 필요할 때 만든다 | | ✅ #252 |
-| **3. 인증** | 3-1 | 로컬 로그인, 회원가입, AuthGuard, 토큰 관리 | |  |
+| **3. 인증** | 3-1 | 로컬 로그인, 회원가입, AuthGuard, 토큰 관리(401 이면 한 번 갱신해 다시 보냄), 좌측 바 더보기의 로그아웃. 화면은 디자인 문의 4-12 | | ✅ #261 |
 | | 3-2 | 소셜 로그인 (Google / Facebook / Kakao) | |  |
 | | 3-3 | 비밀번호 재설정 (이메일 인증) | |  |
 | **4. 메인 뼈대** | 4-1 | AppShell: 좌측 바(Figma `LNB`: 검색 · 강의평 · 친구 시간표 · 더보기 · 테마 전환), 헤더(직접 추가 · 시간표 비교), 접을 수 있는 패널(push), `MainView` 상태 + URL 동기화. 강의평 · 더보기는 화면이 없어 비활성 | 패널 열림/접힘, 상세, 직접 추가, 비교가 빈 화면으로 전환됨 | ✅ #251 |
@@ -345,7 +347,7 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | 강의실 지도 SDK | 6-3 전에 결정 (Naver / Kakao 지도 등) | 기존 앱이 쓰는 지도와 맞춘다 |
 | 로그인 라우트 | `/`에서 조건부 렌더링 대신 `/login` 분리 + redirect | localStorage 토큰이라 조건부 렌더링은 깜빡임 발생 |
 | v1 서버 생존 여부 | ✅ 살아 있음 (새 백엔드의 v1compat 계층) | snutt-webclient 운영 지속 기간에 영향 |
-| v2 인증 방식 | 일부 해결: 헤더는 위 표 참고 (web 은 `x-os-type: web`, `x-client-key` 받음), `userId` 는 서버가 채움. **남은 것: refresh 흐름** | refresh 는 3-1 에서 `api/client.ts` 에 넣는다 |
+| v2 인증 방식 | ✅ 해결: 헤더는 위 표 참고 (web 은 `x-os-type: web`, `x-client-key` 받음), `userId` 는 서버가 채움. refresh 흐름은 API 표의 토큰 갱신 · 로그아웃 | 3-1 에서 `api/client.ts` 에 넣음. 동시에 401 을 받아도 한 번만 갱신한다 |
 | 백엔드 명세 버그 | ✅ 해결 (2026-10-15): 그룹 명세 스키마 누락, `is` boolean 필드 이름 | v1 은 필요하면 생성 타입으로 바꿀 수 있다 |
 | v2 `is` boolean 필드 이름 | ✅ 해결: 명세가 `isPrimary` 등 실제 이름으로 바뀜 | dev 실제 응답도 `isPrimary` (2026-10-15) |
 | 친구 기능 서버 | 확인 필요: 별도 friends-api 가 필요한지, core v2 로 충분한지 | core v2 명세에 친구 API 전체가 있음 |

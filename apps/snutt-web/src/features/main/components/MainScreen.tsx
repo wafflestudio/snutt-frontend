@@ -2,6 +2,7 @@
 
 import { clsx } from 'clsx';
 import Link from 'next/link';
+import { getFailureMessage } from '@/api/errors';
 import { type ReactNode, useMemo } from 'react';
 import type { ColorPair } from '@/domain/color';
 import { getGridRange, type GridRange } from '@/domain/grid-layout';
@@ -15,7 +16,7 @@ import { NoticeDialog } from '@/shared/ui/Dialog';
 import { IconChevronLeft, IconChevronRight, IconCompare, IconEdit } from '@/shared/ui/icons';
 import { DEFAULT_PANEL } from '@/features/main/main-view';
 import { useMainView } from '@/features/main/use-main-view';
-import { getFailureMessage, useTimetableDetail, useTimetables } from '@/features/main/use-timetables';
+import { useTimetableDetail, useTimetables } from '@/features/main/use-timetables';
 import { CustomLectureForm } from './CustomLectureForm';
 import { LectureDetailPanel } from './LectureDetailPanel';
 import { MainPanel } from './MainPanel';
@@ -64,12 +65,10 @@ export function MainScreen() {
     return (
       <MainMessage>
         로그인이 필요합니다
-        {/* 로그인 화면은 3-1. 그 전까지 개발 서버에서는 확인용 페이지에서 로그인한다 */}
-        {process.env.NODE_ENV !== 'production' && (
-          <Link href="/api-check" className="text-snutt-mint underline">
-            /api-check 에서 로그인
-          </Link>
-        )}
+        {/* 보통은 토큰이 지워지면서 RequireSignIn 이 먼저 로그인 화면으로 보낸다 */}
+        <Link href="/login" className="text-snutt-mint underline">
+          로그인하기
+        </Link>
       </MainMessage>
     );
   if (timetables.status === 'error' || !timetables.semester)
