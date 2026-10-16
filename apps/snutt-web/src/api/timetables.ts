@@ -1,7 +1,9 @@
-import { queryOptions } from '@tanstack/react-query';
-import type { TimetableId } from '@/domain/timetable';
+import { queryOptions, type QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
+import type { CustomLectureInput, TimetableLectureId } from '@/domain/lecture';
+import type { Semester } from '@/domain/semester';
+import { getTotalCredit, type Timetable, type TimetableId, type TimetableSummary } from '@/domain/timetable';
 import { callApi } from './client';
-import { toTimetable, toTimetableSummary } from './mappers/timetable';
+import { toCustomLectureRequest, toLectureModifyRequest, toTimetable, toTimetableSummary } from './mappers/timetable';
 
 export const timetableQueries = {
   all: () => ['timetables'] as const,
@@ -17,10 +19,128 @@ export const timetableQueries = {
       queryFn: async () =>
         toTimetable(await callApi('GET /v2/timetables/:timetableId', { params: { timetableId: id } })),
     }),
-  /** 처음 열 시간표: 가장 최근 학기의 기본 시간표 */
+  /** 처음 열 시간표: 마지막으로 고친 시간표 (학기와 상관없이 updatedAt 이 가장 늦은 것. dev 서버에서 확인) */
   recent: () =>
     queryOptions({
       queryKey: [...timetableQueries.all(), 'recent'],
       queryFn: async () => toTimetable(await callApi('GET /v2/timetables/recent')),
     }),
+};
+
+// 바꾸는 요청은 서버가 바뀐 목록이나 시간표를 돌려준다. 다시 받지 않고 그 응답으로 캐시를 바꾼다
+
+const setList = (queryClient: QueryClient, list: TimetableSummary[]) =>
+  queryClient.setQueryData(timetableQueries.list().queryKey, list);
+
+/** 강의가 바뀐 시간표를 상세에 넣고, 목록의 학점도 맞춘다 */
+const setTimetable = (queryClient: QueryClient, timetable: Timetable) => {
+  queryClient.setQueryData(timetableQueries.detail(timetable.id).queryKey, timetable);
+  queryClient.setQueryData(timetableQueries.list().queryKey, (list) =>
+    list?.map((summary) =>
+      summary.id === timetable.id
+        ? { ...summary, totalCredit: getTotalCredit(timetable.lectures), updatedAt: timetable.updatedAt }
+        : summary,
+    ),
+  );
+};
+
+/** 성공하면 새 목록을 돌려준다. 만든 시간표는 이전 목록에 없던 것이다 */
+export const useCreateTimetable = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ semester, title }: { semester: Semester; title: string }) =>
+      (await callApi('POST /v2/timetables', { body: { year: semester.year, semester: semester.term, title } })).map(
+        toTimetableSummary,
+      ),
+    onSuccess: (list) => setList(queryClient, list),
+  });
+};
+
+export const useRenameTimetable = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, title }: { id: TimetableId; title: string }) =>
+      (await callApi('PATCH /v2/timetables/:timetableId', { params: { timetableId: id }, body: { title } })).map(
+        toTimetableSummary,
+      ),
+    onSuccess: (list) => setList(queryClient, list),
+  });
+};
+
+export const useRemoveTimetable = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: TimetableId) =>
+      (await callApi('DELETE /v2/timetables/:timetableId', { params: { timetableId: id } })).map(toTimetableSummary),
+    onSuccess: (list, id) => {
+      setList(queryClient, list);
+      queryClient.removeQueries({ queryKey: timetableQueries.detail(id).queryKey });
+    },
+  });
+};
+
+/** 기본 시간표는 학기마다 하나라서, 지정하면 같은 학기의 다른 시간표는 서버가 해제한다 */
+export const useSetPrimaryTimetable = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, isPrimary }: { id: TimetableId; isPrimary: boolean }) =>
+      (
+        await callApi(
+          isPrimary ? 'PUT /v2/timetables/:timetableId/primary' : 'DELETE /v2/timetables/:timetableId/primary',
+          {
+            params: { timetableId: id },
+          },
+        )
+      ).map(toTimetableSummary),
+    onSuccess: (list) => setList(queryClient, list),
+  });
+};
+
+export const useAddCustomLecture = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, input }: { id: TimetableId; input: CustomLectureInput }) =>
+      toTimetable(
+        await callApi('POST /v2/timetables/:timetableId/lectures/custom', {
+          params: { timetableId: id },
+          body: toCustomLectureRequest(input),
+        }),
+      ),
+    onSuccess: (timetable) => setTimetable(queryClient, timetable),
+  });
+};
+
+export const useUpdateLecture = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      id,
+      lectureId,
+      change,
+    }: {
+      id: TimetableId;
+      lectureId: TimetableLectureId;
+      change: Partial<CustomLectureInput>;
+    }) =>
+      toTimetable(
+        await callApi('PATCH /v2/timetables/:timetableId/lectures/:timetableLectureId', {
+          params: { timetableId: id, timetableLectureId: lectureId },
+          body: toLectureModifyRequest(change),
+        }),
+      ),
+    onSuccess: (timetable) => setTimetable(queryClient, timetable),
+  });
+};
+
+export const useRemoveLecture = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, lectureId }: { id: TimetableId; lectureId: TimetableLectureId }) =>
+      toTimetable(
+        await callApi('DELETE /v2/timetables/:timetableId/lectures/:timetableLectureId', {
+          params: { timetableId: id, timetableLectureId: lectureId },
+        }),
+      ),
+    onSuccess: (timetable) => setTimetable(queryClient, timetable),
+  });
 };

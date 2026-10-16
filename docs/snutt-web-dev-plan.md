@@ -269,7 +269,7 @@ type PanelView =
 |---|---|
 | 1200px 이상 | 좌측 바(80px)와 패널(430px)은 고정, 그리드가 남는 폭을 채운다. Figma 1920 프레임에서도 패널은 430px, 그리드만 1410px 로 넓어진다. 패널을 접으면 그리드가 그만큼 넓어진다 |
 | 1200px 미만 | 화면 전체에 최소 너비 1200px 을 걸어 가로 스크롤. 레이아웃을 바꾸지 않는다 |
-| 세로 | 좌측 바, 패널 머리(학기 선택 · 탭), 시간표 탭 줄은 고정하고 그리드와 패널 목록만 각자 스크롤 |
+| 세로 | 좌측 바, 패널 머리(학기 선택 · 탭), 시간표 탭 줄은 고정하고 패널 목록만 스크롤. 그리드는 스크롤하지 않고 남은 높이를 시간 칸 수로 나눈다 (강의 시간이 넓어 칸이 늘면 한 칸이 낮아진다) |
 
 - 예외: `timetable-picker` 는 앱(RN WebView) 안에서 열리므로 모바일 폭에 맞춘다 (9-5).
 - 휴대폰으로 웹에 들어온 경우도 가로 스크롤로 둔다. 필요하면 좁은 화면(예: 768px 미만)에 앱 안내 화면만 나중에 추가한다 (기획에 없음).
@@ -292,7 +292,7 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | | 0-3 | v2 매핑표 완성 + 필요한 v2 엔드포인트를 `@sf/snutt-api`에 추가 | 기획 스펙 기능 전부 엔드포인트 확인 | ✅ #241 |
 | **1. 기반** | 1-1 | `domain/` 작성 (webclient entities 참고, v2 기준 정리) + 단위 테스트 | | ✅ #243 |
 | | 1-2a | `api/client.ts`(헤더, 토큰 저장, 에러 변환), mappers, queryOptions, QueryClient provider, MSW 테스트 환경. 확인용 아이디 로그인과 개발 페이지 `/api-check` | 테스트 페이지에서 `GET /v2/timetables` 성공 | ✅ #258 |
-| | 1-2b | 메인 화면의 `useTimetables` 를 query · mutation 으로 바꾸고, 처음 학기 · 시간표는 `GET /v2/timetables/recent` 로 정한다 | 메인 화면이 실제 시간표를 보여 주고 고친다 |  |
+| | 1-2b | 메인 화면의 `useTimetables` 를 query · mutation 으로 바꾸고, 처음 학기 · 시간표는 `GET /v2/timetables/recent`(마지막으로 고친 시간표)로 정한다 | 메인 화면이 실제 시간표를 보여 주고 고친다 | ✅ #259 |
 | | 1-3 | ev-api 클라이언트: 강의평 조회·통계·작성·좋아요 엔드포인트 (friends 는 core v2 에 있으면 `@sf/snutt-api` 에 추가) | 8-4, 8-5 에 필요한 엔드포인트 확인 |  |
 | **2. 디자인 시스템** | 2-1 | 색 토큰 (Figma Variables → `yarn generate:tokens` → Tailwind 테마), **라이트 / 다크 테마** 전환 기반, Pretendard. 토큰 확인 페이지 `/tokens` (개발 전용) | 테마 전환 시 전체 색이 토큰으로 바뀜 | ✅ #246 |
 | | 2-2 | 글자 스타일(Figma 텍스트 스타일), 아이콘(Material Symbols), Button, IconButton, TextField, SearchField, Chip, Tabs(밑줄 / 세그먼트). 개발 전용 `/ui` 페이지 | `/ui` 에서 라이트 / 다크 모두 확인 | ✅ #247 |
@@ -354,4 +354,5 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | 아이콘 교체 | **나중에 바꿔야 함**: 지금 아이콘은 Figma 에서 내보낼 수 없어 Material Symbols 중 비슷한 것으로 대신했다. 디자이너에게 SVG 를 받으면 바꾼다. 특히 Figma 에서 직접 그린 것으로 보이는 좌측 바 아이콘(`Icon/Tab/timetable`: 검색 · 강의평 · 친구 시간표 · 더보기), 검색 아이콘(`Icon/glass`), 필터 아이콘(`ic/condition/normal`), 로고(`SnuttLogo`, 지금은 snutt-webclient 의 벡터) | 바꿀 곳: `scripts/generate-icons.mts`(Material Symbols 이름) 또는 받은 SVG 로 `shared/ui/` 컴포넌트 교체. 디자이너 문의 C |
 | 강의 시간 겹침 | 그리드는 v1 처럼 겹쳐도 칸을 나누지 않는다(기획상 겹치지 않음). 5-1 에서 v2 강의 추가 · 수정의 `forced` 가 겹치는 강의를 지우는지, 겹친 채로 넣는지 백엔드에 확인 | 겹친 채로 넣는다면 가려진 강의를 고를 방법이 필요 |
 | `paletteIndex` 시작 번호 | ✅ 해결: 0부터. dev 응답에서 `paletteIndex: 1` 인 강의의 `color` 가 테마 `colors[1]` 과 같다 (2026-10-15) | domain 은 0부터(팔레트 배열 인덱스)로 가정. v1 `colorIndex` 는 1~9 가 팔레트, 0 이 직접 고른 색이었음. Figma 색상 드롭다운은 `색상1~9` (표시용 번호는 index + 1) |
+| v2 강의 수정(PATCH)의 null | ✅ 해결 (2026-10-15 dev 에서 확인): `null` 과 생략은 "바꾸지 않음". 값을 지우려면 `resetFields` 에 필드 이름을 넣는다 (직접 추가한 강의는 null, 수강편람 강의는 수강편람 값으로 돌아감). `paletteIndex` 를 보내면 `customColor` 가 지워진다 | `toLectureModifyRequest` 가 null 인 필드를 resetFields 로 보낸다. 6-2 에서 수강편람 강의의 값을 "지우기"가 아니라 "원래대로"로 보여 줄지 정한다 |
 | 검색 시간 조건의 끝 시각 | 5-x (검색) 에서 확인: 포함인지 제외인지 | domain 은 `[start, end)`. v1 웹클라이언트는 `endMinute` 에 -1 을 해서 보냈음 |

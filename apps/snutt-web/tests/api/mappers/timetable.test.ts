@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { toTheme, toTimetable, toTimetableSummary } from '@/api/mappers/timetable';
+import {
+  toCustomLectureRequest,
+  toLectureModifyRequest,
+  toTheme,
+  toTimetable,
+  toTimetableSummary,
+} from '@/api/mappers/timetable';
 import { TIMETABLE_BRIEF_RESPONSES, TIMETABLE_RESPONSE, THEME_RESPONSE } from '../../msw/fixtures';
 
 describe('timetable mapper', () => {
@@ -82,6 +88,45 @@ describe('timetable mapper', () => {
         { bg: '#E54459', fg: '#ffffff' },
         { bg: '#F58D3D', fg: '#ffffff' },
       ],
+    });
+  });
+});
+
+describe('요청 mapper', () => {
+  it('직접 추가: 빈 장소는 빈 문자열, 팔레트 색은 paletteIndex, 시간이 겹치면 서버가 거절한다', () => {
+    expect(
+      toCustomLectureRequest({
+        title: '스터디',
+        instructor: null,
+        credit: 2,
+        remark: null,
+        classTimes: [{ day: 5, startMinute: 600, endMinute: 660, place: null }],
+        color: { type: 'palette', index: 3 },
+      }),
+    ).toEqual({
+      courseTitle: '스터디',
+      instructor: null,
+      credit: 2,
+      remark: null,
+      classPlaceAndTimes: [{ day: 5, startMinute: 600, endMinute: 660, place: '' }],
+      paletteIndex: 3,
+      customColor: null,
+      isForced: false,
+    });
+  });
+
+  it('강의 수정: 바뀐 필드만 보내고, 지운 값은 resetFields 로 보낸다 (null 은 "바꾸지 않음")', () => {
+    expect(toLectureModifyRequest({ color: { type: 'custom', color: { bg: '#123456', fg: '#ffffff' } } })).toEqual({
+      paletteIndex: null,
+      customColor: { backgroundColor: '#123456', foregroundColor: '#ffffff' },
+      resetFields: [],
+      isForced: false,
+    });
+    expect(toLectureModifyRequest({ title: '새 이름', instructor: null, credit: 2, remark: null })).toEqual({
+      courseTitle: '새 이름',
+      credit: 2,
+      resetFields: ['instructor', 'remark'],
+      isForced: false,
     });
   });
 });

@@ -118,7 +118,7 @@ function TimetablePreview({ id }: { id: TimetableId | null }) {
       </p>
       <TimetableGrid
         range={getGridRange(timetable.lectures.flatMap((lecture) => lecture.classTimes))}
-        className="max-w-200"
+        className="h-200 max-w-200"
       >
         <LectureLayer lectures={timetable.lectures} palette={palette} />
       </TimetableGrid>

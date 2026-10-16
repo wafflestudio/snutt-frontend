@@ -103,6 +103,29 @@ export function ConfirmDialog({
   );
 }
 
+export type NoticeDialogProps = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  /** 알릴 말. 예: 서버가 준 에러 메시지 */
+  message: ReactNode;
+  confirmLabel?: string;
+};
+
+/** 알림 팝업: 한 줄 안내와 확인 하나. Figma 에 따로 없어 확인 팝업(`팝업 예시`)의 모양을 따른다 */
+export function NoticeDialog({ open, onOpenChange, message, confirmLabel = '확인' }: NoticeDialogProps) {
+  return (
+    <AlertDialog.Root open={open} onOpenChange={(next) => onOpenChange(next)}>
+      <AlertDialog.Portal>
+        <AlertDialog.Backdrop className={BACKDROP_CLASSES} />
+        <AlertDialog.Popup className={clsx(POPUP_POSITION_CLASSES, SMALL_POPUP_CLASSES)}>
+          <AlertDialog.Title className="text-center text-14-regular">{message}</AlertDialog.Title>
+          <AlertDialog.Close render={<Button />}>{confirmLabel}</AlertDialog.Close>
+        </AlertDialog.Popup>
+      </AlertDialog.Portal>
+    </AlertDialog.Root>
+  );
+}
+
 export type PromptDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;

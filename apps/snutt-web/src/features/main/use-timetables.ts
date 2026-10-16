@@ -1,160 +1,142 @@
 'use client';
 
-import { useMemo, useReducer } from 'react';
-import { type CustomLectureInput, type TimetableLectureId, toCustomTimetableLecture } from '@/domain/lecture';
-import { isSameSemester, type Semester } from '@/domain/semester';
+import { useQuery } from '@tanstack/react-query';
+import { useMemo, useState } from 'react';
+import { ApiError } from '@/api/client';
+import { semesterQueries } from '@/api/semesters';
+import { themeQueries } from '@/api/themes';
 import {
-  getTotalCredit,
-  pickDefaultTimetable,
-  type Timetable,
-  type TimetableId,
-  type TimetableSummary,
-} from '@/domain/timetable';
-import { SAMPLE_SEMESTERS, SAMPLE_TIMETABLES } from '@/features/main/sample-data';
+  timetableQueries,
+  useAddCustomLecture,
+  useCreateTimetable,
+  useRemoveLecture,
+  useRemoveTimetable,
+  useRenameTimetable,
+  useSetPrimaryTimetable,
+  useUpdateLecture,
+} from '@/api/timetables';
+import type { CustomLectureInput, TimetableLectureId } from '@/domain/lecture';
+import { isSameSemester, type Semester } from '@/domain/semester';
+import { pickDefaultTimetable, type Timetable, type TimetableId, type TimetableSummary } from '@/domain/timetable';
 
-export type TimetablesState = {
-  timetables: Timetable[];
-  semester: Semester;
-  /** null 이거나 이 학기에 없는 시간표면 학기의 기본 시간표를 보여 준다 */
-  selectedId: TimetableId | null;
-};
+/** 화면 상태: 불러오는 중 · 로그인 필요 · 불러오지 못함 · 준비됨 */
+export type TimetablesStatus = 'loading' | 'unauthorized' | 'error' | 'ready';
 
-export type TimetablesAction =
-  | { type: 'select-semester'; semester: Semester }
-  | { type: 'select'; id: TimetableId }
-  | { type: 'create'; id: TimetableId; title: string }
-  | { type: 'rename'; id: TimetableId; title: string }
-  | { type: 'remove'; id: TimetableId }
-  | { type: 'set-primary'; id: TimetableId; isPrimary: boolean }
-  | { type: 'add-custom-lecture'; id: TimetableId; lectureId: TimetableLectureId; input: CustomLectureInput }
-  | { type: 'update-lecture'; id: TimetableId; lectureId: TimetableLectureId; change: Partial<CustomLectureInput> }
-  | { type: 'remove-lecture'; id: TimetableId; lectureId: TimetableLectureId };
-
-const update = (timetables: Timetable[], id: TimetableId, change: (timetable: Timetable) => Timetable) =>
-  timetables.map((timetable) => (timetable.id === id ? change(timetable) : timetable));
-
-export function timetablesReducer(state: TimetablesState, action: TimetablesAction): TimetablesState {
-  switch (action.type) {
-    case 'select-semester':
-      return { ...state, semester: action.semester, selectedId: null };
-    case 'select':
-      return { ...state, selectedId: action.id };
-    case 'create': {
-      const timetable: Timetable = {
-        id: action.id,
-        title: action.title,
-        semester: state.semester,
-        themeId: 'sample',
-        isPrimary: false,
-        updatedAt: new Date(),
-        lectures: [],
-      };
-      return { ...state, timetables: [...state.timetables, timetable], selectedId: action.id };
-    }
-    case 'add-custom-lecture': {
-      const lecture = toCustomTimetableLecture(action.lectureId, action.input);
-      return {
-        ...state,
-        timetables: update(state.timetables, action.id, (t) => ({ ...t, lectures: [...t.lectures, lecture] })),
-      };
-    }
-    case 'update-lecture':
-      return {
-        ...state,
-        timetables: update(state.timetables, action.id, (t) => ({
-          ...t,
-          lectures: t.lectures.map((lecture) =>
-            lecture.id === action.lectureId ? { ...lecture, ...action.change } : lecture,
-          ),
-        })),
-      };
-    case 'remove-lecture':
-      return {
-        ...state,
-        timetables: update(state.timetables, action.id, (t) => ({
-          ...t,
-          lectures: t.lectures.filter((lecture) => lecture.id !== action.lectureId),
-        })),
-      };
-    case 'rename':
-      return { ...state, timetables: update(state.timetables, action.id, (t) => ({ ...t, title: action.title })) };
-    case 'remove':
-      return {
-        ...state,
-        timetables: state.timetables.filter((timetable) => timetable.id !== action.id),
-        selectedId: state.selectedId === action.id ? null : state.selectedId,
-      };
-    case 'set-primary': {
-      const target = state.timetables.find((timetable) => timetable.id === action.id);
-      if (!target) return state;
-      // 기본 시간표는 학기마다 하나다
-      return {
-        ...state,
-        timetables: state.timetables.map((timetable) =>
-          isSameSemester(timetable.semester, target.semester)
-            ? { ...timetable, isPrimary: timetable.id === action.id && action.isPrimary }
-            : timetable,
-        ),
-      };
-    }
-  }
-}
-
-const toSummary = ({ id, title, semester, isPrimary, updatedAt, lectures }: Timetable): TimetableSummary => ({
-  id,
-  title,
-  semester,
-  totalCredit: getTotalCredit(lectures),
-  isPrimary,
-  updatedAt,
-});
-
-const INITIAL_STATE: TimetablesState = {
-  timetables: SAMPLE_TIMETABLES,
-  semester: SAMPLE_SEMESTERS[0],
-  selectedId: null,
-};
+/** 실패한 요청을 사용자에게 알릴 말. 서버가 준 메시지(detail)가 있으면 그것을 쓴다 */
+export const getFailureMessage = (error: Error) =>
+  error instanceof ApiError ? (error.detail ?? error.title) : '요청을 처리하지 못했습니다. 잠시 후 다시 시도해 주세요';
 
 /**
- * 학기 선택과 그 학기의 시간표 목록 · 고른 시간표.
- * 1-2 (API) 전까지 예시 데이터를 메모리에서 고친다. 새로고침하면 처음으로 돌아간다.
- * API 를 연결하면 목록은 query, 바꾸는 함수는 mutation 으로 바꾸고, 처음 학기 · 시간표는 `GET /v2/timetables/recent` 로 정한다.
+ * 시간표 상세. 이름과 기본 여부는 목록(summary)을 따른다.
+ * 이름 변경 · 기본 지정은 목록만 새로 받으므로, 상세를 다시 받지 않아도 화면이 맞는다.
+ * `initial` 은 이미 받은 상세(처음의 `GET /v2/timetables/recent`)로, 같은 시간표면 다시 받지 않는다.
+ */
+export function useTimetableDetail(summary: TimetableSummary | null, initial?: Timetable) {
+  const { data } = useQuery({
+    ...timetableQueries.detail(summary?.id ?? ''),
+    enabled: summary !== null,
+    initialData: initial && initial.id === summary?.id ? initial : undefined,
+  });
+  return useMemo(
+    () => (data && summary ? { ...data, title: summary.title, isPrimary: summary.isPrimary } : null),
+    [data, summary],
+  );
+}
+
+/**
+ * 학기 선택과 그 학기의 시간표 목록 · 고른 시간표, 그리고 시간표를 바꾸는 동작.
+ * 처음 학기 · 시간표는 `GET /v2/timetables/recent` 로 정하고, 학기 목록은 수강편람이 있는 학기다.
  */
 export function useTimetables() {
-  const [state, dispatch] = useReducer(timetablesReducer, INITIAL_STATE);
-  const { semester } = state;
+  // 사용자가 고른 것. 고르기 전에는 null 이고 recent 를 따른다
+  const [semesterChoice, setSemesterChoice] = useState<Semester | null>(null);
+  const [selectedChoice, setSelectedChoice] = useState<TimetableId | null>(null);
+  const [failure, setFailure] = useState<string | null>(null);
 
-  // API 와 같은 모양으로 둔다: 목록(GET /v2/timetables)은 요약, 고른 시간표(GET /v2/timetables/{id})는 강의까지
+  const list = useQuery(timetableQueries.list());
+  const coursebooks = useQuery(semesterQueries.coursebooks());
+  // 처음 화면만 정하므로 다시 받지 않는다. 실패해도(시간표가 하나도 없는 경우 등) 최근 학기로 연다
+  const recent = useQuery({ ...timetableQueries.recent(), staleTime: Infinity, retry: false });
+  const themes = useQuery(themeQueries.list());
+
+  const semester = semesterChoice ?? recent.data?.semester ?? coursebooks.data?.[0] ?? null;
   const timetables = useMemo(
-    () => state.timetables.filter((timetable) => isSameSemester(timetable.semester, semester)).map(toSummary),
-    [state.timetables, semester],
+    () => (semester ? (list.data ?? []).filter((timetable) => isSameSemester(timetable.semester, semester)) : []),
+    [list.data, semester],
   );
   const selectedSummary =
-    timetables.find((timetable) => timetable.id === state.selectedId) ?? pickDefaultTimetable(timetables);
-  const getTimetable = (id: TimetableId) => state.timetables.find((timetable) => timetable.id === id) ?? null;
+    timetables.find(({ id }) => id === selectedChoice) ??
+    (semesterChoice === null ? timetables.find(({ id }) => id === recent.data?.id) : undefined) ??
+    pickDefaultTimetable(timetables);
+  const selected = useTimetableDetail(selectedSummary, recent.data);
+
+  const error = list.error ?? coursebooks.error;
+  const status: TimetablesStatus = error
+    ? error instanceof ApiError && error.status === 401
+      ? 'unauthorized'
+      : 'error'
+    : list.isPending || coursebooks.isPending || recent.isPending
+      ? 'loading'
+      : 'ready';
+
+  const createTimetable = useCreateTimetable();
+  const renameTimetable = useRenameTimetable();
+  const removeTimetable = useRemoveTimetable();
+  const setPrimaryTimetable = useSetPrimaryTimetable();
+  const addCustomLecture = useAddCustomLecture();
+  const updateLecture = useUpdateLecture();
+  const removeLecture = useRemoveLecture();
+  const onError = (failed: Error) => setFailure(getFailureMessage(failed));
 
   return {
-    semesters: SAMPLE_SEMESTERS,
+    status,
+    /** 불러오지 못한 이유 (status 가 error 일 때) */
+    error,
+    semesters: coursebooks.data ?? [],
     semester,
     /** 고른 학기의 시간표 */
     timetables,
-    selected: selectedSummary && getTimetable(selectedSummary.id),
-    getTimetable,
-    selectSemester: (next: Semester) => dispatch({ type: 'select-semester', semester: next }),
-    select: (id: TimetableId) => dispatch({ type: 'select', id }),
+    selectedSummary,
+    /** 고른 시간표의 상세. 받는 중이면 null */
+    selected,
+    /** 시간표 테마의 색 목록. 테마를 받기 전이면 빈 목록 (블록은 기본 색으로 그린다) */
+    paletteOf: (timetable: Pick<Timetable, 'themeId'> | null) =>
+      themes.data?.find((theme) => theme.id === timetable?.themeId)?.colors ?? [],
+    /** 마지막으로 실패한 동작의 메시지. 보여 준 뒤 dismissFailure 로 지운다 */
+    failure,
+    dismissFailure: () => setFailure(null),
+
+    selectSemester: (next: Semester) => {
+      setSemesterChoice(next);
+      setSelectedChoice(null);
+    },
+    select: setSelectedChoice,
     /** 고른 학기에 시간표를 만들고 그것을 고른다 */
-    create: (title: string) => dispatch({ type: 'create', id: crypto.randomUUID(), title }),
-    rename: (id: TimetableId, title: string) => dispatch({ type: 'rename', id, title }),
-    remove: (id: TimetableId) => dispatch({ type: 'remove', id }),
-    /** 시간 충돌은 부르는 쪽(직접 추가 폼)에서 먼저 확인한다 */
-    addCustomLecture: (id: TimetableId, input: CustomLectureInput) =>
-      dispatch({ type: 'add-custom-lecture', id, lectureId: crypto.randomUUID(), input }),
+    create: (title: string) => {
+      if (!semester) return;
+      const before = new Set(list.data?.map(({ id }) => id));
+      createTimetable.mutate(
+        { semester, title },
+        {
+          onSuccess: (next) => {
+            const created = next.find(({ id }) => !before.has(id));
+            if (created) setSelectedChoice(created.id);
+          },
+          onError,
+        },
+      );
+    },
+    rename: (id: TimetableId, title: string) => renameTimetable.mutate({ id, title }, { onError }),
+    remove: (id: TimetableId) => removeTimetable.mutate(id, { onError }),
+    setPrimary: (id: TimetableId, isPrimary: boolean) => setPrimaryTimetable.mutate({ id, isPrimary }, { onError }),
+    /** 시간 충돌은 부르는 쪽(직접 추가 폼)에서 먼저 확인한다. 성공하면 onSuccess 를 부른다 */
+    addCustomLecture: (id: TimetableId, input: CustomLectureInput, onSuccess?: () => void) =>
+      addCustomLecture.mutate({ id, input }, { onSuccess, onError }),
     /** 강의 상세의 색상 (6-2 에서 편집한 값도 여기로 넘긴다) */
     updateLecture: (id: TimetableId, lectureId: TimetableLectureId, change: Partial<CustomLectureInput>) =>
-      dispatch({ type: 'update-lecture', id, lectureId, change }),
-    removeLecture: (id: TimetableId, lectureId: TimetableLectureId) =>
-      dispatch({ type: 'remove-lecture', id, lectureId }),
-    setPrimary: (id: TimetableId, isPrimary: boolean) => dispatch({ type: 'set-primary', id, isPrimary }),
+      updateLecture.mutate({ id, lectureId, change }, { onError }),
+    removeLecture: (id: TimetableId, lectureId: TimetableLectureId, onSuccess?: () => void) =>
+      removeLecture.mutate({ id, lectureId }, { onSuccess, onError }),
   };
 }
 
