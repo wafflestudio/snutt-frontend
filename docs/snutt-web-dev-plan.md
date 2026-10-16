@@ -22,7 +22,7 @@ Figma 의 완료 영역(`home` 섹션: 메인, 비교, 필터, 강의 상세, �
 | 패널 접기 | 없음 | 패널과 그리드 경계의 `<` / `>` 버튼으로 접고 펼침 | `MainView` 에 접힘 상태 추가 |
 | 헤더 | 탭 · + · 내보내기 · 공유 · ··· · 직접 추가 · 기본 | 탭(기본 시간표는 체크 아이콘, `(15학점)`) · + · 공유 · 다운로드 · ··· · 직접 추가 · **시간표 비교** | "기본 지정" 버튼은 ··· 메뉴로 간 것으로 보임 |
 | 검색 결과 항목 | 강의명, 교수, 평점, 시간/장소, + 담기 | 강의명, 교수/학점, `★ 4.0 (1)`, 학과·학년, 시간, 장소, 비고, **강의계획서 링크**, **관심강좌 토글**, 담기(+)/빼기(−) 토글 | 5-1 |
-| 적용 필터 | 필터 칩 | 검색창 아래 칩, 각각 `×` 로 해제 | 5-1 |
+| 적용 필터 | 필터 칩 | 검색창 아래 칩, 각각 `×` 로 해제 | 5-3 (필터를 고를 수 있어야 칩이 생긴다) |
 | 필터 카테고리 | 선택기, 논문, 학과, 외선, 학위, 기간, 교양영역, 교과과정력, 시간, 기타 | **정렬기준**(평점 높은 순 / 강의평 많은 순), 분류, 학과, 학년, 학점, 구분, 교양영역, (구)교양영역, 시간, 기타. 하단 선택 칩 · 초기화 · 필터 적용 | 5-3. 학과는 검색 + 즐겨찾기(★) + 전체 |
 | 강의 상세 | 인라인 중앙 패널, 컬러 팔레트, 강의평 요약 | 인라인 패널(목록 옆) + **`강의 상세` / `강의평` 전환**. 색상은 `색상1~9` 드롭다운. **지도에서 보기**(접고 펼침), 강의계획서 · 강의편집 · 삭제 | 6-1, 6-3(지도) 신설 |
 | 강의 편집 | (상세 패널에서) | 상세 패널 안에서 **인라인 편집** (필드가 입력칸으로 바뀜) | 6-2 |
@@ -119,14 +119,14 @@ dev 서버 OpenAPI 명세(`https://snutt-api-dev.wafflestudio.com/v3/api-docs`)�
 | 기본 시간표 지정/해제 | `PUT, DELETE /v2/timetables/{timetableId}/primary` | |
 | 시간표 복사 | `POST /v2/timetables/{timetableId}/copy` | |
 | 시간표 테마 변경 | `PUT /v2/timetables/{timetableId}/theme` | |
-| 강의 추가 | `POST /v2/timetables/{timetableId}/lectures` | |
+| 강의 추가 | `POST /v2/timetables/{timetableId}/lectures` | 시간이 겹치면 409 `lecture-time-overlap`(`'…' 강의와 시간이 겹칩니다. 강의를 덮어씌우겠습니까?`). `isForced: true` 로 다시 보내면 겹치는 강의를 **빼고** 넣는다. 같은 강의는 409 `duplicate-lecture`, 다른 학기 강의는 403 `lecture-semester-mismatch` (dev 서버 확인) |
 | 직접 추가 | `POST /v2/timetables/{timetableId}/lectures/custom` | |
 | 강의 수정/삭제 (색상 포함) | `PATCH, DELETE /v2/timetables/{timetableId}/lectures/{timetableLectureId}` | v2 는 `paletteIndex` + `customColor` (hex) |
 | 강의 원래대로 (reset) | `POST .../lectures/{timetableLectureId}/reset` | |
-| 강의 검색 | `POST /v2/lectures/search` | cursor 기반 페이지네이션, `evaluationSummary` 포함 |
+| 강의 검색 | `POST /v2/lectures/search` | cursor 기반 페이지네이션(`last` 로 끝을 알림, 전체 개수 `totalCount` 는 오지 않음), `evaluationSummary` 포함. 토큰 없이 되고, 검색어가 비면 학기의 모든 강의 (dev 서버 확인) |
 | 검색 필터 태그 | `GET /v2/tags/{year}/{semester}` | 학과·분류·학점·정렬 기준 등 |
 | 코스 태그 | `GET /v2/tags/courses` | |
-| 관심강좌 | `GET /v2/bookmarks`, `POST, DELETE /v2/bookmarks/lectures/{lectureId}` | |
+| 관심강좌 | `GET /v2/bookmarks`, `POST, DELETE /v2/bookmarks/lectures/{lectureId}` | 추가 · 삭제는 본문 없이 200. 이미 있는 것을 추가하거나 없는 것을 지워도 200 (dev 서버 확인) |
 | 관심강좌 담기 여부 | `GET /v2/bookmarks/lectures/{lectureId}/state` | |
 | 빈자리 알림 | `GET /v2/vacancy-notifications/lectures`, `POST, DELETE .../{lectureId}` | 현재 디자인에서 쓰지 않음 (관심 목록 탭이 빠짐) |
 | 빈자리 알림 등록 여부 | `GET /v2/vacancy-notifications/lectures/{lectureId}/state` | |
@@ -303,9 +303,9 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | **4. 메인 뼈대** | 4-1 | AppShell: 좌측 바(Figma `LNB`: 검색 · 강의평 · 친구 시간표 · 더보기 · 테마 전환), 헤더(직접 추가 · 시간표 비교), 접을 수 있는 패널(push), `MainView` 상태 + URL 동기화. 강의평 · 더보기는 화면이 없어 비활성 | 패널 열림/접힘, 상세, 직접 추가, 비교가 빈 화면으로 전환됨 | ✅ #251 |
 | | 4-2 | **TimetableGrid** (Figma `course`, 요일·시간 자동 범위, 블록에 강의명 + 장소, 모드 구조) | readonly 모드로 실데이터 렌더링 (실데이터 연결은 1-2 이후) | ✅ #250 |
 | | 4-3 | 시간표 탭 CRUD (기본 시간표 체크 표시, 학점), 패널 상단 학기 드롭다운 (Figma `연도 선택`, 여름·겨울 포함), 헤더 ··· 메뉴 (이름 변경 · 기본 지정/해제 · 삭제), 비교할 시간표 고르기. 1-2 전까지 예시 데이터(`features/main/sample-data.ts`)를 메모리에서 고친다 | | ✅ #253 |
-| **5. 검색** | 5-1 | 검색 패널: 300ms debounce, 결과 목록 (`LectureCell` = Figma `cell`, `★ 4.0 (1)`, 학과·학년, 시간, 장소, 비고, 강의계획서 링크), 담기/빼기 토글, 관심강좌 토글, 시간 충돌 경고, 적용 필터 칩(`×` 해제) | |  |
+| **5. 검색** | 5-1 | 검색 패널: 300ms debounce, 결과 목록 (`LectureCell` = Figma `cell`, `★ 4.0 (1)`, 학과·학년, 시간, 장소, 비고, 강의계획서 링크), 담기/빼기 토글, 관심강좌 토글, 시간이 겹치면 덮어쓸지 확인. 정해지지 않은 것은 디자인 문의 4-11 | |  |
 | | 5-2 | 결과 hover 시 그리드 미리보기 (회색 블록) | |  |
-| | 5-3 | 필터 모달: 정렬기준(평점 높은 순 / 강의평 많은 순), 분류, 학과(검색 · 즐겨찾기), 학년, 학점, 구분, 교양영역, (구)교양영역, 기타. 하단 선택 칩 · 초기화 · 필터 적용 | |  |
+| | 5-3 | 검색창의 필터 버튼과 적용 필터 칩(`×` 해제). 필터 모달: 정렬기준(평점 높은 순 / 강의평 많은 순), 분류, 학과(검색 · 즐겨찾기), 학년, 학점, 구분, 교양영역, (구)교양영역, 기타. 하단 선택 칩 · 초기화 · 필터 적용 | |  |
 | | 5-4 | 시간 필터: 그리드 `selectable` 모드 + 음영 표시 (Figma 작업 중) | |  |
 | **6. 강의 상세 / 편집** | 6-1 | 강의 상세 인라인 패널 (목록 옆, `강의 상세` / `강의평` 전환): 수강 정보, 비고, 시간·장소, 색상 드롭다운, 강의계획서, 삭제. 그리드의 강의를 누르면 연다. 패널 폭은 Figma 도 430px (목록 430 + 상세 430). 정해지지 않은 것은 디자인 문의 4-9 | 강의평 쪽은 8-4 전까지 빈 상태 | ✅ #256 |
 | | 6-2 | 강의 편집: 상세 패널 안에서 인라인 편집 (바뀐 필드만 PATCH) | |  |

@@ -1,7 +1,7 @@
 import type { SnuttV2 } from '@sf/snutt-api';
 import { http, HttpResponse } from 'msw';
 import type { ColorPair, LectureColor } from '@/domain/color';
-import type { ClassTime, TimetableLecture } from '@/domain/lecture';
+import type { ClassTime, Lecture, TimetableLecture } from '@/domain/lecture';
 import { isSameSemester, type Semester, type Term } from '@/domain/semester';
 import { getTotalCredit, type Timetable } from '@/domain/timetable';
 import { isOverlapping } from '@/domain/time';
@@ -15,6 +15,8 @@ type FakeSnuttOptions = {
   semesters: readonly Semester[];
   /** 시간표들의 테마(themeId 가 같은 하나) 색 */
   palette: readonly ColorPair[];
+  /** 수강편람 강의 (검색 · 담기 · 관심강좌). 없으면 검색 결과가 비어 있다 */
+  coursebook?: readonly Lecture[];
 };
 
 /**
@@ -22,8 +24,9 @@ type FakeSnuttOptions = {
  * - ID 는 domain 의 문자열을 그대로 보낸다 (mapper 가 String() 으로 받으므로 결과가 같다)
  * - 기본 시간표는 학기마다 하나, 시간이 겹치는 강의는 isForced 없이 넣지 못한다
  */
-export const fakeSnutt = ({ timetables, semesters, palette }: FakeSnuttOptions) => {
+export const fakeSnutt = ({ timetables, semesters, palette, coursebook = [] }: FakeSnuttOptions) => {
   let state: Timetable[] = structuredClone([...timetables]);
+  let bookmarks: string[] = [];
   let nextId = 1;
 
   /** 서버 ID 는 숫자지만 테스트에서는 문자열 ID 를 그대로 쓴다 */
@@ -63,6 +66,35 @@ export const fakeSnutt = ({ timetables, semesters, palette }: FakeSnuttOptions) 
     paletteIndex: lecture.color.type === 'palette' ? lecture.color.index : 0,
   });
 
+  const toCoursebookResponse = (lecture: Lecture): SnuttV2.LectureResponse => ({
+    id: asId(lecture.id),
+    year: lecture.semester.year,
+    semester: lecture.semester.term,
+    courseNumber: lecture.courseNumber,
+    lectureNumber: lecture.lectureNumber,
+    courseTitle: lecture.title,
+    instructor: lecture.instructor,
+    department: lecture.department,
+    academicYear: lecture.academicYear,
+    category: lecture.category,
+    categoryPre2025: lecture.categoryPre2025,
+    classification: lecture.classification,
+    credit: lecture.credit,
+    quota: lecture.quota ?? 0,
+    freshmanQuota: lecture.freshmanQuota,
+    remark: lecture.remark,
+    classPlaceAndTimes: lecture.classTimes.map(({ day, startMinute, endMinute, place }) => ({
+      day,
+      startMinute,
+      endMinute,
+      place: place ?? '',
+    })),
+    evaluationSummary: {
+      avgRating: lecture.evaluation?.rating,
+      evalCount: lecture.evaluation?.count ?? 0,
+    },
+  });
+
   const toBrief = (timetable: Timetable): SnuttV2.TimetableBriefResponse => ({
     id: asId(timetable.id),
     year: timetable.semester.year,
@@ -94,14 +126,24 @@ export const fakeSnutt = ({ timetables, semesters, palette }: FakeSnuttOptions) 
     return HttpResponse.json(toResponse(next));
   };
 
-  const conflict = (timetable: Timetable, classTimes: ClassTime[], exceptId?: string) =>
-    timetable.lectures.some(
+  const findOverlapping = (timetable: Timetable, classTimes: readonly ClassTime[], exceptId?: string) =>
+    timetable.lectures.filter(
       (lecture) =>
         lecture.id !== exceptId &&
         lecture.classTimes.some((existing) => classTimes.some((time) => isOverlapping(existing, time))),
     );
+  const conflict = (timetable: Timetable, classTimes: readonly ClassTime[], exceptId?: string) =>
+    findOverlapping(timetable, classTimes, exceptId).length > 0;
   const conflictResponse = () =>
     HttpResponse.json(problem(409, 'lecture-time-overlap', '시간 겹침', '강의 시간이 서로 겹칩니다'), { status: 409 });
+
+  /** 수강편람 강의를 시간표 강의로. 색은 팔레트의 다음 번호 */
+  const toTimetableLecture = (lecture: Lecture, index: number): TimetableLecture => ({
+    ...lecture,
+    id: `new-lecture-${nextId++}`,
+    lectureId: lecture.id,
+    color: { type: 'palette', index: index % palette.length },
+  });
 
   const setPrimary = (id: unknown, isPrimary: boolean) => {
     const target = state.find((timetable) => timetable.id === id);
@@ -175,6 +217,75 @@ export const fakeSnutt = ({ timetables, semesters, palette }: FakeSnuttOptions) 
     http.put(api('/v2/timetables/:timetableId/primary'), ({ params }) => setPrimary(params.timetableId, true)),
     http.delete(api('/v2/timetables/:timetableId/primary'), ({ params }) => setPrimary(params.timetableId, false)),
 
+    // 강의명 · 교수명에 검색어가 들어간 강의. 커서는 다음 쪽의 시작 위치
+    http.post(api('/v2/lectures/search'), async ({ request }) => {
+      const body = (await request.json()) as SnuttV2.LectureSearchRequest;
+      const matched = coursebook.filter(
+        (lecture) =>
+          isSameSemester(lecture.semester, { year: body.year, term: body.semester }) &&
+          (!body.query || lecture.title.includes(body.query) || lecture.instructor?.includes(body.query)),
+      );
+      const start = Number(body.cursor ?? 0);
+      const end = start + body.limit;
+      return HttpResponse.json({
+        content: matched.slice(start, end).map(toCoursebookResponse),
+        size: body.limit,
+        last: end >= matched.length,
+        ...(end < matched.length && { cursor: String(end) }),
+      } satisfies SnuttV2.CursorPageLectureResponse);
+    }),
+    http.get(api('/v2/bookmarks'), ({ request }) => {
+      const params = new URL(request.url).searchParams;
+      const semester = { year: Number(params.get('year')), term: Number(params.get('semester')) as Term };
+      return HttpResponse.json({
+        year: semester.year,
+        semester: semester.term,
+        lectures: coursebook
+          .filter((lecture) => bookmarks.includes(lecture.id) && isSameSemester(lecture.semester, semester))
+          .map(toCoursebookResponse),
+      } satisfies SnuttV2.BookmarkResponse);
+    }),
+    // 이미 있는 것을 추가하거나 없는 것을 지워도 성공한다
+    http.post(api('/v2/bookmarks/lectures/:lectureId'), ({ params }) => {
+      bookmarks = [...bookmarks.filter((id) => id !== params.lectureId), String(params.lectureId)];
+      return new HttpResponse(null, { status: 200 });
+    }),
+    http.delete(api('/v2/bookmarks/lectures/:lectureId'), ({ params }) => {
+      bookmarks = bookmarks.filter((id) => id !== params.lectureId);
+      return new HttpResponse(null, { status: 200 });
+    }),
+
+    // 시간이 겹치면 거절하고, isForced 면 겹치는 강의를 빼고 넣는다
+    http.post(api('/v2/timetables/:timetableId/lectures'), async ({ params, request }) => {
+      const body = (await request.json()) as SnuttV2.TimetableLectureAddRequest;
+      const target = state.find(({ id }) => id === params.timetableId);
+      if (!target) return notFound();
+      const lecture = coursebook.find(({ id }) => id === String(body.lectureId));
+      if (!lecture || !isSameSemester(lecture.semester, target.semester))
+        return HttpResponse.json(
+          problem(403, 'lecture-semester-mismatch', '학기 불일치', '현재 선택한 학기에서 개설된 강좌가 아닙니다'),
+          { status: 403 },
+        );
+      if (target.lectures.some(({ lectureId }) => lectureId === lecture.id))
+        return HttpResponse.json(problem(409, 'duplicate-lecture', '강좌 중복', '이미 추가된 강좌입니다'), {
+          status: 409,
+        });
+      const overlapping = findOverlapping(target, lecture.classTimes);
+      if (overlapping.length > 0 && !body.isForced)
+        return HttpResponse.json(
+          problem(
+            409,
+            'lecture-time-overlap',
+            '시간대 겹침',
+            `'${overlapping[0].title}' 강의와 시간이 겹칩니다. 강의를 덮어씌우겠습니까?`,
+          ),
+          { status: 409 },
+        );
+      return updateTimetable(params.timetableId, (timetable) => {
+        const kept = timetable.lectures.filter((existing) => !overlapping.includes(existing));
+        return { ...timetable, lectures: [...kept, toTimetableLecture(lecture, kept.length)] };
+      });
+    }),
     http.post(api('/v2/timetables/:timetableId/lectures/custom'), async ({ params, request }) => {
       const body = (await request.json()) as SnuttV2.CustomTimetableLectureAddRequest;
       const classTimes = toClassTimes(body.classPlaceAndTimes);

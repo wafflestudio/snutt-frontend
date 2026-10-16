@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 
 import {
   formatQuota,
+  getClassTimeSummary,
   getClassTimeTexts,
+  getPlaceSummary,
   getSyllabusUrl,
   isCustomLecture,
   toCustomTimetableLecture,
@@ -24,6 +26,35 @@ describe('getClassTimeTexts', () => {
     ];
     getClassTimeTexts({ classTimes });
     expect(classTimes[0].day).toBe(2);
+  });
+});
+
+describe('getClassTimeSummary · getPlaceSummary (검색 결과 한 줄)', () => {
+  const lecture = {
+    classTimes: [
+      { day: 3 as const, startMinute: 570, endMinute: 645, place: '302-209' },
+      { day: 1 as const, startMinute: 570, endMinute: 645, place: '302-208' },
+      { day: 4 as const, startMinute: 600, endMinute: 660, place: null },
+    ],
+  };
+
+  it('요일 순으로 `화(09:30~10:45)` 처럼 쓴다', () => {
+    expect(getClassTimeSummary(lecture)).toBe('화(09:30~10:45), 목(09:30~10:45), 금(10:00~11:00)');
+  });
+
+  it('장소는 시간 순서대로, 없는 장소는 빼고 쓴다', () => {
+    expect(getPlaceSummary(lecture)).toBe('302-208, 302-209');
+  });
+
+  it('같은 장소도 시간마다 쓴다 (Figma `302-209, 302-209`)', () => {
+    const same = { classTimes: lecture.classTimes.map((time) => ({ ...time, place: '302-209' })) };
+    expect(getPlaceSummary(same)).toBe('302-209, 302-209, 302-209');
+  });
+
+  it('시간 · 장소가 없으면 null', () => {
+    expect(getClassTimeSummary({ classTimes: [] })).toBeNull();
+    expect(getPlaceSummary({ classTimes: [] })).toBeNull();
+    expect(getPlaceSummary({ classTimes: [{ ...lecture.classTimes[2] }] })).toBeNull();
   });
 });
 

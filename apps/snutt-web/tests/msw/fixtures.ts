@@ -24,6 +24,42 @@ export const LECTURE_RESPONSE: SnuttV2.TimetableLectureResponse = {
   paletteIndex: 1,
 };
 
+/** 검색 결과 (dev 서버의 2026년 1학기 응답과 같은 모양). 강의평이 없으면 avgRating 이 빠진다 */
+export const SEARCH_LECTURE_RESPONSES: SnuttV2.LectureResponse[] = [
+  {
+    id: 183371,
+    courseId: 9123,
+    year: 2026,
+    semester: 1,
+    courseNumber: 'M3239.000200',
+    lectureNumber: '001',
+    courseTitle: '데이터사이언스를 위한 프로그래밍 실습',
+    instructor: '김태섭',
+    department: '데이터사이언스학과',
+    academicYear: '석사',
+    classification: '전선',
+    credit: 3,
+    quota: 40,
+    classPlaceAndTimes: [
+      { day: 4, place: '43-201', startMinute: 570, endMinute: 645 },
+      { day: 4, place: '43-201', startMinute: 660, endMinute: 735 },
+    ],
+    evaluationSummary: { avgRating: 3, evalCount: 1 },
+  },
+  {
+    id: 183372,
+    year: 2026,
+    semester: 1,
+    courseNumber: 'M3239.003000',
+    lectureNumber: '012',
+    courseTitle: '대학원 논문연구',
+    credit: 3,
+    quota: 0,
+    classPlaceAndTimes: [],
+    evaluationSummary: { evalCount: 0 },
+  },
+];
+
 /** 직접 추가한 강의: 수강편람 값이 없고, 색을 직접 골랐다 */
 export const CUSTOM_LECTURE_RESPONSE: SnuttV2.TimetableLectureResponse = {
   id: 187400,

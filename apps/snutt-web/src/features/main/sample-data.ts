@@ -1,5 +1,5 @@
 import type { ColorPair } from '@/domain/color';
-import type { ClassTime, TimetableLecture } from '@/domain/lecture';
+import type { ClassTime, Lecture, TimetableLecture } from '@/domain/lecture';
 import type { Semester } from '@/domain/semester';
 import type { Timetable } from '@/domain/timetable';
 import { type Day, toMinute } from '@/domain/time';
@@ -86,6 +86,7 @@ export const SAMPLE_TIMETABLES: Timetable[] = [
     FALL_2026,
     [
       lecture('1-1', '경영전략', 0, [time(0, '9:00', '11:45')], {
+        lectureId: '101', // SAMPLE_COURSEBOOK 의 경영전략
         instructor: '김민준',
         department: '경영대학 경영학과',
         academicYear: '3학년',
@@ -134,4 +135,52 @@ export const SAMPLE_TIMETABLES: Timetable[] = [
   timetable('sample-5', '계절학기', WINTER_2025, [
     lecture('5-1', '통계학', 3, [time(0, '9:00', '12:00'), time(2, '9:00', '12:00')]),
   ]),
+];
+
+/** 수강편람 강의 (검색 결과). 강의평 정보를 뺀 나머지는 info 로 채운다 */
+const coursebookLecture = (
+  id: string,
+  title: string,
+  classTimes: ClassTime[],
+  info: Partial<Lecture> = {},
+): Lecture => ({
+  id,
+  semester: FALL_2026,
+  title,
+  instructor: null,
+  remark: null,
+  classTimes,
+  department: null,
+  academicYear: null,
+  category: null,
+  categoryPre2025: null,
+  classification: null,
+  quota: 40,
+  freshmanQuota: null,
+  credit: 3,
+  courseNumber: 'M1313.000100',
+  lectureNumber: '001',
+  evaluation: { rating: null, count: 0 },
+  ...info,
+});
+
+/**
+ * 2026년 2학기 수강편람. 서버처럼 ID 는 숫자다 (담을 때 숫자로 보낸다). 경영전략은 시간표 1 에 담겨 있고,
+ * 마케팅원론은 경영전략과 시간이 겹치고(월 10:00), 운영관리는 시간표 1 의 어느 강의와도 겹치지 않는다.
+ */
+export const SAMPLE_COURSEBOOK: Lecture[] = [
+  coursebookLecture('101', '경영전략', [time(0, '9:00', '11:45')], {
+    instructor: '김민준',
+    department: '경영대학 경영학과',
+    academicYear: '3학년',
+    courseNumber: 'M1313.001400',
+    evaluation: { rating: 4.2, count: 12 },
+  }),
+  coursebookLecture('901', '마케팅원론', [time(0, '10:00', '11:15'), time(2, '10:00', '11:15', '058-120')], {
+    instructor: '박지호',
+    department: '경영대학 경영학과',
+    academicYear: '2학년',
+    remark: '경영대학 학생 우선',
+  }),
+  coursebookLecture('902', '운영관리', [time(4, '9:00', '10:15')], { instructor: '최하은' }),
 ];

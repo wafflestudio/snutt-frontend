@@ -1,5 +1,5 @@
 import { queryOptions, type QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
-import type { CustomLectureInput, TimetableLectureId } from '@/domain/lecture';
+import type { CustomLectureInput, LectureId, TimetableLectureId } from '@/domain/lecture';
 import type { Semester } from '@/domain/semester';
 import { getTotalCredit, type Timetable, type TimetableId, type TimetableSummary } from '@/domain/timetable';
 import { callApi } from './client';
@@ -93,6 +93,24 @@ export const useSetPrimaryTimetable = () => {
         )
       ).map(toTimetableSummary),
     onSuccess: (list) => setList(queryClient, list),
+  });
+};
+
+/**
+ * 수강편람 강의를 담는다. 시간이 겹치면 서버가 `lecture-time-overlap` 으로 거절하고,
+ * isForced 로 다시 보내면 겹치는 강의를 빼고 넣는다 (dev 서버에서 확인)
+ */
+export const useAddLecture = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, lectureId, isForced }: { id: TimetableId; lectureId: LectureId; isForced: boolean }) =>
+      toTimetable(
+        await callApi('POST /v2/timetables/:timetableId/lectures', {
+          params: { timetableId: id },
+          body: { lectureId: Number(lectureId), isForced },
+        }),
+      ),
+    onSuccess: (timetable) => setTimetable(queryClient, timetable),
   });
 };
 

@@ -1,12 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import {
   toCustomLectureRequest,
+  toLecture,
   toLectureModifyRequest,
   toTheme,
   toTimetable,
   toTimetableSummary,
 } from '@/api/mappers/timetable';
-import { TIMETABLE_BRIEF_RESPONSES, TIMETABLE_RESPONSE, THEME_RESPONSE } from '../../msw/fixtures';
+import {
+  SEARCH_LECTURE_RESPONSES,
+  TIMETABLE_BRIEF_RESPONSES,
+  TIMETABLE_RESPONSE,
+  THEME_RESPONSE,
+} from '../../msw/fixtures';
 
 describe('timetable mapper', () => {
   it('시간표: ID 는 문자열, semester 는 term, updatedAt 은 Date', () => {
@@ -45,6 +51,33 @@ describe('timetable mapper', () => {
       lectureNumber: '005',
       color: { type: 'palette', index: 1 },
     });
+  });
+
+  it('검색 결과: 학기와 강의평 요약을 담고, 빠진 필드는 null', () => {
+    const [rated, unrated] = SEARCH_LECTURE_RESPONSES.map(toLecture);
+    expect(rated).toEqual({
+      id: '183371',
+      semester: { year: 2026, term: 1 },
+      title: '데이터사이언스를 위한 프로그래밍 실습',
+      instructor: '김태섭',
+      remark: null,
+      classTimes: [
+        { day: 4, startMinute: 570, endMinute: 645, place: '43-201' },
+        { day: 4, startMinute: 660, endMinute: 735, place: '43-201' },
+      ],
+      department: '데이터사이언스학과',
+      academicYear: '석사',
+      category: null,
+      categoryPre2025: null,
+      classification: '전선',
+      quota: 40,
+      freshmanQuota: null,
+      credit: 3,
+      courseNumber: 'M3239.000200',
+      lectureNumber: '001',
+      evaluation: { rating: 3, count: 1 },
+    });
+    expect(unrated).toMatchObject({ instructor: null, classTimes: [], evaluation: { rating: null, count: 0 } });
   });
 
   it('직접 추가한 강의: lectureId 는 null, 직접 고른 색, 빈 장소는 null', () => {

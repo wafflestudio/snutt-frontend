@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MainScreen } from '@/features/main/components/MainScreen';
-import { SAMPLE_PALETTE, SAMPLE_SEMESTERS, SAMPLE_TIMETABLES } from '@/features/main/sample-data';
+import { SAMPLE_COURSEBOOK, SAMPLE_PALETTE, SAMPLE_SEMESTERS, SAMPLE_TIMETABLES } from '@/features/main/sample-data';
 import { fakeSnutt } from '../../msw/fake-snutt';
 import { problem } from '../../msw/fixtures';
 import { api, server } from '../../msw/server';
@@ -30,7 +30,12 @@ const originalPushState = window.history.pushState.bind(window.history);
 beforeEach(() => {
   // 예시 시간표를 가진 가짜 서버. 처음 화면은 2026년 2학기의 기본 시간표(시간표 1)
   server.use(
-    ...fakeSnutt({ timetables: SAMPLE_TIMETABLES, semesters: SAMPLE_SEMESTERS, palette: SAMPLE_PALETTE }).handlers,
+    ...fakeSnutt({
+      timetables: SAMPLE_TIMETABLES,
+      semesters: SAMPLE_SEMESTERS,
+      palette: SAMPLE_PALETTE,
+      coursebook: SAMPLE_COURSEBOOK,
+    }).handlers,
   );
   window.history.replaceState(null, '', '/');
   vi.spyOn(window.history, 'pushState').mockImplementation((...args) => {
@@ -161,6 +166,113 @@ describe('MainScreen', () => {
     expect(screen.getByLabelText('강의명')).toHaveValue('스터디');
   });
 
+  describe('검색', () => {
+    const result = (title: string) => within(screen.getByRole('article', { name: title }));
+    /** 시간표의 강의 블록 (요일마다 하나씩 있어서 첫 블록만 본다) */
+    const block = (title: string) => screen.queryAllByRole('button', { name: new RegExp(`^${title},`) })[0] ?? null;
+    const resultNames = () => screen.queryAllByRole('article').map((cell) => cell.getAttribute('aria-label'));
+
+    it('검색어가 없으면 학기의 강의를 모두 보여 주고, 담긴 강의에는 빼기 버튼이 있다', async () => {
+      await renderMain();
+      expect(await screen.findAllByRole('article')).toHaveLength(3);
+      expect(result('경영전략').getByRole('button', { name: '시간표에서 빼기' })).toBeInTheDocument();
+      expect(result('운영관리').getByRole('button', { name: '시간표에 담기' })).toBeInTheDocument();
+      // 한 줄의 정보 (Figma `cell`)
+      expect(result('경영전략').getByText('김민준 / 3학점')).toBeInTheDocument();
+      expect(result('경영전략').getByLabelText('평점 4.2, 강의평 12개')).toBeInTheDocument();
+      expect(result('마케팅원론').getByText('월(10:00~11:15), 수(10:00~11:15)')).toBeInTheDocument();
+      expect(result('마케팅원론').getByText('058-331, 058-120')).toBeInTheDocument();
+      expect(result('운영관리').getByLabelText('강의평 없음')).toBeInTheDocument();
+    });
+
+    it('강의명 · 교수명으로 찾고, 없으면 없다고 알린다', async () => {
+      await renderMain();
+      await screen.findAllByRole('article');
+      await userEvent.type(screen.getByRole('searchbox', { name: '강의 검색' }), '박지호');
+      // 300ms 뒤에 검색하고, 그동안은 이전 결과를 그대로 보여 준다
+      expect(resultNames()).toHaveLength(3);
+      await waitFor(() => expect(resultNames()).toEqual(['마케팅원론']));
+
+      await userEvent.clear(screen.getByRole('searchbox', { name: '강의 검색' }));
+      await userEvent.type(screen.getByRole('searchbox', { name: '강의 검색' }), '없는 강의');
+      expect(await screen.findByText('검색 결과가 없습니다')).toBeInTheDocument();
+    });
+
+    it('담으면 고른 시간표에 들어가고, 빼면 시간표에서 빠진다', async () => {
+      await renderMain();
+      await screen.findAllByRole('article');
+      await userEvent.click(result('운영관리').getByRole('button', { name: '시간표에 담기' }));
+
+      await waitFor(() => expect(block('운영관리')).toBeInTheDocument());
+      expect(tabNames('시간표')[0]).toBe('시간표 1, 기본 시간표(18학점)');
+
+      await userEvent.click(result('운영관리').getByRole('button', { name: '시간표에서 빼기' }));
+      await waitFor(() => expect(block('운영관리')).not.toBeInTheDocument());
+      expect(tabNames('시간표')[0]).toBe('시간표 1, 기본 시간표(15학점)');
+    });
+
+    it('시간이 겹치면 덮어쓸지 묻고, 확인하면 겹치는 강의를 빼고 넣는다', async () => {
+      await renderMain();
+      await screen.findAllByRole('article');
+      await userEvent.click(result('마케팅원론').getByRole('button', { name: '시간표에 담기' }));
+
+      const confirm = await screen.findByRole('alertdialog', {
+        name: "'경영전략' 강의와 시간이 겹칩니다. 강의를 덮어씌우겠습니까?",
+      });
+      await userEvent.click(within(confirm).getByRole('button', { name: '취소' }));
+      expect(block('마케팅원론')).not.toBeInTheDocument();
+      expect(block('경영전략')).toBeInTheDocument();
+
+      await userEvent.click(result('마케팅원론').getByRole('button', { name: '시간표에 담기' }));
+      await userEvent.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: '확인' }));
+      await waitFor(() => expect(block('마케팅원론')).toBeInTheDocument());
+      expect(block('경영전략')).not.toBeInTheDocument();
+    });
+
+    it('관심강좌를 켜고 끈다', async () => {
+      await renderMain();
+      await screen.findAllByRole('article');
+      const bookmark = () => result('운영관리').getByRole('button', { name: '관심강좌' });
+      expect(bookmark()).toHaveAttribute('aria-pressed', 'false');
+
+      await userEvent.click(bookmark());
+      await waitFor(() => expect(bookmark()).toHaveAttribute('aria-pressed', 'true'));
+      await userEvent.click(bookmark());
+      await waitFor(() => expect(bookmark()).toHaveAttribute('aria-pressed', 'false'));
+    });
+
+    it('목록 끝에 닿으면 다음 쪽을 받는다', async () => {
+      // 한 쪽(30개)보다 많은 강의. 목록 끝이 보이는 것은 IntersectionObserver 를 흉내 내 바로 알린다
+      const many = Array.from({ length: 35 }, (_, index) => ({
+        ...SAMPLE_COURSEBOOK[2],
+        id: String(2000 + index),
+        title: `강의 ${index + 1}`,
+      }));
+      server.use(
+        ...fakeSnutt({
+          timetables: SAMPLE_TIMETABLES,
+          semesters: SAMPLE_SEMESTERS,
+          palette: SAMPLE_PALETTE,
+          coursebook: many,
+        }).handlers,
+      );
+      vi.stubGlobal(
+        'IntersectionObserver',
+        class {
+          constructor(private readonly onChange: IntersectionObserverCallback) {}
+          observe() {
+            this.onChange([{ isIntersecting: true } as IntersectionObserverEntry], this as never);
+          }
+          disconnect() {}
+        },
+      );
+
+      await renderMain();
+      await waitFor(() => expect(screen.getAllByRole('article')).toHaveLength(35));
+      vi.unstubAllGlobals();
+    });
+  });
+
   describe('강의 상세', () => {
     const block = (title: string) => screen.getByRole('button', { name: new RegExp(`^${title},`) });
 
@@ -213,12 +325,12 @@ describe('MainScreen', () => {
     it('학기의 기본 시간표를 먼저 보여 주고, 고른 탭에만 학점을 쓴다', async () => {
       await renderMain();
       expect(tabNames('시간표')).toEqual(['시간표 1, 기본 시간표(15학점)', '시간표 2', '시간표 3']);
-      expect(screen.getByText('경영전략')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /^경영전략,/ })).toBeInTheDocument();
 
       await userEvent.click(screen.getByRole('tab', { name: '시간표 2' }));
       expect(tabNames('시간표')).toEqual(['시간표 1, 기본 시간표', '시간표 2(9학점)', '시간표 3']);
       expect(await screen.findAllByText('자료구조')).toHaveLength(2); // 월 · 수 블록
-      expect(screen.queryByText('경영전략')).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /^경영전략,/ })).not.toBeInTheDocument();
     });
 
     it('+ 로 이름을 정해 새 시간표를 만들면 그 시간표를 고른다', async () => {
