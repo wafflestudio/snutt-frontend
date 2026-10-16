@@ -16,7 +16,7 @@ import { Button } from '@/shared/ui/Button';
 import { NoticeDialog } from '@/shared/ui/Dialog';
 import { IconChevronLeft, IconChevronRight, IconCompare, IconEdit } from '@/shared/ui/icons';
 import { DEFAULT_PANEL } from '@/features/main/main-view';
-import { usePreviewStore } from '@/features/main/preview-store';
+import { usePreviewLecture } from '@/features/main/preview-store';
 import { useMainView } from '@/features/main/use-main-view';
 import { useTimetableDetail, useTimetables } from '@/features/main/use-timetables';
 import { CustomLectureForm } from './CustomLectureForm';
@@ -307,8 +307,7 @@ function TimetableColumn({
 
 /** 검색 결과에서 커서를 올린 강의의 자리 (5-2). 미리보기 상태는 여기서만 읽어 이 레이어만 다시 그린다 */
 function SearchPreview() {
-  const lecture = usePreviewStore((state) => state.lecture);
-  return <PreviewLayer lecture={lecture} />;
+  return <PreviewLayer lecture={usePreviewLecture()} />;
 }
 
 /** 시간표 자리 대신 보여 주는 안내 (불러오는 중, 로그인 필요, 실패) */
