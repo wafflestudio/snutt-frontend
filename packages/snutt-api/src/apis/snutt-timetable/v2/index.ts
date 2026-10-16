@@ -5,6 +5,8 @@ import {
   LoginLocalRequest,
   SocialLoginRequest,
   RegisterLocalRequest,
+  RefreshRequest,
+  LogoutRequest,
   TokenResponse,
   // 유저
   UserResponse,
@@ -77,6 +79,20 @@ export const getSnuttTimetableV2Apis = ({ callWithToken, callWithoutToken }: Get
       callWithoutToken<SuccessResponse<TokenResponse>>({
         method: 'post',
         path: '/v2/auth/register',
+        body,
+      }),
+    // refresh token 은 쓸 때마다 새것으로 바뀌고, 쓴 것은 다시 쓸 수 없다
+    'POST /v2/auth/refresh': ({ body }: { body: RefreshRequest }) =>
+      callWithoutToken<SuccessResponse<TokenResponse>>({
+        method: 'post',
+        path: '/v2/auth/refresh',
+        body,
+      }),
+    // refresh token 을 폐기한다. 응답 본문은 없다
+    'POST /v2/auth/logout': ({ body }: { body: LogoutRequest }) =>
+      callWithoutToken<SuccessResponse<never>>({
+        method: 'post',
+        path: '/v2/auth/logout',
         body,
       }),
 
