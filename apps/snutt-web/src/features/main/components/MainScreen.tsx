@@ -79,7 +79,8 @@ export function MainScreen() {
     );
 
   return (
-    <>
+    // group/main: 패널에 커서를 올리면 패널 접기 버튼을 보여 준다
+    <div className="group/main flex min-w-0 flex-1">
       <NoticeDialog
         open={timetables.failure !== null}
         onOpenChange={(open) => !open && timetables.dismissFailure()}
@@ -132,16 +133,26 @@ export function MainScreen() {
       )}
 
       <section className="relative flex min-w-0 flex-1">
-        <button
-          type="button"
-          onClick={togglePanel}
-          aria-label={view.panel ? '패널 접기' : '패널 펼치기'}
-          aria-expanded={view.panel !== null}
-          // Figma: 27 × 57, 오른쪽만 둥근 탭 모양
-          className="absolute top-1/2 left-0 z-10 flex h-14.25 w-6.75 -translate-y-1/2 items-center justify-center rounded-r-[10px] border border-l-0 border-line-light bg-normal text-alternative shadow-[0_0_5px_rgb(0_0_0/10%),0_0_2px_rgb(0_0_0/10%)] focus-visible:outline-2 focus-visible:outline-snutt-mint"
-        >
-          {view.panel ? <IconChevronLeft className="size-5" /> : <IconChevronRight className="size-5" />}
-        </button>
+        {/*
+          패널 접기 · 펼치기. 펼쳐 둘 때는 시각 숫자를 가리지 않도록 숨겨 두고, 패널이나 그리드 왼쪽 가장자리(시각 숫자 칸)에
+          커서를 올리거나 포커스가 가면 보인다. 접혀 있을 때는 늘 보인다. (디자인 문의 4-5)
+        */}
+        <div className="group/edge absolute top-14 bottom-0 left-0 z-10 w-8.75">
+          <button
+            type="button"
+            onClick={togglePanel}
+            aria-label={view.panel ? '패널 접기' : '패널 펼치기'}
+            aria-expanded={view.panel !== null}
+            // Figma: 27 × 57, 오른쪽만 둥근 탭 모양
+            className={clsx(
+              'absolute top-1/2 left-0 flex h-14.25 w-6.75 -translate-y-1/2 items-center justify-center rounded-r-[10px] border border-l-0 border-line-light bg-normal text-alternative shadow-[0_0_5px_rgb(0_0_0/10%),0_0_2px_rgb(0_0_0/10%)] transition-opacity focus-visible:outline-2 focus-visible:outline-snutt-mint',
+              view.panel &&
+                'opacity-0 group-hover/edge:opacity-100 group-has-[aside:hover]/main:opacity-100 focus-visible:opacity-100',
+            )}
+          >
+            {view.panel ? <IconChevronLeft className="size-5" /> : <IconChevronRight className="size-5" />}
+          </button>
+        </div>
 
         <TimetableColumn
           timetable={selected}
@@ -234,7 +245,7 @@ export function MainScreen() {
           />
         )}
       </section>
-    </>
+    </div>
   );
 }
 
