@@ -46,7 +46,8 @@ export function LectureCell({
   return (
     <article
       aria-label={lecture.title}
-      className="flex gap-5 border-b border-line-light bg-normal p-2.5 transition-colors hover:bg-light-field"
+      // relative: 안의 sr-only(absolute) 글자가 스크롤 목록 밖 body 를 기준으로 놓여 페이지가 길어지지 않게 한다
+      className="relative flex gap-5 border-b border-line-light bg-normal p-2.5 transition-colors hover:bg-light-field"
       onMouseEnter={() => onPreviewChange?.(true)}
       onMouseLeave={() => onPreviewChange?.(false)}
       onFocus={() => onPreviewChange?.(true)}
