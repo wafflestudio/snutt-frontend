@@ -10,11 +10,13 @@ import type { TimetableLecture } from '@/domain/lecture';
 import { toSemesterKey } from '@/domain/semester';
 import { getNewTimetableTitle, type Timetable } from '@/domain/timetable';
 import { LectureLayer } from '@/shared/timetable-grid/LectureLayer';
+import { PreviewLayer } from '@/shared/timetable-grid/PreviewLayer';
 import { TimetableGrid } from '@/shared/timetable-grid/TimetableGrid';
 import { Button } from '@/shared/ui/Button';
 import { NoticeDialog } from '@/shared/ui/Dialog';
 import { IconChevronLeft, IconChevronRight, IconCompare, IconEdit } from '@/shared/ui/icons';
 import { DEFAULT_PANEL } from '@/features/main/main-view';
+import { usePreviewStore } from '@/features/main/preview-store';
 import { useMainView } from '@/features/main/use-main-view';
 import { useTimetableDetail, useTimetables } from '@/features/main/use-timetables';
 import { CustomLectureForm } from './CustomLectureForm';
@@ -171,6 +173,8 @@ export function MainScreen() {
           palette={palette}
           range={range}
           onLectureClick={openDetail}
+          // 검색 결과는 왼쪽(고른) 시간표에 담기므로 미리보기도 왼쪽에만
+          overlay={<SearchPreview />}
           header={
             <>
               {/* Figma: 탭과 + 사이 10px */}
@@ -270,10 +274,20 @@ type TimetableColumnProps = {
   header: ReactNode;
   /** 없으면 강의 블록을 누를 수 없다 (비교의 오른쪽) */
   onLectureClick?: (lecture: TimetableLecture) => void;
+  /** 강의 블록 위에 겹쳐 그릴 레이어 (검색 미리보기) */
+  overlay?: ReactNode;
   className?: string;
 };
 
-function TimetableColumn({ timetable, palette, range, header, onLectureClick, className }: TimetableColumnProps) {
+function TimetableColumn({
+  timetable,
+  palette,
+  range,
+  header,
+  onLectureClick,
+  overlay,
+  className,
+}: TimetableColumnProps) {
   return (
     <div className={clsx('flex min-w-0 flex-1 flex-col', className)}>
       {/* Figma `top`: 높이 56, 여백 13 · 20 */}
@@ -284,10 +298,17 @@ function TimetableColumn({ timetable, palette, range, header, onLectureClick, cl
           {timetable && (
             <LectureLayer lectures={timetable.lectures} palette={palette} onLectureClick={onLectureClick} />
           )}
+          {overlay}
         </TimetableGrid>
       </div>
     </div>
   );
+}
+
+/** 검색 결과에서 커서를 올린 강의의 자리 (5-2). 미리보기 상태는 여기서만 읽어 이 레이어만 다시 그린다 */
+function SearchPreview() {
+  const lecture = usePreviewStore((state) => state.lecture);
+  return <PreviewLayer lecture={lecture} />;
 }
 
 /** 시간표 자리 대신 보여 주는 안내 (불러오는 중, 로그인 필요, 실패) */

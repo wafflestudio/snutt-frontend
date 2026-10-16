@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { act, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -227,6 +227,25 @@ describe('MainScreen', () => {
       await userEvent.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: '확인' }));
       await waitFor(() => expect(block('마케팅원론')).toBeInTheDocument());
       expect(block('경영전략')).not.toBeInTheDocument();
+    });
+
+    it('결과에 커서를 올리면 시간표에 그 자리를 미리 보여 주고, 벗어나면 지운다', async () => {
+      await renderMain();
+      await screen.findAllByRole('article');
+      const cell = screen.getByRole('article', { name: '마케팅원론' });
+      expect(screen.getAllByText('마케팅원론')).toHaveLength(1); // 검색 결과의 강의명
+
+      await userEvent.hover(cell);
+      // 월 · 수 두 자리. 강의명과 장소를 쓴다
+      expect(screen.getAllByText('마케팅원론')).toHaveLength(3);
+      expect(screen.getByText('058-120', { selector: '[data-preview-block] *' })).toBeInTheDocument();
+
+      await userEvent.unhover(cell);
+      expect(screen.getAllByText('마케팅원론')).toHaveLength(1);
+
+      // 키보드로 결과 안의 버튼에 가도 보여 준다
+      act(() => result('마케팅원론').getByRole('button', { name: '관심강좌' }).focus());
+      await waitFor(() => expect(screen.getAllByText('마케팅원론')).toHaveLength(3));
     });
 
     it('관심강좌를 켜고 끈다', async () => {

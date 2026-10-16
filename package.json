@@ -25,7 +25,9 @@
       "snutt-web/@testing-library/react",
       "snutt-web/@testing-library/react/**",
       "snutt-web/@testing-library/jest-dom",
-      "snutt-web/@testing-library/jest-dom/**"
+      "snutt-web/@testing-library/jest-dom/**",
+      "snutt-web/zustand",
+      "snutt-web/zustand/**"
     ]
   }
 }

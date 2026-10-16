@@ -22,6 +22,8 @@ type LectureCellProps = {
   canAdd: boolean;
   onAddToggle: () => void;
   onBookmarkToggle: () => void;
+  /** 커서를 올리거나 안의 버튼에 포커스가 가면 true, 벗어나면 false (시간표 미리보기, 5-2) */
+  onPreviewChange?: (previewing: boolean) => void;
 };
 
 /**
@@ -29,7 +31,15 @@ type LectureCellProps = {
  * Figma: 폭은 목록을 채우고, 여백 10, 왼쪽 정보와 오른쪽 버튼 사이 20, 아래 선 Line/light.
  * 회색 배경 변형은 커서를 올렸을 때로 쓴다 (디자인 문의 4-11)
  */
-export function LectureCell({ lecture, added, bookmarked, canAdd, onAddToggle, onBookmarkToggle }: LectureCellProps) {
+export function LectureCell({
+  lecture,
+  added,
+  bookmarked,
+  canAdd,
+  onAddToggle,
+  onBookmarkToggle,
+  onPreviewChange,
+}: LectureCellProps) {
   const syllabusUrl = getSyllabusUrl(lecture, lecture.semester);
   const department = [lecture.department, lecture.academicYear].filter(Boolean).join(', ');
 
@@ -37,6 +47,11 @@ export function LectureCell({ lecture, added, bookmarked, canAdd, onAddToggle, o
     <article
       aria-label={lecture.title}
       className="flex gap-5 border-b border-line-light bg-normal p-2.5 transition-colors hover:bg-light-field"
+      onMouseEnter={() => onPreviewChange?.(true)}
+      onMouseLeave={() => onPreviewChange?.(false)}
+      onFocus={() => onPreviewChange?.(true)}
+      // 안의 다른 버튼으로 포커스가 옮겨 갈 때는 그대로 둔다
+      onBlur={(event) => !event.currentTarget.contains(event.relatedTarget) && onPreviewChange?.(false)}
     >
       {/* Figma: 강의명과 나머지 사이 1, 교수 줄과 정보 줄 사이 8 */}
       <div className="flex min-w-0 flex-1 flex-col gap-px">
