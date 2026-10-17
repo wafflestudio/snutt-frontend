@@ -20,13 +20,5 @@ export function useMainView() {
 
   const setView = useCallback((next: MainView) => pushParams(toSearchParams(next)), []);
 
-  /** 접어도 탭 · 강의 상세는 URL 에 남겨 두어, 다시 펼치면 그대로 돌아온다 */
-  const togglePanel = useCallback(() => {
-    const params = new URLSearchParams(searchParams);
-    if (params.get('panel') === 'closed') params.delete('panel');
-    else params.set('panel', 'closed');
-    pushParams(params);
-  }, [searchParams]);
-
-  return { view, setView, togglePanel };
+  return { view, setView };
 }

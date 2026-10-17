@@ -14,7 +14,7 @@ import { PreviewLayer } from '@/shared/timetable-grid/PreviewLayer';
 import { TimetableGrid } from '@/shared/timetable-grid/TimetableGrid';
 import { Button } from '@/shared/ui/Button';
 import { NoticeDialog } from '@/shared/ui/Dialog';
-import { IconChevronRight, IconCompare, IconEdit } from '@/shared/ui/icons';
+import { IconCompare, IconEdit } from '@/shared/ui/icons';
 import { DEFAULT_PANEL } from '@/features/main/main-view';
 import { usePreviewLecture } from '@/features/main/preview-store';
 import { useMainView } from '@/features/main/use-main-view';
@@ -28,7 +28,7 @@ import { TimetableTabs } from './TimetableTabs';
 
 /** 메인 화면: 패널(목록 · 상세 · 직접 추가)과 시간표. 무엇을 보여 줄지는 URL 의 MainView 로 정한다. */
 export function MainScreen() {
-  const { view, setView, togglePanel } = useMainView();
+  const { view, setView } = useMainView();
   const timetables = useTimetables();
   const { selected, selectedSummary } = timetables;
   const palette = timetables.paletteOf(selected);
@@ -113,7 +113,8 @@ export function MainScreen() {
               semesters={timetables.semesters}
               semester={timetables.semester}
               onSemesterChange={timetables.selectSemester}
-              onCollapse={togglePanel}
+              // 다시 펼치는 버튼은 따로 없고 좌측 바의 `검색` 을 누르면 처음 패널로 열린다 (디자인 문의 4-5)
+              onCollapse={() => setView({ ...view, panel: null })}
               search={
                 <SearchPanel
                   // 학기를 바꾸면 검색어를 지운다
@@ -150,23 +151,6 @@ export function MainScreen() {
       )}
 
       <section className="relative flex min-w-0 flex-1">
-        {/*
-          패널 펼치기. 접는 버튼은 패널 위(학기 오른쪽)에 있고, 접혀 있을 때만 그리드 왼쪽 가장자리에 이 탭이 보인다.
-          Figma 에 접힌 상태의 펼치기 버튼이 없어 예전 탭 모양을 쓴다 (디자인 문의 4-5)
-        */}
-        {!view.panel && (
-          <button
-            type="button"
-            onClick={togglePanel}
-            aria-label="패널 펼치기"
-            aria-expanded={false}
-            // Figma: 27 × 57, 오른쪽만 둥근 탭 모양
-            className="absolute top-1/2 left-0 z-10 flex h-14.25 w-6.75 -translate-y-1/2 items-center justify-center rounded-r-[10px] border border-l-0 border-line-light bg-normal text-alternative shadow-[0_0_5px_rgb(0_0_0/10%),0_0_2px_rgb(0_0_0/10%)] focus-visible:outline-2 focus-visible:outline-snutt-mint"
-          >
-            <IconChevronRight className="size-5" />
-          </button>
-        )}
-
         <TimetableColumn
           timetable={selected}
           palette={palette}
