@@ -88,7 +88,7 @@ export const timetableQueries = {
   - 커서로 쪽을 나눠 받는 목록(강의 검색)은 `infiniteQueryOptions` 로 만들고, 쪽마다 `{ 목록, next }` 를 돌려준다 (`api/lectures.ts`).
 - 에러는 **throw** 로 통일한다. 결과 래퍼(`{ type: 'success' | 'error' }`)를 만들지 않는다. 2xx 가 아닌 응답은 `client.ts` 가 `ApiError` 로 바꾼다. v2 에러는 RFC 7807 형식이라 `type`(`/problems/timetable-not-found` 등)으로 종류를 가르고, 사용자에게는 서버가 준 `detail` 을 보여 준다.
 - **토큰 처리는 `api/client.ts` 한 곳에만** 둔다. 저장 위치, 헤더, 401 / refresh 처리를 다른 곳에 흩지 않는다. (BFF 전환 가능성 대비)
-  - 토큰을 붙인 요청이 401 이면 `callApi` 가 refresh 하고 한 번 다시 보낸다. refresh token 은 쓸 때마다 바뀌므로 동시에 401 을 받아도 갱신은 한 번만 한다. 갱신하지 못하면 토큰을 지운다.
+  - 토큰을 붙인 요청이 401 이면 `callApi` 가 refresh 하고 한 번 다시 보낸다. refresh token 은 쓸 때마다 바뀌므로 동시에 401 을 받아도 갱신은 한 번만 한다. 서버가 refresh token 을 거절하면(4xx) 토큰을 지우고, 서버 오류(5xx)면 토큰을 남기고 오류만 던진다.
   - 로그인 여부는 `useSignedIn` 으로 읽는다(토큰이 바뀌면 다른 탭까지 다시 그린다). 로그인이 필요한 화면은 `(main)` 레이아웃의 `RequireSignIn` 이, 로그인 · 회원가입은 `(auth)` 레이아웃의 `RedirectIfSignedIn` 이 막는다. 토큰이 지워지면 로그인 화면으로 간다.
 - DI context 는 환경마다 달라지는 것(토큰 저장소, timetable-picker 의 RN WebView 브리지 등)에만 쓴다.
 - 수정 요청(PATCH)은 사용자가 바꾼 필드만 보낸다.
