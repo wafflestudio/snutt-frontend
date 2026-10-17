@@ -123,7 +123,8 @@ export const timetableQueries = {
 - `api/` 와 화면: 인터페이스 mock 대신 MSW 로 네트워크를 mock 한다. mapper 까지 포함해서 검증된다.
   - 테스트마다 `server.use(http.get(api('/v2/timetables'), () => HttpResponse.json(...)))` 로 응답을 정한다 (`tests/msw/server.ts`). 정하지 않은 요청은 실패한다.
   - 응답 예시는 `tests/msw/fixtures.ts` 에 v2 타입(`SnuttV2.*`)으로 둔다. 서버는 null 인 필드를 보내지 않으므로 예시에서도 뺀다.
-  - 메인 화면처럼 여러 요청이 오가는 화면은 메모리에 시간표를 두는 가짜 서버(`tests/msw/fake-snutt.ts`)를 `server.use(...fakeSnutt({...}).handlers)` 로 쓴다.
+  - 메인 화면처럼 여러 요청이 오가는 화면은 메모리에 시간표를 두는 가짜 서버(`tests/msw/fake-snutt.ts`)를 `server.use(...fakeSnutt({...}).handlers)` 로 쓴다. 친구 화면은 `tests/msw/fake-friends.ts`.
+  - 가짜 서버의 일부 응답만 바꾸려면 같은 `server.use(...)` 안에서 바꿀 핸들러를 가짜 서버 핸들러보다 앞에 둔다(앞의 것이 먼저 받는다).
 - 테스트는 `tests/` 에 `src/` 와 같은 폴더 구조로 둔다. (`src/domain/time.ts` → `tests/domain/time.test.ts`)
 - 테스트에서 대상은 `@/` 경로로 import 한다.
 - 컴포넌트 테스트는 Testing Library 로 하고, 파일 첫 줄에 `// @vitest-environment jsdom` 을 둔다. 역할과 이름(`getByRole('button', { name: '닫기' })`)으로 찾는다.
@@ -168,7 +169,7 @@ export const timetableQueries = {
 
 ## 백엔드
 
-- snutt-core (`@sf/snutt-api`), snutt-ev-api. 친구 API 도 core v2 명세에 있다(별도 friends-api 필요 여부 확인 중).
+- snutt-core (`@sf/snutt-api`), snutt-ev-api. 친구 API 도 core v2 에 있어 `@sf/snutt-api` 로 부른다(`api/friends.ts`. 별도 friends-api 필요 여부는 확인 중).
 - snutt-core 는 **v2 엔드포인트만** 쓴다(`snutt-timetable/v2/`). v1(`snutt-timetable/v1/`)은 snutt-webclient 용이다.
 - v2 요청 헤더는 v1 과 다르다: `x-os-type` + `x-client-key`, 사용자 토큰은 `Authorization: Bearer`. (`docs/snutt-web-dev-plan.md` 참고)
 - 생성된 v2 타입의 `is` boolean 필드 이름(`primary` 등)은 백엔드 명세 버그로 실제 응답과 다를 수 있다. mapper 에서 실제 응답으로 확인하기 전까지 믿지 않는다.

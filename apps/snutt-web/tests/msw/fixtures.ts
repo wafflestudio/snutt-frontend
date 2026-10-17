@@ -112,6 +112,12 @@ export const TOKEN_RESPONSE: SnuttV2.TokenResponse = {
   refreshToken: 'test-refresh-token',
 };
 
+/** 친구 목록 (dev 서버 응답과 같은 모양). 내가 이름을 붙이지 않은 친구는 displayName 이 빠진다 */
+export const FRIEND_RESPONSES: SnuttV2.FriendResponse[] = [
+  { id: 10, userId: 79615, nickname: '와플', nicknameTag: '7052', createdAt: 1693807592108 },
+  { id: 4, userId: 59465, displayName: '룸메', nickname: '시간표장인', nicknameTag: '0562', createdAt: 1692246423442 },
+];
+
 /** v2 에러 응답 (RFC 7807) */
 export const problem = (status: number, type: string, title: string, detail: string) => ({
   type: `/problems/${type}`,
