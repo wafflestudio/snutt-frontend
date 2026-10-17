@@ -332,6 +332,22 @@ describe('MainScreen', () => {
       expect(panel('강의 상세')).not.toBeInTheDocument();
     });
 
+    it('강의편집에서 고쳐 저장하면 서버에 반영되어 블록이 바뀌고, 상세로 돌아온다', async () => {
+      await renderMain();
+      await userEvent.click(block('경영전략'));
+      await userEvent.click(within(panel('강의 상세')!).getByRole('button', { name: '강의편집' }));
+      expect(window.location.search).toBe('?lecture=1-1&edit=1');
+
+      const title = screen.getByRole('textbox', { name: '강의명' });
+      await userEvent.clear(title);
+      await userEvent.type(title, '경영전략 세미나');
+      await userEvent.click(screen.getByRole('button', { name: '저장' }));
+
+      await waitFor(() => expect(block('경영전략 세미나')).toBeInTheDocument());
+      expect(window.location.search).toBe('?lecture=1-1');
+      expect(within(panel('강의 상세')!).getByRole('button', { name: '강의편집' })).toBeInTheDocument();
+    });
+
     it('비교하는 오른쪽 시간표의 강의는 누를 수 없다', async () => {
       await renderMain();
       await userEvent.click(screen.getByRole('button', { name: '시간표 비교' }));

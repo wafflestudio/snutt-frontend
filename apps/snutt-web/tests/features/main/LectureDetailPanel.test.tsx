@@ -14,13 +14,14 @@ const LECTURE = WITH_INFO.lectures.find(({ id }) => id === '1-3')!;
 const CUSTOM = WITH_CUSTOM.lectures.find(({ id }) => id === '2-4')!;
 
 const setup = (lecture: TimetableLecture = LECTURE, detail: Partial<LectureDetail> = {}) => {
-  const handlers = { onChange: vi.fn(), onClose: vi.fn(), onColorChange: vi.fn(), onRemove: vi.fn() };
+  const handlers = { onChange: vi.fn(), onClose: vi.fn(), onColorChange: vi.fn(), onSave: vi.fn(), onRemove: vi.fn() };
   render(
     <LectureDetailPanel
       detail={{ lectureId: lecture.id, view: 'info', editing: false, ...detail }}
       lecture={lecture}
       semester={WITH_INFO.semester}
       palette={SAMPLE_PALETTE}
+      timetableLectures={lecture === CUSTOM ? WITH_CUSTOM.lectures : WITH_INFO.lectures}
       {...handlers}
     />,
   );
@@ -114,5 +115,106 @@ describe('LectureDetailPanel', () => {
     setup(LECTURE, { view: 'review' });
     expect(screen.getByRole('tab', { name: '강의평', selected: true })).toBeInTheDocument();
     expect(screen.queryByRole('region', { name: '수강 정보' })).not.toBeInTheDocument();
+  });
+});
+
+describe('LectureDetailPanel 편집', () => {
+  const editing = (lecture: TimetableLecture = LECTURE) => setup(lecture, { editing: true });
+  const field = (name: string) => screen.getByRole('textbox', { name });
+  const save = () => userEvent.click(screen.getByRole('button', { name: '저장' }));
+  const choose = async (combobox: HTMLElement, option: string) => {
+    await userEvent.click(combobox);
+    await userEvent.click(await screen.findByRole('option', { name: option }));
+  };
+
+  it('강의편집을 누르면 편집 상태로 바꾼다', async () => {
+    const { onChange } = setup();
+    await userEvent.click(screen.getByRole('button', { name: '강의편집' }));
+    expect(onChange).toHaveBeenLastCalledWith({ lectureId: '1-3', view: 'info', editing: true });
+  });
+
+  it('입력칸에 지금 값을 채우고, 수강 정보는 고칠 수 없게 그대로 보여 준다', () => {
+    editing();
+    expect(field('강의명')).toHaveValue('서양근대윤리학의 이해');
+    expect(field('교수')).toHaveValue('이서연');
+    expect(field('비고')).toHaveValue('');
+    expect(screen.queryByRole('textbox', { name: '학점' })).not.toBeInTheDocument();
+    expect(rows(section('수강 정보'))).toMatchObject({ 학과: '인문대학 철학과', 학점: '3' });
+
+    const first = within(screen.getByRole('group', { name: '시간 1' }));
+    expect(first.getByRole('combobox', { name: '요일' })).toHaveTextContent('화');
+    expect(first.getByRole('combobox', { name: '시작 시간' })).toHaveTextContent('오후 3:00');
+    expect(first.getByRole('textbox', { name: '장소' })).toHaveValue('058-331');
+  });
+
+  it('바뀐 필드만 넘기고, 지운 칸은 null 로 넘긴다', async () => {
+    const { onSave } = editing();
+    await userEvent.clear(field('강의명'));
+    await userEvent.type(field('강의명'), ' 근대윤리학 ');
+    await userEvent.clear(field('교수'));
+    await userEvent.type(field('비고'), '시험 없음');
+    await save();
+    expect(onSave).toHaveBeenCalledWith(
+      { title: '근대윤리학', instructor: null, remark: '시험 없음' },
+      expect.any(Function),
+    );
+  });
+
+  it('시간과 색상을 바꾸면 수업 시간 전체와 색을 넘긴다', async () => {
+    const { onSave } = editing();
+    await choose(within(screen.getByRole('group', { name: '시간 2' })).getByRole('combobox', { name: '요일' }), '월');
+    await choose(screen.getByRole('combobox', { name: '색상' }), '색상7');
+    await save();
+    expect(onSave).toHaveBeenCalledWith(
+      {
+        classTimes: [
+          { day: 1, startMinute: 900, endMinute: 1010, place: '058-331' },
+          { day: 0, startMinute: 900, endMinute: 1010, place: '058-331' },
+        ],
+        color: { type: 'palette', index: 6 },
+      },
+      expect.any(Function),
+    );
+  });
+
+  it('저장되면 편집 상태를 끝낸다', async () => {
+    const { onSave, onChange } = editing();
+    await userEvent.type(field('비고'), '메모');
+    await save();
+    const [, done] = onSave.mock.calls[0];
+    done();
+    expect(onChange).toHaveBeenLastCalledWith({ lectureId: '1-3', view: 'info', editing: false });
+  });
+
+  it('바뀐 것이 없으면 저장하지 않고 편집을 끝낸다. 취소도 편집을 끝낸다', async () => {
+    const { onSave, onChange } = editing();
+    await save();
+    expect(onSave).not.toHaveBeenCalled();
+    expect(onChange).toHaveBeenLastCalledWith({ lectureId: '1-3', view: 'info', editing: false });
+
+    onChange.mockClear();
+    await userEvent.type(field('비고'), '메모');
+    await userEvent.click(screen.getByRole('button', { name: '취소' }));
+    expect(onSave).not.toHaveBeenCalled();
+    expect(onChange).toHaveBeenLastCalledWith({ lectureId: '1-3', view: 'info', editing: false });
+  });
+
+  it('강의명이 비어 있거나 다른 강의와 시간이 겹치면 저장하지 않는다', async () => {
+    const { onSave } = editing();
+    await userEvent.clear(field('강의명'));
+    // 시간 1 을 화 → 수 15:00 으로 옮기면 재무관리(수 14:00 ~ 17:00)와 겹친다
+    await choose(within(screen.getByRole('group', { name: '시간 1' })).getByRole('combobox', { name: '요일' }), '수');
+    await save();
+    expect(field('강의명')).toHaveAccessibleDescription('강의명을 입력하세요');
+    expect(screen.getByRole('alert')).toHaveTextContent('‘재무관리’ 강의와 시간이 겹칩니다');
+    expect(onSave).not.toHaveBeenCalled();
+  });
+
+  it('직접 추가한 강의는 학점도 고친다', async () => {
+    const { onSave } = editing(CUSTOM);
+    expect(screen.queryByRole('region', { name: '수강 정보' })).not.toBeInTheDocument();
+    await userEvent.type(field('학점'), '2');
+    await save();
+    expect(onSave).toHaveBeenCalledWith({ credit: 2 }, expect.any(Function));
   });
 });

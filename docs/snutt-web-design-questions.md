@@ -13,7 +13,7 @@ snutt-web 개발 중 디자인에서 확인이 필요한 내용입니다. 답을
 | 메인                | [home(1200 ~)](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3177-71539)               |
 | 강의 상세           | [강의 상세](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3177-82418)                  |
 | 강의평              | [강의평](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3177-80835)                     |
-| 강의 편집           | [강의 편집](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3177-84278)                  |
+| 강의 편집           | [강의 편집](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3303-26040)                  |
 | 필터                | [필터](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3177-90077)                       |
 | 직접 추가           | [직접 추가](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3177-87728)                  |
 | 팝업                | [팝업 예시](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3177-93870)                  |
@@ -246,25 +246,37 @@ Variable 에 연결만 하면 됩니다.
 3. **비교 중**: 검색 결과는 왼쪽 시간표에 담기므로 미리보기도 왼쪽에만 보여 줍니다.
 4. **이미 담긴 강의**: 담긴 강의에 커서를 올려도 같은 자리에 겹쳐 보여 줍니다.
 
+### 4-14. 강의 편집
+
+예전 `강의 편집` 링크의 프레임은 지워졌고, 완료 영역 `강의상세` 프레임 하나에 강의명만 입력칸(높이 28, 둥글기 5, `Background/light`)으로 바뀐 상태가 있습니다. 나머지는 아래처럼 만들었습니다.
+
+1. **고칠 수 있는 것**: 강의명 · 교수 · 색상 · 비고 · 시간 및 장소. 직접 추가한 강의는 학점도 고칩니다. 수강 정보(학과, 강좌번호 등)는 수강편람 값이라 고치지 않고 그대로 보여 줍니다. 수강편람 강의의 학점도 고칠 수 있어야 할까요?
+2. **입력칸 모양**: 강의명 입력칸 모양을 교수 · 학점 · 비고 · 장소에도 썼습니다. 요일 · 시간 선택칸은 직접 추가와 같은 테두리 있는 칸입니다.
+3. **시간 및 장소**: 직접 추가와 같은 줄(요일 · 시작 · 끝, 장소, `−`, `시간 추가`)입니다. 라벨 `시간` · `장소` 를 위쪽 줄들처럼 80px 로 두면 시간 선택칸이 좁아 `오후 12:00` 이 잘려서 직접 추가처럼 40px 로 두었습니다.
+4. **저장 · 취소**: 맨 아래 강의계획서 · 강의편집 · 삭제 자리에 직접 추가와 같은 `취소` · `저장` 버튼을 둡니다. 바뀐 것이 없이 저장하면 그냥 닫습니다.
+5. **시간이 겹칠 때**: 다른 강의와 겹치면 저장하지 않고 겹치는 강의 이름을 알립니다(직접 추가와 같음). 검색에서 담을 때처럼 덮어쓸지 물을까요?
+6. **원래대로**: 수강편람 강의를 고친 뒤 수강편람 값으로 되돌리는 버튼(앱의 `초기화`)은 아직 없습니다. 웹에도 필요할까요?
+
 ## 5. 개발에서 임시로 정한 것
 
 답을 받기 전까지 개발은 아래 값으로 진행합니다. 답을 받으면 이 표에서 바꿀 곳을 찾아 고칩니다.
 
-| 항목                     | 임시 결정                                                                                                                                                                                | 바꿀 곳                                                                          |
-| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| 글자 스타일 (A)          | Figma 텍스트 스타일 10개를 같은 이름으로 씀. 버튼 글자는 `15/Medium` 을 임시로 추가                                                                                                      | `apps/snutt-web/src/app/globals.css`                                             |
-| 필터 칩 색 (4-4)         | 메인 화면 예시대로 쓰고, 나머지 필터 종류는 개발에서 임시로 정함                                                                                                                         | 검색 패널 (5-1)                                                                  |
-| 아이콘 (C)               | Material Symbols Outlined. 모양이 가장 비슷한 것을 고름                                                                                                                                  | `apps/snutt-web/scripts/generate-icons.mts`                                      |
-| 토큰이 없는 색 (B, 2-2)  | 표의 "가까운 토큰"을 씀 (예: 헤더 아이콘 `#979797` → `Text/med`, 입력칸 테두리 `#E9E9EA` → `Line/light`)                                                                                 | 각 컴포넌트 (`apps/snutt-web/src/shared/ui/`)                                    |
-| 전환 버튼 글자 (2-4)     | 선택 `Text/alternative`, 비선택 `Text/Assistive`                                                                                                                                         | `Tabs.tsx`                                                                       |
-| 펼친 목록 (4-6)          | Figma `드롭다운` 모양을 색상 선택까지 모든 메뉴 · 셀렉트에 씀                                                                                                                            | `apps/snutt-web/src/shared/ui/popup.ts`                                          |
-| 시간표 탭 팝업 (4-7)     | 확인 팝업 모양에 입력칸을 넣어 씀. + 를 누르면 `시간표 N` 이 채워진 이름 입력 팝업을 연다                                                                                                | `apps/snutt-web/src/features/main/components/TimetableActions.tsx`               |
-| 직접 추가 (4-8)          | `<` · 취소는 목록으로, `×` 는 패널 접기. 시간은 5분 단위 오전 6:00 ~ 자정, 자정은 `오전 12:00`. 고른 값은 `Text/plain`. 시간이 겹치면 추가하지 않음. 첫 시간 줄은 지울 수 없음(`−` 없음) | `apps/snutt-web/src/features/main/components/CustomLectureForm.tsx`              |
-| 강의 상세 (4-9)          | 직접 추가한 강의는 수강 정보 · 강의계획서를 빼고 학점을 위에 둠. 정원은 `80(60)`. 삭제는 `SNUTT/red`, 확인 팝업을 거침. 지도에서 보기(6-3) · 강의편집(6-2)은 해당 단위까지 비워 둠       | `apps/snutt-web/src/features/main/components/LectureDetailPanel.tsx`             |
-| 패널 접기 버튼 (4-5)     | 경계의 `<` / `>` 탭. 펼친 상태에서는 패널이나 그리드 왼쪽 가장자리에 커서를 올리거나 포커스가 갈 때만 보임                                                                               | `apps/snutt-web/src/features/main/components/MainScreen.tsx`                     |
-| 로그인 · 회원가입 (4-12) | 예전 웹 로그인 구성. 로그인 유지 체크박스 없음. 로그아웃은 좌측 바 더보기 메뉴                                                                                                           | `apps/snutt-web/src/features/auth/components/`, `Lnb.tsx`                        |
-| 검색 미리보기 (4-13)     | 검정 20%(`Background/deem`) 블록에 강의명 · 장소. 그리드는 늘리지 않음. 비교 중에는 왼쪽에만                                                                                             | `apps/snutt-web/src/shared/timetable-grid/PreviewLayer.tsx`                      |
-| 검색 결과 (4-11)         | 검색어가 없으면 전체 강의. 회색 배경은 커서를 올렸을 때. 결과를 눌러도 상세는 열지 않음. 평점은 글자만. 겹치면 서버 문구로 덮어쓸지 확인                                                 | `apps/snutt-web/src/features/main/components/SearchPanel.tsx`, `LectureCell.tsx` |
-| 서버 연결 상태 (4-10)    | 불러오는 중 · 실패는 시간표 자리에 글자만. 실패한 동작은 확인 버튼 하나짜리 알림 팝업(`NoticeDialog`)                                                                                    | `apps/snutt-web/src/features/main/components/MainScreen.tsx`                     |
-| 모서리 둥글기            | 입력칸 5px → 6px, 헤더 버튼 2px 는 그대로                                                                                                                                                | 각 컴포넌트                                                                      |
-| Variables 값 (1장)       | Figma 값 그대로                                                                                                                                                                          | `apps/snutt-web/design-tokens/*.tokens.json`                                     |
+| 항목                     | 임시 결정                                                                                                                                                                                        | 바꿀 곳                                                                                     |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| 글자 스타일 (A)          | Figma 텍스트 스타일 10개를 같은 이름으로 씀. 버튼 글자는 `15/Medium` 을 임시로 추가                                                                                                              | `apps/snutt-web/src/app/globals.css`                                                        |
+| 필터 칩 색 (4-4)         | 메인 화면 예시대로 쓰고, 나머지 필터 종류는 개발에서 임시로 정함                                                                                                                                 | 검색 패널 (5-1)                                                                             |
+| 아이콘 (C)               | Material Symbols Outlined. 모양이 가장 비슷한 것을 고름                                                                                                                                          | `apps/snutt-web/scripts/generate-icons.mts`                                                 |
+| 토큰이 없는 색 (B, 2-2)  | 표의 "가까운 토큰"을 씀 (예: 헤더 아이콘 `#979797` → `Text/med`, 입력칸 테두리 `#E9E9EA` → `Line/light`)                                                                                         | 각 컴포넌트 (`apps/snutt-web/src/shared/ui/`)                                               |
+| 전환 버튼 글자 (2-4)     | 선택 `Text/alternative`, 비선택 `Text/Assistive`                                                                                                                                                 | `Tabs.tsx`                                                                                  |
+| 펼친 목록 (4-6)          | Figma `드롭다운` 모양을 색상 선택까지 모든 메뉴 · 셀렉트에 씀                                                                                                                                    | `apps/snutt-web/src/shared/ui/popup.ts`                                                     |
+| 시간표 탭 팝업 (4-7)     | 확인 팝업 모양에 입력칸을 넣어 씀. + 를 누르면 `시간표 N` 이 채워진 이름 입력 팝업을 연다                                                                                                        | `apps/snutt-web/src/features/main/components/TimetableActions.tsx`                          |
+| 직접 추가 (4-8)          | `<` · 취소는 목록으로, `×` 는 패널 접기. 시간은 5분 단위 오전 6:00 ~ 자정, 자정은 `오전 12:00`. 고른 값은 `Text/plain`. 시간이 겹치면 추가하지 않음. 첫 시간 줄은 지울 수 없음(`−` 없음)         | `apps/snutt-web/src/features/main/components/CustomLectureForm.tsx`                         |
+| 강의 상세 (4-9)          | 직접 추가한 강의는 수강 정보 · 강의계획서를 빼고 학점을 위에 둠. 정원은 `80(60)`. 삭제는 `SNUTT/red`, 확인 팝업을 거침. 지도에서 보기(6-3)는 해당 단위까지 비워 둠                               | `apps/snutt-web/src/features/main/components/LectureDetailPanel.tsx`                        |
+| 패널 접기 버튼 (4-5)     | 경계의 `<` / `>` 탭. 펼친 상태에서는 패널이나 그리드 왼쪽 가장자리에 커서를 올리거나 포커스가 갈 때만 보임                                                                                       | `apps/snutt-web/src/features/main/components/MainScreen.tsx`                                |
+| 로그인 · 회원가입 (4-12) | 예전 웹 로그인 구성. 로그인 유지 체크박스 없음. 로그아웃은 좌측 바 더보기 메뉴                                                                                                                   | `apps/snutt-web/src/features/auth/components/`, `Lnb.tsx`                                   |
+| 강의 편집 (4-14)         | 강의명 · 교수 · 색상 · 비고 · 시간 및 장소(직접 추가한 강의는 학점도). 입력칸은 `Background/light` 바탕. 시간 줄과 취소 · 저장 버튼은 직접 추가를 따름. 겹치면 저장하지 않음. 원래대로 버튼 없음 | `apps/snutt-web/src/features/main/components/LectureDetailPanel.tsx`, `ClassTimeFields.tsx` |
+| 검색 미리보기 (4-13)     | 검정 20%(`Background/deem`) 블록에 강의명 · 장소. 그리드는 늘리지 않음. 비교 중에는 왼쪽에만                                                                                                     | `apps/snutt-web/src/shared/timetable-grid/PreviewLayer.tsx`                                 |
+| 검색 결과 (4-11)         | 검색어가 없으면 전체 강의. 회색 배경은 커서를 올렸을 때. 결과를 눌러도 상세는 열지 않음. 평점은 글자만. 겹치면 서버 문구로 덮어쓸지 확인                                                         | `apps/snutt-web/src/features/main/components/SearchPanel.tsx`, `LectureCell.tsx`            |
+| 서버 연결 상태 (4-10)    | 불러오는 중 · 실패는 시간표 자리에 글자만. 실패한 동작은 확인 버튼 하나짜리 알림 팝업(`NoticeDialog`)                                                                                            | `apps/snutt-web/src/features/main/components/MainScreen.tsx`                                |
+| 모서리 둥글기            | 입력칸 5px → 6px, 헤더 버튼 2px 는 그대로                                                                                                                                                        | 각 컴포넌트                                                                                 |
+| Variables 값 (1장)       | Figma 값 그대로                                                                                                                                                                                  | `apps/snutt-web/design-tokens/*.tokens.json`                                                |
