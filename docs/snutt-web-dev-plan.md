@@ -145,11 +145,11 @@ dev 서버 OpenAPI 명세(`https://snutt-api-dev.wafflestudio.com/v3/api-docs`)�
 | 테마 (강의 색상 팔레트) | `GET, POST /v2/themes`, `GET, PATCH, DELETE /v2/themes/{themeId}` | |
 | 테마 복사/기본 지정 | `POST /v2/themes/{themeId}/copy`, `POST, DELETE /v2/themes/{themeId}/default` | |
 | 건물 정보 | `GET /v2/buildings` | 강의 상세의 "지도에서 보기" (6-3) |
-| 친구 목록/요청 | `GET, POST /v2/friends`, `DELETE /v2/friends/{friendId}` | `v2.ts` 미구현 (Phase 8 에서 추가) |
-| 친구 수락/거절 | `POST /v2/friends/{friendId}/accept`, `.../decline` | 〃 |
-| 친구 닉네임 | `PATCH /v2/friends/{friendId}/display-name` | 〃 |
+| 친구 목록/요청 | `GET, POST /v2/friends`, `DELETE /v2/friends/{friendId}` | 8-1 에서 아래 친구 엔드포인트를 모두 `@sf/snutt-api` 에 추가. 목록은 `state`(`ACTIVE` · `REQUESTED` · `REQUESTING`)가 필수이고 쪽을 나누지 않는다. 다른 값은 400 `invalid-parameter`. 이름을 붙이지 않은 친구는 `displayName` 이 빠진다 (dev 서버 확인) |
+| 친구 수락/거절 | `POST /v2/friends/{friendId}/accept`, `.../decline` | 수락은 친구를 돌려주고, 거절은 본문이 없다 (명세) |
+| 친구 닉네임 | `PATCH /v2/friends/{friendId}/display-name` | 엔드포인트만 추가 (8-2 에서 사용) |
 | 카카오 링크 친구 추가 | `GET /v2/friends/generate-link`, `POST /v2/friends/accept-link/{requestToken}` | 〃 |
-| 친구 시간표 / 학기 | `GET /v2/friends/{friendId}/primary-table`, `.../coursebooks` | 〃 |
+| 친구 시간표 / 학기 | `GET /v2/friends/{friendId}/primary-table`, `.../coursebooks` | 엔드포인트만 추가 (8-3 에서 사용) |
 
 > 친구 API 가 core(snutt-api) v2 명세에 모두 들어 있다. 기획 스펙은 별도 friends-api 서버를 가정했으므로, 별도 서버가 여전히 필요한지 백엔드에 확인한다. 필요 없다면 Phase 1-3 의 friends-api 클라이언트는 `@sf/snutt-api` v2 엔드포인트 추가로 대체된다.
 
@@ -324,7 +324,7 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | | 6-4 | 직접 추가 폼 (검색 패널 자리 대체): 강의명 · 교수 · 학점 · 색상 · 비고, 시간(요일 · 시작 · 종료) + 장소 여러 개, 취소 / 추가. API(1-2) 전까지 예시 데이터의 시간표에 넣는다. 정해지지 않은 것은 디자인 문의 4-8 | | ✅ #255 |
 | **7. 패널 탭** | 7-1 | 관심강좌 탭(커서를 올리면 5-2 처럼 미리보기), 관심강좌 담은 뒤 "관심강좌 탭으로 이동" 확인 팝업 | |  |
 | | 7-2 | 강의 목록 탭 (현재 시간표의 강의 목록으로 추정, 미결 사항 참고). 항목은 5-1 의 `LectureCell` | |  |
-| **8. 친구 · 강의평** | 8-1 | `/friends` 목록, 3개 상태 탭, 수락/거절 | |  |
+| **8. 친구 · 강의평** | 8-1 | `/friends` 목록, 3개 상태 탭(친구 · 받은 요청 · 보낸 요청), 수락/거절. Figma 에 친구 화면이 없어 메인 목록 패널 모양으로 만들었다. 정해지지 않은 것은 디자인 문의 4-16 | | ✅ #271 |
 | | 8-2 | 친구 추가 (닉네임 / Kakao 링크), 닉네임 변경, 삭제 | |  |
 | | 8-3 | 친구 시간표 뷰 (그리드 재사용, 학기 선택) | |  |
 | | 8-4 | 강의평 조회: 평균 점수, 항목별 점수(성적 · 강의력 · 유익함 · 널널함), 태그 탭(성적 · 과제 · 수강신청 · 팀플) 통계, 리뷰 목록(추천순 / 최신순, 무한 스크롤) | |  |
@@ -359,7 +359,7 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | v2 인증 방식 | ✅ 해결: 헤더는 위 표 참고 (web 은 `x-os-type: web`, `x-client-key` 받음), `userId` 는 서버가 채움. refresh 흐름은 API 표의 토큰 갱신 · 로그아웃 | 3-1 에서 `api/client.ts` 에 넣음. 동시에 401 을 받아도 한 번만 갱신한다 |
 | 백엔드 명세 버그 | ✅ 해결 (2026-10-15): 그룹 명세 스키마 누락, `is` boolean 필드 이름 | v1 은 필요하면 생성 타입으로 바꿀 수 있다 |
 | v2 `is` boolean 필드 이름 | ✅ 해결: 명세가 `isPrimary` 등 실제 이름으로 바뀜 | dev 실제 응답도 `isPrimary` (2026-10-15) |
-| 친구 기능 서버 | 확인 필요: 별도 friends-api 가 필요한지, core v2 로 충분한지 | core v2 명세에 친구 API 전체가 있음 |
+| 친구 기능 서버 | 확인 필요: 별도 friends-api 가 필요한지, core v2 로 충분한지. 8-1 에서 core v2 `GET /v2/friends` 가 dev 서버에서 실제 친구 목록을 돌려주는 것을 확인했다 (2026-10-17) | core v2 명세에 친구 API 전체가 있음 |
 | v2 ID 크기 | ✅ 해결: dev 응답의 ID 는 5~6자리로 2^53 보다 한참 작다 (2026-10-15). 그대로 JSON 숫자로 받아 문자열로 바꾼다 | v2 ID 는 `Int64`. domain 은 문자열로 다룸. 초과하면 JSON 파싱 단계에서 정확도가 깨지므로 별도 처리 필요 |
 | 필터 칩 색 | 디자인 확인 필요: 필터 종류마다 칩 색이 정해져 있는지 | Figma 칩은 8가지 색이고 메인 화면은 전공 orange, 4학년 red, 3학점 lime, 컴퓨터공학부 mint, 평점 높은 순 회색. 필터 종류는 10개라 색보다 많다 |
 | 아이콘 교체 | **나중에 바꿔야 함**: 지금 아이콘은 Figma 에서 내보낼 수 없어 Material Symbols 중 비슷한 것으로 대신했다. 디자이너에게 SVG 를 받으면 바꾼다. 특히 Figma 에서 직접 그린 것으로 보이는 좌측 바 아이콘(`Icon/Tab/timetable`: 검색 · 강의평 · 친구 시간표 · 더보기), 검색 아이콘(`Icon/glass`), 필터 아이콘(`ic/condition/normal`), 로고(`SnuttLogo`, 지금은 snutt-webclient 의 벡터) | 바꿀 곳: `scripts/generate-icons.mts`(Material Symbols 이름) 또는 받은 SVG 로 `shared/ui/` 컴포넌트 교체. 디자이너 문의 C |
