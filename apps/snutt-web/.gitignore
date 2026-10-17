@@ -3,3 +3,6 @@ out/
 next-env.d.ts
 *.tsbuildinfo
 .env*.local
+
+# vim
+*.swp
