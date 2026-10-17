@@ -24,6 +24,8 @@ type SearchPanelProps = {
   /** 시간이 겹치면 onOverlap 에 서버 메시지를 준다. 확인받으면 force 로 다시 부른다 */
   onAdd: (lecture: Lecture, options: { force?: boolean; onOverlap: (message: string) => void }) => void;
   onRemove: (lecture: TimetableLecture) => void;
+  /** 셀을 누르면 강의 상세를 연다 */
+  onOpen: (lecture: Lecture) => void;
   onFailure: (error: Error) => void;
 };
 
@@ -31,7 +33,7 @@ type SearchPanelProps = {
  * 검색 탭 (Figma `검색 목록 영역`): 검색창과 결과 목록. 목록만 스크롤한다.
  * 필터 버튼 · 적용한 필터 칩은 5-3, 결과에 커서를 올렸을 때 그리드 미리보기는 5-2.
  */
-export function SearchPanel({ semester, timetable, onAdd, onRemove, onFailure }: SearchPanelProps) {
+export function SearchPanel({ semester, timetable, onAdd, onRemove, onOpen, onFailure }: SearchPanelProps) {
   const [input, setInput] = useState('');
   const query = useDebouncedValue(input.trim(), SEARCH_DELAY);
   const search = useInfiniteQuery(lectureQueries.search({ semester, query }));
@@ -91,6 +93,7 @@ export function SearchPanel({ semester, timetable, onAdd, onRemove, onFailure }:
                   canAdd={timetable !== null}
                   bookmarked={bookmarked}
                   onAddToggle={() => (added ? onRemove(added) : add(lecture))}
+                  onOpen={() => onOpen(lecture)}
                   onPreviewChange={(previewing) => (previewing ? preview.show(lecture) : preview.hide(lecture))}
                   onBookmarkToggle={() =>
                     (bookmarked ? removeBookmark : addBookmark).mutate(lecture, { onError: onFailure })

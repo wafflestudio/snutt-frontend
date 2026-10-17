@@ -13,11 +13,14 @@ const LECTURE = WITH_INFO.lectures.find(({ id }) => id === '1-3')!;
 // 동아리 모임: 직접 추가한 강의
 const CUSTOM = WITH_CUSTOM.lectures.find(({ id }) => id === '2-4')!;
 
-const setup = (lecture: TimetableLecture = LECTURE, detail: Partial<LectureDetail> = {}) => {
+const setup = (
+  lecture: TimetableLecture = LECTURE,
+  detail: Partial<Extract<LectureDetail, { source: 'timetable' }>> = {},
+) => {
   const handlers = { onChange: vi.fn(), onClose: vi.fn(), onColorChange: vi.fn(), onSave: vi.fn(), onRemove: vi.fn() };
   render(
     <LectureDetailPanel
-      detail={{ lectureId: lecture.id, view: 'info', editing: false, ...detail }}
+      detail={{ source: 'timetable', lectureId: lecture.id, view: 'info', editing: false, ...detail }}
       lecture={lecture}
       semester={WITH_INFO.semester}
       palette={SAMPLE_PALETTE}
@@ -106,7 +109,12 @@ describe('LectureDetailPanel', () => {
   it('강의평으로 바꾸고, `<` 는 상세를 닫고, `×` 는 패널을 접는다', async () => {
     const { onChange, onClose } = setup();
     await userEvent.click(screen.getByRole('tab', { name: '강의평' }));
-    expect(onChange).toHaveBeenLastCalledWith({ lectureId: '1-3', view: 'review', editing: false });
+    expect(onChange).toHaveBeenLastCalledWith({
+      source: 'timetable',
+      lectureId: '1-3',
+      view: 'review',
+      editing: false,
+    });
 
     await userEvent.click(screen.getByRole('button', { name: '목록으로' }));
     expect(onChange).toHaveBeenLastCalledWith(null);
@@ -134,7 +142,7 @@ describe('LectureDetailPanel 편집', () => {
   it('강의편집을 누르면 편집 상태로 바꾼다', async () => {
     const { onChange } = setup();
     await userEvent.click(screen.getByRole('button', { name: '강의편집' }));
-    expect(onChange).toHaveBeenLastCalledWith({ lectureId: '1-3', view: 'info', editing: true });
+    expect(onChange).toHaveBeenLastCalledWith({ source: 'timetable', lectureId: '1-3', view: 'info', editing: true });
   });
 
   it('입력칸에 지금 값을 채우고, 수강 정보는 고칠 수 없게 그대로 보여 준다', () => {
@@ -187,20 +195,20 @@ describe('LectureDetailPanel 편집', () => {
     await save();
     const [, { onSuccess }] = onSave.mock.calls[0];
     onSuccess();
-    expect(onChange).toHaveBeenLastCalledWith({ lectureId: '1-3', view: 'info', editing: false });
+    expect(onChange).toHaveBeenLastCalledWith({ source: 'timetable', lectureId: '1-3', view: 'info', editing: false });
   });
 
   it('바뀐 것이 없으면 저장하지 않고 편집을 끝낸다. 취소도 편집을 끝낸다', async () => {
     const { onSave, onChange } = editing();
     await save();
     expect(onSave).not.toHaveBeenCalled();
-    expect(onChange).toHaveBeenLastCalledWith({ lectureId: '1-3', view: 'info', editing: false });
+    expect(onChange).toHaveBeenLastCalledWith({ source: 'timetable', lectureId: '1-3', view: 'info', editing: false });
 
     onChange.mockClear();
     await userEvent.type(field('비고'), '메모');
     await userEvent.click(screen.getByRole('button', { name: '취소' }));
     expect(onSave).not.toHaveBeenCalled();
-    expect(onChange).toHaveBeenLastCalledWith({ lectureId: '1-3', view: 'info', editing: false });
+    expect(onChange).toHaveBeenLastCalledWith({ source: 'timetable', lectureId: '1-3', view: 'info', editing: false });
   });
 
   it('강의명이 비어 있거나 입력한 시간끼리 겹치면 저장하지 않는다', async () => {

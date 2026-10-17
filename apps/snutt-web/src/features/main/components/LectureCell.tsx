@@ -1,4 +1,5 @@
-import type { ReactNode } from 'react';
+import { clsx } from 'clsx';
+import type { MouseEvent, ReactNode } from 'react';
 import { getClassTimeSummary, getPlaceSummary, getSyllabusUrl, type Lecture } from '@/domain/lecture';
 import { IconButton } from '@/shared/ui/IconButton';
 import { openInPopup } from '@/shared/lib/open-in-popup';
@@ -23,6 +24,8 @@ type LectureCellProps = {
   canAdd: boolean;
   onAddToggle: () => void;
   onBookmarkToggle: () => void;
+  /** 셀을 누르면 강의 상세를 연다. 안의 버튼 · 강의계획서를 누를 때는 부르지 않는다 */
+  onOpen?: () => void;
   /** 커서를 올리거나 안의 버튼에 포커스가 가면 true, 벗어나면 false (시간표 미리보기, 5-2) */
   onPreviewChange?: (previewing: boolean) => void;
 };
@@ -39,16 +42,27 @@ export function LectureCell({
   canAdd,
   onAddToggle,
   onBookmarkToggle,
+  onOpen,
   onPreviewChange,
 }: LectureCellProps) {
   const syllabusUrl = getSyllabusUrl(lecture, lecture.semester);
   const department = [lecture.department, lecture.academicYear].filter(Boolean).join(', ');
+  // 셀 어디를 눌러도 연다. 키보드로는 강의명 버튼으로 연다. 글자를 드래그해 고른 때는 열지 않는다
+  const handleClick = (event: MouseEvent<HTMLElement>) => {
+    if (!onOpen || (event.target as Element).closest('a, button')) return;
+    if (window.getSelection()?.toString()) return;
+    onOpen();
+  };
 
   return (
     <article
       aria-label={lecture.title}
       // relative: 안의 sr-only(absolute) 글자가 스크롤 목록 밖 body 를 기준으로 놓여 페이지가 길어지지 않게 한다
-      className="relative flex gap-5 border-b border-line-light bg-normal p-2.5 transition-colors hover:bg-light-field"
+      className={clsx(
+        'relative flex gap-5 border-b border-line-light bg-normal p-2.5 transition-colors hover:bg-light-field',
+        onOpen && 'cursor-pointer',
+      )}
+      onClick={handleClick}
       onMouseEnter={() => onPreviewChange?.(true)}
       onMouseLeave={() => onPreviewChange?.(false)}
       onFocus={() => onPreviewChange?.(true)}
@@ -57,7 +71,19 @@ export function LectureCell({
     >
       {/* Figma: 강의명과 나머지 사이 1, 교수 줄과 정보 줄 사이 8 */}
       <div className="flex min-w-0 flex-1 flex-col gap-px">
-        <h3 className="text-15-bold break-keep text-normal">{lecture.title}</h3>
+        <h3 className="text-15-bold break-keep text-normal">
+          {onOpen ? (
+            <button
+              type="button"
+              onClick={onOpen}
+              className="text-left break-keep outline-none focus-visible:underline focus-visible:decoration-snutt-mint focus-visible:decoration-2"
+            >
+              {lecture.title}
+            </button>
+          ) : (
+            lecture.title
+          )}
+        </h3>
         <div className="flex flex-col gap-2">
           <p className="flex items-center gap-2 text-13-regular">
             <span className="min-w-0 truncate text-normal">

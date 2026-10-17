@@ -1,3 +1,4 @@
+import type { LectureId, TimetableLectureId } from '@/domain/lecture';
 import type { TimetableId } from '@/domain/timetable';
 
 /**
@@ -13,7 +14,16 @@ export type MainView = {
 
 export type PanelTab = 'search' | 'lectures' | 'bookmark';
 
-export type LectureDetail = { lectureId: string; view: 'info' | 'review'; editing: boolean };
+export type LectureDetailView = 'info' | 'review';
+
+/**
+ * 강의 상세에 여는 강의.
+ * - timetable: 고른 시간표에 담긴 강의 (그리드의 강의, 담긴 검색 결과). 색상 · 편집 · 삭제
+ * - coursebook: 시간표에 없는 수강편람 강의 (검색 결과 · 관심강좌). 담기
+ */
+export type LectureDetail =
+  | { source: 'timetable'; lectureId: TimetableLectureId; view: LectureDetailView; editing: boolean }
+  | { source: 'coursebook'; lectureId: LectureId; view: LectureDetailView };
 
 export type PanelView =
   /** 검색 · 강의 목록 · 관심강좌 탭. detail 이 있으면 목록 옆에 강의 상세를 연다 */
@@ -28,7 +38,8 @@ export const DEFAULT_MAIN_VIEW: MainView = { panel: DEFAULT_PANEL, compare: null
  * URL 형식. 기본값은 쓰지 않아서 처음 화면의 URL 은 `/` 이다.
  *   panel=closed | custom   (없으면 목록)
  *   tab=lectures | bookmark (없으면 검색)
- *   lecture=<id> &view=review &edit=1   (강의 상세)
+ *   lecture=<id> &view=review &edit=1   (시간표 강의의 상세)
+ *   course=<id> &view=review            (수강편람 강의의 상세)
  *   compare=<timetableId>
  */
 const PANEL_TABS: readonly PanelTab[] = ['search', 'lectures', 'bookmark'];
@@ -47,14 +58,16 @@ const parsePanel = (params: Pick<URLSearchParams, 'get'>): PanelView | null => {
   if (panel === 'custom') return { type: 'custom-form' };
 
   const tab = params.get('tab');
+  return { type: 'list', tab: isPanelTab(tab) ? tab : 'search', detail: parseDetail(params) };
+};
+
+const parseDetail = (params: Pick<URLSearchParams, 'get'>): LectureDetail | null => {
+  const view = params.get('view') === 'review' ? 'review' : 'info';
   const lectureId = params.get('lecture');
-  return {
-    type: 'list',
-    tab: isPanelTab(tab) ? tab : 'search',
-    detail: lectureId
-      ? { lectureId, view: params.get('view') === 'review' ? 'review' : 'info', editing: params.get('edit') === '1' }
-      : null,
-  };
+  if (lectureId) return { source: 'timetable', lectureId, view, editing: params.get('edit') === '1' };
+  const courseId = params.get('course');
+  if (courseId) return { source: 'coursebook', lectureId: courseId, view };
+  return null;
 };
 
 export const toSearchParams = ({ panel, compare }: MainView): URLSearchParams => {
@@ -64,10 +77,11 @@ export const toSearchParams = ({ panel, compare }: MainView): URLSearchParams =>
   else if (panel.type === 'custom-form') params.set('panel', 'custom');
   else {
     if (panel.tab !== 'search') params.set('tab', panel.tab);
-    if (panel.detail) {
-      params.set('lecture', panel.detail.lectureId);
-      if (panel.detail.view === 'review') params.set('view', 'review');
-      if (panel.detail.editing) params.set('edit', '1');
+    const { detail } = panel;
+    if (detail) {
+      params.set(detail.source === 'timetable' ? 'lecture' : 'course', detail.lectureId);
+      if (detail.view === 'review') params.set('view', 'review');
+      if (detail.source === 'timetable' && detail.editing) params.set('edit', '1');
     }
   }
 

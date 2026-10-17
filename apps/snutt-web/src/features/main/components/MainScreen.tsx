@@ -3,10 +3,10 @@
 import { clsx } from 'clsx';
 import Link from 'next/link';
 import { getFailureMessage } from '@/api/errors';
-import { type ReactNode, useMemo } from 'react';
+import { type ReactNode, useMemo, useState } from 'react';
 import type { ColorPair } from '@/domain/color';
 import { getGridRange, type GridRange } from '@/domain/grid-layout';
-import type { TimetableLecture } from '@/domain/lecture';
+import type { Lecture, TimetableLecture } from '@/domain/lecture';
 import { toSemesterKey } from '@/domain/semester';
 import { getNewTimetableTitle, type Timetable } from '@/domain/timetable';
 import { LectureLayer } from '@/shared/timetable-grid/LectureLayer';
@@ -15,12 +15,12 @@ import { TimetableGrid } from '@/shared/timetable-grid/TimetableGrid';
 import { Button } from '@/shared/ui/Button';
 import { NoticeDialog } from '@/shared/ui/Dialog';
 import { IconCompare, IconEdit } from '@/shared/ui/icons';
-import { DEFAULT_PANEL } from '@/features/main/main-view';
+import { DEFAULT_PANEL, type LectureDetail } from '@/features/main/main-view';
 import { usePreviewLecture } from '@/features/main/preview-store';
 import { useMainView } from '@/features/main/use-main-view';
 import { useTimetableDetail, useTimetables } from '@/features/main/use-timetables';
 import { CustomLectureForm } from './CustomLectureForm';
-import { LectureDetailPanel } from './LectureDetailPanel';
+import { CoursebookDetailPanel, LectureDetailPanel } from './LectureDetailPanel';
 import { MainPanel } from './MainPanel';
 import { SearchPanel } from './SearchPanel';
 import { AddTimetableButton, TimetableMenu } from './TimetableActions';
@@ -38,20 +38,42 @@ export function MainScreen() {
   const compareRight = view.compare && (others.find(({ id }) => id === view.compare?.right) ?? others[0] ?? null);
   const compareTimetable = useTimetableDetail(compareRight ?? null);
 
-  // 강의 상세는 지금은 고른 시간표의 강의만 연다 (검색 결과의 상세는 5-1). 없는 강의면 열지 않는다
+  /*
+   * 강의 상세. 고른 시간표의 강의면 시간표 강의의 상세(색상 · 편집 · 삭제), 아니면 수강편람 강의의 상세(담기)를 연다.
+   * 수강편람 강의를 담으면 시간표에 생기므로 시간표 강의의 상세로 바뀐다. 열 강의를 찾지 못하면(삭제, 새로 고침) 열지 않는다
+   */
   const listPanel = view.panel?.type === 'list' ? view.panel : null;
-  const detailLecture = listPanel?.detail && selected?.lectures.find(({ id }) => id === listPanel.detail?.lectureId);
+  const detail = listPanel?.detail ?? null;
+  const detailLecture =
+    (detail &&
+      selected?.lectures.find((lecture) =>
+        detail.source === 'timetable' ? lecture.id === detail.lectureId : lecture.lectureId === detail.lectureId,
+      )) ??
+    null;
+  // 검색 결과에서 누른 수강편람 강의. 단건 조회 API 가 없어 누를 때 받아 둔다
+  const [openedCourse, setOpenedCourse] = useState<Lecture | null>(null);
+  const detailCourse =
+    detail?.source === 'coursebook' && !detailLecture && openedCourse?.id === detail.lectureId ? openedCourse : null;
   // 강의 상세가 열리면 그리드가 좁아져 헤더 버튼을 아이콘만 남긴다
-  const compactHeader = Boolean(listPanel?.detail && detailLecture);
+  const compactHeader = detailLecture !== null || detailCourse !== null;
+  const setDetail = (next: LectureDetail | null) =>
+    listPanel && setView({ ...view, panel: { ...listPanel, detail: next } });
   const openDetail = (lecture: TimetableLecture) =>
     setView({
       ...view,
       panel: {
         type: 'list',
         tab: listPanel?.tab ?? 'search',
-        detail: { lectureId: lecture.id, view: 'info', editing: false },
+        detail: { source: 'timetable', lectureId: lecture.id, view: 'info', editing: false },
       },
     });
+  /** 검색 결과의 셀. 시간표에 담긴 강의면 시간표 강의의 상세를 연다 */
+  const openCourse = (lecture: Lecture) => {
+    const added = selected?.lectures.find(({ lectureId }) => lectureId === lecture.id);
+    if (added) return openDetail(added);
+    setOpenedCourse(lecture);
+    setDetail({ source: 'coursebook', lectureId: lecture.id, view: 'info' });
+  };
 
   // 비교할 때는 두 시간표의 줄이 맞도록 두 시간표의 강의를 합친 범위를 같이 쓴다
   const range = useMemo(
@@ -123,27 +145,41 @@ export function MainScreen() {
                   timetable={selected}
                   onAdd={(lecture, options) => selected && timetables.addLecture(selected.id, lecture.id, options)}
                   onRemove={(lecture) => selected && timetables.removeLecture(selected.id, lecture.id)}
+                  onOpen={openCourse}
                   onFailure={timetables.notifyFailure}
                 />
               }
             />
-            {selected && listPanel.detail && detailLecture && (
+            {selected && detail && detailLecture && (
               <LectureDetailPanel
                 // 다른 강의를 열면 삭제 확인 같은 상태를 처음부터 다시 둔다
                 key={detailLecture.id}
-                detail={listPanel.detail}
+                detail={
+                  detail.source === 'timetable'
+                    ? detail
+                    : // 상세를 연 뒤 담은 수강편람 강의
+                      { source: 'timetable', lectureId: detailLecture.id, view: detail.view, editing: false }
+                }
                 lecture={detailLecture}
                 semester={selected.semester}
                 palette={palette}
-                onChange={(detail) => setView({ ...view, panel: { ...listPanel, detail } })}
+                onChange={setDetail}
                 onClose={() => setView({ ...view, panel: null })}
                 onColorChange={(color) => timetables.updateLecture(selected.id, detailLecture.id, { color })}
                 onSave={(change, options) => timetables.updateLecture(selected.id, detailLecture.id, change, options)}
-                onRemove={() =>
-                  timetables.removeLecture(selected.id, detailLecture.id, () =>
-                    setView({ ...view, panel: { ...listPanel, detail: null } }),
-                  )
-                }
+                onRemove={() => timetables.removeLecture(selected.id, detailLecture.id, () => setDetail(null))}
+              />
+            )}
+            {detail && detailCourse && (
+              <CoursebookDetailPanel
+                key={detailCourse.id}
+                view={detail.view}
+                lecture={detailCourse}
+                canAdd={selected !== null}
+                onViewChange={(next) => setDetail({ ...detail, view: next })}
+                onBack={() => setDetail(null)}
+                onClose={() => setView({ ...view, panel: null })}
+                onAdd={(options) => selected && timetables.addLecture(selected.id, detailCourse.id, options)}
               />
             )}
           </>

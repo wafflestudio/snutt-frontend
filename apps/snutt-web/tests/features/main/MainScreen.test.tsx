@@ -314,6 +314,56 @@ describe('MainScreen', () => {
       expect(screen.getByRole('button', { name: '시간표 비교' })).toHaveTextContent('');
     });
 
+    describe('검색 결과의 셀', () => {
+      const result = (title: string) => within(screen.getByRole('article', { name: title }));
+      const detail = () => within(panel('강의 상세')!);
+
+      it('시간표에 없는 강의는 담기가 있는 상세를 열고, 담으면 시간표 강의의 상세로 바뀐다', async () => {
+        await renderMain();
+        await screen.findAllByRole('article');
+        // 강의명이 아닌 곳을 눌러도 연다
+        await userEvent.click(result('운영관리').getByLabelText('강의평 없음'));
+        expect(window.location.search).toMatch(/^\?course=/);
+        expect(detail().getByRole('heading', { name: '운영관리' })).toBeInTheDocument();
+        expect(detail().queryByRole('combobox', { name: '색상' })).not.toBeInTheDocument();
+
+        await userEvent.click(detail().getByRole('button', { name: '시간표에 담기' }));
+        expect(await detail().findByRole('combobox', { name: '색상' })).toBeInTheDocument();
+        expect(detail().getByRole('button', { name: '삭제' })).toBeInTheDocument();
+      });
+
+      it('담을 때 시간이 겹치면 덮어쓸지 묻는다', async () => {
+        await renderMain();
+        await screen.findAllByRole('article');
+        await userEvent.click(result('마케팅원론').getByText('058-331, 058-120'));
+        await userEvent.click(detail().getByRole('button', { name: '시간표에 담기' }));
+
+        const confirm = await screen.findByRole('alertdialog', {
+          name: "'경영전략' 강의와 시간이 겹칩니다.\n강의를 덮어씌우겠습니까?",
+        });
+        await userEvent.click(within(confirm).getByRole('button', { name: '확인' }));
+        expect(await detail().findByRole('combobox', { name: '색상' })).toBeInTheDocument();
+      });
+
+      it('담긴 강의는 시간표 강의의 상세를 열고, 셀 안의 버튼을 누를 때는 열지 않는다', async () => {
+        await renderMain();
+        await screen.findAllByRole('article');
+        await userEvent.click(result('운영관리').getByRole('button', { name: '관심강좌' }));
+        expect(panel('강의 상세')).not.toBeInTheDocument();
+
+        // 키보드로는 강의명 버튼으로 연다
+        await userEvent.click(result('경영전략').getByRole('button', { name: '경영전략' }));
+        expect(window.location.search).toBe('?lecture=1-1');
+        expect(detail().getByRole('combobox', { name: '색상' })).toBeInTheDocument();
+      });
+
+      it('URL 의 수강편람 강의는 받아 둔 것이 없으면(새로 고침) 열지 않는다', async () => {
+        window.history.replaceState(null, '', '/?course=none');
+        await renderMain();
+        expect(panel('강의 상세')).not.toBeInTheDocument();
+      });
+    });
+
     it('URL 의 강의가 고른 시간표에 없으면 상세를 열지 않는다', async () => {
       window.history.replaceState(null, '', '/?lecture=none');
       await renderMain();
