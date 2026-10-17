@@ -91,4 +91,16 @@
   body {
     @apply bg-normal font-sans text-normal;
   }
+
+  /*
+    Tailwind v4 는 버튼 커서를 기본(화살표)으로 둔다. 누를 수 있는 것은 손가락 모양으로 바꾼다.
+    Base UI 의 셀렉트 · 메뉴 항목처럼 button 이 아닌 것도 role 로 함께 잡는다
+  */
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']),
+  [role='combobox']:not([aria-disabled='true'], [data-disabled]),
+  [role='option']:not([aria-disabled='true'], [data-disabled]),
+  [role='menuitem']:not([aria-disabled='true'], [data-disabled]) {
+    cursor: pointer;
+  }
 }

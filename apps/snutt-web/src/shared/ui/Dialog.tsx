@@ -82,7 +82,9 @@ export function ConfirmDialog({
       <AlertDialog.Portal>
         <AlertDialog.Backdrop className={BACKDROP_CLASSES} />
         <AlertDialog.Popup className={clsx(POPUP_POSITION_CLASSES, SMALL_POPUP_CLASSES)}>
-          <AlertDialog.Title className="text-center text-14-regular">{message}</AlertDialog.Title>
+          <AlertDialog.Title className="text-center text-14-regular break-keep whitespace-pre-line">
+            {message}
+          </AlertDialog.Title>
           <div className="flex gap-2">
             <AlertDialog.Close render={<Button variant="secondary" className="flex-1" />}>
               {cancelLabel}
@@ -118,7 +120,9 @@ export function NoticeDialog({ open, onOpenChange, message, confirmLabel = 'í™•ì
       <AlertDialog.Portal>
         <AlertDialog.Backdrop className={BACKDROP_CLASSES} />
         <AlertDialog.Popup className={clsx(POPUP_POSITION_CLASSES, SMALL_POPUP_CLASSES)}>
-          <AlertDialog.Title className="text-center text-14-regular">{message}</AlertDialog.Title>
+          <AlertDialog.Title className="text-center text-14-regular break-keep whitespace-pre-line">
+            {message}
+          </AlertDialog.Title>
           <AlertDialog.Close render={<Button />}>{confirmLabel}</AlertDialog.Close>
         </AlertDialog.Popup>
       </AlertDialog.Portal>

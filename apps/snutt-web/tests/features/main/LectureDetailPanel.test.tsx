@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, screen, within } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import type { TimetableLecture } from '@/domain/lecture';
@@ -21,7 +21,6 @@ const setup = (lecture: TimetableLecture = LECTURE, detail: Partial<LectureDetai
       lecture={lecture}
       semester={WITH_INFO.semester}
       palette={SAMPLE_PALETTE}
-      timetableLectures={lecture === CUSTOM ? WITH_CUSTOM.lectures : WITH_INFO.lectures}
       {...handlers}
     />,
   );
@@ -156,7 +155,7 @@ describe('LectureDetailPanel 편집', () => {
     await save();
     expect(onSave).toHaveBeenCalledWith(
       { title: '근대윤리학', instructor: null, remark: '시험 없음' },
-      expect.any(Function),
+      expect.objectContaining({ force: false }),
     );
   });
 
@@ -173,7 +172,7 @@ describe('LectureDetailPanel 편집', () => {
         ],
         color: { type: 'palette', index: 6 },
       },
-      expect.any(Function),
+      expect.objectContaining({ force: false }),
     );
   });
 
@@ -181,8 +180,8 @@ describe('LectureDetailPanel 편집', () => {
     const { onSave, onChange } = editing();
     await userEvent.type(field('비고'), '메모');
     await save();
-    const [, done] = onSave.mock.calls[0];
-    done();
+    const [, { onSuccess }] = onSave.mock.calls[0];
+    onSuccess();
     expect(onChange).toHaveBeenLastCalledWith({ lectureId: '1-3', view: 'info', editing: false });
   });
 
@@ -199,15 +198,27 @@ describe('LectureDetailPanel 편집', () => {
     expect(onChange).toHaveBeenLastCalledWith({ lectureId: '1-3', view: 'info', editing: false });
   });
 
-  it('강의명이 비어 있거나 다른 강의와 시간이 겹치면 저장하지 않는다', async () => {
+  it('강의명이 비어 있거나 입력한 시간끼리 겹치면 저장하지 않는다', async () => {
     const { onSave } = editing();
     await userEvent.clear(field('강의명'));
-    // 시간 1 을 화 → 수 15:00 으로 옮기면 재무관리(수 14:00 ~ 17:00)와 겹친다
-    await choose(within(screen.getByRole('group', { name: '시간 1' })).getByRole('combobox', { name: '요일' }), '수');
+    // 시간 2 를 목 → 화로 옮기면 시간 1(화 15:00 ~ 16:50)과 겹친다
+    await choose(within(screen.getByRole('group', { name: '시간 2' })).getByRole('combobox', { name: '요일' }), '화');
     await save();
     expect(field('강의명')).toHaveAccessibleDescription('강의명을 입력하세요');
-    expect(screen.getByRole('alert')).toHaveTextContent('‘재무관리’ 강의와 시간이 겹칩니다');
+    expect(screen.getByRole('alert')).toHaveTextContent('입력한 시간끼리 겹칩니다');
     expect(onSave).not.toHaveBeenCalled();
+  });
+
+  it('다른 강의와 시간이 겹치면 서버 문구로 덮어쓸지 묻고, 확인하면 force 로 다시 저장한다', async () => {
+    const { onSave } = editing();
+    await choose(within(screen.getByRole('group', { name: '시간 1' })).getByRole('combobox', { name: '요일' }), '수');
+    await save();
+    const [change, { onOverlap }] = onSave.mock.calls[0];
+    act(() => onOverlap("'재무관리' 강의와 시간이 겹칩니다.\n강의를 덮어씌우겠습니까?"));
+
+    const dialog = await screen.findByRole('alertdialog', { name: /'재무관리' 강의와 시간이 겹칩니다/ });
+    await userEvent.click(within(dialog).getByRole('button', { name: '확인' }));
+    expect(onSave).toHaveBeenLastCalledWith(change, expect.objectContaining({ force: true }));
   });
 
   it('직접 추가한 강의는 학점도 고친다', async () => {
@@ -215,6 +226,6 @@ describe('LectureDetailPanel 편집', () => {
     expect(screen.queryByRole('region', { name: '수강 정보' })).not.toBeInTheDocument();
     await userEvent.type(field('학점'), '2');
     await save();
-    expect(onSave).toHaveBeenCalledWith({ credit: 2 }, expect.any(Function));
+    expect(onSave).toHaveBeenCalledWith({ credit: 2 }, expect.objectContaining({ force: false }));
   });
 });

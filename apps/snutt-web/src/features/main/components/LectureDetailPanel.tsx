@@ -23,21 +23,24 @@ import type { LectureDetail } from '@/features/main/main-view';
 import { ClassTimeFields, getClassTimeError, type TimeRow, toClassTimes, toTimeRows } from './ClassTimeFields';
 import { PanelColumn, PanelNav } from './PanelColumn';
 
+type SaveOptions = { force: boolean; onSuccess: () => void; onOverlap: (message: string) => void };
+
 type LectureDetailPanelProps = {
   detail: LectureDetail;
   lecture: TimetableLecture;
   /** 강의계획서 주소에 쓴다 */
   semester: Semester;
   palette: readonly ColorPair[];
-  /** 고른 시간표의 강의들. 편집한 시간이 다른 강의와 겹치는지 본다 */
-  timetableLectures: readonly TimetableLecture[];
   /** 강의 상세 / 강의평 전환. null 이면 상세를 닫는다 (`<`) */
   onChange: (detail: LectureDetail | null) => void;
   /** `×`: 패널을 접는다 */
   onClose: () => void;
   onColorChange: (color: LectureColor) => void;
-  /** 편집에서 바뀐 필드만 넘긴다. 저장되면 done 을 부른다 */
-  onSave: (change: Partial<CustomLectureInput>, done: () => void) => void;
+  /**
+   * 편집에서 바뀐 필드만 넘긴다. 저장되면 onSuccess, 다른 강의와 시간이 겹치면 onOverlap 에 서버 문구를 준다.
+   * 확인받으면 force 로 다시 부른다 (겹치는 강의를 빼고 고친다)
+   */
+  onSave: (change: Partial<CustomLectureInput>, options: SaveOptions) => void;
   onRemove: () => void;
 };
 
@@ -51,7 +54,6 @@ export function LectureDetailPanel({
   lecture,
   semester,
   palette,
-  timetableLectures,
   onChange,
   onClose,
   onColorChange,
@@ -85,8 +87,9 @@ export function LectureDetailPanel({
         <LectureEditForm
           lecture={lecture}
           palette={palette}
-          timetableLectures={timetableLectures}
-          onSave={(change) => onSave(change, () => setEditing(false))}
+          onSave={(change, force, onOverlap) =>
+            onSave(change, { force, onSuccess: () => setEditing(false), onOverlap })
+          }
           onCancel={() => setEditing(false)}
         />
       ) : (
@@ -214,8 +217,8 @@ function CourseInfo({ lecture }: { lecture: TimetableLecture }) {
 
 type EditErrors = { title?: string; credit?: string; time?: string | null };
 
-type LectureEditFormProps = Pick<LectureDetailPanelProps, 'lecture' | 'palette' | 'timetableLectures'> & {
-  onSave: (change: Partial<CustomLectureInput>) => void;
+type LectureEditFormProps = Pick<LectureDetailPanelProps, 'lecture' | 'palette'> & {
+  onSave: (change: Partial<CustomLectureInput>, force: boolean, onOverlap: (message: string) => void) => void;
   onCancel: () => void;
 };
 
@@ -232,9 +235,10 @@ const isSameClassTimes = (a: readonly ClassTime[], b: readonly ClassTime[]) =>
 /**
  * 강의 편집 (Figma `강의상세` 의 편집 상태). 상세와 같은 자리에서 강의명 · 교수 · 색상 · 비고 · 시간 및 장소가 입력칸으로 바뀐다.
  * 직접 추가한 강의는 학점도 고친다. 저장하면 바뀐 필드만 넘기고(CLAUDE.md "API 층"), 바뀐 것이 없으면 그냥 닫는다.
+ * 다른 강의와 시간이 겹치면 검색에서 담을 때처럼 덮어쓸지 묻는다.
  * 저장 · 취소 버튼, 시간 줄의 모양은 Figma 에 없어 직접 추가 폼을 따른다 (디자인 문의 4-14)
  */
-function LectureEditForm({ lecture, palette, timetableLectures, onSave, onCancel }: LectureEditFormProps) {
+function LectureEditForm({ lecture, palette, onSave, onCancel }: LectureEditFormProps) {
   const id = useId();
   const custom = isCustomLecture(lecture);
   const [title, setTitle] = useState(lecture.title);
@@ -244,6 +248,10 @@ function LectureEditForm({ lecture, palette, timetableLectures, onSave, onCancel
   const [remark, setRemark] = useState(lecture.remark ?? '');
   const [rows, setRows] = useState<TimeRow[]>(() => toTimeRows(lecture.classTimes));
   const [errors, setErrors] = useState<EditErrors>({});
+  // 시간이 겹쳐서 덮어쓸지 묻는 중인 변경
+  const [overlap, setOverlap] = useState<{ change: Partial<CustomLectureInput>; message: string } | null>(null);
+  const save = (change: Partial<CustomLectureInput>, force = false) =>
+    onSave(change, force, (message) => setOverlap({ change, message }));
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -252,12 +260,8 @@ function LectureEditForm({ lecture, palette, timetableLectures, onSave, onCancel
     const next: EditErrors = {};
     if (!title.trim()) next.title = '강의명을 입력하세요';
     if (custom && credit.trim() && !/^\d+$/.test(credit.trim())) next.credit = '학점은 숫자로 입력하세요';
-    // 시간을 고쳤을 때만 본다. 원래부터 겹쳐 있던 강의도 다른 필드는 고칠 수 있게
-    if (timesChanged)
-      next.time = getClassTimeError(
-        classTimes,
-        timetableLectures.filter(({ id: lectureId }) => lectureId !== lecture.id),
-      );
+    // 입력한 시간끼리만 본다. 다른 강의와 겹치는지는 서버가 알려 준다
+    if (timesChanged) next.time = getClassTimeError(classTimes, []);
     setErrors(next);
     if (next.title || next.credit || next.time) return;
 
@@ -271,7 +275,7 @@ function LectureEditForm({ lecture, palette, timetableLectures, onSave, onCancel
     if (!isSameLectureColor(color, lecture.color)) change.color = color;
 
     if (Object.keys(change).length === 0) onCancel();
-    else onSave(change);
+    else save(change);
   };
 
   return (
@@ -365,6 +369,13 @@ function LectureEditForm({ lecture, palette, timetableLectures, onSave, onCancel
           저장
         </Button>
       </div>
+
+      <ConfirmDialog
+        open={overlap !== null}
+        onOpenChange={(open) => !open && setOverlap(null)}
+        message={overlap?.message}
+        onConfirm={() => overlap && save(overlap.change, true)}
+      />
     </form>
   );
 }

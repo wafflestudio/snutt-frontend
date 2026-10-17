@@ -217,7 +217,7 @@ describe('MainScreen', () => {
       await userEvent.click(result('마케팅원론').getByRole('button', { name: '시간표에 담기' }));
 
       const confirm = await screen.findByRole('alertdialog', {
-        name: "'경영전략' 강의와 시간이 겹칩니다. 강의를 덮어씌우겠습니까?",
+        name: "'경영전략' 강의와 시간이 겹칩니다.\n강의를 덮어씌우겠습니까?",
       });
       await userEvent.click(within(confirm).getByRole('button', { name: '취소' }));
       expect(block('마케팅원론')).not.toBeInTheDocument();
@@ -346,6 +346,26 @@ describe('MainScreen', () => {
       await waitFor(() => expect(block('경영전략 세미나')).toBeInTheDocument());
       expect(window.location.search).toBe('?lecture=1-1');
       expect(within(panel('강의 상세')!).getByRole('button', { name: '강의편집' })).toBeInTheDocument();
+    });
+
+    it('편집한 시간이 다른 강의와 겹치면 덮어쓸지 묻고, 확인하면 겹치는 강의를 빼고 저장한다', async () => {
+      await renderMain();
+      await userEvent.click(block('경영전략'));
+      await userEvent.click(within(panel('강의 상세')!).getByRole('button', { name: '강의편집' }));
+
+      // 월 → 목 으로 옮기면 공공커뮤니케이션 미디어(목 9:00 ~ 11:45)와 겹친다
+      await userEvent.click(screen.getByRole('combobox', { name: '요일' }));
+      await userEvent.click(await screen.findByRole('option', { name: '목' }));
+      await userEvent.click(screen.getByRole('button', { name: '저장' }));
+
+      const dialog = await screen.findByRole('alertdialog');
+      expect(dialog).toHaveTextContent("'공공커뮤니케이션 미디어' 강의와 시간이 겹칩니다.");
+      await userEvent.click(within(dialog).getByRole('button', { name: '확인' }));
+
+      await waitFor(() =>
+        expect(screen.queryByRole('button', { name: /^공공커뮤니케이션 미디어,/ })).not.toBeInTheDocument(),
+      );
+      expect(window.location.search).toBe('?lecture=1-1');
     });
 
     it('비교하는 오른쪽 시간표의 강의는 누를 수 없다', async () => {
