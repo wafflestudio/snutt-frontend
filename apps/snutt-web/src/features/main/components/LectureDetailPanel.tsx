@@ -19,6 +19,7 @@ import { ConfirmDialog } from '@/shared/ui/Dialog';
 import { IconArrowOutward } from '@/shared/ui/icons';
 import { Tab, TabList, Tabs } from '@/shared/ui/Tabs';
 import { TextArea, TextField } from '@/shared/ui/TextField';
+import { openInPopup } from '@/shared/lib/open-in-popup';
 import type { LectureDetail } from '@/features/main/main-view';
 import { ClassTimeFields, getClassTimeError, type TimeRow, toClassTimes, toTimeRows } from './ClassTimeFields';
 import { PanelColumn, PanelNav } from './PanelColumn';
@@ -172,7 +173,7 @@ function LectureInfo({ lecture, semester, palette, onColorChange, onEdit, onRemo
       {/* Figma: 한 줄 30, 줄 사이 20 */}
       <div className="flex flex-col items-start gap-5">
         {syllabusUrl && (
-          <a href={syllabusUrl} target="_blank" rel="noreferrer" className={ACTION_CLASSES}>
+          <a href={syllabusUrl} target="_blank" rel="noreferrer" onClick={openInPopup} className={ACTION_CLASSES}>
             강의계획서
             <IconArrowOutward className="size-5" />
           </a>

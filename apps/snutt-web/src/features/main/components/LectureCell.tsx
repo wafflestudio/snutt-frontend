@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { getClassTimeSummary, getPlaceSummary, getSyllabusUrl, type Lecture } from '@/domain/lecture';
 import { IconButton } from '@/shared/ui/IconButton';
+import { openInPopup } from '@/shared/lib/open-in-popup';
 import {
   IconAdd,
   IconArrowOutward,
@@ -107,6 +108,7 @@ export function LectureCell({
             href={syllabusUrl}
             target="_blank"
             rel="noreferrer"
+            onClick={openInPopup}
             className="inline-flex h-6 items-center gap-0.5 rounded-[5px] px-2 text-13-medium whitespace-nowrap text-plain hover:bg-light focus-visible:outline-2 focus-visible:outline-snutt-mint"
           >
             강의계획서
