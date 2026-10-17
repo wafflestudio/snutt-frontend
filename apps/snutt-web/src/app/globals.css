@@ -62,6 +62,9 @@
   --text-20-bold: 20px; /* 강의 상세 · 직접 추가 제목 (디자이너 문의 A) */
   --text-20-bold--font-weight: 700;
   --text-20-bold--line-height: 1.4;
+  --text-20-semibold: 20px; /* 시간대 검색 모달 제목 */
+  --text-20-semibold--font-weight: 600;
+  --text-20-semibold--line-height: 1.2;
   --text-16-semibold: 16px; /* 직접 추가의 `시간 및 장소` */
   --text-16-semibold--font-weight: 600;
   --text-16-semibold--line-height: 1.4;
@@ -77,6 +80,12 @@
   --text-12-bold: 12px; /* 시간표 블록 장소 */
   --text-12-bold--font-weight: 700;
   --text-12-bold--line-height: 1;
+
+  /*
+   * 임시: Figma 에 hex 로만 있는 색 중 가까운 토큰이 없는 것. 디자이너가 토큰을 정하면 지운다 (docs/snutt-web-design-questions.md 4-18)
+   * 시간대 검색의 안내 상자 배경 (#000000 · 50%, 배경 흐림 4). 흰 글자를 올리므로 다크 테마에서도 같은 값을 쓴다
+   */
+  --background-color-guide: rgb(0 0 0 / 50%);
 }
 
 @layer base {

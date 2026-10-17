@@ -4,12 +4,14 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { getFailureMessage } from '@/api/errors';
 import { lectureQueries } from '@/api/lectures';
+import { EMPTY_TIME_FILTER, isTimeFilterEmpty, toSearchTimes } from '@/domain/time-filter';
 import { useDebouncedValue } from '@/shared/lib/use-debounced-value';
 import { ConfirmDialog } from '@/shared/ui/Dialog';
 import { SearchField } from '@/shared/ui/SearchField';
 import { preview } from '@/features/main/preview-store';
 import { type LectureCellsOptions, useLectureCells } from '@/features/main/use-lecture-cells';
 import { LectureCell } from './LectureCell';
+import { TimeSearchChips, TimeSearchFilterButton } from './TimeSearchDialog';
 
 /** 검색어를 다 친 뒤 이만큼 기다렸다가 검색한다 (ms) */
 const SEARCH_DELAY = 300;
@@ -22,11 +24,16 @@ type SearchPanelProps = Omit<LectureCellsOptions, 'onBookmarkAdded'> & {
 /**
  * 검색 탭 (Figma `검색 목록 영역`): 검색창과 결과 목록. 목록만 스크롤한다.
  * 필터 버튼 · 적용한 필터 칩은 5-3, 결과에 커서를 올렸을 때 그리드 미리보기는 5-2.
+ * 5-3 전까지는 검색창의 필터 버튼이 시간대 검색 모달(5-4)을 바로 연다.
  */
 export function SearchPanel({ onGoToBookmarks, ...options }: SearchPanelProps) {
   const [input, setInput] = useState('');
   const query = useDebouncedValue(input.trim(), SEARCH_DELAY);
-  const search = useInfiniteQuery(lectureQueries.search({ semester: options.semester, query }));
+  const [timeFilter, setTimeFilter] = useState(EMPTY_TIME_FILTER);
+  const occupied = options.timetable?.lectures.flatMap(({ classTimes }) => classTimes) ?? [];
+  const search = useInfiniteQuery(
+    lectureQueries.search({ semester: options.semester, query, ...toSearchTimes(timeFilter, occupied) }),
+  );
   const lectures = search.data?.pages.flatMap((page) => page.lectures) ?? [];
 
   // 관심강좌에 넣으면 관심강좌 탭으로 갈지 묻는다 (Figma `팝업 예시`)
@@ -44,7 +51,9 @@ export function SearchPanel({ onGoToBookmarks, ...options }: SearchPanelProps) {
         placeholder="강의명, 교수명을 검색하세요"
         value={input}
         onChange={(event) => setInput(event.target.value)}
+        trailing={<TimeSearchFilterButton value={timeFilter} onChange={setTimeFilter} occupied={occupied} />}
       />
+      {!isTimeFilterEmpty(timeFilter) && <TimeSearchChips value={timeFilter} onChange={setTimeFilter} />}
 
       <ResultList
         count={lectures.length}

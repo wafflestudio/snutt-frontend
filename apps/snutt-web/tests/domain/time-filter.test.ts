@@ -4,9 +4,12 @@ import type { GridRange } from '@/domain/grid-layout';
 import {
   applyDragSelection,
   createTimeSelection,
+  EMPTY_TIME_FILTER,
   getSlotCount,
+  isTimeFilterEmpty,
   rangesToSelection,
   selectionToRanges,
+  toSearchTimes,
 } from '@/domain/time-filter';
 
 // 월~수, 9~12시 → 3열 x 6칸(30분)
@@ -91,5 +94,46 @@ describe('rangesToSelection', () => {
 
   it('범위에 없는 요일의 구간은 무시한다', () => {
     expect(selected(rangesToSelection([{ day: 6, startMinute: 540, endMinute: 720 }], range))).toEqual([]);
+  });
+});
+
+describe('toSearchTimes', () => {
+  const occupied = [
+    { day: 2, startMinute: 600, endMinute: 660, place: '302-208' },
+    { day: 0, startMinute: 540, endMinute: 705, place: null },
+  ] as const;
+
+  it('조건이 없으면 둘 다 빈 배열', () => {
+    expect(isTimeFilterEmpty(EMPTY_TIME_FILTER)).toBe(true);
+    expect(toSearchTimes(EMPTY_TIME_FILTER, occupied)).toEqual({ times: [], excludedTimes: [] });
+  });
+
+  it('빈 시간대만이면 시간표의 수업 시간을 장소 없이 정렬해서 뺀다', () => {
+    const filter = { times: [], emptyOnly: true };
+    expect(isTimeFilterEmpty(filter)).toBe(false);
+    expect(toSearchTimes(filter, occupied)).toEqual({
+      times: [],
+      excludedTimes: [
+        { day: 0, startMinute: 540, endMinute: 705 },
+        { day: 2, startMinute: 600, endMinute: 660 },
+      ],
+    });
+  });
+
+  it('고른 시간은 정렬해서 그대로 보낸다. 빈 시간대만이 아니면 시간표는 보지 않는다', () => {
+    const times = [
+      { day: 1, startMinute: 600, endMinute: 720 },
+      { day: 1, startMinute: 540, endMinute: 570 },
+    ] as const;
+    expect(toSearchTimes({ times: [...times], emptyOnly: false }, occupied)).toEqual({
+      times: [times[1], times[0]],
+      excludedTimes: [],
+    });
+  });
+
+  it('같은 조건이면 순서가 달라도 결과가 같다 (query key 가 같다)', () => {
+    const a = toSearchTimes({ times: [], emptyOnly: true }, occupied);
+    const b = toSearchTimes({ times: [], emptyOnly: true }, [...occupied].reverse());
+    expect(a).toEqual(b);
   });
 });

@@ -39,6 +39,7 @@ export const ICONS: Record<string, string> = {
   IconLocationFill: 'location_on-fill',
   IconMoreHorizontal: 'more_horiz',
   IconMoreVertical: 'more_vert',
+  IconRefresh: 'refresh',
   IconRemove: 'remove',
   IconReviewFill: 'rate_review-fill',
   IconScheduleFill: 'schedule-fill',
