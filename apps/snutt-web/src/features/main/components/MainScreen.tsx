@@ -132,11 +132,10 @@ export function MainScreen() {
                 lecture={detailLecture}
                 semester={selected.semester}
                 palette={palette}
-                timetableLectures={selected.lectures}
                 onChange={(detail) => setView({ ...view, panel: { ...listPanel, detail } })}
                 onClose={() => setView({ ...view, panel: null })}
                 onColorChange={(color) => timetables.updateLecture(selected.id, detailLecture.id, { color })}
-                onSave={(change, done) => timetables.updateLecture(selected.id, detailLecture.id, change, done)}
+                onSave={(change, options) => timetables.updateLecture(selected.id, detailLecture.id, change, options)}
                 onRemove={() =>
                   timetables.removeLecture(selected.id, detailLecture.id, () =>
                     setView({ ...view, panel: { ...listPanel, detail: null } }),

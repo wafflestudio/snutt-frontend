@@ -27,6 +27,9 @@ export type TimetablesStatus = 'loading' | 'unauthorized' | 'error' | 'ready';
 /** 시간이 겹치는 강의를 담으려 할 때 서버가 주는 에러 */
 const isTimeOverlap = (error: Error) => error instanceof ApiError && error.type === '/problems/lecture-time-overlap';
 
+/** `'…' 강의와 시간이 겹칩니다. 강의를 덮어씌우겠습니까?` 를 두 문장으로 나눠 확인 팝업에서 두 줄로 보여 준다 */
+const toOverlapQuestion = (error: Error) => getFailureMessage(error).replace(/\. /, '.\n');
+
 /**
  * 시간표 상세. 이름과 기본 여부는 목록(summary)을 따른다.
  * 이름 변경 · 기본 지정은 목록만 새로 받으므로, 상세를 다시 받지 않아도 화면이 맞는다.
@@ -144,18 +147,33 @@ export function useTimetables() {
     ) =>
       addLecture.mutate(
         { id, lectureId, isForced: force },
-        { onError: (failed) => (isTimeOverlap(failed) ? onOverlap(getFailureMessage(failed)) : onError(failed)) },
+        { onError: (failed) => (isTimeOverlap(failed) ? onOverlap(toOverlapQuestion(failed)) : onError(failed)) },
       ),
     /** 시간 충돌은 부르는 쪽(직접 추가 폼)에서 먼저 확인한다. 성공하면 onSuccess 를 부른다 */
     addCustomLecture: (id: TimetableId, input: CustomLectureInput, onSuccess?: () => void) =>
       addCustomLecture.mutate({ id, input }, { onSuccess, onError }),
-    /** 강의 상세의 색상과 강의 편집. 바뀐 필드만 넘긴다. 성공하면 onSuccess 를 부른다 */
+    /**
+     * 강의 상세의 색상과 강의 편집. 바뀐 필드만 넘긴다. 성공하면 onSuccess 를 부른다.
+     * 시간이 겹치면 addLecture 처럼 onOverlap 에 서버 메시지를 주고, force 로 다시 부르면 겹치는 강의를 빼고 고친다
+     */
     updateLecture: (
       id: TimetableId,
       lectureId: TimetableLectureId,
       change: Partial<CustomLectureInput>,
-      onSuccess?: () => void,
-    ) => updateLecture.mutate({ id, lectureId, change }, { onSuccess, onError }),
+      {
+        force = false,
+        onSuccess,
+        onOverlap,
+      }: { force?: boolean; onSuccess?: () => void; onOverlap?: (message: string) => void } = {},
+    ) =>
+      updateLecture.mutate(
+        { id, lectureId, change, isForced: force },
+        {
+          onSuccess,
+          onError: (failed) =>
+            onOverlap && isTimeOverlap(failed) ? onOverlap(toOverlapQuestion(failed)) : onError(failed),
+        },
+      ),
     removeLecture: (id: TimetableId, lectureId: TimetableLectureId, onSuccess?: () => void) =>
       removeLecture.mutate({ id, lectureId }, { onSuccess, onError }),
   };

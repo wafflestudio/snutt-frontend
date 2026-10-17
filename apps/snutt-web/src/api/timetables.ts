@@ -135,15 +135,17 @@ export const useUpdateLecture = () => {
       id,
       lectureId,
       change,
+      isForced = false,
     }: {
       id: TimetableId;
       lectureId: TimetableLectureId;
       change: Partial<CustomLectureInput>;
+      isForced?: boolean;
     }) =>
       toTimetable(
         await callApi('PATCH /v2/timetables/:timetableId/lectures/:timetableLectureId', {
           params: { timetableId: id, timetableLectureId: lectureId },
-          body: toLectureModifyRequest(change),
+          body: toLectureModifyRequest(change, isForced),
         }),
       ),
     onSuccess: (timetable) => setTimetable(queryClient, timetable),

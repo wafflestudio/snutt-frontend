@@ -317,32 +317,50 @@ export const fakeSnutt = ({ timetables, semesters, palette, coursebook = [] }: F
         ],
       }));
     }),
+    // 시간이 겹치면 담을 때처럼 거절하고, isForced 면 겹치는 강의를 빼고 고친다
     http.patch(api('/v2/timetables/:timetableId/lectures/:lectureId'), async ({ params, request }) => {
       const body = (await request.json()) as SnuttV2.TimetableLectureModifyRequest;
+      const target = state.find(({ id }) => id === params.timetableId);
+      const overlapping =
+        target && body.classPlaceAndTimes
+          ? findOverlapping(target, toClassTimes(body.classPlaceAndTimes), String(params.lectureId))
+          : [];
+      if (overlapping.length > 0 && !body.isForced)
+        return HttpResponse.json(
+          problem(
+            409,
+            'lecture-time-overlap',
+            '시간대 겹침',
+            `'${overlapping[0].title}' 강의와 시간이 겹칩니다. 강의를 덮어씌우겠습니까?`,
+          ),
+          { status: 409 },
+        );
       return updateTimetable(params.timetableId, (timetable) => ({
         ...timetable,
-        lectures: timetable.lectures.map((lecture) =>
-          lecture.id === params.lectureId
-            ? {
-                ...lecture,
-                // null 은 "바꾸지 않음", 지우는 것은 resetFields (직접 추가한 강의라 null 이 된다)
-                ...(body.courseTitle != null && { title: body.courseTitle }),
-                ...(body.instructor != null && { instructor: body.instructor }),
-                ...(body.credit != null && { credit: body.credit }),
-                ...(body.remark != null && { remark: body.remark }),
-                ...Object.fromEntries(
-                  body.resetFields
-                    .filter((field) => field === 'instructor' || field === 'credit' || field === 'remark')
-                    .map((field) => [field, null]),
-                ),
-                ...(body.classPlaceAndTimes && { classTimes: toClassTimes(body.classPlaceAndTimes) }),
-                // paletteIndex 를 받으면 직접 고른 색을 지운다
-                ...(body.paletteIndex != null
-                  ? { color: { type: 'palette' as const, index: body.paletteIndex } }
-                  : body.customColor && { color: toColor(body) }),
-              }
-            : lecture,
-        ),
+        lectures: timetable.lectures
+          .filter((lecture) => !overlapping.includes(lecture))
+          .map((lecture) =>
+            lecture.id === params.lectureId
+              ? {
+                  ...lecture,
+                  // null 은 "바꾸지 않음", 지우는 것은 resetFields (직접 추가한 강의라 null 이 된다)
+                  ...(body.courseTitle != null && { title: body.courseTitle }),
+                  ...(body.instructor != null && { instructor: body.instructor }),
+                  ...(body.credit != null && { credit: body.credit }),
+                  ...(body.remark != null && { remark: body.remark }),
+                  ...Object.fromEntries(
+                    body.resetFields
+                      .filter((field) => field === 'instructor' || field === 'credit' || field === 'remark')
+                      .map((field) => [field, null]),
+                  ),
+                  ...(body.classPlaceAndTimes && { classTimes: toClassTimes(body.classPlaceAndTimes) }),
+                  // paletteIndex 를 받으면 직접 고른 색을 지운다
+                  ...(body.paletteIndex != null
+                    ? { color: { type: 'palette' as const, index: body.paletteIndex } }
+                    : body.customColor && { color: toColor(body) }),
+                }
+              : lecture,
+          ),
       }));
     }),
     http.delete(api('/v2/timetables/:timetableId/lectures/:lectureId'), ({ params }) =>

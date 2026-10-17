@@ -130,8 +130,12 @@ export const toCustomLectureRequest = (input: CustomLectureInput): SnuttV2.Custo
  * 바뀐 필드만 보낸다 (CLAUDE.md "수정 요청(PATCH)은 사용자가 바꾼 필드만").
  * 이 요청에서 null 은 "바꾸지 않음"이라, 값을 지울 때는 resetFields 에 넣는다.
  * (직접 추가한 강의는 null 이 되고, 수강편람 강의는 수강편람 값으로 돌아간다. dev 서버에서 확인, 2026-10-15)
+ * 시간이 겹치면 담을 때처럼 409 `lecture-time-overlap` 이고, isForced 면 겹치는 강의를 빼고 고친다 (2026-10-17)
  */
-export const toLectureModifyRequest = (change: Partial<CustomLectureInput>): SnuttV2.TimetableLectureModifyRequest => {
+export const toLectureModifyRequest = (
+  change: Partial<CustomLectureInput>,
+  isForced = false,
+): SnuttV2.TimetableLectureModifyRequest => {
   const resetFields: SnuttV2.TimetableLectureModifyRequest['resetFields'] = [];
   const nullable = (key: 'instructor' | 'credit' | 'remark') => {
     if (!(key in change)) return {};
@@ -150,6 +154,6 @@ export const toLectureModifyRequest = (change: Partial<CustomLectureInput>): Snu
     ...(change.classTimes && { classPlaceAndTimes: change.classTimes.map(toClassPlaceAndTime) }),
     ...(change.color && toColorRequest(change.color)),
     resetFields,
-    isForced: false,
+    isForced,
   };
 };
