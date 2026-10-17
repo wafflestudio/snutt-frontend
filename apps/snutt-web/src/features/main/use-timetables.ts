@@ -149,9 +149,13 @@ export function useTimetables() {
     /** 시간 충돌은 부르는 쪽(직접 추가 폼)에서 먼저 확인한다. 성공하면 onSuccess 를 부른다 */
     addCustomLecture: (id: TimetableId, input: CustomLectureInput, onSuccess?: () => void) =>
       addCustomLecture.mutate({ id, input }, { onSuccess, onError }),
-    /** 강의 상세의 색상 (6-2 에서 편집한 값도 여기로 넘긴다) */
-    updateLecture: (id: TimetableId, lectureId: TimetableLectureId, change: Partial<CustomLectureInput>) =>
-      updateLecture.mutate({ id, lectureId, change }, { onError }),
+    /** 강의 상세의 색상과 강의 편집. 바뀐 필드만 넘긴다. 성공하면 onSuccess 를 부른다 */
+    updateLecture: (
+      id: TimetableId,
+      lectureId: TimetableLectureId,
+      change: Partial<CustomLectureInput>,
+      onSuccess?: () => void,
+    ) => updateLecture.mutate({ id, lectureId, change }, { onSuccess, onError }),
     removeLecture: (id: TimetableId, lectureId: TimetableLectureId, onSuccess?: () => void) =>
       removeLecture.mutate({ id, lectureId }, { onSuccess, onError }),
   };

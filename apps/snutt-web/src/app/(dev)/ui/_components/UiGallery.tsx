@@ -160,6 +160,10 @@ export function UiGallery() {
             교수
           </label>
           <TextField id="ui-instructor" placeholder="(없음)" />
+          <label htmlFor="ui-filled" className="text-alternative">
+            filled
+          </label>
+          <TextField id="ui-filled" variant="filled" defaultValue="미국학개론 (강의 편집)" />
         </div>
       </Section>
 
