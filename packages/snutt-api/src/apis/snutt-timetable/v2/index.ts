@@ -45,9 +45,18 @@ import {
   ThemeResponse,
   ThemeAddRequest,
   ThemeModifyRequest,
+  // 친구
+  FriendRequest,
+  FriendResponse,
+  UpdateFriendDisplayNameRequest,
+  FriendRequestLinkResponse,
+  YearAndSemesterResponse,
 } from './schemas';
 
 type AuthProvider = AuthProvidersResponse['authProviders'][number];
+
+/** 친구 목록의 상태. ACTIVE: 친구, REQUESTED: 받은 요청, REQUESTING: 보낸 요청 */
+type FriendState = 'ACTIVE' | 'REQUESTED' | 'REQUESTING';
 
 const toQueryString = (query?: Record<string, string | undefined>) => {
   const entries = Object.entries(query ?? {}).filter((entry): entry is [string, string] => entry[1] !== undefined);
@@ -535,6 +544,97 @@ export const getSnuttTimetableV2Apis = ({ callWithToken, callWithoutToken }: Get
       callWithToken<SuccessResponse<ThemeResponse[]>>({
         method: 'delete',
         path: `/v2/themes/${params.themeId}/default`,
+        token,
+      }),
+    // ── 친구 ─────────────────────────────────────────────────────────────────
+    'GET /v2/friends': ({ token, query }: { token: string; query: { state: FriendState } }) =>
+      callWithToken<SuccessResponse<FriendResponse[]>>({
+        method: 'get',
+        path: `/v2/friends${toQueryString(query)}`,
+        token,
+      }),
+    // 닉네임(`닉네임#0000` 의 이름과 태그)으로 친구 요청을 보낸다
+    'POST /v2/friends': ({ token, body }: { token: string; body: FriendRequest }) =>
+      callWithToken<SuccessResponse<FriendResponse>>({
+        method: 'post',
+        path: `/v2/friends`,
+        body,
+        token,
+      }),
+    // 친구 끊기. 보낸 요청을 취소할 때도 쓴다. 응답 본문은 없다
+    'DELETE /v2/friends/:friendId': ({ token, params }: { token: string; params: { friendId: string } }) =>
+      callWithToken<SuccessResponse<never>>({
+        method: 'delete',
+        path: `/v2/friends/${params.friendId}`,
+        token,
+      }),
+    'POST /v2/friends/:friendId/accept': ({ token, params }: { token: string; params: { friendId: string } }) =>
+      callWithToken<SuccessResponse<FriendResponse>>({
+        method: 'post',
+        path: `/v2/friends/${params.friendId}/accept`,
+        token,
+      }),
+    // 응답 본문은 없다
+    'POST /v2/friends/:friendId/decline': ({ token, params }: { token: string; params: { friendId: string } }) =>
+      callWithToken<SuccessResponse<never>>({
+        method: 'post',
+        path: `/v2/friends/${params.friendId}/decline`,
+        token,
+      }),
+    'PATCH /v2/friends/:friendId/display-name': ({
+      token,
+      body,
+      params,
+    }: {
+      token: string;
+      body: UpdateFriendDisplayNameRequest;
+      params: { friendId: string };
+    }) =>
+      callWithToken<SuccessResponse<FriendResponse>>({
+        method: 'patch',
+        path: `/v2/friends/${params.friendId}/display-name`,
+        body,
+        token,
+      }),
+    // 카카오 링크로 보낼 친구 요청 토큰
+    'GET /v2/friends/generate-link': ({ token }: { token: string }) =>
+      callWithToken<SuccessResponse<FriendRequestLinkResponse>>({
+        method: 'get',
+        path: `/v2/friends/generate-link`,
+        token,
+      }),
+    'POST /v2/friends/accept-link/:requestToken': ({
+      token,
+      params,
+    }: {
+      token: string;
+      params: { requestToken: string };
+    }) =>
+      callWithToken<SuccessResponse<FriendResponse>>({
+        method: 'post',
+        path: `/v2/friends/accept-link/${params.requestToken}`,
+        token,
+      }),
+    // 친구의 학기 기본 시간표
+    'GET /v2/friends/:friendId/primary-table': ({
+      token,
+      params,
+      query,
+    }: {
+      token: string;
+      params: { friendId: string };
+      query: { year: string; semester: string };
+    }) =>
+      callWithToken<SuccessResponse<TimetableResponse>>({
+        method: 'get',
+        path: `/v2/friends/${params.friendId}/primary-table${toQueryString(query)}`,
+        token,
+      }),
+    // 친구가 기본 시간표를 가진 학기 목록
+    'GET /v2/friends/:friendId/coursebooks': ({ token, params }: { token: string; params: { friendId: string } }) =>
+      callWithToken<SuccessResponse<YearAndSemesterResponse[]>>({
+        method: 'get',
+        path: `/v2/friends/${params.friendId}/coursebooks`,
         token,
       }),
   }) satisfies Record<string, Api>;
