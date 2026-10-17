@@ -145,6 +145,14 @@ dev 서버 OpenAPI 명세(`https://snutt-api-dev.wafflestudio.com/v3/api-docs`)�
 | 테마 (강의 색상 팔레트) | `GET, POST /v2/themes`, `GET, PATCH, DELETE /v2/themes/{themeId}` | |
 | 테마 복사/기본 지정 | `POST /v2/themes/{themeId}/copy`, `POST, DELETE /v2/themes/{themeId}/default` | |
 | 건물 정보 | `GET /v2/buildings` | 강의 상세의 "지도에서 보기" (6-3) |
+| 강의평 통계 | `GET /v2/courses/{courseId}/evaluation-summary` | 강의평 수, 평균 점수, 항목별 평균(성적 `avgGradeSatisfaction` · 강의력 `avgTeachingSkill` · 유익함 `avgGains` · 널널함 `avgLifeBalance`). 강의평은 강의가 아니라 강좌(`courseId`, 강의 응답에 있음) 단위다. **강의평 API 는 모두 이메일 인증을 한 사용자만** 쓸 수 있고, 아니면 403 `email-not-verified` (`이메일 인증이 완료된 후 강의평을 확인할 수 있습니다`). 토큰이 없으면 401 (dev 서버 확인, 2026-10-17) |
+| 강의평 목록 | `GET /v2/courses/{courseId}/evaluations` | `sort=RECOMMENDED \| LATEST`(기본 최신순), cursor 기반. 쪽 크기는 서버가 정한다(`limit` 없음). `year`, `semester` 로 학기를 거를 수 있다 |
+| 이 강좌의 내 강의평 | `GET /v2/courses/{courseId}/evaluations/me` | 배열 |
+| 강의평 작성 | `POST /v2/lectures/{lectureId}/evaluations` | 강좌가 아니라 수강한 학기의 강의에 쓴다. 본문은 내용, 평점, 항목별 점수 4개 (모두 필수) |
+| 강의평 수정/삭제 | `PATCH, DELETE /v2/evaluations/{evaluationId}` | ⋮ 메뉴. 고칠 수 있는지는 응답의 `isModifiable`. 수정은 바뀐 필드만 |
+| 강의평 좋아요 | `POST, DELETE /v2/evaluations/{evaluationId}/like` | 바뀐 강의평(좋아요 수 포함)을 돌려준다 |
+| 강의평 신고 | `POST /v2/evaluations/{evaluationId}/report` | ⋮ 메뉴. 본문 `{ content }` |
+| 이메일 인증 | `POST, DELETE /v2/users/me/email/verification`, `POST .../verification/code` | 강의평을 보려면 필요. `@sf/snutt-api` 미구현 (인증 화면을 만드는 단위에서 추가) |
 | 친구 목록/요청 | `GET, POST /v2/friends`, `DELETE /v2/friends/{friendId}` | 8-1 에서 아래 친구 엔드포인트를 모두 `@sf/snutt-api` 에 추가. 목록은 `state`(`ACTIVE` · `REQUESTED` · `REQUESTING`)가 필수이고 쪽을 나누지 않는다. 다른 값은 400 `invalid-parameter`. 이름을 붙이지 않은 친구는 `displayName` 이 빠진다 (dev 서버 확인) |
 | 친구 수락/거절 | `POST /v2/friends/{friendId}/accept`, `.../decline` | 수락은 친구를 돌려주고, 거절은 본문이 없다 (명세) |
 | 친구 닉네임 | `PATCH /v2/friends/{friendId}/display-name` | 엔드포인트만 추가 (8-2 에서 사용) |
@@ -304,7 +312,7 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | **1. 기반** | 1-1 | `domain/` 작성 (webclient entities 참고, v2 기준 정리) + 단위 테스트 | | ✅ #243 |
 | | 1-2a | `api/client.ts`(헤더, 토큰 저장, 에러 변환), mappers, queryOptions, QueryClient provider, MSW 테스트 환경. 확인용 아이디 로그인과 개발 페이지 `/api-check` | 테스트 페이지에서 `GET /v2/timetables` 성공 | ✅ #258 |
 | | 1-2b | 메인 화면의 `useTimetables` 를 query · mutation 으로 바꾸고, 처음 학기 · 시간표는 `GET /v2/timetables/recent`(마지막으로 고친 시간표)로 정한다 | 메인 화면이 실제 시간표를 보여 주고 고친다 | ✅ #259 |
-| | 1-3 | ev-api 클라이언트: 강의평 조회·통계·작성·좋아요 엔드포인트 (friends 는 core v2 에 있으면 `@sf/snutt-api` 에 추가) | 8-4, 8-5 에 필요한 엔드포인트 확인 |  |
+| | 1-3 | ev-api 클라이언트: 강의평 조회·통계·작성·좋아요 엔드포인트 (friends 는 core v2 에 있으면 `@sf/snutt-api` 에 추가) | 8-4, 8-5 에 필요한 엔드포인트 확인 | ✅ #272 |
 | **2. 디자인 시스템** | 2-1 | 색 토큰 (Figma Variables → `yarn generate:tokens` → Tailwind 테마), **라이트 / 다크 테마** 전환 기반, Pretendard. 토큰 확인 페이지 `/tokens` (개발 전용) | 테마 전환 시 전체 색이 토큰으로 바뀜 | ✅ #246 |
 | | 2-2 | 글자 스타일(Figma 텍스트 스타일), 아이콘(Material Symbols), Button, IconButton, TextField, SearchField, Chip, Tabs(밑줄 / 세그먼트). 개발 전용 `/ui` 페이지 | `/ui` 에서 라이트 / 다크 모두 확인 | ✅ #247 |
 | | 2-3 | Base UI 기반 오버레이: ConfirmDialog(확인 팝업), Dialog(큰 모달), Menu(··· 같은 동작 목록), Select, ColorSelect(`색상1~9`). Toast 는 Figma 에 디자인이 없어 필요할 때 만든다 | | ✅ #252 |
@@ -344,14 +352,16 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 
 | 항목 | 추천 / 현황 | 근거 |
 |---|---|---|
-| friends / ev API 위치 | friends: core v2 명세에 있으므로 `@sf/snutt-api` 에 추가 (별도 서버 필요 여부 확인). ev: `packages/`에 `implXxxApi` 패턴으로 생성 | snutt-ev-webview 가 이미 같은 서버를 씀 |
+| friends / ev API 위치 | friends: core v2 명세에 있으므로 `@sf/snutt-api` 에 추가 (별도 서버 필요 여부 확인). ev: ✅ 강의평도 core v2 명세(`/v2/courses/...`, `/v2/evaluations/...`)에 들어와 `@sf/snutt-api` v2 에 추가했다 (1-3). 별도 패키지를 만들지 않는다 | snutt-ev-webview 는 예전 ev 서버(`/ev-service/v1/...`, v1 헤더 `x-access-token`)를 쓴다. snutt-web 은 core v2 하나로 인증 헤더 · 토큰 갱신을 같이 쓴다 |
 | 시간표 공유 | 이미지는 클라이언트(`html-to-image`), **링크 공유는 백엔드 필요** | 링크는 서버 저장소 없이 불가. 이미지 먼저 출시 |
 | 강의평 점수 (검색 결과) | ✅ 해결: v2 검색 응답 `LectureResponse.evaluationSummary`에 포함 | 강의별 N+1 호출 불필요 |
 | 기본 시간표 지정 | ✅ 해결: `PUT /v2/timetables/{id}/primary` | |
 | 관심 목록 vs 관심강좌 | ✅ 해소: Figma 완료 영역에서 관심 목록 탭이 빠지고 `강의 목록` 탭이 들어옴 | 빈자리 알림은 현재 디자인에서 쓰지 않음 |
 | `강의 목록` 탭의 내용 | 디자인 확인 필요: 현재 시간표에 담긴 강의 목록으로 추정 | 완료 영역에 탭 이름만 있고 화면이 없음 |
 | 좌측 바의 `강의평` 아이콘 | 작업 중: 10-07 에 작업 중 영역에 웹 화면이 생겼다. `강의평 메인`(패널 제목 `강의평`, `전체보기 / 나의 강의평` 탭, 검색창, 필터 칩, 강의평 목록)과 `강의평 상세`(뒤로 `<`, 평점, 항목별 점수, 강의평 작성) | 완료 영역으로 옮겨지면 8-x 단위로 추가한다. 강의 상세의 강의평(8-4)과 화면을 함께 쓸 수 있다 |
-| 강의평 API | 1-3 에서 확인: 강의별 강의평 목록·통계·작성 엔드포인트 | 저장소의 snutt-ev-webview 는 내 강의평, 좋아요, 최근 강의만 쓴다. 강의 상세의 강의평 UI 는 그보다 넓다 |
+| 강의평 API | ✅ 1-3 에서 확인: 통계 · 목록(추천순 / 최신순) · 작성 · 수정 · 삭제 · 좋아요 · 신고 모두 core v2 에 있다 (위 API 표). snutt-web 은 `api/evaluations.ts` 로 부른다 | 강의 상세에서는 강의의 `courseId` 로 부른다(직접 추가한 강의는 `null` 이라 강의평이 없다) |
+| 강의평 태그 탭 통계 | 확인 필요: 8-4 의 태그 탭(성적 · 과제 · 수강신청 · 팀플) 통계를 주는 API 가 v2 명세에 없다. `GET /v2/evaluations/tags` 는 강의평 메인의 추천 목록 태그(`RECENT`, `RECOMMENDED` 등)라 다르다 | 백엔드에 문의. 없으면 8-4 에서 태그 탭을 뺀다 |
+| 강의평 이메일 인증 | 확인 필요: 강의평 API 는 이메일 인증을 한 사용자만 쓸 수 있다(403 `email-not-verified`). 8-4 에서 인증 안내 · 인증 화면이 필요하다. 확인용 dev 계정도 인증 전이라 실제 강의평 응답은 아직 못 봤다 (mapper 는 명세 기준) | 인증 엔드포인트는 API 표 참고 |
 | 학과 즐겨찾기 저장 위치 | 서버 API 가 없으면 localStorage | v2 명세에 학과 즐겨찾기 엔드포인트 없음 |
 | 강의실 지도 SDK | 6-3 전에 결정 (Naver / Kakao 지도 등) | 기존 앱이 쓰는 지도와 맞춘다 |
 | 로그인 라우트 | `/`에서 조건부 렌더링 대신 `/login` 분리 + redirect | localStorage 토큰이라 조건부 렌더링은 깜빡임 발생 |

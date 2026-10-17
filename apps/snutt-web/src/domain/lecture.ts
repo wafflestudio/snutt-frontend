@@ -6,6 +6,8 @@ import { compareDayTimeRange, DAY_LABELS, type DayTimeRange, formatDayTimeRange,
 export type LectureId = string;
 /** 시간표에 담긴 강의의 ID (같은 강의라도 시간표마다 다르다) */
 export type TimetableLectureId = string;
+/** 강좌 ID. 같은 과목 · 교수의 여러 학기 강의를 묶는다. 강의평은 강좌 단위로 모인다 */
+export type CourseId = string;
 
 export type ClassTime = DayTimeRange & { place: string | null };
 
@@ -13,6 +15,8 @@ export type LectureEvaluation = { rating: number | null; count: number };
 
 /** 강의 정보 중 공통 부분. 값이 없으면 null 이다. (서버 값과 같게 유지) */
 type LectureInfo = {
+  /** 강의평을 볼 때 쓴다. 직접 추가한 강의처럼 강좌가 없으면 null */
+  courseId: CourseId | null;
   title: string;
   instructor: string | null;
   remark: string | null;
@@ -61,6 +65,7 @@ export const toCustomTimetableLecture = (id: TimetableLectureId, input: CustomLe
   ...input,
   id,
   lectureId: null,
+  courseId: null,
   department: null,
   academicYear: null,
   category: null,

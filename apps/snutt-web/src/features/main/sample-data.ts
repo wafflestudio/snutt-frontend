@@ -49,6 +49,7 @@ const lecture = (
 ): TimetableLecture => ({
   id,
   lectureId: `lecture-${id}`,
+  courseId: null,
   title,
   instructor: null,
   remark: null,
@@ -146,6 +147,7 @@ const coursebookLecture = (
 ): Lecture => ({
   id,
   semester: FALL_2026,
+  courseId: null,
   title,
   instructor: null,
   remark: null,

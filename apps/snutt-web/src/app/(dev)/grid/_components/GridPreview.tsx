@@ -19,6 +19,7 @@ const time = (day: Day, start: string, end: string, place: string | null = '058-
 const lecture = (id: string, title: string, colorIndex: number, classTimes: ClassTime[]): TimetableLecture => ({
   id,
   lectureId: id,
+  courseId: null,
   title,
   instructor: null,
   remark: null,

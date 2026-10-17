@@ -12,6 +12,7 @@ import {
 const lecture = (id: string, classTimes: ClassTime[], overrides: Partial<TimetableLecture> = {}): TimetableLecture => ({
   id,
   lectureId: `lecture-${id}`,
+  courseId: null,
   title: `강의 ${id}`,
   instructor: null,
   credit: 3,

@@ -32,6 +32,7 @@ describe('timetable mapper', () => {
     expect(lecture).toEqual({
       id: '187337',
       lectureId: '74272',
+      courseId: '9756',
       title: '공학수학 1',
       instructor: '김명수',
       remark: null,
@@ -58,6 +59,7 @@ describe('timetable mapper', () => {
     expect(rated).toEqual({
       id: '183371',
       semester: { year: 2026, term: 1 },
+      courseId: '9123',
       title: '데이터사이언스를 위한 프로그래밍 실습',
       instructor: '김태섭',
       remark: null,
@@ -77,7 +79,12 @@ describe('timetable mapper', () => {
       lectureNumber: '001',
       evaluation: { rating: 3, count: 1 },
     });
-    expect(unrated).toMatchObject({ instructor: null, classTimes: [], evaluation: { rating: null, count: 0 } });
+    expect(unrated).toMatchObject({
+      courseId: null,
+      instructor: null,
+      classTimes: [],
+      evaluation: { rating: null, count: 0 },
+    });
   });
 
   it('직접 추가한 강의: lectureId 는 null, 직접 고른 색, 빈 장소는 null', () => {
@@ -85,6 +92,7 @@ describe('timetable mapper', () => {
     expect(custom).toMatchObject({
       id: '187400',
       lectureId: null,
+      courseId: null,
       credit: null,
       courseNumber: null,
       color: { type: 'custom', color: { bg: '#123456', fg: '#ffffff' } },

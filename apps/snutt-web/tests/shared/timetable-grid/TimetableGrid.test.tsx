@@ -13,6 +13,7 @@ const range: GridRange = { days: [0, 1, 2, 3, 4], startMinute: 540, endMinute: 7
 const lecture: TimetableLecture = {
   id: 'tl-1',
   lectureId: 'l-1',
+  courseId: null,
   title: '자료구조',
   instructor: null,
   remark: null,

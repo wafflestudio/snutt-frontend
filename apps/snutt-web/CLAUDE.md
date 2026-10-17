@@ -169,7 +169,8 @@ export const timetableQueries = {
 
 ## 백엔드
 
-- snutt-core (`@sf/snutt-api`), snutt-ev-api. 친구 API 도 core v2 에 있어 `@sf/snutt-api` 로 부른다(`api/friends.ts`. 별도 friends-api 필요 여부는 확인 중).
+- snutt-core (`@sf/snutt-api`) 하나만 쓴다. 강의평도 core v2 명세에 있어 같은 클라이언트로 부른다(snutt-ev-webview 가 쓰는 예전 ev 서버는 쓰지 않는다). 친구 API 도 core v2 에 있어 `@sf/snutt-api` 로 부른다(`api/friends.ts`. 별도 friends-api 필요 여부는 확인 중).
+- 강의평은 강좌(`courseId`) 단위로 모이고, 이메일 인증을 하지 않은 사용자는 403 `email-not-verified` 다(`isEmailNotVerified`, `api/errors.ts`).
 - snutt-core 는 **v2 엔드포인트만** 쓴다(`snutt-timetable/v2/`). v1(`snutt-timetable/v1/`)은 snutt-webclient 용이다.
 - v2 요청 헤더는 v1 과 다르다: `x-os-type` + `x-client-key`, 사용자 토큰은 `Authorization: Bearer`. (`docs/snutt-web-dev-plan.md` 참고)
 - 생성된 v2 타입의 `is` boolean 필드 이름(`primary` 등)은 백엔드 명세 버그로 실제 응답과 다를 수 있다. mapper 에서 실제 응답으로 확인하기 전까지 믿지 않는다.

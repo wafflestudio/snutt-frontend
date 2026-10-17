@@ -118,6 +118,53 @@ export const FRIEND_RESPONSES: SnuttV2.FriendResponse[] = [
   { id: 4, userId: 59465, displayName: '룸메', nickname: '시간표장인', nicknameTag: '0562', createdAt: 1692246423442 },
 ];
 
+/** 강좌의 강의평 통계 (CourseEvaluationDetailsResponse). 이메일 인증을 하지 않은 dev 계정으로는 받을 수 없어 명세대로 만들었다 */
+export const EVALUATION_SUMMARY_RESPONSE: SnuttV2.CourseEvaluationDetailsResponse = {
+  courseId: 9756,
+  evalCount: 2,
+  avgGradeSatisfaction: 3.5,
+  avgTeachingSkill: 4,
+  avgGains: 4.5,
+  avgLifeBalance: 2.5,
+  avgRating: 4.25,
+};
+
+/** 강의평. 두 번째는 예전 snuev 에서 옮겨 온 것이라 항목별 점수가 없다 */
+export const EVALUATION_RESPONSES: SnuttV2.EvaluationResponse[] = [
+  {
+    id: 501,
+    courseId: 9756,
+    courseTitle: '공학수학 1',
+    instructor: '김명수',
+    content: '과제가 많지만 배우는 것이 많아요',
+    gradeSatisfaction: 3,
+    teachingSkill: 4,
+    gains: 5,
+    lifeBalance: 2,
+    rating: 4.5,
+    likeCount: 3,
+    isLiked: false,
+    fromSnuev: false,
+    year: 2026,
+    semester: 1,
+    isModifiable: false,
+  },
+  {
+    id: 502,
+    courseId: 9756,
+    courseTitle: '공학수학 1',
+    instructor: '김명수',
+    content: '무난합니다',
+    rating: 4,
+    likeCount: 0,
+    isLiked: false,
+    fromSnuev: true,
+    year: 2019,
+    semester: 3,
+    isModifiable: true,
+  },
+];
+
 /** v2 에러 응답 (RFC 7807) */
 export const problem = (status: number, type: string, title: string, detail: string) => ({
   type: `/problems/${type}`,
