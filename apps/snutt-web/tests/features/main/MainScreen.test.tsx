@@ -77,16 +77,11 @@ describe('MainScreen', () => {
     expect(screen.getAllByText('월')).toHaveLength(1);
   });
 
-  it('패널을 접었다 펼치면 보던 탭으로 돌아온다', async () => {
+  it('패널을 접으면 시간표만 남는다 (펼치기는 좌측 바의 검색)', async () => {
     await renderMain();
-    await userEvent.click(screen.getByRole('tab', { name: '강의 목록' }));
-    expect(window.location.search).toBe('?tab=lectures');
-
     await userEvent.click(screen.getByRole('button', { name: '패널 접기' }));
+    expect(window.location.search).toBe('?panel=closed');
     expect(panel('강의 목록')).not.toBeInTheDocument();
-
-    await userEvent.click(screen.getByRole('button', { name: '패널 펼치기' }));
-    expect(screen.getByRole('tab', { name: '강의 목록', selected: true })).toBeInTheDocument();
   });
 
   it('직접 추가는 목록 자리를 대신하고, 취소하면 목록으로 돌아온다', async () => {
