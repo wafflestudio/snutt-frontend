@@ -74,6 +74,15 @@ export const subscribeAuthTokens = (listener: () => void) => {
 
 // ── 호출 ─────────────────────────────────────────────────────────────────────
 
+/** 응답 본문. 게이트웨이의 502 HTML 처럼 JSON 이 아니면 null 로 두고 상태 코드로 ApiError 를 만든다 */
+const parseBody = (text: string): unknown => {
+  try {
+    return text ? JSON.parse(text) : null;
+  } catch {
+    return null;
+  }
+};
+
 const api = implSnuttV2Api({
   osType: 'web',
   // NEXT_PUBLIC_ 값은 빌드 때 그대로 박힌다 (apps/snutt-web/.env.local)
@@ -86,7 +95,7 @@ const api = implSnuttV2Api({
         body: body && JSON.stringify(body),
       });
       const text = await response.text();
-      return { status: response.status, data: text ? JSON.parse(text) : null };
+      return { status: response.status, data: parseBody(text) };
     },
   },
 });
@@ -108,7 +117,8 @@ let refreshing: Promise<boolean> | null = null;
 
 /**
  * used 의 refresh token 으로 토큰을 갱신한다. 새 토큰을 쓸 수 있으면 true.
- * 갱신하지 못하면(로그아웃했거나 만료) 토큰을 지워서 로그인 화면으로 보낸다.
+ * 서버가 refresh token 을 거절하면(4xx: 로그아웃했거나 만료) 토큰을 지워서 로그인 화면으로 보낸다.
+ * 서버 오류(5xx)나 네트워크 오류는 토큰 탓이 아니므로 토큰을 남기고 그 오류를 던진다. 잠깐의 장애로 로그아웃되지 않게.
  * 다른 탭이 먼저 갱신했으면 저장소의 새 토큰을 쓴다.
  */
 const refreshTokens = (used: AuthTokens) => {
@@ -129,6 +139,7 @@ const refreshTokens = (used: AuthTokens) => {
       return true;
     }
     if (changedElsewhere()) return true;
+    if (status >= 500) throw toApiError(status, data);
     clearAuthTokens();
     return false;
   })().finally(() => {

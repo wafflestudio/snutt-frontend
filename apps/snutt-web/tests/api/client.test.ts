@@ -78,6 +78,13 @@ describe('callApi', () => {
     server.use(http.get(api('/v2/timetables'), () => new HttpResponse(null, { status: 502 })));
     await expect(callApi('GET /v2/timetables')).rejects.toMatchObject({ status: 502, title: '요청 실패 (502)' });
   });
+
+  it('에러 본문이 JSON 이 아니어도(게이트웨이의 HTML) 상태 코드로 ApiError 를 만든다', async () => {
+    server.use(
+      http.get(api('/v2/timetables'), () => new HttpResponse('<html>502 Bad Gateway</html>', { status: 502 })),
+    );
+    await expect(callApi('GET /v2/timetables')).rejects.toMatchObject({ status: 502, title: '요청 실패 (502)' });
+  });
 });
 
 describe('토큰 저장', () => {
@@ -137,6 +144,14 @@ describe('토큰 갱신', () => {
 
     await expect(callApi('GET /v2/timetables')).rejects.toMatchObject({ status: 401 });
     expect(getAuthTokens()).toBeNull();
+  });
+
+  it('갱신 요청이 서버 오류면 토큰을 남기고 그 오류를 던진다 (잠깐의 장애로 로그아웃되지 않게)', async () => {
+    setup(() => new HttpResponse('<html>502 Bad Gateway</html>', { status: 502 }));
+    setAuthTokens({ accessToken: 'old', refreshToken: 'refresh-1' });
+
+    await expect(callApi('GET /v2/timetables')).rejects.toMatchObject({ status: 502 });
+    expect(getAuthTokens()).toEqual({ accessToken: 'old', refreshToken: 'refresh-1' });
   });
 
   it('다른 탭이 먼저 갱신했으면 저장소의 새 토큰으로 다시 보낸다', async () => {
