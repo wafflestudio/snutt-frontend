@@ -85,6 +85,13 @@ export const IconDarkMode = (props: IconProps) => (
   />
 );
 
+export const IconDockToRight = (props: IconProps) => (
+  <Svg
+    d="M180-120q-24.75 0-42.37-17.63Q120-155.25 120-180v-600q0-24.75 17.63-42.38Q155.25-840 180-840h600q24.75 0 42.38 17.62Q840-804.75 840-780v600q0 24.75-17.62 42.37Q804.75-120 780-120H180Zm147-60v-600H180v600h147Zm60 0h393v-600H387v600Zm-60 0H180h147Z"
+    {...props}
+  />
+);
+
 export const IconDownload = (props: IconProps) => (
   <Svg
     d="M480-313 287-506l43-43 120 120v-371h60v371l120-120 43 43-193 193ZM220-160q-24 0-42-18t-18-42v-143h60v143h520v-143h60v143q0 24-18 42t-42 18H220Z"

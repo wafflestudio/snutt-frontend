@@ -14,7 +14,7 @@ import { PreviewLayer } from '@/shared/timetable-grid/PreviewLayer';
 import { TimetableGrid } from '@/shared/timetable-grid/TimetableGrid';
 import { Button } from '@/shared/ui/Button';
 import { NoticeDialog } from '@/shared/ui/Dialog';
-import { IconChevronLeft, IconChevronRight, IconCompare, IconEdit } from '@/shared/ui/icons';
+import { IconChevronRight, IconCompare, IconEdit } from '@/shared/ui/icons';
 import { DEFAULT_PANEL } from '@/features/main/main-view';
 import { usePreviewLecture } from '@/features/main/preview-store';
 import { useMainView } from '@/features/main/use-main-view';
@@ -41,6 +41,8 @@ export function MainScreen() {
   // 강의 상세는 지금은 고른 시간표의 강의만 연다 (검색 결과의 상세는 5-1). 없는 강의면 열지 않는다
   const listPanel = view.panel?.type === 'list' ? view.panel : null;
   const detailLecture = listPanel?.detail && selected?.lectures.find(({ id }) => id === listPanel.detail?.lectureId);
+  // 강의 상세가 열리면 그리드가 좁아져 헤더 버튼을 아이콘만 남긴다
+  const compactHeader = Boolean(listPanel?.detail && detailLecture);
   const openDetail = (lecture: TimetableLecture) =>
     setView({
       ...view,
@@ -82,8 +84,7 @@ export function MainScreen() {
     );
 
   return (
-    // group/main: 패널에 커서를 올리면 패널 접기 버튼을 보여 준다
-    <div className="group/main flex min-w-0 flex-1">
+    <div className="flex min-w-0 flex-1">
       <NoticeDialog
         open={timetables.failure !== null}
         onOpenChange={(open) => !open && timetables.dismissFailure()}
@@ -112,6 +113,7 @@ export function MainScreen() {
               semesters={timetables.semesters}
               semester={timetables.semester}
               onSemesterChange={timetables.selectSemester}
+              onCollapse={togglePanel}
               search={
                 <SearchPanel
                   // 학기를 바꾸면 검색어를 지운다
@@ -149,25 +151,21 @@ export function MainScreen() {
 
       <section className="relative flex min-w-0 flex-1">
         {/*
-          패널 접기 · 펼치기. 펼쳐 둘 때는 시각 숫자를 가리지 않도록 숨겨 두고, 패널이나 그리드 왼쪽 가장자리(시각 숫자 칸)에
-          커서를 올리거나 포커스가 가면 보인다. 접혀 있을 때는 늘 보인다. (디자인 문의 4-5)
+          패널 펼치기. 접는 버튼은 패널 위(학기 오른쪽)에 있고, 접혀 있을 때만 그리드 왼쪽 가장자리에 이 탭이 보인다.
+          Figma 에 접힌 상태의 펼치기 버튼이 없어 예전 탭 모양을 쓴다 (디자인 문의 4-5)
         */}
-        <div className="group/edge absolute top-14 bottom-0 left-0 z-10 w-8.75">
+        {!view.panel && (
           <button
             type="button"
             onClick={togglePanel}
-            aria-label={view.panel ? '패널 접기' : '패널 펼치기'}
-            aria-expanded={view.panel !== null}
+            aria-label="패널 펼치기"
+            aria-expanded={false}
             // Figma: 27 × 57, 오른쪽만 둥근 탭 모양
-            className={clsx(
-              'absolute top-1/2 left-0 flex h-14.25 w-6.75 -translate-y-1/2 items-center justify-center rounded-r-[10px] border border-l-0 border-line-light bg-normal text-alternative shadow-[0_0_5px_rgb(0_0_0/10%),0_0_2px_rgb(0_0_0/10%)] transition-opacity focus-visible:outline-2 focus-visible:outline-snutt-mint',
-              view.panel &&
-                'opacity-0 group-hover/edge:opacity-100 group-has-[aside:hover]/main:opacity-100 focus-visible:opacity-100',
-            )}
+            className="absolute top-1/2 left-0 z-10 flex h-14.25 w-6.75 -translate-y-1/2 items-center justify-center rounded-r-[10px] border border-l-0 border-line-light bg-normal text-alternative shadow-[0_0_5px_rgb(0_0_0/10%),0_0_2px_rgb(0_0_0/10%)] focus-visible:outline-2 focus-visible:outline-snutt-mint"
           >
-            {view.panel ? <IconChevronLeft className="size-5" /> : <IconChevronRight className="size-5" />}
+            <IconChevronRight className="size-5" />
           </button>
-        </div>
+        )}
 
         <TimetableColumn
           timetable={selected}
@@ -202,26 +200,33 @@ export function MainScreen() {
                     onRemove={() => timetables.remove(selectedSummary.id)}
                   />
                 )}
-                {/* 비교 중에는 Figma `top` 의 `메인 시간표` 변형처럼 탭 · + · ··· 만 둔다 */}
+                {/*
+                  비교 중에는 Figma `top` 의 `메인 시간표` 변형처럼 탭 · + · ··· 만 둔다.
+                  강의 상세가 열려 그리드가 좁을 때는 Figma `강의평` · `강의상세` 처럼 아이콘만 남긴다
+                */}
                 {!view.compare && (
                   <>
                     <Button
                       size="sm"
                       variant="outline"
+                      aria-label={compactHeader ? '직접 추가' : undefined}
+                      className={compactHeader ? 'w-6 px-0' : undefined}
                       onClick={() => setView({ ...view, panel: { type: 'custom-form' } })}
                     >
                       <IconEdit />
-                      직접 추가
+                      {!compactHeader && '직접 추가'}
                     </Button>
                     <Button
                       size="sm"
                       variant="outline"
+                      aria-label={compactHeader ? '시간표 비교' : undefined}
+                      className={compactHeader ? 'w-6 px-0' : undefined}
                       // 같은 학기에 다른 시간표가 있어야 비교할 수 있다
                       disabled={others.length === 0}
                       onClick={() => setView({ ...view, compare: { right: others[0].id } })}
                     >
                       <IconCompare />
-                      시간표 비교
+                      {!compactHeader && '시간표 비교'}
                     </Button>
                   </>
                 )}
