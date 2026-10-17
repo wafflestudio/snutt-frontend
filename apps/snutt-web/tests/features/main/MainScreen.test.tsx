@@ -310,6 +310,15 @@ describe('MainScreen', () => {
       expect(window.location.search).toBe('');
     });
 
+    it('강의 상세가 열리면 헤더의 직접 추가 · 시간표 비교는 아이콘만 남는다', async () => {
+      await renderMain();
+      expect(screen.getByRole('button', { name: '직접 추가' })).toHaveTextContent('직접 추가');
+
+      await userEvent.click(block('경영전략'));
+      expect(screen.getByRole('button', { name: '직접 추가' })).toHaveTextContent('');
+      expect(screen.getByRole('button', { name: '시간표 비교' })).toHaveTextContent('');
+    });
+
     it('URL 의 강의가 고른 시간표에 없으면 상세를 열지 않는다', async () => {
       window.history.replaceState(null, '', '/?lecture=none');
       await renderMain();

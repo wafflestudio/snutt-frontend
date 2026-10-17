@@ -60,7 +60,7 @@ type ClassTimeFieldsProps = {
   id: string;
   rows: readonly TimeRow[];
   onRowsChange: (rows: TimeRow[]) => void;
-  /** 이만큼은 남긴다. 직접 추가는 1 (시간이 없는 강의는 그리드에 보이지 않는다) */
+  /** 이만큼은 남긴다. Figma 는 줄이 하나여도 `−` 가 있어 직접 추가 · 강의 편집 모두 0 이다 */
   minRows: number;
   error?: string | null;
   /** 장소 입력칸 모양 */

@@ -125,7 +125,7 @@ export function CustomLectureForm({ timetable, palette, onSubmit, onBack, onClos
             <h3 id={`${id}-times`} className="text-16-semibold text-plain">
               시간 및 장소
             </h3>
-            <ClassTimeFields id={id} rows={rows} onRowsChange={setRows} minRows={1} error={errors.time} />
+            <ClassTimeFields id={id} rows={rows} onRowsChange={setRows} minRows={0} error={errors.time} />
           </section>
         </div>
 

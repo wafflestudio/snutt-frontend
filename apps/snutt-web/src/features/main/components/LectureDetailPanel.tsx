@@ -352,8 +352,7 @@ function LectureEditForm({ lecture, palette, onSave, onCancel }: LectureEditForm
           id={id}
           rows={rows}
           onRowsChange={setRows}
-          // 원래 시간이 없던 강의(원격 수업 등)는 줄을 모두 지울 수 있다
-          minRows={lecture.classTimes.length > 0 ? 1 : 0}
+          minRows={0}
           error={errors.time}
           // 시간 · 장소 라벨은 다른 줄(80)보다 좁다. 넓히면 시간 선택칸이 좁아 `오후 12:00` 이 잘린다
           variant="filled"

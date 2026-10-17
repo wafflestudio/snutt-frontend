@@ -25,8 +25,8 @@ export function PreviewLayer({ lecture }: PreviewLayerProps) {
         <div
           key={`${block.time.day}-${block.time.startMinute}`}
           data-preview-block
-          // 강의 블록과 같은 배치(여백 12, 강의명 · 장소 사이 1). 배경은 Background/deem(검정 20%)
-          className="absolute flex flex-col items-center justify-center gap-px overflow-hidden bg-deem px-3 text-center break-keep text-normal"
+          // 강의 블록과 같은 배치(여백 12, 강의명 · 장소 사이 1). 배경은 Background/deem(검정 20%), 글자는 흰색 (Figma `관심강좌` 의 미리보기)
+          className="absolute flex flex-col items-center justify-center gap-px overflow-hidden bg-deem px-3 text-center break-keep text-on-bg"
           style={getBlockStyle(block, range.days.length)}
         >
           <span className="text-12-regular">{block.item.title}</span>

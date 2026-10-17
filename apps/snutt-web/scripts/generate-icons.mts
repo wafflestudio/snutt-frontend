@@ -30,6 +30,7 @@ export const ICONS: Record<string, string> = {
   IconCompare: 'mobiledata_arrows',
   IconCopy: 'content_copy',
   IconDarkMode: 'dark_mode',
+  IconDockToRight: 'dock_to_right',
   IconDownload: 'download',
   IconEdit: 'edit',
   IconFilter: 'tune',

@@ -109,7 +109,8 @@ describe('CustomLectureForm', () => {
 
   it('시간 줄을 더하고 뺄 수 있고, 남은 줄의 번호가 다시 매겨진다', async () => {
     setup();
-    expect(screen.queryByRole('button', { name: '시간 1 삭제' })).not.toBeInTheDocument(); // 첫 줄은 지울 수 없다
+    // Figma: 줄이 하나여도 지울 수 있다
+    expect(screen.getByRole('button', { name: '시간 1 삭제' })).toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: '시간 추가' }));
     await userEvent.click(screen.getByRole('button', { name: '시간 추가' }));
     await choose(timeRow(3).getByRole('combobox', { name: '요일' }), '수');
