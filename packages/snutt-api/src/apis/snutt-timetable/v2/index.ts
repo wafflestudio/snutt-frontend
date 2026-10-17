@@ -29,6 +29,13 @@ import {
   // 강의 검색
   LectureSearchRequest,
   CursorPageLectureResponse,
+  // 강의평
+  CourseEvaluationDetailsResponse,
+  CursorPageEvaluationResponse,
+  EvaluationResponse,
+  EvaluationWriteRequestBody,
+  EvaluationUpdateRequestBody,
+  EvaluationReportRequestBody,
   // 즐겨찾기
   BookmarkResponse,
   // 빈자리 알림
@@ -352,6 +359,116 @@ export const getSnuttTimetableV2Apis = ({ callWithToken, callWithoutToken }: Get
         method: 'post',
         path: '/v2/lectures/search',
         body,
+      }),
+
+    // ── 강의평 ───────────────────────────────────────────────────────────────
+    // 강의평은 강좌(courseId, 같은 과목 · 교수의 여러 학기 강의를 묶은 것) 단위로 모인다. 쓸 때만 강의(lectureId)를 고른다
+    'GET /v2/courses/:courseId/evaluation-summary': ({
+      token,
+      params,
+    }: {
+      token: string;
+      params: { courseId: string };
+    }) =>
+      callWithToken<SuccessResponse<CourseEvaluationDetailsResponse>>({
+        method: 'get',
+        path: `/v2/courses/${params.courseId}/evaluation-summary`,
+        token,
+      }),
+    'GET /v2/courses/:courseId/evaluations': ({
+      token,
+      params,
+      query,
+    }: {
+      token: string;
+      params: { courseId: string };
+      query?: { cursor?: string; sort?: 'LATEST' | 'RECOMMENDED'; year?: string; semester?: string };
+    }) =>
+      callWithToken<SuccessResponse<CursorPageEvaluationResponse>>({
+        method: 'get',
+        path: `/v2/courses/${params.courseId}/evaluations${toQueryString(query)}`,
+        token,
+      }),
+    'GET /v2/courses/:courseId/evaluations/me': ({ token, params }: { token: string; params: { courseId: string } }) =>
+      callWithToken<SuccessResponse<EvaluationResponse[]>>({
+        method: 'get',
+        path: `/v2/courses/${params.courseId}/evaluations/me`,
+        token,
+      }),
+    'POST /v2/lectures/:lectureId/evaluations': ({
+      token,
+      params,
+      body,
+    }: {
+      token: string;
+      params: { lectureId: string };
+      body: EvaluationWriteRequestBody;
+    }) =>
+      callWithToken<SuccessResponse<EvaluationResponse>>({
+        method: 'post',
+        path: `/v2/lectures/${params.lectureId}/evaluations`,
+        body,
+        token,
+      }),
+    'PATCH /v2/evaluations/:evaluationId': ({
+      token,
+      params,
+      body,
+    }: {
+      token: string;
+      params: { evaluationId: string };
+      body: EvaluationUpdateRequestBody;
+    }) =>
+      callWithToken<SuccessResponse<EvaluationResponse>>({
+        method: 'patch',
+        path: `/v2/evaluations/${params.evaluationId}`,
+        body,
+        token,
+      }),
+    'DELETE /v2/evaluations/:evaluationId': ({ token, params }: { token: string; params: { evaluationId: string } }) =>
+      callWithToken<SuccessResponse<never>>({
+        method: 'delete',
+        path: `/v2/evaluations/${params.evaluationId}`,
+        token,
+      }),
+    'POST /v2/evaluations/:evaluationId/like': ({
+      token,
+      params,
+    }: {
+      token: string;
+      params: { evaluationId: string };
+    }) =>
+      callWithToken<SuccessResponse<EvaluationResponse>>({
+        method: 'post',
+        path: `/v2/evaluations/${params.evaluationId}/like`,
+        token,
+      }),
+    'DELETE /v2/evaluations/:evaluationId/like': ({
+      token,
+      params,
+    }: {
+      token: string;
+      params: { evaluationId: string };
+    }) =>
+      callWithToken<SuccessResponse<EvaluationResponse>>({
+        method: 'delete',
+        path: `/v2/evaluations/${params.evaluationId}/like`,
+        token,
+      }),
+    'POST /v2/evaluations/:evaluationId/report': ({
+      token,
+      params,
+      body,
+    }: {
+      token: string;
+      params: { evaluationId: string };
+      body: EvaluationReportRequestBody;
+    }) =>
+      callWithToken<SuccessResponse<never>>({
+        method: 'post',
+        path: `/v2/evaluations/${params.evaluationId}/report`,
+        body,
+        token,
       }),
 
     // ── 즐겨찾기 ─────────────────────────────────────────────────────────────
