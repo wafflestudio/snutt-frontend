@@ -9,6 +9,7 @@ import {
   formatQuota,
   getSyllabusUrl,
   isCustomLecture,
+  type Lecture,
   type TimetableLecture,
 } from '@/domain/lecture';
 import type { Semester } from '@/domain/semester';
@@ -20,20 +21,22 @@ import { IconArrowOutward } from '@/shared/ui/icons';
 import { Tab, TabList, Tabs } from '@/shared/ui/Tabs';
 import { TextArea, TextField } from '@/shared/ui/TextField';
 import { openInPopup } from '@/shared/lib/open-in-popup';
-import type { LectureDetail } from '@/features/main/main-view';
+import type { LectureDetail, LectureDetailView } from '@/features/main/main-view';
 import { ClassTimeFields, getClassTimeError, type TimeRow, toClassTimes, toTimeRows } from './ClassTimeFields';
 import { PanelColumn, PanelNav } from './PanelColumn';
 
 type SaveOptions = { force: boolean; onSuccess: () => void; onOverlap: (message: string) => void };
 
+type TimetableDetail = Extract<LectureDetail, { source: 'timetable' }>;
+
 type LectureDetailPanelProps = {
-  detail: LectureDetail;
+  detail: TimetableDetail;
   lecture: TimetableLecture;
   /** 강의계획서 주소에 쓴다 */
   semester: Semester;
   palette: readonly ColorPair[];
-  /** 강의 상세 / 강의평 전환. null 이면 상세를 닫는다 (`<`) */
-  onChange: (detail: LectureDetail | null) => void;
+  /** 강의 상세 / 강의평 전환, 편집. null 이면 상세를 닫는다 (`<`) */
+  onChange: (detail: TimetableDetail | null) => void;
   /** `×`: 패널을 접는다 */
   onClose: () => void;
   onColorChange: (color: LectureColor) => void;
@@ -63,27 +66,15 @@ export function LectureDetailPanel({
 }: LectureDetailPanelProps) {
   const setEditing = (editing: boolean) => onChange({ ...detail, editing });
   return (
-    <PanelColumn label="강의 상세" className="overflow-y-auto">
-      <PanelNav backLabel="목록으로" onBack={() => onChange(null)} onClose={onClose} />
-
-      {/* Figma: 제목과 전환 버튼은 위에서 70, 제목은 왼쪽 29 · 전환 버튼은 오른쪽 28 */}
-      <div className="mt-5.5 flex items-start justify-between gap-3 pr-7 pl-7.25">
-        <h2 className="min-w-0 py-px text-20-bold break-keep text-normal">{lecture.title}</h2>
-        <Tabs
-          value={detail.view}
-          onValueChange={(view) => onChange({ ...detail, view, editing: false })}
-          variant="segmented"
-          className="shrink-0"
-        >
-          <TabList aria-label="강의 상세 보기">
-            <Tab value="info">강의 상세</Tab>
-            <Tab value="review">강의평</Tab>
-          </TabList>
-        </Tabs>
-      </div>
-
+    <DetailColumn
+      title={lecture.title}
+      view={detail.view}
+      onViewChange={(view) => onChange({ ...detail, view, editing: false })}
+      onBack={() => onChange(null)}
+      onClose={onClose}
+    >
       {detail.view === 'review' ? (
-        <p className="px-6.5 pt-6.75 text-14-regular text-assistive">강의평 (8-4)</p>
+        <ReviewPlaceholder />
       ) : detail.editing ? (
         <LectureEditForm
           lecture={lecture}
@@ -103,8 +94,122 @@ export function LectureDetailPanel({
           onRemove={onRemove}
         />
       )}
+    </DetailColumn>
+  );
+}
+
+type CoursebookDetailPanelProps = {
+  view: LectureDetailView;
+  lecture: Lecture;
+  /** 담을 시간표가 없으면 담기를 누를 수 없다 */
+  canAdd: boolean;
+  /** 강의 상세 / 강의평 전환 */
+  onViewChange: (view: LectureDetailView) => void;
+  /** `<`: 상세를 닫는다 */
+  onBack: () => void;
+  /** `×`: 패널을 접는다 */
+  onClose: () => void;
+  /** 시간이 겹치면 onOverlap 에 서버 문구를 준다. 확인받으면 force 로 다시 부른다 (검색의 담기와 같다) */
+  onAdd: (options: { force?: boolean; onOverlap: (message: string) => void }) => void;
+};
+
+/**
+ * 시간표에 없는 수강편람 강의의 상세 (검색 결과 · 관심강좌의 셀을 눌렀을 때).
+ * 시간표 강의의 상세와 같은 자리 · 배치에서 색상 · 편집 · 삭제 대신 `담기` 를 둔다. 담으면 시간표 강의의 상세로 바뀐다.
+ * Figma 에 이 화면이 없어 시간표 강의의 상세를 따랐다 (디자인 문의 4-11)
+ */
+export function CoursebookDetailPanel({
+  view,
+  lecture,
+  canAdd,
+  onViewChange,
+  onBack,
+  onClose,
+  onAdd,
+}: CoursebookDetailPanelProps) {
+  // 시간이 겹쳐서 덮어쓸지 묻는 중이면 서버 문구
+  const [overlap, setOverlap] = useState<string | null>(null);
+  const add = (force = false) => onAdd({ force, onOverlap: setOverlap });
+  const syllabusUrl = getSyllabusUrl(lecture, lecture.semester);
+
+  return (
+    <DetailColumn title={lecture.title} view={view} onViewChange={onViewChange} onBack={onBack} onClose={onClose}>
+      {view === 'review' ? (
+        <ReviewPlaceholder />
+      ) : (
+        <div className="mt-6.75 flex flex-col gap-5 pr-8 pb-3.75 pl-6.5">
+          <dl className="flex flex-col gap-3.75">
+            <InfoRow label="강의명">{lecture.title}</InfoRow>
+            <InfoRow label="교수">{lecture.instructor}</InfoRow>
+          </dl>
+
+          <Divider />
+          <CourseInfo lecture={lecture} />
+
+          <Divider />
+          <RemarkSection remark={lecture.remark} />
+
+          <Divider />
+          <ClassTimeSection classTimes={lecture.classTimes} />
+
+          <Divider />
+          <div className="flex flex-col items-start gap-5">
+            {syllabusUrl && <SyllabusLink href={syllabusUrl} />}
+            <button
+              type="button"
+              disabled={!canAdd}
+              onClick={() => add()}
+              className={clsx(ACTION_CLASSES, 'disabled:cursor-not-allowed disabled:opacity-40')}
+            >
+              시간표에 담기
+            </button>
+          </div>
+
+          <ConfirmDialog
+            open={overlap !== null}
+            onOpenChange={(open) => !open && setOverlap(null)}
+            message={overlap ?? undefined}
+            onConfirm={() => add(true)}
+          />
+        </div>
+      )}
+    </DetailColumn>
+  );
+}
+
+type DetailColumnProps = {
+  title: string;
+  view: LectureDetailView;
+  onViewChange: (view: LectureDetailView) => void;
+  onBack: () => void;
+  onClose: () => void;
+  children: ReactNode;
+};
+
+/** 강의 상세의 틀: `<` · `×`, 강의명, `강의 상세` / `강의평` 전환 */
+function DetailColumn({ title, view, onViewChange, onBack, onClose, children }: DetailColumnProps) {
+  return (
+    <PanelColumn label="강의 상세" className="overflow-y-auto">
+      <PanelNav backLabel="목록으로" onBack={onBack} onClose={onClose} />
+
+      {/* Figma: 제목과 전환 버튼은 위에서 70, 제목은 왼쪽 29 · 전환 버튼은 오른쪽 28 */}
+      <div className="mt-5.5 flex items-start justify-between gap-3 pr-7 pl-7.25">
+        <h2 className="min-w-0 py-px text-20-bold break-keep text-normal">{title}</h2>
+        <Tabs value={view} onValueChange={onViewChange} variant="segmented" className="shrink-0">
+          <TabList aria-label="강의 상세 보기">
+            <Tab value="info">강의 상세</Tab>
+            <Tab value="review">강의평</Tab>
+          </TabList>
+        </Tabs>
+      </div>
+
+      {children}
     </PanelColumn>
   );
+}
+
+function ReviewPlaceholder() {
+  return <p className="px-6.5 pt-6.75 text-14-regular text-assistive">강의평 (8-4)</p>;
 }
 
 type LectureInfoProps = Pick<
@@ -144,40 +249,15 @@ function LectureInfo({ lecture, semester, palette, onColorChange, onEdit, onRemo
       )}
 
       <Divider />
-      <InfoSection title="비고">
-        <p className="text-14-regular whitespace-pre-line text-plain">{lecture.remark ?? <Empty />}</p>
-      </InfoSection>
+      <RemarkSection remark={lecture.remark} />
 
       <Divider />
-      <InfoSection title="시간 및 장소">
-        {lecture.classTimes.length > 0 ? (
-          // Figma: 수업 시간 사이 20, 시간 · 장소 줄 사이 6
-          <ul className="flex flex-col gap-5">
-            {[...lecture.classTimes].sort(compareDayTimeRange).map((time) => (
-              <li key={`${time.day}-${time.startMinute}`}>
-                <dl className="flex flex-col gap-1.5">
-                  <InfoRow label="시간">
-                    {`${DAY_LABELS[time.day]} ${formatMinute(time.startMinute)} ~ ${formatMinute(time.endMinute)}`}
-                  </InfoRow>
-                  <InfoRow label="장소">{time.place}</InfoRow>
-                </dl>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <Empty />
-        )}
-      </InfoSection>
+      <ClassTimeSection classTimes={lecture.classTimes} />
 
       <Divider />
       {/* Figma: 한 줄 30, 줄 사이 20 */}
       <div className="flex flex-col items-start gap-5">
-        {syllabusUrl && (
-          <a href={syllabusUrl} target="_blank" rel="noreferrer" onClick={openInPopup} className={ACTION_CLASSES}>
-            강의계획서
-            <IconArrowOutward className="size-5" />
-          </a>
-        )}
+        {syllabusUrl && <SyllabusLink href={syllabusUrl} />}
         <button type="button" onClick={onEdit} className={ACTION_CLASSES}>
           강의편집
         </button>
@@ -197,8 +277,49 @@ function LectureInfo({ lecture, semester, palette, onColorChange, onEdit, onRemo
   );
 }
 
+function RemarkSection({ remark }: { remark: string | null }) {
+  return (
+    <InfoSection title="비고">
+      <p className="text-14-regular whitespace-pre-line text-plain">{remark ?? <Empty />}</p>
+    </InfoSection>
+  );
+}
+
+function ClassTimeSection({ classTimes }: { classTimes: readonly ClassTime[] }) {
+  return (
+    <InfoSection title="시간 및 장소">
+      {classTimes.length > 0 ? (
+        // Figma: 수업 시간 사이 20, 시간 · 장소 줄 사이 6
+        <ul className="flex flex-col gap-5">
+          {[...classTimes].sort(compareDayTimeRange).map((time) => (
+            <li key={`${time.day}-${time.startMinute}`}>
+              <dl className="flex flex-col gap-1.5">
+                <InfoRow label="시간">
+                  {`${DAY_LABELS[time.day]} ${formatMinute(time.startMinute)} ~ ${formatMinute(time.endMinute)}`}
+                </InfoRow>
+                <InfoRow label="장소">{time.place}</InfoRow>
+              </dl>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <Empty />
+      )}
+    </InfoSection>
+  );
+}
+
+function SyllabusLink({ href }: { href: string }) {
+  return (
+    <a href={href} target="_blank" rel="noreferrer" onClick={openInPopup} className={ACTION_CLASSES}>
+      강의계획서
+      <IconArrowOutward className="size-5" />
+    </a>
+  );
+}
+
 /** 수강편람의 수강 정보. 편집 중에도 고칠 수 없다 */
-function CourseInfo({ lecture }: { lecture: TimetableLecture }) {
+function CourseInfo({ lecture }: { lecture: Lecture | TimetableLecture }) {
   return (
     <InfoSection title="수강 정보">
       <dl className="flex flex-col gap-3.75">

@@ -252,13 +252,18 @@ type PanelView =
   | {
       type: 'list';
       tab: 'search' | 'lectures' | 'bookmark'; // 검색 · 강의 목록 · 관심강좌
-      detail: { lectureId: string; view: 'info' | 'review'; editing: boolean } | null; // 목록 옆 상세 패널
+      // 목록 옆 상세 패널. timetable: 시간표에 담긴 강의(lecture=), coursebook: 담지 않은 수강편람 강의(course=)
+      detail:
+        | { source: 'timetable'; lectureId: string; view: 'info' | 'review'; editing: boolean }
+        | { source: 'coursebook'; lectureId: string; view: 'info' | 'review' }
+        | null;
     }
   | { type: 'custom-form' }; // 직접 추가. 검색 패널 자리를 대체
 ```
 
 - URL search params 와 동기화 → 뒤로가기/새로고침 자연스럽게 동작 (`features/main/main-view.ts`. 기본값은 URL 에 쓰지 않아 처음 화면은 `/`)
 - 패널을 접으면 `panel=closed` 만 남는다. 좌측 바의 `검색` 으로 펼치면 처음 화면(검색 탭)으로 돌아온다
+- 검색 결과의 셀을 누르면 강의 상세를 연다. 담긴 강의는 시간표 강의의 상세, 아니면 수강편람 강의의 상세(색상 · 편집 · 삭제 대신 `시간표에 담기`)이고, 담으면 시간표 강의의 상세로 바뀐다. 수강편람 강의는 단건 조회 API 가 없어 누를 때 받아 둔 것을 쓰므로, 새로 고침하면 상세가 닫힌다
 - hover 미리보기처럼 패널↔그리드 간 휘발성 공유 상태만 작은 store(`useSyncExternalStore`)로. Zustand 는 Yarn 1 hoisting 문제로 넣지 않았다 (5-2)
 
 **3. 상태 관리**

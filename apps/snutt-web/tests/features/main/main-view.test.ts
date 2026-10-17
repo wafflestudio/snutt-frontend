@@ -24,9 +24,16 @@ describe('parseMainView', () => {
     expect(parse('tab=bookmark&lecture=l1&view=review').panel).toEqual({
       type: 'list',
       tab: 'bookmark',
-      detail: { lectureId: 'l1', view: 'review', editing: false },
+      detail: { source: 'timetable', lectureId: 'l1', view: 'review', editing: false },
     });
     expect(parse('lecture=l1&edit=1').panel).toMatchObject({ detail: { view: 'info', editing: true } });
+  });
+
+  it('course 는 시간표에 없는 수강편람 강의의 상세다. lecture 가 함께 있으면 lecture 를 연다', () => {
+    expect(parse('course=c1&view=review').panel).toMatchObject({
+      detail: { source: 'coursebook', lectureId: 'c1', view: 'review' },
+    });
+    expect(parse('course=c1&lecture=l1').panel).toMatchObject({ detail: { source: 'timetable', lectureId: 'l1' } });
   });
 
   it('잘못된 값은 기본값으로 읽는다', () => {
@@ -54,14 +61,29 @@ describe('toSearchParams', () => {
     [
       '관심강좌 + 강의평',
       {
-        panel: { type: 'list', tab: 'bookmark', detail: { lectureId: 'l1', view: 'review', editing: false } },
+        panel: {
+          type: 'list',
+          tab: 'bookmark',
+          detail: { source: 'timetable', lectureId: 'l1', view: 'review', editing: false },
+        },
+        compare: null,
+      },
+    ],
+    [
+      '수강편람 강의 상세',
+      {
+        panel: { type: 'list', tab: 'search', detail: { source: 'coursebook', lectureId: 'c1', view: 'info' } },
         compare: null,
       },
     ],
     [
       '강의 상세 편집',
       {
-        panel: { type: 'list', tab: 'lectures', detail: { lectureId: 'l1', view: 'info', editing: true } },
+        panel: {
+          type: 'list',
+          tab: 'lectures',
+          detail: { source: 'timetable', lectureId: 'l1', view: 'info', editing: true },
+        },
         compare: { right: 't3' },
       },
     ],
