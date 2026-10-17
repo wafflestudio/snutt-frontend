@@ -21,11 +21,13 @@ type MainPanelProps = {
   onCollapse: () => void;
   /** 검색 탭의 내용 (SearchPanel) */
   search: ReactNode;
+  /** 관심강좌 탭의 내용 (BookmarkPanel) */
+  bookmark: ReactNode;
 };
 
 /*
  * 아직 채우지 않은 탭은 화면 전환만 확인할 수 있는 자리다.
- *   강의 목록 7-2, 관심강좌 7-1
+ *   강의 목록 7-2
  */
 
 /** 목록 패널(검색 · 강의 목록 · 관심강좌). 옆의 강의 상세는 LectureDetailPanel, 직접 추가 폼은 CustomLectureForm 이 목록 자리를 대신한다. */
@@ -37,6 +39,7 @@ export function MainPanel({
   onSemesterChange,
   onCollapse,
   search,
+  bookmark,
 }: MainPanelProps) {
   const { tab } = panel;
   return (
@@ -63,8 +66,8 @@ export function MainPanel({
         <TabPanel value="lectures" className="text-14-regular text-assistive">
           강의 목록 (7-2)
         </TabPanel>
-        <TabPanel value="bookmark" className="text-14-regular text-assistive">
-          관심강좌 (7-1)
+        <TabPanel value="bookmark" className="flex min-h-0 flex-1 flex-col">
+          {bookmark}
         </TabPanel>
       </Tabs>
     </PanelColumn>

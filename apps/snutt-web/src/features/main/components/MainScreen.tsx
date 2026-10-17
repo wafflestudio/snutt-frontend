@@ -20,6 +20,7 @@ import { usePreviewLecture } from '@/features/main/preview-store';
 import { useMainView } from '@/features/main/use-main-view';
 import { useTimetableDetail, useTimetables } from '@/features/main/use-timetables';
 import { CustomLectureForm } from './CustomLectureForm';
+import { BookmarkPanel } from './BookmarkPanel';
 import { CoursebookDetailPanel, LectureDetailPanel } from './LectureDetailPanel';
 import { MainPanel } from './MainPanel';
 import { SearchPanel } from './SearchPanel';
@@ -105,6 +106,17 @@ export function MainScreen() {
       </MainMessage>
     );
 
+  // 검색 결과 · 관심강좌의 셀이 하는 일 (담기 · 빼기 · 상세 열기)
+  const lectureCells = {
+    semester: timetables.semester,
+    timetable: selected,
+    onAdd: (lecture: Lecture, options: { force?: boolean; onOverlap: (message: string) => void }) =>
+      selected && timetables.addLecture(selected.id, lecture.id, options),
+    onRemove: (lecture: TimetableLecture) => selected && timetables.removeLecture(selected.id, lecture.id),
+    onOpen: openCourse,
+    onFailure: timetables.notifyFailure,
+  };
+
   return (
     <div className="flex min-w-0 flex-1">
       <NoticeDialog
@@ -141,14 +153,11 @@ export function MainScreen() {
                 <SearchPanel
                   // 학기를 바꾸면 검색어를 지운다
                   key={toSemesterKey(timetables.semester)}
-                  semester={timetables.semester}
-                  timetable={selected}
-                  onAdd={(lecture, options) => selected && timetables.addLecture(selected.id, lecture.id, options)}
-                  onRemove={(lecture) => selected && timetables.removeLecture(selected.id, lecture.id)}
-                  onOpen={openCourse}
-                  onFailure={timetables.notifyFailure}
+                  {...lectureCells}
+                  onGoToBookmarks={() => setView({ ...view, panel: { type: 'list', tab: 'bookmark', detail: null } })}
                 />
               }
+              bookmark={<BookmarkPanel {...lectureCells} />}
             />
             {selected && detail && detailLecture && (
               <LectureDetailPanel

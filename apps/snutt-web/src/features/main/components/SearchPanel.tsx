@@ -1,56 +1,40 @@
 'use client';
 
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
-import { bookmarkQueries, useAddBookmark, useRemoveBookmark } from '@/api/bookmarks';
 import { getFailureMessage } from '@/api/errors';
 import { lectureQueries } from '@/api/lectures';
-import type { Lecture, TimetableLecture } from '@/domain/lecture';
-import type { Semester } from '@/domain/semester';
-import type { Timetable } from '@/domain/timetable';
 import { useDebouncedValue } from '@/shared/lib/use-debounced-value';
 import { ConfirmDialog } from '@/shared/ui/Dialog';
 import { SearchField } from '@/shared/ui/SearchField';
 import { preview } from '@/features/main/preview-store';
+import { type LectureCellsOptions, useLectureCells } from '@/features/main/use-lecture-cells';
 import { LectureCell } from './LectureCell';
 
 /** 검색어를 다 친 뒤 이만큼 기다렸다가 검색한다 (ms) */
 const SEARCH_DELAY = 300;
 
-type SearchPanelProps = {
-  semester: Semester;
-  /** 담을 시간표. 학기에 시간표가 없으면 null 이고 담을 수 없다 */
-  timetable: Timetable | null;
-  /** 시간이 겹치면 onOverlap 에 서버 메시지를 준다. 확인받으면 force 로 다시 부른다 */
-  onAdd: (lecture: Lecture, options: { force?: boolean; onOverlap: (message: string) => void }) => void;
-  onRemove: (lecture: TimetableLecture) => void;
-  /** 셀을 누르면 강의 상세를 연다 */
-  onOpen: (lecture: Lecture) => void;
-  onFailure: (error: Error) => void;
+type SearchPanelProps = Omit<LectureCellsOptions, 'onBookmarkAdded'> & {
+  /** 관심강좌에 넣은 뒤 `관심강좌 탭으로 이동하시겠습니까?` 에 확인하면 부른다 */
+  onGoToBookmarks: () => void;
 };
 
 /**
  * 검색 탭 (Figma `검색 목록 영역`): 검색창과 결과 목록. 목록만 스크롤한다.
  * 필터 버튼 · 적용한 필터 칩은 5-3, 결과에 커서를 올렸을 때 그리드 미리보기는 5-2.
  */
-export function SearchPanel({ semester, timetable, onAdd, onRemove, onOpen, onFailure }: SearchPanelProps) {
+export function SearchPanel({ onGoToBookmarks, ...options }: SearchPanelProps) {
   const [input, setInput] = useState('');
   const query = useDebouncedValue(input.trim(), SEARCH_DELAY);
-  const search = useInfiniteQuery(lectureQueries.search({ semester, query }));
+  const search = useInfiniteQuery(lectureQueries.search({ semester: options.semester, query }));
   const lectures = search.data?.pages.flatMap((page) => page.lectures) ?? [];
 
-  const bookmarks = useQuery(bookmarkQueries.list(semester));
-  const addBookmark = useAddBookmark();
-  const removeBookmark = useRemoveBookmark();
-  const isBookmarked = (lecture: Lecture) => bookmarks.data?.some(({ id }) => id === lecture.id) ?? false;
+  // 관심강좌에 넣으면 관심강좌 탭으로 갈지 묻는다 (Figma `팝업 예시`)
+  const [askingMove, setAskingMove] = useState(false);
+  const { cellProps, overlapDialog } = useLectureCells({ ...options, onBookmarkAdded: () => setAskingMove(true) });
 
   // 커서를 올린 강의는 시간표에 미리 보여 준다. 검색 탭이 사라지면(학기 변경) 지운다
   useEffect(() => preview.clear, []);
-
-  // 시간이 겹쳐서 덮어쓸지 묻는 중인 강의
-  const [overlap, setOverlap] = useState<{ lecture: Lecture; message: string } | null>(null);
-  const add = (lecture: Lecture, force = false) =>
-    onAdd(lecture, { force, onOverlap: (message) => setOverlap({ lecture, message }) });
 
   return (
     // Figma: 검색창과 목록 사이 16
@@ -82,34 +66,20 @@ export function SearchPanel({ semester, timetable, onAdd, onRemove, onOpen, onFa
         ) : lectures.length === 0 ? (
           <Message>검색 결과가 없습니다</Message>
         ) : (
-          lectures.map((lecture) => {
-            const added = timetable?.lectures.find(({ lectureId }) => lectureId === lecture.id) ?? null;
-            const bookmarked = isBookmarked(lecture);
-            return (
-              <li key={lecture.id}>
-                <LectureCell
-                  lecture={lecture}
-                  added={added !== null}
-                  canAdd={timetable !== null}
-                  bookmarked={bookmarked}
-                  onAddToggle={() => (added ? onRemove(added) : add(lecture))}
-                  onOpen={() => onOpen(lecture)}
-                  onPreviewChange={(previewing) => (previewing ? preview.show(lecture) : preview.hide(lecture))}
-                  onBookmarkToggle={() =>
-                    (bookmarked ? removeBookmark : addBookmark).mutate(lecture, { onError: onFailure })
-                  }
-                />
-              </li>
-            );
-          })
+          lectures.map((lecture) => (
+            <li key={lecture.id}>
+              <LectureCell {...cellProps(lecture)} />
+            </li>
+          ))
         )}
       </ResultList>
 
+      <ConfirmDialog {...overlapDialog} />
       <ConfirmDialog
-        open={overlap !== null}
-        onOpenChange={(open) => !open && setOverlap(null)}
-        message={overlap?.message}
-        onConfirm={() => overlap && add(overlap.lecture, true)}
+        open={askingMove}
+        onOpenChange={setAskingMove}
+        message="관심강좌 탭으로 이동하시겠습니까?"
+        onConfirm={onGoToBookmarks}
       />
     </div>
   );
