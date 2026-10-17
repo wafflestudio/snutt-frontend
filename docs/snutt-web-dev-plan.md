@@ -68,6 +68,7 @@ Figma 의 완료 영역(`home` 섹션: 메인, 비교, 필터, 강의 상세, �
 |---|---|---|
 | `팝업 예시` 의 `alert` | 폭 264, 둥글기 10, 안쪽 여백 위 36 · 나머지 12. 질문(14px, 가운데) 아래 24px 에 취소(`Background/light`) · 확인(`SNUTT/mint`) 버튼 116 × 38. 딤 `#000000 · 20%` | `ConfirmDialog` |
 | `필터` 모달 | 695 × 648, 둥글기 15, 흰 배경, 그림자 `0 0 50px 10px #041E1D · 10%`, 닫기 아이콘 30px | `Dialog` (내용은 5-3) |
+| `시간대 검색` 모달 (10-14, `필터 기타` 옆 `home(1200 ~)`) | 695 × 838, 제목 `20px SemiBold`. 위 가운데 안내 상자(336 × 41, 검정 50% · 흐림 4, 둥글기 10, `확인` 은 `SNUTT/milkMint`). 그리드에 시간표 강의는 회색(`#787880 · 20%`), 고른 칸은 `SNUTT/mint · 50%`. 아래 줄 `빈 시간대만 검색`(`체크박스 버튼` 15px) · `초기화`(`ic/reset`) · `완료`(80 × 32) | `TimeSearchDialog` + 그리드 `OccupiedLayer` · `SelectableLayer` (5-4, 디자인 문의 4-18) |
 | 강의 상세의 색상 드롭다운 | 폭 159, 둥글기 8, 그림자 `0 0 10px #000 · 10%`. 한 줄 49px(여백 16), 글자 13px, 오른쪽에 글자색 · 배경색 견본 20px 두 칸, 줄 사이 선. 색이 이전 hex(`GRAY2` 등) | 펼친 목록은 위 `드롭다운` 모양으로 통일 (디자인 문의 4-6) |
 
 학기 드롭다운, 헤더 `···` 메뉴, 직접 추가의 요일 · 시간 선택, 색상 선택 모두 `드롭다운` 모양을 쓴다. 강의 상세의 색상 드롭다운만 이전 모양(줄 사이 선, 49px)이라 맞출지 문의했다. (디자인 문의 4-6)
@@ -127,7 +128,7 @@ dev 서버 OpenAPI 명세(`https://snutt-api-dev.wafflestudio.com/v3/api-docs`)�
 | 직접 추가 | `POST /v2/timetables/{timetableId}/lectures/custom` | |
 | 강의 수정/삭제 (색상 포함) | `PATCH, DELETE /v2/timetables/{timetableId}/lectures/{timetableLectureId}` | v2 는 `paletteIndex` + `customColor` (hex) |
 | 강의 원래대로 (reset) | `POST .../lectures/{timetableLectureId}/reset` | |
-| 강의 검색 | `POST /v2/lectures/search` | cursor 기반 페이지네이션(`last` 로 끝을 알림, 전체 개수 `totalCount` 는 오지 않음), `evaluationSummary` 포함. 토큰 없이 되고, 검색어가 비면 학기의 모든 강의 (dev 서버 확인) |
+| 강의 검색 | `POST /v2/lectures/search` | cursor 기반 페이지네이션(`last` 로 끝을 알림, 전체 개수 `totalCount` 는 오지 않음), `evaluationSummary` 포함. 토큰 없이 되고, 검색어가 비면 학기의 모든 강의 (dev 서버 확인). 시간 조건: `times` 는 수업 시간마다 그것을 통째로 품는 구간이 하나 있어야 하고(이어진 두 구간에 걸치면 빠짐), `timesToExclude` 는 겹치는 수업 시간이 없어야 한다(끝과 시작이 맞닿는 것은 겹치지 않음). 둘을 함께 보내면 둘 다 만족하는 강의, 어느 조건이든 있으면 수업 시간이 없는 강의는 빠진다 (2026-10-17 dev 확인). `limit` 은 100 은 되고 200 은 400 `invalid-parameter` |
 | 검색 필터 태그 | `GET /v2/tags/{year}/{semester}` | 학과·분류·학점·정렬 기준 등 |
 | 코스 태그 | `GET /v2/tags/courses` | |
 | 관심강좌 | `GET /v2/bookmarks`, `POST, DELETE /v2/bookmarks/lectures/{lectureId}` | 추가 · 삭제는 본문 없이 200. 이미 있는 것을 추가하거나 없는 것을 지워도 200 (dev 서버 확인) |
@@ -376,4 +377,4 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | 강의 시간 겹침 | 그리드는 v1 처럼 겹쳐도 칸을 나누지 않는다(기획상 겹치지 않음). 5-1 에서 v2 강의 추가 · 수정의 `forced` 가 겹치는 강의를 지우는지, 겹친 채로 넣는지 백엔드에 확인 | 겹친 채로 넣는다면 가려진 강의를 고를 방법이 필요 |
 | `paletteIndex` 시작 번호 | ✅ 해결: 0부터. dev 응답에서 `paletteIndex: 1` 인 강의의 `color` 가 테마 `colors[1]` 과 같다 (2026-10-15) | domain 은 0부터(팔레트 배열 인덱스)로 가정. v1 `colorIndex` 는 1~9 가 팔레트, 0 이 직접 고른 색이었음. Figma 색상 드롭다운은 `색상1~9` (표시용 번호는 index + 1) |
 | v2 강의 수정(PATCH)의 null | ✅ 해결 (2026-10-15 dev 에서 확인): `null` 과 생략은 "바꾸지 않음". 값을 지우려면 `resetFields` 에 필드 이름을 넣는다 (직접 추가한 강의는 null, 수강편람 강의는 수강편람 값으로 돌아감). `paletteIndex` 를 보내면 `customColor` 가 지워진다 | `toLectureModifyRequest` 가 null 인 필드를 resetFields 로 보낸다. 6-2 에서 수강편람 강의의 값을 "지우기"가 아니라 "원래대로"로 보여 줄지 정한다 |
-| 검색 시간 조건의 끝 시각 | 5-x (검색) 에서 확인: 포함인지 제외인지 | domain 은 `[start, end)`. v1 웹클라이언트는 `endMinute` 에 -1 을 해서 보냈음 |
+| 검색 시간 조건의 끝 시각 | ✅ 해결 (5-4, 2026-10-17 dev 확인): v2 는 domain 의 `[start, end)` 그대로 보내면 된다. 10:00~11:00 을 고르면 10:00~11:00 강의가 들어가고, 10:00~11:00 을 빼도 11:00 에 시작하는 강의는 남는다 | v1 웹클라이언트는 `endMinute` 에 -1 을 해서 보냈음 |

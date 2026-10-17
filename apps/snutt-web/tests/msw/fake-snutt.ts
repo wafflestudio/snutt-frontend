@@ -218,12 +218,24 @@ export const fakeSnutt = ({ timetables, semesters, palette, coursebook = [] }: F
     http.delete(api('/v2/timetables/:timetableId/primary'), ({ params }) => setPrimary(params.timetableId, false)),
 
     // 강의명 · 교수명에 검색어가 들어간 강의. 커서는 다음 쪽의 시작 위치
+    // 시간 조건은 dev 서버처럼: times 는 수업 시간마다 품는 구간이 있어야, timesToExclude 는 겹치는 수업 시간이 없어야 한다.
+    // 시간 조건이 있으면 수업 시간이 없는 강의는 빠진다
     http.post(api('/v2/lectures/search'), async ({ request }) => {
       const body = (await request.json()) as SnuttV2.LectureSearchRequest;
+      const { times, timesToExclude } = body;
+      const matchesTimes = ({ classTimes }: Lecture) =>
+        (!times && !timesToExclude) ||
+        (classTimes.length > 0 &&
+          (!times ||
+            classTimes.every((c) =>
+              times.some((t) => t.day === c.day && t.startMinute <= c.startMinute && c.endMinute <= t.endMinute),
+            )) &&
+          !timesToExclude?.some((t) => classTimes.some((c) => isOverlapping(c, t))));
       const matched = coursebook.filter(
         (lecture) =>
           isSameSemester(lecture.semester, { year: body.year, term: body.semester }) &&
-          (!body.query || lecture.title.includes(body.query) || lecture.instructor?.includes(body.query)),
+          (!body.query || lecture.title.includes(body.query) || lecture.instructor?.includes(body.query)) &&
+          matchesTimes(lecture),
       );
       const start = Number(body.cursor ?? 0);
       const end = start + body.limit;
