@@ -64,11 +64,16 @@ describe('LectureDetailPanel', () => {
     ]);
   });
 
-  it('강의계획서는 수강신청 사이트를 새 탭으로 연다', () => {
+  it('강의계획서는 수강신청 사이트를 팝업 창으로 연다', async () => {
+    const open = vi.spyOn(window, 'open').mockReturnValue(null);
     setup();
     const link = screen.getByRole('link', { name: '강의계획서' });
-    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('target', '_blank'); // Cmd 클릭 등은 새 탭
     expect(link.getAttribute('href')).toContain('sbjtCd=045.019');
+
+    await userEvent.click(link);
+    expect(open).toHaveBeenCalledWith(link.getAttribute('href'), '_blank', expect.stringContaining('width=1024'));
+    open.mockRestore();
   });
 
   it('직접 추가한 강의는 수강 정보와 강의계획서 없이 학점을 위에 쓴다', () => {
