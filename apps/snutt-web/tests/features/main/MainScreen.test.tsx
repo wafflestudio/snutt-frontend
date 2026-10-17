@@ -243,16 +243,43 @@ describe('MainScreen', () => {
       await waitFor(() => expect(screen.getAllByText('마케팅원론')).toHaveLength(3));
     });
 
-    it('관심강좌를 켜고 끈다', async () => {
+    it('관심강좌를 켜면 관심강좌 탭으로 갈지 묻고, 취소하면 검색 탭에 남는다', async () => {
       await renderMain();
       await screen.findAllByRole('article');
       const bookmark = () => result('운영관리').getByRole('button', { name: '관심강좌' });
       expect(bookmark()).toHaveAttribute('aria-pressed', 'false');
 
       await userEvent.click(bookmark());
-      await waitFor(() => expect(bookmark()).toHaveAttribute('aria-pressed', 'true'));
+      const confirm = await screen.findByRole('alertdialog', { name: '관심강좌 탭으로 이동하시겠습니까?' });
+      await userEvent.click(within(confirm).getByRole('button', { name: '취소' }));
+      expect(bookmark()).toHaveAttribute('aria-pressed', 'true');
+      expect(screen.getByRole('tab', { name: '검색', selected: true })).toBeInTheDocument();
+
+      // 끌 때는 묻지 않는다
       await userEvent.click(bookmark());
       await waitFor(() => expect(bookmark()).toHaveAttribute('aria-pressed', 'false'));
+      expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    });
+
+    it('관심강좌 탭으로 가면 넣은 강의가 있고, 끄면 목록에서 빠진다', async () => {
+      await renderMain();
+      await screen.findAllByRole('article');
+      await userEvent.click(result('운영관리').getByRole('button', { name: '관심강좌' }));
+      await userEvent.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: '확인' }));
+      expect(screen.getByRole('tab', { name: '관심강좌', selected: true })).toBeInTheDocument();
+      expect(window.location.search).toBe('?tab=bookmark');
+
+      const list = within(screen.getByRole('list', { name: '관심강좌' }));
+      const cell = list.getByRole('article', { name: '운영관리' });
+      // 검색 결과처럼 커서를 올리면 시간표에 미리 보여 준다
+      const previewTitle = () => screen.queryAllByText('운영관리', { selector: '[data-preview-block] *' });
+      await userEvent.hover(cell);
+      expect(previewTitle().length).toBeGreaterThan(0);
+
+      await userEvent.click(within(cell).getByRole('button', { name: '관심강좌' }));
+      expect(await list.findByText('관심강좌가 없습니다')).toBeInTheDocument();
+      // 셀이 사라져도 미리보기가 남지 않는다
+      expect(previewTitle()).toHaveLength(0);
     });
 
     it('목록 끝에 닿으면 다음 쪽을 받는다', async () => {
@@ -349,6 +376,7 @@ describe('MainScreen', () => {
         await renderMain();
         await screen.findAllByRole('article');
         await userEvent.click(result('운영관리').getByRole('button', { name: '관심강좌' }));
+        await userEvent.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: '취소' }));
         expect(panel('강의 상세')).not.toBeInTheDocument();
 
         // 키보드로는 강의명 버튼으로 연다
