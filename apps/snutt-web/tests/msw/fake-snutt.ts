@@ -298,6 +298,7 @@ export const fakeSnutt = ({ timetables, semesters, palette, coursebook = [] }: F
           {
             id: `new-lecture-${nextId++}`,
             lectureId: null,
+            courseId: null,
             title: body.courseTitle,
             instructor: body.instructor ?? null,
             credit: body.credit ?? null,

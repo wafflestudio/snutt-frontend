@@ -33,6 +33,7 @@ export const toClassTime = ({ day, place, startMinute, endMinute }: SnuttV2.Clas
 export const toTimetableLecture = (lecture: SnuttV2.TimetableLectureResponse): TimetableLecture => ({
   id: String(lecture.id),
   lectureId: lecture.lectureId == null ? null : String(lecture.lectureId),
+  courseId: lecture.courseId == null ? null : String(lecture.courseId),
   title: lecture.courseTitle,
   instructor: lecture.instructor ?? null,
   remark: lecture.remark ?? null,
@@ -54,6 +55,7 @@ export const toTimetableLecture = (lecture: SnuttV2.TimetableLectureResponse): T
 export const toLecture = (lecture: SnuttV2.LectureResponse): Lecture => ({
   id: String(lecture.id),
   semester: toSemester(lecture),
+  courseId: lecture.courseId == null ? null : String(lecture.courseId),
   title: lecture.courseTitle,
   instructor: lecture.instructor ?? null,
   remark: lecture.remark ?? null,
