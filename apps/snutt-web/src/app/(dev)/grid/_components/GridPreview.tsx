@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { DevHeader } from '@/app/(dev)/_components/DevHeader';
 import { TimeSearchDialog } from '@/features/main/components/TimeSearchDialog';
 import { SAMPLE_PALETTE } from '@/features/main/sample-data';
@@ -8,6 +8,7 @@ import { getGridRange } from '@/domain/grid-layout';
 import type { ClassTime, TimetableLecture } from '@/domain/lecture';
 import { type Day, formatDayTimeRange, toMinute } from '@/domain/time';
 import { EMPTY_TIME_FILTER } from '@/domain/time-filter';
+import { toPngBlob } from '@/shared/lib/export-image';
 import { LectureLayer } from '@/shared/timetable-grid/LectureLayer';
 import { TimetableGrid } from '@/shared/timetable-grid/TimetableGrid';
 import { Button } from '@/shared/ui/Button';
@@ -66,6 +67,18 @@ export function GridPreview() {
   const [clicked, setClicked] = useState<string | null>(null);
   const [timeSearchOpen, setTimeSearchOpen] = useState(false);
   const [timeFilter, setTimeFilter] = useState(EMPTY_TIME_FILTER);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [image, setImage] = useState<{ url: string; info: string } | null>(null);
+
+  // 헤더의 공유 · 다운로드(9-1)가 만드는 이미지. 글꼴 · 토큰 색이 화면과 같은지 본다
+  const renderImage = async () => {
+    if (!gridRef.current) return;
+    const startedAt = performance.now();
+    const blob = await toPngBlob(gridRef.current);
+    const elapsed = Math.round(performance.now() - startedAt);
+    if (image) URL.revokeObjectURL(image.url);
+    setImage({ url: URL.createObjectURL(blob), info: `${Math.round(blob.size / 1024)}KB · ${elapsed}ms` });
+  };
 
   const lectures = SAMPLES[sample];
   const range = useMemo(() => getGridRange(lectures.flatMap((l) => l.classTimes)), [lectures]);
@@ -94,6 +107,9 @@ export function GridPreview() {
           고른 시간: {timeFilter.times.map(formatDayTimeRange).join(', ') || '없음'}
           {timeFilter.emptyOnly && ' · 빈 시간대만'}
         </span>
+        <Button size="sm" variant="outline" onClick={renderImage}>
+          이미지로 만들기
+        </Button>
       </div>
       <TimeSearchDialog
         open={timeSearchOpen}
@@ -103,13 +119,23 @@ export function GridPreview() {
         occupied={lectures.flatMap((l) => l.classTimes)}
       />
 
-      <TimetableGrid range={range} className="h-200">
-        <LectureLayer
-          lectures={lectures}
-          palette={SAMPLE_PALETTE}
-          onLectureClick={readonly ? undefined : (l) => setClicked(l.title)}
-        />
-      </TimetableGrid>
+      <div ref={gridRef}>
+        <TimetableGrid range={range} className="h-200">
+          <LectureLayer
+            lectures={lectures}
+            palette={SAMPLE_PALETTE}
+            onLectureClick={readonly ? undefined : (l) => setClicked(l.title)}
+          />
+        </TimetableGrid>
+      </div>
+
+      {image && (
+        <figure className="flex flex-col gap-2">
+          <figcaption className="text-14-regular text-assistive">만든 이미지 ({image.info})</figcaption>
+          {/* eslint-disable-next-line @next/next/no-img-element -- blob URL 이라 next/image 를 쓸 수 없다 */}
+          <img src={image.url} alt="시간표 이미지" className="w-full border border-line-light" />
+        </figure>
+      )}
     </main>
   );
 }
