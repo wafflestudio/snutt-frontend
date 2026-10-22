@@ -231,12 +231,29 @@ export const fakeSnutt = ({ timetables, semesters, palette, coursebook = [] }: F
               times.some((t) => t.day === c.day && t.startMinute <= c.startMinute && c.endMinute <= t.endMinute),
             )) &&
           !timesToExclude?.some((t) => classTimes.some((c) => isOverlapping(c, t))));
+      // 필터: 같은 종류 안에서는 하나라도 맞으면, 종류끼리는 모두 맞아야 한다. 기타(etcTags)는 예시 강의에 값이 없어 보지 않는다
+      const FILTER_FIELDS = [
+        'classification',
+        'department',
+        'academicYear',
+        'credit',
+        'category',
+        'categoryPre2025',
+      ] as const;
+      const matchesFilter = (lecture: Lecture) =>
+        FILTER_FIELDS.every((field) => {
+          const values: readonly (string | number)[] | null | undefined = body[field];
+          return !values || values.includes(lecture[field] as string | number);
+        });
       const matched = coursebook.filter(
         (lecture) =>
           isSameSemester(lecture.semester, { year: body.year, term: body.semester }) &&
           (!body.query || lecture.title.includes(body.query) || lecture.instructor?.includes(body.query)) &&
-          matchesTimes(lecture),
+          matchesTimes(lecture) &&
+          matchesFilter(lecture),
       );
+      if (body.sort === 'RATING_DESC')
+        matched.sort((a, b) => (b.evaluation?.rating ?? -1) - (a.evaluation?.rating ?? -1));
       const start = Number(body.cursor ?? 0);
       const end = start + body.limit;
       return HttpResponse.json({
@@ -245,6 +262,27 @@ export const fakeSnutt = ({ timetables, semesters, palette, coursebook = [] }: F
         last: end >= matched.length,
         ...(end < matched.length && { cursor: String(end) }),
       } satisfies SnuttV2.CursorPageLectureResponse);
+    }),
+    // 학기 강의에 있는 값을 모은다
+    http.get(api('/v2/tags/:year/:semester'), ({ params }) => {
+      const lectures = coursebook.filter((lecture) =>
+        isSameSemester(lecture.semester, { year: Number(params.year), term: Number(params.semester) as Term }),
+      );
+      const values = <T>(pick: (lecture: Lecture) => T | null) =>
+        [...new Set(lectures.map(pick).filter((value): value is T => value !== null))].sort();
+      return HttpResponse.json({
+        classification: values((lecture) => lecture.classification),
+        department: values((lecture) => lecture.department),
+        academicYear: values((lecture) => lecture.academicYear),
+        credit: values((lecture) => lecture.credit),
+        instructor: values((lecture) => lecture.instructor),
+        category: values((lecture) => lecture.category),
+        categoryPre2025: values((lecture) => lecture.categoryPre2025),
+        sortCriteria: [
+          { value: 'RATING_DESC', label: '평점 높은 순' },
+          { value: 'COUNT_DESC', label: '강의평 많은 순' },
+        ],
+      } satisfies SnuttV2.TagListResponse);
     }),
     http.get(api('/v2/bookmarks'), ({ request }) => {
       const params = new URL(request.url).searchParams;

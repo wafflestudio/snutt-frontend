@@ -184,5 +184,10 @@ export const SAMPLE_COURSEBOOK: Lecture[] = [
     academicYear: '2학년',
     remark: '경영대학 학생 우선',
   }),
-  coursebookLecture('902', '운영관리', [time(4, '9:00', '10:15')], { instructor: '최하은' }),
+  coursebookLecture('902', '운영관리', [time(4, '9:00', '10:15')], {
+    instructor: '최하은',
+    department: '경영대학 경영학과',
+    academicYear: '3학년',
+    classification: '전필',
+  }),
 ];

@@ -1,16 +1,12 @@
 // @vitest-environment jsdom
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import type { DayTimeRange } from '@/domain/time';
 import { EMPTY_TIME_FILTER, type TimeFilter } from '@/domain/time-filter';
-import { SearchPanel } from '@/features/main/components/SearchPanel';
 import { TimeSearchDialog } from '@/features/main/components/TimeSearchDialog';
-import { SAMPLE_COURSEBOOK, SAMPLE_PALETTE, SAMPLE_SEMESTERS, SAMPLE_TIMETABLES } from '@/features/main/sample-data';
-import { fakeSnutt } from '../../msw/fake-snutt';
-import { server } from '../../msw/server';
+import { SAMPLE_TIMETABLES } from '@/features/main/sample-data';
 
 // 시간표 1: 월 · 목 9:00~11:45, 화 · 목 15:00~16:50, 수 14:00~17:00, 금 14:30~17:00
 const timetable = SAMPLE_TIMETABLES[0];
@@ -111,63 +107,5 @@ describe('TimeSearchDialog', () => {
 
     await userEvent.click(screen.getByRole('button', { name: '열기' }));
     expect(cell('화 09:00~09:30')).toHaveAttribute('aria-pressed', 'false');
-  });
-});
-
-describe('검색 패널의 시간대 검색', () => {
-  beforeEach(() => {
-    server.use(
-      ...fakeSnutt({
-        timetables: SAMPLE_TIMETABLES,
-        semesters: SAMPLE_SEMESTERS,
-        palette: SAMPLE_PALETTE,
-        coursebook: SAMPLE_COURSEBOOK,
-      }).handlers,
-    );
-  });
-
-  const renderPanel = async () => {
-    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-    render(
-      <QueryClientProvider client={queryClient}>
-        <SearchPanel
-          semester={timetable.semester}
-          timetable={timetable}
-          onAdd={vi.fn()}
-          onRemove={vi.fn()}
-          onOpen={vi.fn()}
-          onFailure={vi.fn()}
-          onGoToBookmarks={vi.fn()}
-        />
-      </QueryClientProvider>,
-    );
-    await screen.findAllByRole('article');
-  };
-
-  const resultNames = () => screen.queryAllByRole('article').map((article) => article.getAttribute('aria-label'));
-
-  it('필터 버튼으로 모달을 열어 고른 시간에 들어가는 강의만 찾고, 칩의 × 로 조건을 지운다', async () => {
-    await renderPanel();
-    expect(resultNames()).toEqual(['경영전략', '마케팅원론', '운영관리']);
-
-    await userEvent.click(screen.getByRole('button', { name: '시간대 검색' }));
-    // 운영관리는 금 9:00~10:15
-    drag('금 09:00~09:30', '금 10:00~10:30');
-    await userEvent.click(screen.getByRole('button', { name: '완료' }));
-
-    await waitFor(() => expect(resultNames()).toEqual(['운영관리']));
-    await userEvent.click(screen.getByRole('button', { name: '시간대 검색 제거' }));
-    await waitFor(() => expect(resultNames()).toHaveLength(3));
-  });
-
-  it('빈 시간대만 검색하면 시간표의 강의와 겹치는 강의를 뺀다', async () => {
-    await renderPanel();
-    await userEvent.click(screen.getByRole('button', { name: '시간대 검색' }));
-    await userEvent.click(screen.getByRole('checkbox', { name: '빈 시간대만 검색' }));
-    await userEvent.click(screen.getByRole('button', { name: '완료' }));
-
-    // 경영전략(담긴 강의) · 마케팅원론은 월 9:00~11:45 와 겹친다
-    await waitFor(() => expect(resultNames()).toEqual(['운영관리']));
-    expect(screen.getByRole('button', { name: '빈 시간대만 제거' })).toBeInTheDocument();
   });
 });

@@ -185,6 +185,13 @@ export const IconShare = (props: IconProps) => (
   />
 );
 
+export const IconStar = (props: IconProps) => (
+  <Svg
+    d="m323-245 157-94 157 95-42-178 138-120-182-16-71-168-71 167-182 16 138 120-42 178Zm-90 125 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-355Z"
+    {...props}
+  />
+);
+
 export const IconStarFill = (props: IconProps) => (
   <Svg d="m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z" {...props} />
 );

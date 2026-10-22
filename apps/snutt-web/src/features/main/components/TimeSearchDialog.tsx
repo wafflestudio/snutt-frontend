@@ -1,6 +1,5 @@
 'use client';
 
-import { Checkbox } from '@base-ui/react/checkbox';
 import { useState } from 'react';
 import { getGridRange } from '@/domain/grid-layout';
 import type { DayTimeRange } from '@/domain/time';
@@ -15,40 +14,9 @@ import { OccupiedLayer } from '@/shared/timetable-grid/OccupiedLayer';
 import { SelectableLayer } from '@/shared/timetable-grid/SelectableLayer';
 import { TimetableGrid } from '@/shared/timetable-grid/TimetableGrid';
 import { Button } from '@/shared/ui/Button';
-import { Chip } from '@/shared/ui/Chip';
+import { Checkbox } from '@/shared/ui/Checkbox';
 import { Dialog, DialogCloseButton, DialogTitle } from '@/shared/ui/Dialog';
-import { IconButton } from '@/shared/ui/IconButton';
-import { IconCheckCircleFill, IconFilter, IconRefresh } from '@/shared/ui/icons';
-
-type TimeSearchFilterButtonProps = Omit<TimeSearchDialogProps, 'open' | 'onOpenChange'>;
-
-/**
- * 검색창의 필터 버튼. 필터 모달(5-3)이 생기기 전까지 임시로 시간대 검색 모달을 바로 연다.
- * 5-3 에서는 필터 모달의 `시간` 에서 이 모달을 연다. (디자인 문의 4-18)
- */
-export function TimeSearchFilterButton(props: TimeSearchFilterButtonProps) {
-  const [open, setOpen] = useState(false);
-  return (
-    <>
-      <IconButton label="시간대 검색" icon={<IconFilter />} onClick={() => setOpen(true)} />
-      <TimeSearchDialog open={open} onOpenChange={setOpen} {...props} />
-    </>
-  );
-}
-
-/** 적용한 시간 조건의 칩. × 로 그 조건만 지운다. 필터 칩(5-3)이 생기면 그 목록에 합친다 */
-export function TimeSearchChips({ value, onChange }: Pick<TimeSearchDialogProps, 'value' | 'onChange'>) {
-  return (
-    <div className="flex flex-wrap gap-1.5">
-      {value.times.length > 0 && (
-        <Chip label="시간대 검색" color="mint" onRemove={() => onChange({ ...value, times: [] })} />
-      )}
-      {value.emptyOnly && (
-        <Chip label="빈 시간대만" color="mint" onRemove={() => onChange({ ...value, emptyOnly: false })} />
-      )}
-    </div>
-  );
-}
+import { IconRefresh } from '@/shared/ui/icons';
 
 type TimeSearchDialogProps = {
   open: boolean;
@@ -109,17 +77,9 @@ function TimeSearchForm({
       </TimetableGrid>
 
       <div className="mt-3 flex h-8 items-center justify-between pl-0.75">
-        <label className="flex cursor-pointer items-center gap-2 text-14-regular text-plain">
-          {/* Figma `체크박스 버튼` (15px): 고르지 않으면 회색 테두리 원, 고르면 민트 체크 원 */}
-          <Checkbox.Root
-            checked={emptyOnly}
-            onCheckedChange={setEmptyOnly}
-            className="flex size-3.75 items-center justify-center rounded-full border border-line-divider text-snutt-mint focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-snutt-mint data-checked:border-0"
-          >
-            <Checkbox.Indicator render={<IconCheckCircleFill className="size-4.5 shrink-0" />} />
-          </Checkbox.Root>
+        <Checkbox checked={emptyOnly} onCheckedChange={setEmptyOnly}>
           빈 시간대만 검색
-        </label>
+        </Checkbox>
 
         <div className="flex items-center gap-4">
           <button
