@@ -4,14 +4,16 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { getFailureMessage } from '@/api/errors';
 import { lectureQueries } from '@/api/lectures';
-import { EMPTY_TIME_FILTER, isTimeFilterEmpty, toSearchTimes } from '@/domain/time-filter';
+import { EMPTY_SEARCH_FILTER, isSearchFilterEmpty, toSearchConditions } from '@/domain/search-filter';
 import { useDebouncedValue } from '@/shared/lib/use-debounced-value';
 import { ConfirmDialog } from '@/shared/ui/Dialog';
 import { SearchField } from '@/shared/ui/SearchField';
 import { preview } from '@/features/main/preview-store';
 import { type LectureCellsOptions, useLectureCells } from '@/features/main/use-lecture-cells';
 import { LectureCell } from './LectureCell';
-import { TimeSearchChips, TimeSearchFilterButton } from './TimeSearchDialog';
+import { IconButton } from '@/shared/ui/IconButton';
+import { IconFilter } from '@/shared/ui/icons';
+import { FilterChips, SearchFilterDialog } from './SearchFilterDialog';
 
 /** 검색어를 다 친 뒤 이만큼 기다렸다가 검색한다 (ms) */
 const SEARCH_DELAY = 300;
@@ -23,16 +25,17 @@ type SearchPanelProps = Omit<LectureCellsOptions, 'onBookmarkAdded'> & {
 
 /**
  * 검색 탭 (Figma `검색 목록 영역`): 검색창과 결과 목록. 목록만 스크롤한다.
- * 필터 버튼 · 적용한 필터 칩은 5-3, 결과에 커서를 올렸을 때 그리드 미리보기는 5-2.
- * 5-3 전까지는 검색창의 필터 버튼이 시간대 검색 모달(5-4)을 바로 연다.
+ * 검색창의 필터 버튼은 필터 모달(5-3)을 열고, 적용한 필터는 검색창 아래 칩으로 보여 준다. 결과에 커서를 올렸을 때 그리드 미리보기는 5-2.
  */
 export function SearchPanel({ onGoToBookmarks, ...options }: SearchPanelProps) {
   const [input, setInput] = useState('');
   const query = useDebouncedValue(input.trim(), SEARCH_DELAY);
-  const [timeFilter, setTimeFilter] = useState(EMPTY_TIME_FILTER);
+  const [filter, setFilter] = useState(EMPTY_SEARCH_FILTER);
+  const [filterOpen, setFilterOpen] = useState(false);
+  // 빈 시간대만 검색할 때 뺄 시간 (고른 시간표의 수업 시간)
   const occupied = options.timetable?.lectures.flatMap(({ classTimes }) => classTimes) ?? [];
   const search = useInfiniteQuery(
-    lectureQueries.search({ semester: options.semester, query, ...toSearchTimes(timeFilter, occupied) }),
+    lectureQueries.search({ semester: options.semester, query, conditions: toSearchConditions(filter, occupied) }),
   );
   const lectures = search.data?.pages.flatMap((page) => page.lectures) ?? [];
 
@@ -51,9 +54,22 @@ export function SearchPanel({ onGoToBookmarks, ...options }: SearchPanelProps) {
         placeholder="강의명, 교수명을 검색하세요"
         value={input}
         onChange={(event) => setInput(event.target.value)}
-        trailing={<TimeSearchFilterButton value={timeFilter} onChange={setTimeFilter} occupied={occupied} />}
+        trailing={<IconButton label="검색 필터" icon={<IconFilter />} onClick={() => setFilterOpen(true)} />}
       />
-      {!isTimeFilterEmpty(timeFilter) && <TimeSearchChips value={timeFilter} onChange={setTimeFilter} />}
+      {!isSearchFilterEmpty(filter) && (
+        // Figma: 한 줄로 두고 넘치면 옆으로 민다
+        <div className="-mt-1 flex gap-1.5 overflow-x-auto">
+          <FilterChips value={filter} onChange={setFilter} />
+        </div>
+      )}
+      <SearchFilterDialog
+        open={filterOpen}
+        onOpenChange={setFilterOpen}
+        semester={options.semester}
+        value={filter}
+        onChange={setFilter}
+        occupied={occupied}
+      />
 
       <ResultList
         count={lectures.length}
