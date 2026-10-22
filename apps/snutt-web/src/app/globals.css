@@ -80,6 +80,15 @@
   --text-12-bold: 12px; /* 시간표 블록 장소 */
   --text-12-bold--font-weight: 700;
   --text-12-bold--line-height: 1;
+  --text-36-medium: 36px; /* 강의평 평균 점수 */
+  --text-36-medium--font-weight: 500;
+  --text-36-medium--line-height: 1;
+  --text-13-semibold: 13px; /* 강의평 항목별 점수 */
+  --text-13-semibold--font-weight: 600;
+  --text-13-semibold--line-height: 1.2;
+  --text-13-body-regular: 13px; /* 강의평 본문 · 학기. Figma 텍스트 스타일 `13/body/regular` */
+  --text-13-body-regular--font-weight: 400;
+  --text-13-body-regular--line-height: 1.45;
 
   /*
    * 임시: Figma 에 hex 로만 있는 색 중 가까운 토큰이 없는 것. 디자이너가 토큰을 정하면 지운다 (docs/snutt-web-design-questions.md 4-18)
