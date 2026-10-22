@@ -123,10 +123,11 @@ describe('LectureDetailPanel', () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it('강의평 쪽은 8-4 전까지 비어 있다', () => {
-    setup(LECTURE, { view: 'review' });
+  it('강의평 쪽에는 강의평을 보여 준다. 강좌가 없는 강의는 안내만 한다 (강의평 목록은 EvaluationView 테스트)', () => {
+    setup(CUSTOM, { view: 'review' });
     expect(screen.getByRole('tab', { name: '강의평', selected: true })).toBeInTheDocument();
     expect(screen.queryByRole('region', { name: '수강 정보' })).not.toBeInTheDocument();
+    expect(screen.getByText('직접 추가한 강의는 강의평이 없습니다')).toBeInTheDocument();
   });
 });
 
