@@ -2,6 +2,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { toBlob } from 'html-to-image';
 import { http, HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MainScreen } from '@/features/main/components/MainScreen';
@@ -24,6 +25,9 @@ vi.mock('next/navigation', async () => {
     },
   };
 });
+
+// jsdom 은 화면을 그리지 못한다. 공유 · 다운로드가 무엇을 이미지로 만드는지만 본다 (나머지는 TimetableExportButtons.test.tsx)
+vi.mock('html-to-image', () => ({ toBlob: vi.fn() }));
 
 const originalPushState = window.history.pushState.bind(window.history);
 
@@ -120,10 +124,22 @@ describe('MainScreen', () => {
     expect(panel('강의 목록')).toBeInTheDocument();
     // 비교 중 왼쪽 헤더에는 탭 · + · ··· 만 있다 (Figma `top` 의 `메인 시간표`)
     expect(screen.queryByRole('button', { name: '직접 추가' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: '다운로드' })).not.toBeInTheDocument();
 
     await userEvent.click(screen.getByRole('button', { name: '비교 종료' }));
     expect(screen.getAllByText('월')).toHaveLength(1);
     expect(screen.getByRole('button', { name: '직접 추가' })).toBeInTheDocument();
+  });
+
+  it('헤더의 다운로드는 고른 시간표의 그리드를 이미지로 만든다', async () => {
+    vi.mocked(toBlob).mockRejectedValue(new Error('jsdom'));
+    await renderMain();
+    await userEvent.click(screen.getByRole('button', { name: '다운로드' }));
+
+    await waitFor(() => expect(toBlob).toHaveBeenCalled());
+    const [target] = vi.mocked(toBlob).mock.calls[0];
+    expect(within(target).getByText('월')).toBeInTheDocument();
+    expect(within(target).queryByRole('button', { name: '다운로드' })).not.toBeInTheDocument();
   });
 
   it('로그인하지 않았으면 시간표 대신 로그인이 필요하다고 알린다', async () => {

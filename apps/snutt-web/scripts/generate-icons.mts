@@ -44,6 +44,7 @@ export const ICONS: Record<string, string> = {
   IconReviewFill: 'rate_review-fill',
   IconScheduleFill: 'schedule-fill',
   IconSearch: 'search',
+  IconShare: 'share',
   IconStarFill: 'star-fill',
   IconTagFill: 'sell-fill',
   IconThumbUp: 'thumb_up',

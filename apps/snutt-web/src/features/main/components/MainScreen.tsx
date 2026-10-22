@@ -3,7 +3,7 @@
 import { clsx } from 'clsx';
 import Link from 'next/link';
 import { getFailureMessage } from '@/api/errors';
-import { type ReactNode, useMemo, useState } from 'react';
+import { type ReactNode, type Ref, useMemo, useRef, useState } from 'react';
 import type { ColorPair } from '@/domain/color';
 import { getGridRange, type GridRange } from '@/domain/grid-layout';
 import type { Lecture, TimetableLecture } from '@/domain/lecture';
@@ -24,7 +24,7 @@ import { BookmarkPanel } from './BookmarkPanel';
 import { CoursebookDetailPanel, LectureDetailPanel } from './LectureDetailPanel';
 import { MainPanel } from './MainPanel';
 import { SearchPanel } from './SearchPanel';
-import { AddTimetableButton, TimetableMenu } from './TimetableActions';
+import { AddTimetableButton, TimetableExportButtons, TimetableMenu } from './TimetableActions';
 import { TimetableTabs } from './TimetableTabs';
 
 /** 메인 화면: 패널(목록 · 상세 · 직접 추가)과 시간표. 무엇을 보여 줄지는 URL 의 MainView 로 정한다. */
@@ -33,6 +33,8 @@ export function MainScreen() {
   const timetables = useTimetables();
   const { selected, selectedSummary } = timetables;
   const palette = timetables.paletteOf(selected);
+  // 공유 · 다운로드로 이미지를 만들 고른 시간표의 그리드
+  const gridRef = useRef<HTMLDivElement>(null);
 
   // 비교할 시간표는 왼쪽에서 고른 것을 뺀 같은 학기의 시간표다. URL 의 시간표가 없으면(삭제, 학기 변경) 첫 시간표를 보여 준다
   const others = timetables.timetables.filter((timetable) => timetable.id !== selectedSummary?.id);
@@ -201,6 +203,7 @@ export function MainScreen() {
           palette={palette}
           range={range}
           onLectureClick={openDetail}
+          gridRef={gridRef}
           // 검색 결과는 왼쪽(고른) 시간표에 담기므로 미리보기도 왼쪽에만
           overlay={<SearchPreview />}
           header={
@@ -221,6 +224,10 @@ export function MainScreen() {
                 />
               </div>
               <div className="flex shrink-0 items-center gap-2.5">
+                {/* 비교 중에는 Figma `메인 시간표` 변형처럼 ··· 만 둔다 */}
+                {selectedSummary && !view.compare && (
+                  <TimetableExportButtons title={selectedSummary.title} getTarget={() => gridRef.current} />
+                )}
                 {selectedSummary && (
                   <TimetableMenu
                     timetable={selectedSummary}
@@ -311,6 +318,8 @@ type TimetableColumnProps = {
   onLectureClick?: (lecture: TimetableLecture) => void;
   /** 강의 블록 위에 겹쳐 그릴 레이어 (검색 미리보기) */
   overlay?: ReactNode;
+  /** 그리드를 감싼 요소 (이미지 내보내기) */
+  gridRef?: Ref<HTMLDivElement>;
   className?: string;
 };
 
@@ -321,6 +330,7 @@ function TimetableColumn({
   header,
   onLectureClick,
   overlay,
+  gridRef,
   className,
 }: TimetableColumnProps) {
   return (
@@ -328,7 +338,7 @@ function TimetableColumn({
       {/* Figma `top`: 높이 56, 여백 13 · 20 */}
       <header className="flex h-14 shrink-0 items-center justify-between gap-2.5 px-5">{header}</header>
       {/* 그리드는 남은 높이에 맞춰 칸을 나눈다. 스크롤하지 않는다 */}
-      <div className="min-h-0 flex-1">
+      <div ref={gridRef} className="min-h-0 flex-1">
         <TimetableGrid range={range} className="h-full">
           {timetable && (
             <LectureLayer lectures={timetable.lectures} palette={palette} onLectureClick={onLectureClick} />
