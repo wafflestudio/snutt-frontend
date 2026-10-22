@@ -2,12 +2,15 @@
 
 import { useMemo, useState } from 'react';
 import { DevHeader } from '@/app/(dev)/_components/DevHeader';
+import { TimeSearchDialog } from '@/features/main/components/TimeSearchDialog';
 import { SAMPLE_PALETTE } from '@/features/main/sample-data';
 import { getGridRange } from '@/domain/grid-layout';
 import type { ClassTime, TimetableLecture } from '@/domain/lecture';
-import { type Day, toMinute } from '@/domain/time';
+import { type Day, formatDayTimeRange, toMinute } from '@/domain/time';
+import { EMPTY_TIME_FILTER } from '@/domain/time-filter';
 import { LectureLayer } from '@/shared/timetable-grid/LectureLayer';
 import { TimetableGrid } from '@/shared/timetable-grid/TimetableGrid';
+import { Button } from '@/shared/ui/Button';
 import { Tab, TabList, Tabs } from '@/shared/ui/Tabs';
 
 const time = (day: Day, start: string, end: string, place: string | null = '058-331'): ClassTime => {
@@ -61,6 +64,8 @@ export function GridPreview() {
   const [sample, setSample] = useState<SampleName>('basic');
   const [readonly, setReadonly] = useState(false);
   const [clicked, setClicked] = useState<string | null>(null);
+  const [timeSearchOpen, setTimeSearchOpen] = useState(false);
+  const [timeFilter, setTimeFilter] = useState(EMPTY_TIME_FILTER);
 
   const lectures = SAMPLES[sample];
   const range = useMemo(() => getGridRange(lectures.flatMap((l) => l.classTimes)), [lectures]);
@@ -81,7 +86,22 @@ export function GridPreview() {
           읽기 전용
         </label>
         <span className="text-14-regular text-assistive">클릭한 강의: {clicked ?? '없음'}</span>
+        {/* 시간대 검색 모달 (5-4): 그리드의 selectable 레이어. 지금 예시 강의를 시간표로 본다 */}
+        <Button size="sm" variant="outline" onClick={() => setTimeSearchOpen(true)}>
+          시간대 검색
+        </Button>
+        <span className="text-14-regular text-assistive">
+          고른 시간: {timeFilter.times.map(formatDayTimeRange).join(', ') || '없음'}
+          {timeFilter.emptyOnly && ' · 빈 시간대만'}
+        </span>
       </div>
+      <TimeSearchDialog
+        open={timeSearchOpen}
+        onOpenChange={setTimeSearchOpen}
+        value={timeFilter}
+        onChange={setTimeFilter}
+        occupied={lectures.flatMap((l) => l.classTimes)}
+      />
 
       <TimetableGrid range={range} className="h-200">
         <LectureLayer
