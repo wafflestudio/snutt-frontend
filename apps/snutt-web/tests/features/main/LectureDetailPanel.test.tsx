@@ -99,10 +99,10 @@ describe('LectureDetailPanel', () => {
   it('삭제는 확인을 받은 뒤에 한다', async () => {
     const { onRemove } = setup();
     await userEvent.click(screen.getByRole('button', { name: '삭제' }));
-    const dialog = await screen.findByRole('alertdialog', { name: '‘서양근대윤리학의 이해’ 강의를 삭제하시겠습니까?' });
+    const dialog = await screen.findByRole('alertdialog', { name: '강의를 삭제하시겠습니까?' });
     expect(onRemove).not.toHaveBeenCalled();
 
-    await userEvent.click(within(dialog).getByRole('button', { name: '삭제' }));
+    await userEvent.click(within(dialog).getByRole('button', { name: '확인' }));
     expect(onRemove).toHaveBeenCalledTimes(1);
   });
 

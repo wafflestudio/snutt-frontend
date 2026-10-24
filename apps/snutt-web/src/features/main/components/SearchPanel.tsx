@@ -8,6 +8,7 @@ import { EMPTY_SEARCH_FILTER, isSearchFilterEmpty, toSearchConditions } from '@/
 import { useDebouncedValue } from '@/shared/lib/use-debounced-value';
 import { ConfirmDialog } from '@/shared/ui/Dialog';
 import { SearchField } from '@/shared/ui/SearchField';
+import { Toast } from '@/shared/ui/Toast';
 import { preview } from '@/features/main/preview-store';
 import { type LectureCellsOptions, useLectureCells } from '@/features/main/use-lecture-cells';
 import { LectureCell } from './LectureCell';
@@ -19,7 +20,7 @@ import { FilterChips, SearchFilterDialog } from './SearchFilterDialog';
 const SEARCH_DELAY = 300;
 
 type SearchPanelProps = Omit<LectureCellsOptions, 'onBookmarkAdded'> & {
-  /** 관심강좌에 넣은 뒤 `관심강좌 탭으로 이동하시겠습니까?` 에 확인하면 부른다 */
+  /** 관심강좌에 넣은 뒤 뜨는 `관심강좌에 추가되었습니다.` 의 `보기` 를 누르면 부른다 */
   onGoToBookmarks: () => void;
 };
 
@@ -39,9 +40,9 @@ export function SearchPanel({ onGoToBookmarks, ...options }: SearchPanelProps) {
   );
   const lectures = search.data?.pages.flatMap((page) => page.lectures) ?? [];
 
-  // 관심강좌에 넣으면 관심강좌 탭으로 갈지 묻는다 (Figma `팝업 예시`)
-  const [askingMove, setAskingMove] = useState(false);
-  const { cellProps, overlapDialog } = useLectureCells({ ...options, onBookmarkAdded: () => setAskingMove(true) });
+  // 관심강좌에 넣으면 알리고, `보기` 로 관심강좌 탭에 갈 수 있게 한다 (Figma `관심강좌 추가`, 10-17)
+  const [bookmarkAdded, setBookmarkAdded] = useState(false);
+  const { cellProps, overlapDialog } = useLectureCells({ ...options, onBookmarkAdded: () => setBookmarkAdded(true) });
 
   // 커서를 올린 강의는 시간표에 미리 보여 준다. 검색 탭이 사라지면(학기 변경) 지운다
   useEffect(() => preview.clear, []);
@@ -100,11 +101,11 @@ export function SearchPanel({ onGoToBookmarks, ...options }: SearchPanelProps) {
       </ResultList>
 
       <ConfirmDialog {...overlapDialog} />
-      <ConfirmDialog
-        open={askingMove}
-        onOpenChange={setAskingMove}
-        message="관심강좌 탭으로 이동하시겠습니까?"
-        onConfirm={onGoToBookmarks}
+      <Toast
+        open={bookmarkAdded}
+        onOpenChange={setBookmarkAdded}
+        message="관심강좌에 추가되었습니다."
+        action={{ label: '보기', onClick: onGoToBookmarks }}
       />
     </div>
   );
