@@ -9,14 +9,18 @@ type PanelColumnProps = {
   children: ReactNode;
   /** 안쪽 여백과 간격. 패널마다 Figma 값이 다르다 */
   className?: string;
+  /** 폭(px). 없으면 Figma 의 430px. 목록 패널은 끌어서 바꾼다 */
+  width?: number;
 };
 
 /** 패널 한 칸: 폭 430px(Figma), 오른쪽 선. 목록 · 강의 상세 · 직접 추가가 함께 쓴다. */
-export function PanelColumn({ label, children, className }: PanelColumnProps) {
+export function PanelColumn({ label, children, className, width }: PanelColumnProps) {
   return (
     <aside
       aria-label={label}
-      className={clsx('flex w-107.5 shrink-0 flex-col border-r border-line-light bg-normal', className)}
+      // relative: 목록 패널의 폭 손잡이(ResizeHandle)를 오른쪽 끝에 붙인다
+      className={clsx('relative flex w-107.5 shrink-0 flex-col border-r border-line-light bg-normal', className)}
+      style={width === undefined ? undefined : { width }}
     >
       {children}
     </aside>

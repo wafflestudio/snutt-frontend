@@ -3,9 +3,11 @@
 import type { ReactNode } from 'react';
 import { IconButton } from '@/shared/ui/IconButton';
 import { IconDockToRight } from '@/shared/ui/icons';
+import { ResizeHandle } from '@/shared/ui/ResizeHandle';
 import { Tab, TabList, TabPanel, Tabs } from '@/shared/ui/Tabs';
 import type { Semester } from '@/domain/semester';
 import type { PanelView } from '@/features/main/main-view';
+import { PANEL_MAX_WIDTH, PANEL_MIN_WIDTH, panelWidth, usePanelWidth } from '@/features/main/panel-width';
 import { PanelColumn } from './PanelColumn';
 import { SemesterSelect } from './SemesterSelect';
 
@@ -42,9 +44,20 @@ export function MainPanel({
   bookmark,
 }: MainPanelProps) {
   const { tab } = panel;
+  const width = usePanelWidth();
   return (
     // Figma `검색 목록 영역`: 여백 위 · 양옆 20, 학기 · 탭 · 검색창 사이 20. 패널은 스크롤하지 않고 탭 안의 목록만 스크롤한다
-    <PanelColumn label="강의 목록" className="min-h-0 gap-5 px-5 pt-5">
+    <PanelColumn label="강의 목록" className="min-h-0 gap-5 px-5 pt-5" width={width}>
+      {/* 오른쪽 경계를 끌어 폭을 바꾼다. 더블클릭하면 Figma 폭(430px)으로 돌아간다 */}
+      <ResizeHandle
+        label="목록 패널 너비"
+        value={width}
+        min={PANEL_MIN_WIDTH}
+        max={PANEL_MAX_WIDTH}
+        onChange={panelWidth.set}
+        onCommit={panelWidth.save}
+        onReset={panelWidth.reset}
+      />
       <div className="flex items-center justify-between">
         <SemesterSelect semesters={semesters} value={semester} onValueChange={onSemesterChange} />
         {/* Figma `토글 버튼`: dock_to_right 아이콘, Text/med */}

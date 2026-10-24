@@ -81,6 +81,21 @@ describe('MainScreen', () => {
     expect(screen.getAllByText('월')).toHaveLength(1);
   });
 
+  it('목록 패널의 오른쪽 경계로 폭을 바꾸면 이 브라우저에 저장한다', async () => {
+    await renderMain();
+    const handle = screen.getByRole('separator', { name: '목록 패널 너비' });
+    expect(panel('강의 목록')).toHaveStyle({ width: '430px' });
+
+    act(() => handle.focus());
+    await userEvent.keyboard('{ArrowRight}{ArrowRight}');
+    expect(panel('강의 목록')).toHaveStyle({ width: '462px' });
+    expect(window.localStorage.getItem('snutt-web:panel-width')).toBe('462');
+
+    await userEvent.dblClick(handle);
+    expect(panel('강의 목록')).toHaveStyle({ width: '430px' });
+    expect(window.localStorage.getItem('snutt-web:panel-width')).toBe('430');
+  });
+
   it('패널을 접으면 시간표만 남는다 (펼치기는 좌측 바의 검색)', async () => {
     await renderMain();
     await userEvent.click(screen.getByRole('button', { name: '패널 접기' }));
