@@ -8,7 +8,7 @@ import type { ColorPair } from '@/domain/color';
 import { getGridRange, type GridRange } from '@/domain/grid-layout';
 import type { Lecture, TimetableLecture } from '@/domain/lecture';
 import { toSemesterKey } from '@/domain/semester';
-import { getNewTimetableTitle, type Timetable } from '@/domain/timetable';
+import { getNewTimetableTitle, type Timetable, type TimetableId } from '@/domain/timetable';
 import { LectureLayer } from '@/shared/timetable-grid/LectureLayer';
 import { PreviewLayer } from '@/shared/timetable-grid/PreviewLayer';
 import { TimetableGrid } from '@/shared/timetable-grid/TimetableGrid';
@@ -112,8 +112,10 @@ export function MainScreen() {
   const lectureCells = {
     semester: timetables.semester,
     timetable: selected,
-    onAdd: (lecture: Lecture, options: { force?: boolean; onOverlap: (message: string) => void }) =>
-      selected && timetables.addLecture(selected.id, lecture.id, options),
+    // 비교 중에는 담을 때 왼쪽 · 오른쪽 시간표 중 하나를 고른다
+    compareTimetable,
+    onAdd: (to: TimetableId, lecture: Lecture, options: { force?: boolean; onOverlap: (message: string) => void }) =>
+      timetables.addLecture(to, lecture.id, options),
     onRemove: (lecture: TimetableLecture) => selected && timetables.removeLecture(selected.id, lecture.id),
     onOpen: openCourse,
     onFailure: timetables.notifyFailure,
@@ -289,15 +291,23 @@ export function MainScreen() {
                 ) : (
                   <p className="text-14-regular text-assistive">비교할 시간표가 없습니다</p>
                 )}
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="shrink-0"
-                  onClick={() => setView({ ...view, compare: null })}
-                >
-                  <IconCompare />
-                  비교 종료
-                </Button>
+                {/* Figma `top` 의 `복수 시간표`: 탭 · ··· · 비교 종료 */}
+                <div className="flex shrink-0 items-center gap-2.5">
+                  {compareRight && (
+                    <TimetableMenu
+                      label="비교할 시간표 메뉴"
+                      timetable={compareRight}
+                      onRename={(title) => timetables.rename(compareRight.id, title)}
+                      onSetPrimary={(isPrimary) => timetables.setPrimary(compareRight.id, isPrimary)}
+                      // 지우면 남은 다른 시간표를 비교한다
+                      onRemove={() => timetables.remove(compareRight.id)}
+                    />
+                  )}
+                  <Button size="sm" variant="outline" onClick={() => setView({ ...view, compare: null })}>
+                    <IconCompare />
+                    비교 종료
+                  </Button>
+                </div>
               </>
             }
           />

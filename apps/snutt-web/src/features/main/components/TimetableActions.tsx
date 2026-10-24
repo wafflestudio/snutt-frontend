@@ -37,14 +37,22 @@ export function AddTimetableButton({ defaultTitle, onCreate }: AddTimetableButto
 }
 
 type TimetableMenuProps = {
+  /** 버튼 이름. 비교 중에는 두 헤더에 하나씩 있어 나눈다 */
+  label?: string;
   timetable: Pick<TimetableSummary, 'title' | 'isPrimary'>;
   onRename: (title: string) => void;
   onSetPrimary: (isPrimary: boolean) => void;
   onRemove: () => void;
 };
 
-/** 헤더의 ··· : 고른 시간표의 이름 변경, 기본 시간표 지정 · 해제, 삭제 */
-export function TimetableMenu({ timetable, onRename, onSetPrimary, onRemove }: TimetableMenuProps) {
+/** 헤더의 ··· : 그 헤더 시간표의 이름 변경, 기본 시간표 지정 · 해제, 삭제 */
+export function TimetableMenu({
+  label = '시간표 메뉴',
+  timetable,
+  onRename,
+  onSetPrimary,
+  onRemove,
+}: TimetableMenuProps) {
   const [dialog, setDialog] = useState<'rename' | 'remove' | null>(null);
   const closeDialog = (open: boolean) => {
     if (!open) setDialog(null);
@@ -52,7 +60,7 @@ export function TimetableMenu({ timetable, onRename, onSetPrimary, onRemove }: T
 
   return (
     <>
-      <Menu trigger={<IconButton label="시간표 메뉴" icon={<IconMoreHorizontal />} />} align="end">
+      <Menu trigger={<IconButton label={label} icon={<IconMoreHorizontal />} />} align="end">
         <MenuItem onClick={() => setDialog('rename')}>이름 변경</MenuItem>
         <MenuItem onClick={() => onSetPrimary(!timetable.isPrimary)}>
           {timetable.isPrimary ? '기본 시간표 해제' : '기본 시간표로 지정'}

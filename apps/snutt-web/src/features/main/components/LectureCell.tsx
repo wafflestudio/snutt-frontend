@@ -2,6 +2,7 @@ import { clsx } from 'clsx';
 import type { MouseEvent, ReactNode } from 'react';
 import { getClassTimeSummary, getPlaceSummary, getSyllabusUrl, type Lecture } from '@/domain/lecture';
 import { IconButton } from '@/shared/ui/IconButton';
+import { Menu, MenuItem } from '@/shared/ui/Menu';
 import { openInPopup } from '@/shared/lib/open-in-popup';
 import {
   IconAdd,
@@ -23,12 +24,16 @@ type LectureCellProps = {
   /** 담을 시간표가 없으면 담기 버튼을 누를 수 없다 */
   canAdd: boolean;
   onAddToggle: () => void;
+  /** 있으면 `+` 를 눌렀을 때 담을 시간표를 고르는 메뉴를 연다 (비교 중, 9-2). 담겨 있을 때의 `−` 는 그대로 onAddToggle */
+  addTargets?: readonly AddTarget[];
   onBookmarkToggle: () => void;
   /** 셀을 누르면 강의 상세를 연다. 안의 버튼 · 강의계획서를 누를 때는 부르지 않는다 */
   onOpen?: () => void;
   /** 커서를 올리거나 안의 버튼에 포커스가 가면 true, 벗어나면 false (시간표 미리보기, 5-2) */
   onPreviewChange?: (previewing: boolean) => void;
 };
+
+export type AddTarget = { label: string; disabled: boolean; onSelect: () => void };
 
 /**
  * 강의 한 줄 (Figma `cell`). 검색 결과에 쓰고, 관심강좌(7-1) · 강의 목록(7-2)에서도 쓴다.
@@ -41,6 +46,7 @@ export function LectureCell({
   bookmarked,
   canAdd,
   onAddToggle,
+  addTargets,
   onBookmarkToggle,
   onOpen,
   onPreviewChange,
@@ -120,13 +126,33 @@ export function LectureCell({
             icon={<IconBookmarkFill className="size-4" />}
             onClick={onBookmarkToggle}
           />
-          <IconButton
-            variant="circle"
-            label={added ? '시간표에서 빼기' : '시간표에 담기'}
-            icon={added ? <IconRemove className="size-5.5" /> : <IconAdd className="size-5.5" />}
-            disabled={!added && !canAdd}
-            onClick={onAddToggle}
-          />
+          {!added && addTargets ? (
+            <Menu
+              trigger={
+                <IconButton
+                  variant="circle"
+                  label="시간표에 담기"
+                  icon={<IconAdd className="size-5.5" />}
+                  disabled={!canAdd}
+                />
+              }
+              align="end"
+            >
+              {addTargets.map(({ label, disabled, onSelect }) => (
+                <MenuItem key={label} onClick={onSelect} disabled={disabled}>
+                  {label}
+                </MenuItem>
+              ))}
+            </Menu>
+          ) : (
+            <IconButton
+              variant="circle"
+              label={added ? '시간표에서 빼기' : '시간표에 담기'}
+              icon={added ? <IconRemove className="size-5.5" /> : <IconAdd className="size-5.5" />}
+              disabled={!added && !canAdd}
+              onClick={onAddToggle}
+            />
+          )}
         </div>
         {syllabusUrl && (
           // Figma: 높이 24, 여백 4 · 8, 둥글기 5, 화살표 8px
