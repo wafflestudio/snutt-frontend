@@ -240,6 +240,45 @@ describe('MainScreen', () => {
       expect(block('경영전략')).not.toBeInTheDocument();
     });
 
+    it('비교 중에는 담을 시간표를 고르고, 이미 담긴 시간표는 고를 수 없다', async () => {
+      await renderMain();
+      await userEvent.click(screen.getByRole('button', { name: '시간표 비교' }));
+      await screen.findAllByRole('article');
+
+      await userEvent.click(result('운영관리').getByRole('button', { name: '시간표에 담기' }));
+      await userEvent.click(await screen.findByRole('menuitem', { name: '보조 시간표에 추가' }));
+      await waitFor(() => expect(tabNames('비교할 시간표')[0]).toBe('시간표 2(12학점)'));
+      expect(tabNames('시간표')[0]).toBe('시간표 1, 기본 시간표(15학점)');
+      // 왼쪽에는 없으니 여전히 담기다
+      await userEvent.click(result('운영관리').getByRole('button', { name: '시간표에 담기' }));
+      expect(await screen.findByRole('menuitem', { name: '보조 시간표에 추가' })).toHaveAttribute(
+        'aria-disabled',
+        'true',
+      );
+
+      await userEvent.click(screen.getByRole('menuitem', { name: '기본 시간표에 추가' }));
+      await waitFor(() => expect(tabNames('시간표')[0]).toBe('시간표 1, 기본 시간표(18학점)'));
+      // 왼쪽에 담기면 빼기가 된다
+      expect(result('운영관리').getByRole('button', { name: '시간표에서 빼기' })).toBeInTheDocument();
+    });
+
+    it('비교 중 오른쪽 시간표에 담다가 시간이 겹치면 오른쪽 시간표에 덮어쓴다', async () => {
+      await renderMain();
+      await userEvent.click(screen.getByRole('button', { name: '시간표 비교' }));
+      await screen.findAllByRole('article');
+      // 마케팅원론(월 · 수 10:00)은 시간표 2 의 자료구조와 겹친다
+      await userEvent.click(result('마케팅원론').getByRole('button', { name: '시간표에 담기' }));
+      await userEvent.click(await screen.findByRole('menuitem', { name: '보조 시간표에 추가' }));
+      const confirm = await screen.findByRole('alertdialog', {
+        name: "'자료구조' 강의와 시간이 겹칩니다.\n강의를 덮어씌우겠습니까?",
+      });
+      await userEvent.click(within(confirm).getByRole('button', { name: '확인' }));
+
+      await waitFor(() => expect(screen.queryByText('자료구조')).not.toBeInTheDocument());
+      expect(screen.getAllByText('마케팅원론').length).toBeGreaterThan(1); // 검색 결과 + 오른쪽 블록
+      expect(tabNames('시간표')[0]).toBe('시간표 1, 기본 시간표(15학점)');
+    });
+
     it('결과에 커서를 올리면 시간표에 그 자리를 미리 보여 주고, 벗어나면 지운다', async () => {
       await renderMain();
       await screen.findAllByRole('article');
@@ -563,5 +602,22 @@ describe('MainScreen', () => {
 
     await userEvent.click(tabList('시간표').getByRole('tab', { name: '시간표 2' }));
     expect(tabNames('비교할 시간표')).toEqual(['시간표 1, 기본 시간표(15학점)', '시간표 3']);
+  });
+
+  it('비교하는 쪽의 ··· 메뉴는 오른쪽 시간표를 바꾸고, 지우면 남은 시간표를 비교한다', async () => {
+    await renderMain();
+    await userEvent.click(screen.getByRole('button', { name: '시간표 비교' }));
+
+    await userEvent.click(screen.getByRole('button', { name: '비교할 시간표 메뉴' }));
+    await userEvent.click(await screen.findByRole('menuitem', { name: '이름 변경' }));
+    await userEvent.clear(await screen.findByRole('textbox', { name: '시간표 이름 변경' }));
+    await userEvent.keyboard('전공{Enter}');
+    await waitFor(() => expect(tabNames('비교할 시간표')).toEqual(['전공(9학점)', '시간표 3']));
+    expect(tabNames('시간표')).toEqual(['시간표 1, 기본 시간표(15학점)', '전공', '시간표 3']);
+
+    await userEvent.click(screen.getByRole('button', { name: '비교할 시간표 메뉴' }));
+    await userEvent.click(await screen.findByRole('menuitem', { name: '삭제' }));
+    await userEvent.click(await screen.findByRole('button', { name: '삭제' }));
+    await waitFor(() => expect(tabNames('비교할 시간표')).toEqual(['시간표 3(0학점)']));
   });
 });
