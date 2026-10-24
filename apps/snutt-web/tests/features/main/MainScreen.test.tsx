@@ -259,30 +259,40 @@ describe('MainScreen', () => {
       await waitFor(() => expect(screen.getAllByText('마케팅원론')).toHaveLength(3));
     });
 
-    it('관심강좌를 켜면 관심강좌 탭으로 갈지 묻고, 취소하면 검색 탭에 남는다', async () => {
+    it('관심강좌를 켜면 추가되었다고 알리고, 검색 탭에 남는다', async () => {
       await renderMain();
       await screen.findAllByRole('article');
       const bookmark = () => result('운영관리').getByRole('button', { name: '관심강좌' });
       expect(bookmark()).toHaveAttribute('aria-pressed', 'false');
 
       await userEvent.click(bookmark());
-      const confirm = await screen.findByRole('alertdialog', { name: '관심강좌 탭으로 이동하시겠습니까?' });
-      await userEvent.click(within(confirm).getByRole('button', { name: '취소' }));
+      expect(await screen.findByRole('status')).toHaveTextContent('관심강좌에 추가되었습니다.');
       expect(bookmark()).toHaveAttribute('aria-pressed', 'true');
       expect(screen.getByRole('tab', { name: '검색', selected: true })).toBeInTheDocument();
+    });
 
-      // 끌 때는 묻지 않는다
+    it('관심강좌를 끌 때는 알리지 않는다', async () => {
+      await renderMain();
+      await screen.findAllByRole('article');
+      const bookmark = () => result('운영관리').getByRole('button', { name: '관심강좌' });
+      await userEvent.click(bookmark());
+      // 보기로 알림을 닫고 검색 탭으로 돌아온다
+      await userEvent.click(within(await screen.findByRole('status')).getByRole('button', { name: '보기' }));
+      await userEvent.click(screen.getByRole('tab', { name: '검색' }));
+      await waitFor(() => expect(bookmark()).toHaveAttribute('aria-pressed', 'true'));
+
       await userEvent.click(bookmark());
       await waitFor(() => expect(bookmark()).toHaveAttribute('aria-pressed', 'false'));
-      expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
     });
 
     it('관심강좌 탭으로 가면 넣은 강의가 있고, 끄면 목록에서 빠진다', async () => {
       await renderMain();
       await screen.findAllByRole('article');
       await userEvent.click(result('운영관리').getByRole('button', { name: '관심강좌' }));
-      await userEvent.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: '확인' }));
+      await userEvent.click(within(await screen.findByRole('status')).getByRole('button', { name: '보기' }));
       expect(screen.getByRole('tab', { name: '관심강좌', selected: true })).toBeInTheDocument();
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
       expect(window.location.search).toBe('?tab=bookmark');
 
       const list = within(screen.getByRole('list', { name: '관심강좌' }));
@@ -392,7 +402,7 @@ describe('MainScreen', () => {
         await renderMain();
         await screen.findAllByRole('article');
         await userEvent.click(result('운영관리').getByRole('button', { name: '관심강좌' }));
-        await userEvent.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: '취소' }));
+        expect(await screen.findByRole('status')).toBeInTheDocument();
         expect(panel('강의 상세')).not.toBeInTheDocument();
 
         // 키보드로는 강의명 버튼으로 연다
@@ -424,7 +434,7 @@ describe('MainScreen', () => {
       await waitFor(() => expect(block('경영전략')).toHaveStyle({ backgroundColor: SAMPLE_PALETTE[6].bg }));
 
       await userEvent.click(within(panel('강의 상세')!).getByRole('button', { name: '삭제' }));
-      await userEvent.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: '삭제' }));
+      await userEvent.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: '확인' }));
       await waitFor(() => expect(screen.queryByRole('button', { name: /^경영전략,/ })).not.toBeInTheDocument());
       expect(tabNames('시간표')[0]).toBe('시간표 1, 기본 시간표(12학점)');
       expect(panel('강의 상세')).not.toBeInTheDocument();

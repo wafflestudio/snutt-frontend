@@ -1,6 +1,6 @@
 # snutt-web 디자인 문의
 
-> 기준: Figma `SNUTT_web(171016~)` "웹 업데이트" 페이지의 **완료** 영역, Variables `Semantic` 컬렉션 (2026-09-26 확인, 2026-10-04 `Web 컴포넌트` 섹션과 텍스트 스타일 반영, 2026-10-09 10-07 수정분 반영, 2026-10-17 10-12 ~ 10-14 수정분 반영)
+> 기준: Figma `SNUTT_web(171016~)` "웹 업데이트" 페이지의 **완료** 영역, Variables `Semantic` 컬렉션 (2026-09-26 확인, 2026-10-04 `Web 컴포넌트` 섹션과 텍스트 스타일 반영, 2026-10-09 10-07 수정분 반영, 2026-10-17 10-12 ~ 10-14 수정분 반영, 2026-10-24 10-17 수정분 반영)
 > 개발 플랜: [snutt-web-dev-plan.md](./snutt-web-dev-plan.md)
 
 snutt-web 개발 중 디자인에서 확인이 필요한 내용입니다. 답을 받으면 항목마다 결과를 적고 개발 플랜에 반영합니다.
@@ -206,7 +206,7 @@ Variable 에 연결만 하면 됩니다.
 3. **시간 표기**: 강의 상세는 `월 09:00 ~ 11:50`(24시간), 직접 추가는 `오전 9:00`(오전 · 오후)입니다. 같은 강의의 시간을 두 화면에서 다르게 쓰는데, 의도인지 알려 주세요.
 4. **고른 강의 표시**: 시간표의 강의를 눌러 상세를 열었을 때 그리드에서 그 강의를 따로 표시하나요? Figma 에는 표시가 없어 지금은 그대로 둡니다.
 5. **삭제 글자색**: `삭제` 가 `#E54459`(`SNUTT/red`, 강의 블록 빨강)입니다. 경고 색 `Text/warning`(`#ED6C58`)이 따로 있는데, 어느 것을 써야 할까요? 지금은 Figma 대로 `SNUTT/red` 입니다.
-6. **삭제 확인**: 삭제를 누르면 묻는 팝업 디자인이 없어서 확인 팝업 모양으로 `‘경영전략’ 강의를 삭제하시겠습니까?` 를 띄웁니다.
+6. ~~**삭제 확인**~~ ✅ 해소 (10-17): 완료 영역에 `강의상세` 의 alert 프레임이 생겨 `강의를 삭제하시겠습니까?` · `취소` / `확인` 으로 맞췄습니다.
 
 ### 4-10. 서버와 연결한 메인 화면
 
@@ -281,7 +281,7 @@ Figma 에 친구 화면이 아직 없어(완료 · 작업 중 영역 모두, 10-
 완료 영역 `관심강좌` 프레임을 기준으로 만들면서 정해지지 않은 것입니다.
 
 1. **검색창 · 필터 칩**: 프레임에 검색 탭과 같은 검색창과 필터 칩이 있습니다. 관심강좌 안에서 찾는 것인지, 검색 프레임을 복사하다 남은 것인지 궁금합니다. 지금은 두지 않고 목록만 보여 줍니다.
-2. **이동 확인 팝업**: 검색 탭에서 관심강좌를 켤 때마다 `관심강좌 탭으로 이동하시겠습니까?` 를 묻습니다. 끌 때는 묻지 않습니다. 매번 묻는 것이 맞을까요?
+2. ~~**이동 확인 팝업**~~ ✅ 해소 (10-17): `관심강좌 추가` 프레임에서 확인 팝업이 빠지고 토스트 `관심강좌에 추가되었습니다.` · `보기` 로 바뀌었습니다. `보기` 를 누르면 관심강좌 탭으로 갑니다. 끌 때는 띄우지 않습니다. 정해지지 않은 것은 [4-23](#4-23-관심강좌-토스트).
 3. **관심강좌를 끌 때**: 관심강좌 탭에서 끄면 바로 목록에서 빠집니다. 되돌리기나 확인이 필요할까요?
 4. **빈 목록**: `관심강좌가 없습니다` 글자만 띄웁니다.
 
@@ -334,6 +334,15 @@ Figma 에 친구 화면이 아직 없어(완료 · 작업 중 영역 모두, 10-
 8. **닫기**: `×` · Esc · 바깥을 누르면 고른 것을 버리고, `필터 적용` 을 눌러야 검색에 씁니다. 10-14 에 하단의 `초기화` 가 빠져서 두지 않았습니다. 고른 것은 하단 칩의 `×` 로 하나씩 지웁니다.
 9. **크기**: `필터 적용` (80 × 32)은 그 크기의 버튼이 없어 기본 버튼(높이 38)을 씁니다. 검색창 아래 칩은 한 줄로 두고 넘치면 옆으로 밉니다.
 
+### 4-23. 관심강좌 토스트
+
+10-17 완료 영역 `관심강좌 추가` 프레임의 토스트(336 × 41, 검정 50% · 흐림 4)를 만들면서 정해지지 않은 것입니다.
+
+1. **사라지는 시간**: 4초 뒤 저절로 사라지고, 커서를 올리거나 `보기` 에 포커스가 있는 동안은 남아 있습니다. 정해진 시간이 있을까요?
+2. **자리**: 프레임대로 화면 위에서 20px, 화면 가로 가운데에 띄웁니다. 시간표 헤더(탭)를 가리는데 괜찮을까요?
+3. **글자**: 시간대 검색 안내 상자와 같은 `14/Medium` 을 썼습니다. 텍스트 스타일이 연결되어 있지 않아 다르면 알려 주세요.
+4. **다른 알림**: 지금 확인 버튼 하나짜리 알림 팝업으로 띄우는 것(시간표 이미지 복사 완료 등, [4-20](#4-20-시간표-내보내기-공유--다운로드) 4번)도 이 토스트로 바꿀까요?
+
 ## 5. 개발에서 임시로 정한 것
 
 답을 받기 전까지 개발은 아래 값으로 진행합니다. 답을 받으면 이 표에서 바꿀 곳을 찾아 고칩니다.
@@ -348,13 +357,13 @@ Figma 에 친구 화면이 아직 없어(완료 · 작업 중 영역 모두, 10-
 | 펼친 목록 (4-6)          | Figma `드롭다운` 모양을 색상 선택까지 모든 메뉴 · 셀렉트에 씀                                                                                                                                                | `apps/snutt-web/src/shared/ui/popup.ts`                                                             |
 | 시간표 탭 팝업 (4-7)     | 확인 팝업 모양에 입력칸을 넣어 씀. + 를 누르면 `시간표 N` 이 채워진 이름 입력 팝업을 연다                                                                                                                    | `apps/snutt-web/src/features/main/components/TimetableActions.tsx`                                  |
 | 직접 추가 (4-8)          | `<` · 취소는 목록으로, `×` 는 패널 접기. 시간은 5분 단위 오전 6:00 ~ 자정, 자정은 `오전 12:00`. 고른 값은 `Text/plain`. 시간이 겹치면 추가하지 않음. 모든 시간 줄에 `−` (10-14 프레임대로)                   | `apps/snutt-web/src/features/main/components/CustomLectureForm.tsx`                                 |
-| 강의 상세 (4-9)          | 직접 추가한 강의는 수강 정보 · 강의계획서를 빼고 학점을 위에 둠. 정원은 `80(60)`. 삭제는 `SNUTT/red`, 확인 팝업을 거침. 지도에서 보기(6-3)는 해당 단위까지 비워 둠                                           | `apps/snutt-web/src/features/main/components/LectureDetailPanel.tsx`                                |
+| 강의 상세 (4-9)          | 직접 추가한 강의는 수강 정보 · 강의계획서를 빼고 학점을 위에 둠. 정원은 `80(60)`. 삭제는 `SNUTT/red`, 확인 팝업(`강의를 삭제하시겠습니까?`)을 거침. 지도에서 보기(6-3)는 해당 단위까지 비워 둠               | `apps/snutt-web/src/features/main/components/LectureDetailPanel.tsx`                                |
 | 패널 접기 버튼 (4-5)     | 접기는 학기 오른쪽 `dock_to_right` 버튼. 펼치기는 좌측 바의 `검색`                                                                                                                                           | `apps/snutt-web/src/features/main/components/MainScreen.tsx`                                        |
 | 로그인 · 회원가입 (4-12) | 예전 웹 로그인 구성. 로그인 유지 체크박스 없음. 로그아웃은 좌측 바 더보기 메뉴                                                                                                                               | `apps/snutt-web/src/features/auth/components/`, `Lnb.tsx`                                           |
 | 강의 편집 (4-14)         | 강의명 · 교수 · 색상 · 비고 · 시간 및 장소(직접 추가한 강의는 학점도). 입력칸은 `Background/light` 바탕. 시간 줄과 취소 · 저장 버튼은 직접 추가를 따름. 다른 강의와 겹치면 덮어쓸지 물음. 원래대로 버튼 없음 | `apps/snutt-web/src/features/main/components/LectureDetailPanel.tsx`, `ClassTimeFields.tsx`         |
 | 검색 미리보기 (4-13)     | 검정 20%(`Background/deem`) 블록에 강의명 · 장소를 흰 글자로(10-13 `관심강좌` 프레임). 그리드는 늘리지 않음. 비교 중에는 왼쪽에만                                                                            | `apps/snutt-web/src/shared/timetable-grid/PreviewLayer.tsx`                                         |
 | 검색 결과 (4-11)         | 검색어가 없으면 전체 강의. 회색 배경은 커서를 올렸을 때. 결과를 누르면 상세(담지 않은 강의는 `시간표에 담기`). 평점은 글자만. 겹치면 서버 문구로 덮어쓸지 확인                                               | `apps/snutt-web/src/features/main/components/SearchPanel.tsx`, `LectureCell.tsx`                    |
-| 관심강좌 탭 (4-17)       | 목록만(검색창 · 필터 칩 없음). 켤 때마다 이동 확인 팝업, 끌 때는 바로 빠짐                                                                                                                                   | `apps/snutt-web/src/features/main/components/BookmarkPanel.tsx`, `SearchPanel.tsx`                  |
+| 관심강좌 탭 (4-17)       | 목록만(검색창 · 필터 칩 없음). 켜면 토스트(4초, 4-23), 끌 때는 바로 빠짐                                                                                                                                     | `apps/snutt-web/src/features/main/components/BookmarkPanel.tsx`, `SearchPanel.tsx`                  |
 | 시간대 검색 (4-18)       | 고른 시간과 빈 시간대만을 함께 씀. 5-3 전까지 검색창 필터 아이콘으로 엶. 회색 블록은 `Line/border`, 안내 상자 배경은 임시 색. 월~금 9~22시, 30분 단위. 닫으면 버림                                           | `apps/snutt-web/src/features/main/components/TimeSearchDialog.tsx`                                  |
 | 강의평 보기 (4-19)       | 태그 탭 통계는 뺌(API 없음). 이메일 인증 전이면 서버 문구만, 직접 추가한 강의는 안내만. 처음은 추천순, 본문 두 줄 + 더보기. 좋아요 수는 보기만                                                               | `apps/snutt-web/src/features/main/components/EvaluationView.tsx`                                    |
 | 시간표 내보내기 (4-20)   | `···` 왼쪽에 공유 · 다운로드 아이콘(비교 중 숨김). 그리드만 2배 PNG. 공유는 운영체제 공유 창, 못 하면 이미지 복사 후 알림 팝업                                                                               | `apps/snutt-web/src/features/main/components/TimetableActions.tsx`                                  |
@@ -362,26 +371,4 @@ Figma 에 친구 화면이 아직 없어(완료 · 작업 중 영역 모두, 10-
 | 친구 목록 (4-16)         | 메인 목록 패널 모양에 `친구` · `받은 요청` · `보낸 요청` 탭. 줄은 이름 + `닉네임#태그`, 아바타 없음. 받은 요청은 `거절` · `수락`(묻지 않음), 보낸 요청은 보기만. 실패하면 알림 팝업                          | `apps/snutt-web/src/features/friends/components/`                                                   |
 | 모서리 둥글기            | 입력칸 5px → 6px, 헤더 버튼 2px 는 그대로                                                                                                                                                                    | 각 컴포넌트                                                                                         |
 | Variables 값 (1장)       | Figma 값 그대로                                                                                                                                                                                              | `apps/snutt-web/design-tokens/*.tokens.json`                                                        |
-| 항목                     | 임시 결정                                                                                                                                                                                                    | 바꿀 곳                                                                                             |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
-| 글자 스타일 (A)          | Figma 텍스트 스타일 10개를 같은 이름으로 씀. 버튼 글자는 `15/Medium` 을 임시로 추가                                                                                                                          | `apps/snutt-web/src/app/globals.css`                                                                |
-| 필터 칩 색 (4-4)         | 메인 화면 예시대로 쓰고, 나머지 필터 종류는 개발에서 임시로 정함                                                                                                                                             | 검색 패널 (5-1)                                                                                     |
 | 검색 필터 (4-21)         | `구분` 없음. 교양영역 묶음은 앱에서 정함. 정렬기준은 하나만. 학과 즐겨찾기는 브라우저에 저장. 칩 색은 4-21 7번. 닫으면 버림                                                                                  | `apps/snutt-web/src/features/main/components/SearchFilterDialog.tsx`, `src/domain/search-filter.ts` |
-| 아이콘 (C)               | Material Symbols Outlined. 모양이 가장 비슷한 것을 고름                                                                                                                                                      | `apps/snutt-web/scripts/generate-icons.mts`                                                         |
-| 토큰이 없는 색 (B, 2-2)  | 표의 "가까운 토큰"을 씀 (예: 헤더 아이콘 `#979797` → `Text/med`, 입력칸 테두리 `#E9E9EA` → `Line/light`)                                                                                                     | 각 컴포넌트 (`apps/snutt-web/src/shared/ui/`)                                                       |
-| 전환 버튼 글자 (2-4)     | 선택 `Text/alternative`, 비선택 `Text/Assistive`                                                                                                                                                             | `Tabs.tsx`                                                                                          |
-| 펼친 목록 (4-6)          | Figma `드롭다운` 모양을 색상 선택까지 모든 메뉴 · 셀렉트에 씀                                                                                                                                                | `apps/snutt-web/src/shared/ui/popup.ts`                                                             |
-| 시간표 탭 팝업 (4-7)     | 확인 팝업 모양에 입력칸을 넣어 씀. + 를 누르면 `시간표 N` 이 채워진 이름 입력 팝업을 연다                                                                                                                    | `apps/snutt-web/src/features/main/components/TimetableActions.tsx`                                  |
-| 직접 추가 (4-8)          | `<` · 취소는 목록으로, `×` 는 패널 접기. 시간은 5분 단위 오전 6:00 ~ 자정, 자정은 `오전 12:00`. 고른 값은 `Text/plain`. 시간이 겹치면 추가하지 않음. 모든 시간 줄에 `−` (10-14 프레임대로)                   | `apps/snutt-web/src/features/main/components/CustomLectureForm.tsx`                                 |
-| 강의 상세 (4-9)          | 직접 추가한 강의는 수강 정보 · 강의계획서를 빼고 학점을 위에 둠. 정원은 `80(60)`. 삭제는 `SNUTT/red`, 확인 팝업을 거침. 지도에서 보기(6-3)는 해당 단위까지 비워 둠                                           | `apps/snutt-web/src/features/main/components/LectureDetailPanel.tsx`                                |
-| 패널 접기 버튼 (4-5)     | 접기는 학기 오른쪽 `dock_to_right` 버튼. 펼치기는 좌측 바의 `검색`                                                                                                                                           | `apps/snutt-web/src/features/main/components/MainScreen.tsx`                                        |
-| 로그인 · 회원가입 (4-12) | 예전 웹 로그인 구성. 로그인 유지 체크박스 없음. 로그아웃은 좌측 바 더보기 메뉴                                                                                                                               | `apps/snutt-web/src/features/auth/components/`, `Lnb.tsx`                                           |
-| 강의 편집 (4-14)         | 강의명 · 교수 · 색상 · 비고 · 시간 및 장소(직접 추가한 강의는 학점도). 입력칸은 `Background/light` 바탕. 시간 줄과 취소 · 저장 버튼은 직접 추가를 따름. 다른 강의와 겹치면 덮어쓸지 물음. 원래대로 버튼 없음 | `apps/snutt-web/src/features/main/components/LectureDetailPanel.tsx`, `ClassTimeFields.tsx`         |
-| 검색 미리보기 (4-13)     | 검정 20%(`Background/deem`) 블록에 강의명 · 장소를 흰 글자로(10-13 `관심강좌` 프레임). 그리드는 늘리지 않음. 비교 중에는 왼쪽에만                                                                            | `apps/snutt-web/src/shared/timetable-grid/PreviewLayer.tsx`                                         |
-| 검색 결과 (4-11)         | 검색어가 없으면 전체 강의. 회색 배경은 커서를 올렸을 때. 결과를 누르면 상세(담지 않은 강의는 `시간표에 담기`). 평점은 글자만. 겹치면 서버 문구로 덮어쓸지 확인                                               | `apps/snutt-web/src/features/main/components/SearchPanel.tsx`, `LectureCell.tsx`                    |
-| 관심강좌 탭 (4-17)       | 목록만(검색창 · 필터 칩 없음). 켤 때마다 이동 확인 팝업, 끌 때는 바로 빠짐                                                                                                                                   | `apps/snutt-web/src/features/main/components/BookmarkPanel.tsx`, `SearchPanel.tsx`                  |
-| 시간대 검색 (4-18)       | 고른 시간과 빈 시간대만을 함께 씀. 필터 모달의 `시간` 에서 엶. 회색 블록은 `Line/border`, 안내 상자 배경은 임시 색. 월~금 9~22시, 30분 단위. 닫으면 버림                                                     | `apps/snutt-web/src/features/main/components/TimeSearchDialog.tsx`                                  |
-| 서버 연결 상태 (4-10)    | 불러오는 중 · 실패는 시간표 자리에 글자만. 실패한 동작은 확인 버튼 하나짜리 알림 팝업(`NoticeDialog`)                                                                                                        | `apps/snutt-web/src/features/main/components/MainScreen.tsx`                                        |
-| 친구 목록 (4-16)         | 메인 목록 패널 모양에 `친구` · `받은 요청` · `보낸 요청` 탭. 줄은 이름 + `닉네임#태그`, 아바타 없음. 받은 요청은 `거절` · `수락`(묻지 않음), 보낸 요청은 보기만. 실패하면 알림 팝업                          | `apps/snutt-web/src/features/friends/components/`                                                   |
-| 모서리 둥글기            | 입력칸 5px → 6px, 헤더 버튼 2px 는 그대로                                                                                                                                                                    | 각 컴포넌트                                                                                         |
-| Variables 값 (1장)       | Figma 값 그대로                                                                                                                                                                                              | `apps/snutt-web/design-tokens/*.tokens.json`                                                        |

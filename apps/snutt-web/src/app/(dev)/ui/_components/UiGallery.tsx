@@ -15,6 +15,7 @@ import { SearchField } from '@/shared/ui/SearchField';
 import { Select } from '@/shared/ui/Select';
 import { Tab, TabList, TabPanel, Tabs } from '@/shared/ui/Tabs';
 import { TextField } from '@/shared/ui/TextField';
+import { Toast } from '@/shared/ui/Toast';
 
 const TEXT_STYLES = [
   ['text-22-bold', '학기 제목'],
@@ -81,6 +82,7 @@ export function UiGallery() {
   const [chips, setChips] = useState(INITIAL_CHIPS);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [noticeOpen, setNoticeOpen] = useState(false);
+  const [toastOpen, setToastOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [promptOpen, setPromptOpen] = useState(false);
   const [lastAction, setLastAction] = useState('');
@@ -234,15 +236,24 @@ export function UiGallery() {
           <Button variant="outline" onClick={() => setNoticeOpen(true)}>
             알림 팝업
           </Button>
+          <Button variant="outline" onClick={() => setToastOpen(true)}>
+            토스트
+          </Button>
           <span className="text-13-regular text-alternative">{lastAction}</span>
         </Row>
         <ConfirmDialog
           open={confirmOpen}
           onOpenChange={setConfirmOpen}
-          message="관심강좌 탭으로 이동하시겠습니까?"
+          message="강의를 삭제하시겠습니까?"
           onConfirm={() => setLastAction('확인을 눌렀다')}
         />
         <NoticeDialog open={noticeOpen} onOpenChange={setNoticeOpen} message="존재하지 않는 시간표입니다" />
+        <Toast
+          open={toastOpen}
+          onOpenChange={setToastOpen}
+          message="관심강좌에 추가되었습니다."
+          action={{ label: '보기', onClick: () => setLastAction('보기를 눌렀다') }}
+        />
         <PromptDialog
           open={promptOpen}
           onOpenChange={setPromptOpen}

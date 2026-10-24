@@ -266,8 +266,8 @@ function LectureInfo({ lecture, semester, palette, onColorChange, onEdit, onRemo
       <ConfirmDialog
         open={removing}
         onOpenChange={setRemoving}
-        message={`‘${lecture.title}’ 강의를 삭제하시겠습니까?`}
-        confirmLabel="삭제"
+        // Figma `강의상세` 의 alert (10-17)
+        message="강의를 삭제하시겠습니까?"
         onConfirm={onRemove}
       />
     </div>
