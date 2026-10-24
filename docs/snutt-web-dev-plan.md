@@ -318,7 +318,7 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | | 2-2 | 글자 스타일(Figma 텍스트 스타일), 아이콘(Material Symbols), Button, IconButton, TextField, SearchField, Chip, Tabs(밑줄 / 세그먼트). 개발 전용 `/ui` 페이지 | `/ui` 에서 라이트 / 다크 모두 확인 | ✅ #247 |
 | | 2-3 | Base UI 기반 오버레이: ConfirmDialog(확인 팝업), Dialog(큰 모달), Menu(··· 같은 동작 목록), Select, ColorSelect(`색상1~9`). Toast 는 10-17 완료 영역 `관심강좌 추가` 에 생겨 `shared/ui/Toast` 로 만들었다 | | ✅ #252 |
 | **3. 인증** | 3-1 | 로컬 로그인, 회원가입, AuthGuard, 토큰 관리(401 이면 한 번 갱신해 다시 보냄), 좌측 바 더보기의 로그아웃. 화면은 디자인 문의 4-12 | | ✅ #261 |
-| | 3-2 | 소셜 로그인 (Google / Facebook / Kakao) | |  |
+| | 3-2 | 소셜 로그인 (Google / Facebook / Kakao). 신규 Figma 에 버튼 디자인이 없다 (디자인 문의 4-12). 앱 키는 snutt-webclient `.env.dev` · `.env.prod` 의 `VITE_FACEBOOK_APP_ID` · `VITE_GOOGLE_APP_ID` · `VITE_KAKAO_APP_ID`. v1 은 SDK 팝업으로 provider access token 을 받아 서버에 보내는 방식이라 리다이렉트 URL 이 없다(v2 는 `POST /v2/auth/login/{provider}`). snutt-web 의 origin(`localhost:3000`, 배포 도메인)이 각 콘솔에 등록되어 있는지, Kakao 새 SDK 에서 팝업 로그인을 쓸 수 있는지 확인 필요 | |  |
 | | 3-3 | 비밀번호 재설정 (이메일 인증) | |  |
 | **4. 메인 뼈대** | 4-1 | AppShell: 좌측 바(Figma `LNB`: 검색 · 강의평 · 친구 시간표 · 더보기 · 테마 전환), 헤더(직접 추가 · 시간표 비교), 접을 수 있는 패널(push), `MainView` 상태 + URL 동기화. 강의평 · 더보기는 화면이 없어 비활성 | 패널 열림/접힘, 상세, 직접 추가, 비교가 빈 화면으로 전환됨 | ✅ #251 |
 | | 4-2 | **TimetableGrid** (Figma `course`, 요일·시간 자동 범위, 블록에 강의명 + 장소, 모드 구조) | readonly 모드로 실데이터 렌더링 (실데이터 연결은 1-2 이후) | ✅ #250 |
