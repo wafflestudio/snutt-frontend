@@ -344,7 +344,7 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | | 9-4 | 알림 | |  |
 | | 9-5 | timetable-picker 이식 (origin 검사 포함) | 기존 RN 앱에서 동작 확인 |  |
 | **10. 마무리** | 10-1 | Playwright e2e (로그인 → 검색 → 담기 → 삭제). 실제 서버 대신 단위 테스트의 가짜 서버(`fakeSnutt`)를 브라우저 요청에 물린다. PR 마다 CI(`test-integration-snutt-web.yml`)에서 프로덕션 빌드로 돌린다 | | ✅ #282 |
-| | 10-2 | 배포 스크립트: 정적 내보내기(`output: 'export'`) → S3 · CloudFront (snutt-webclient 와 같은 방식. 화면이 모두 클라이언트 렌더링이고 로그인 뒤 화면이라 SSR · SEO 가 필요 없다). `yarn deploy:snutt-web` 으로 dev 태그를 달면 `deploy-snutt-web-dev.yml`, `snutt-web-prod-*` 태그는 `deploy-snutt-web-prod.yml`. 페이지마다 확장자 없는 키(`friends`)로 html 을 한 벌 더 올려 CloudFront 함수 없이 새로 고침이 된다. e2e 도 `out/` 을 띄워 배포물을 확인한다 | 인프라: dev · prod 의 S3 버킷 · CloudFront 배포(기본 루트 객체 `index.html`) · 도메인, GitHub environment secrets `SNUTT_WEB_S3_BUCKET` · `SNUTT_WEB_CLOUDFRONT_DISTRIBUTION_ID` · `SNUTT_WEB_CLIENT_KEY` | 🚧 |
+| | 10-2 | 배포 스크립트: 정적 내보내기(`output: 'export'`) → S3 · CloudFront (snutt-webclient 와 같은 방식. 화면이 모두 클라이언트 렌더링이고 로그인 뒤 화면이라 SSR · SEO 가 필요 없다). `yarn deploy:snutt-web` 으로 dev 태그를 달면 `deploy-snutt-web-dev.yml`, `snutt-web-prod-*` 태그는 `deploy-snutt-web-prod.yml`. 페이지마다 확장자 없는 키(`friends`)로 html 을 한 벌 더 올려 CloudFront 함수 없이 새로 고침이 된다. e2e 도 `out/` 을 띄워 배포물을 확인한다 | 인프라: dev · prod 의 S3 버킷 · CloudFront 배포(기본 루트 객체 `index.html`) · 도메인, GitHub environment secrets `SNUTT_WEB_S3_BUCKET` · `SNUTT_WEB_CLOUDFRONT_DISTRIBUTION_ID` · `SNUTT_WEB_CLIENT_KEY` | ✅ #283 |
 
 **의존 관계**: Phase 5~9 는 Phase 4 이후 서로 독립적이라 병렬 진행 가능. 단 Phase 4-2 그리드는 이후 전부가 의존하므로 먼저 끝낸다. 강의 상세의 강의평 쪽(6-1)은 8-4 에서 채운다. 9-2 비교의 담기 대상 선택은 5-1 담기 이후에 한다.
 
