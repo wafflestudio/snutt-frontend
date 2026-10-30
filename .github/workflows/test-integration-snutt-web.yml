@@ -1,0 +1,44 @@
+name: snutt-web
+
+on:
+  pull_request:
+    branches: [main]
+    paths: ["apps/snutt-web/**", "packages/**"]
+
+jobs:
+  build:
+    name: integration test
+    timeout-minutes: 15
+    runs-on: ubuntu-24.04-arm
+    defaults:
+      run:
+        working-directory: ./apps/snutt-web
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 2
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Install playwright
+        run: yarn playwright install --with-deps chromium
+
+      # 프로덕션 빌드를 띄우고(playwright.config.ts 의 webServer) 가짜 서버로 화면을 따라간다
+      - name: Run Playwright tests
+        run: yarn test:e2e
+
+      - name: Upload report
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: snutt-web-playwright-report
+          path: apps/snutt-web/playwright-report
+          retention-days: 7

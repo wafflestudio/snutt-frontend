@@ -13,6 +13,7 @@
     "tsc": "tsc --noEmit",
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
+    "test:e2e": "playwright test",
     "generate:tokens": "node scripts/generate-tokens.mts && prettier --write src/app/tokens.css src/shared/lib/design-tokens.ts",
     "generate:icons": "node scripts/generate-icons.mts && prettier --write src/shared/ui/icons.tsx"
   },
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "@material-symbols/svg-400": "0.47.5",
+    "@playwright/test": "1.61.1",
     "@tailwindcss/postcss": "4.3.3",
     "@testing-library/dom": "10.4.1",
     "@testing-library/jest-dom": "7.0.1",
