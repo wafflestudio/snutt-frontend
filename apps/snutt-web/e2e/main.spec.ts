@@ -49,3 +49,15 @@ test('로그인 → 검색 → 담기 → 삭제', async ({ page }) => {
   await expect(selectedTab(page)).toContainText('15학점');
   await expect(block(page, '경영전략')).toBeVisible();
 });
+
+test('주소로 바로 들어가면 로그인한 뒤 그 화면으로 돌아온다', async ({ page }) => {
+  await page.goto('/friends');
+  await expect(page).toHaveURL(/\/login/);
+  await login(page);
+  await expect(page).toHaveURL('/friends');
+  await expect(page.getByText('와플#7052')).toBeVisible();
+
+  // 정적 파일에서도 /friends 를 새로 고치면 친구 화면이다
+  await page.reload();
+  await expect(page.getByText('와플#7052')).toBeVisible();
+});

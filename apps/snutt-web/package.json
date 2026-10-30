@@ -46,6 +46,7 @@
     "msw": "2.15.0",
     "prettier": "3.9.9",
     "prettier-plugin-tailwindcss": "0.8.1",
+    "serve": "14.2.3",
     "tailwindcss": "4.3.3",
     "typescript": "6.0.3",
     "vite": "8.3.0",

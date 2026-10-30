@@ -1,8 +1,9 @@
 import { test as base, expect } from '@playwright/test';
 import { getResponse, http, HttpResponse, type RequestHandler } from 'msw';
 import { SAMPLE_COURSEBOOK, SAMPLE_PALETTE, SAMPLE_SEMESTERS, SAMPLE_TIMETABLES } from '@/features/main/sample-data';
+import { fakeFriends } from '../tests/msw/fake-friends';
 import { fakeSnutt } from '../tests/msw/fake-snutt';
-import { problem, TOKEN_RESPONSE } from '../tests/msw/fixtures';
+import { FRIEND_RESPONSES, problem, TOKEN_RESPONSE } from '../tests/msw/fixtures';
 import { api, API_BASE_URL } from '../tests/msw/server';
 
 /** 가짜 서버의 계정 */
@@ -27,7 +28,7 @@ const CORS_HEADERS = {
 };
 
 /**
- * 테스트마다 새 가짜 서버(tests/msw 의 fakeSnutt, 예시 시간표)를 두고 브라우저의 서버 요청을 받는다.
+ * 테스트마다 새 가짜 서버(tests/msw 의 fakeSnutt 와 fakeFriends, 예시 시간표 · 친구)를 두고 브라우저의 서버 요청을 받는다.
  * 가짜 서버가 모르는 요청은 501 로 답하고 테스트를 실패시킨다 (vitest 의 "정하지 않은 요청은 실패" 와 같게)
  */
 export const test = base.extend<{ fakeApi: void }>({
@@ -41,6 +42,7 @@ export const test = base.extend<{ fakeApi: void }>({
           palette: SAMPLE_PALETTE,
           coursebook: SAMPLE_COURSEBOOK,
         }).handlers,
+        ...fakeFriends({ ACTIVE: FRIEND_RESPONSES }).handlers,
       ];
       const unhandled: string[] = [];
 
