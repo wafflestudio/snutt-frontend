@@ -16,6 +16,7 @@ yarn build    # 프로덕션 빌드 (타입 검사 포함)
 yarn tsc      # 타입 검사
 yarn lint     # ESLint
 yarn test     # vitest
+yarn test:e2e # Playwright (프로덕션 빌드를 3100 번 포트에 띄운다. 처음에는 yarn playwright install chromium)
 yarn generate:tokens  # design-tokens/*.tokens.json → src/app/tokens.css, src/shared/lib/design-tokens.ts
 yarn generate:icons   # scripts/generate-icons.mts 의 목록 → src/shared/ui/icons.tsx
 ```
@@ -128,6 +129,9 @@ export const timetableQueries = {
 - 테스트는 `tests/` 에 `src/` 와 같은 폴더 구조로 둔다. (`src/domain/time.ts` → `tests/domain/time.test.ts`)
 - 테스트에서 대상은 `@/` 경로로 import 한다.
 - 컴포넌트 테스트는 Testing Library 로 하고, 파일 첫 줄에 `// @vitest-environment jsdom` 을 둔다. 역할과 이름(`getByRole('button', { name: '닫기' })`)으로 찾는다.
+- e2e(`e2e/`): 로그인 → 검색 → 담기 → 삭제처럼 화면을 건너가는 흐름만 Playwright 로 본다. 세부 동작은 vitest 에 둔다.
+  - 실제 서버 대신 `e2e/fixtures.ts` 가 테스트마다 `fakeSnutt`(예시 시간표)를 만들고 브라우저의 서버 요청을 받는다. 가짜 서버가 모르는 요청이 있으면 테스트가 실패하므로, 흐름에 새 요청이 생기면 `tests/msw` 의 가짜 서버에 추가한다.
+  - 로그인은 `ACCOUNT` 로 한다.
 
 ## 컴포넌트 원칙
 
