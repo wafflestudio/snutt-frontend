@@ -3,7 +3,7 @@ import { API_BASE_URL } from './tests/msw/server';
 
 const PORT = 3100;
 
-// 프로덕션 빌드를 띄우고 브라우저에서 화면을 따라간다. 서버 요청은 e2e/fixtures.ts 의 가짜 서버가 받는다
+// 배포할 정적 파일(out/)을 띄우고 브라우저에서 화면을 따라간다. 서버 요청은 e2e/fixtures.ts 의 가짜 서버가 받는다
 export default defineConfig({
   testDir: './e2e',
   timeout: 30_000,
@@ -19,7 +19,8 @@ export default defineConfig({
   },
   projects: [{ name: 'Chrome', use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } } }],
   webServer: {
-    command: `yarn build && yarn start -p ${PORT}`,
+    // serve 는 S3 처럼 /friends 에 friends.html 을 준다
+    command: `yarn build && serve out -l ${PORT}`,
     url: `http://localhost:${PORT}/login`,
     timeout: 300_000,
     reuseExistingServer: !process.env.CI,

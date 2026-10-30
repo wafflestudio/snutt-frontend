@@ -1,0 +1,41 @@
+name: deploy-snutt-web-prod
+
+on:
+  push:
+    tags:
+      - snutt-web-prod-*
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-24.04-arm
+    environment: prod
+    defaults:
+      run:
+        working-directory: ./apps/snutt-web
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Build
+        run: |
+          yarn install --frozen-lockfile
+          NEXT_PUBLIC_API_BASE_URL=https://snutt-api.wafflestudio.com \
+          NEXT_PUBLIC_CLIENT_KEY=${{ secrets.SNUTT_WEB_CLIENT_KEY }} \
+            yarn build
+
+      - name: Deploy to S3 and Invalidate Cloudfront
+        run: ./scripts/deploy-s3.sh ${{ secrets.SNUTT_WEB_S3_BUCKET }} ${{ secrets.SNUTT_WEB_CLOUDFRONT_DISTRIBUTION_ID }}

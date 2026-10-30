@@ -9,6 +9,7 @@
     "tsc": "turbo run tsc",
     "deploy:friends-react-native": "./scripts/deploy.sh friends-react-native",
     "deploy:snutt-webclient": "./scripts/deploy.sh snutt-webclient",
+    "deploy:snutt-web": "./scripts/deploy.sh snutt-web",
     "deploy:theme-market": "./scripts/deploy.sh theme-market"
   },
   "dependencies": {

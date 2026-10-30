@@ -2,7 +2,7 @@
 
 app=$1
 
-if [ "$app" != "snutt-webclient" ] && [ "$app" != "friends-react-native" ] && [ "$app" != "theme-market" ]; then
+if [ "$app" != "snutt-webclient" ] && [ "$app" != "snutt-web" ] && [ "$app" != "friends-react-native" ] && [ "$app" != "theme-market" ]; then
   echo
   echo "\033[31mInvalid app name.\033[0m"
   echo

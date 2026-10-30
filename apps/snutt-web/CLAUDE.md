@@ -12,7 +12,7 @@ SNUTT(서울대 시간표) 웹 클라이언트. `apps/snutt-webclient`(React 18 
 
 ```sh
 yarn dev      # 개발 서버
-yarn build    # 프로덕션 빌드 (타입 검사 포함)
+yarn build    # 프로덕션 빌드 (타입 검사 포함). 정적 파일을 out/ 에 만든다
 yarn tsc      # 타입 검사
 yarn lint     # ESLint
 yarn test     # vitest
@@ -148,6 +148,7 @@ export const timetableQueries = {
 
 - 인증 토큰이 브라우저에 있어 서버는 로그인 상태를 모른다. 인증이 필요한 화면은 클라이언트 컴포넌트로 만든다. SSR 로 데이터를 가져오려 하지 않는다.
 - Next 16 기준: `next lint` 는 없다(`eslint .` 사용), `middleware` 는 `proxy` 로 이름이 바뀌었다, 라우트 `params` / `searchParams` 는 Promise 다.
+- **정적 내보내기(`output: 'export'`)로 배포한다.** `yarn build` 는 `out/` 에 html · js 를 만들고, `scripts/deploy-s3.sh` 가 S3 에 올린다(태그 → `.github/workflows/deploy-snutt-web-*.yml`). 그래서 서버가 필요한 것은 쓰지 않는다: `proxy`, Route Handler, `cookies()` · `headers()`, `next/image` 최적화, `generateStaticParams` 없는 동적 라우트. `yarn start` 도 쓸 수 없다(빌드 결과는 `serve out` 으로 본다).
 
 ## 스타일
 
