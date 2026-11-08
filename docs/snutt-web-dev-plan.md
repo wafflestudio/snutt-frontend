@@ -345,7 +345,7 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | | 9-2 | 두 시간표 비교: 검색 패널과 함께 표시, 오른쪽 시간표 탭 · ··· · 비교 종료(Figma `top` 의 `복수 시간표`), 담기 대상 선택(`기본 시간표에 추가` = 왼쪽 / `보조 시간표에 추가` = 오른쪽, Figma `드롭다운`). 탭 · 비교 종료는 4-3 에서 만들었다. 정해지지 않은 것은 디자인 문의 4-22 | | ✅ #278 |
 | | 9-3 | 마이페이지 (프로필, 소셜 연동/해제, 비밀번호, 탈퇴) | |  |
 | | 9-4 | 알림 | |  |
-| | 9-5 | timetable-picker 이식 (origin 검사 포함) | 기존 RN 앱에서 동작 확인 | ✅ #PR |
+| | 9-5 | timetable-picker 이식 (origin 검사 포함) | 기존 RN 앱에서 동작 확인 | ✅ #286 |
 | **10. 마무리** | 10-1 | Playwright e2e (로그인 → 검색 → 담기 → 삭제). 실제 서버 대신 단위 테스트의 가짜 서버(`fakeSnutt`)를 브라우저 요청에 물린다. PR 마다 CI(`test-integration-snutt-web.yml`)에서 프로덕션 빌드로 돌린다 | | ✅ #282 |
 | | 10-2 | 배포 스크립트: 정적 내보내기(`output: 'export'`) → S3 · CloudFront (snutt-webclient 와 같은 방식. 화면이 모두 클라이언트 렌더링이고 로그인 뒤 화면이라 SSR · SEO 가 필요 없다). `yarn deploy:snutt-web` 으로 dev 태그를 달면 `deploy-snutt-web-dev.yml`, `snutt-web-prod-*` 태그는 `deploy-snutt-web-prod.yml`. 페이지마다 확장자 없는 키(`friends`)로 html 을 한 벌 더 올려 CloudFront 함수 없이 새로 고침이 된다. e2e 도 `out/` 을 띄워 배포물을 확인한다 | 인프라: dev · prod 의 S3 버킷 · CloudFront 배포(기본 루트 객체 `index.html`) · 도메인, GitHub environment secrets `SNUTT_WEB_S3_BUCKET` · `SNUTT_WEB_CLOUDFRONT_DISTRIBUTION_ID` · `SNUTT_WEB_CLIENT_KEY` | ✅ #283 |
 
