@@ -182,7 +182,7 @@ dev 서버 OpenAPI 명세(`https://snutt-api-dev.wafflestudio.com/v3/api-docs`)�
 - **TypeScript 7 미사용**: TS 7 은 기존 컴파일러 API 를 제공하지 않아 typescript-eslint, Next 빌드 타입 검사와 호환되지 않는다. 6.0 을 쓴다.
 - **이미지 내보내기**: html2canvas 는 Tailwind v4 기본 색상 포맷인 `oklch()`를 파싱하지 못한다. `html-to-image` 또는 `modern-screenshot` 사용. ✅ 9-1 에서 `html-to-image` 로 만들었다(`shared/lib/export-image.ts`). Pretendard dynamic subset 은 글꼴 파일이 90여 개라, html-to-image 가 전부 받지 않도록 그리드 글자를 덮는 `unicode-range` 의 파일만 넣는다.
 - **localStorage 토큰**: 서버에서 인증 상태를 알 수 없으므로 사실상 전부 클라이언트 렌더링이다. SSR 을 억지로 쓰지 않고 라우트 단위 `'use client'`. 배포가 정적 호스팅이면 `output: 'export'` 검토.
-- **timetable-picker 는 최소 너비(1200px) 예외**: RN WebView/iframe 안에서 동작하므로 모바일 폭 대응 필요. #235/#238 의 origin 검사 로직 이식.
+- **timetable-picker 는 최소 너비(1200px) 예외**: 팝업(popup opener) · RN WebView 안에서 동작하므로 모바일 폭 대응 필요. #235/#238 의 origin 검사 로직 이식.
 - 기획 스펙의 개발 순서에 **알림(8번)이 빠져 있음** → Phase 9 에 포함.
 
 ---
@@ -237,7 +237,7 @@ apps/snutt-web/src/
 ### BFF (Next 서버 경유) 여부: 보류
 
 브라우저 → Next 서버(httpOnly 쿠키) → snutt-api 구조로 가면 토큰이 XSS 로부터 안전하고 API key 가 노출되지 않으며, 서버에서 인증 분기가 가능하다.
-대신 Node 서버 운영이 필요하고(theme-market 처럼 컨테이너 배포), iframe / RN WebView 로 열리는 timetable-picker 에서는 쿠키 인증이 제한될 수 있다.
+대신 Node 서버 운영이 필요하고(theme-market 처럼 컨테이너 배포), 팝업 / RN WebView 로 열리는 timetable-picker 에서는 쿠키 인증이 제한될 수 있다.
 
 - v2 인증 방식(토큰 헤더, refresh 흐름) 확인 후 **Phase 3(인증) 전에 결정**한다. Phase 1~2 는 영향 없음.
 - 3-1 은 BFF 없이 브라우저 저장(localStorage)과 클라이언트 갱신으로 진행했다. 배포 방식(정적 호스팅 / Node 서버)이 정해질 때 다시 본다. 토큰을 다루는 곳이 `api/client.ts` 하나라 바꿀 때 고칠 곳은 그 파일과 `useSignedIn` 이다.
@@ -294,7 +294,7 @@ type PanelView =
 | 1200px 미만 | 화면 전체에 최소 너비 1200px 을 걸어 가로 스크롤. 레이아웃을 바꾸지 않는다 |
 | 세로 | 좌측 바, 패널 머리(학기 선택 · 탭), 시간표 탭 줄은 고정하고 패널 목록만 스크롤. 그리드는 스크롤하지 않고 남은 높이를 시간 칸 수로 나눈다 (강의 시간이 넓어 칸이 늘면 한 칸이 낮아진다) |
 
-- 예외: `timetable-picker` 는 앱(RN WebView) 안에서 열리므로 모바일 폭에 맞춘다 (9-5).
+- 예외: `timetable-picker` 는 팝업(popup opener) 또는 앱(RN WebView) 안에서 열리므로 모바일 폭에 맞춘다 (9-5).
 - 휴대폰으로 웹에 들어온 경우도 가로 스크롤로 둔다. 필요하면 좁은 화면(예: 768px 미만)에 앱 안내 화면만 나중에 추가한다 (기획에 없음).
 
 ---
@@ -345,7 +345,7 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | | 9-2 | 두 시간표 비교: 검색 패널과 함께 표시, 오른쪽 시간표 탭 · ··· · 비교 종료(Figma `top` 의 `복수 시간표`), 담기 대상 선택(`기본 시간표에 추가` = 왼쪽 / `보조 시간표에 추가` = 오른쪽, Figma `드롭다운`). 탭 · 비교 종료는 4-3 에서 만들었다. 정해지지 않은 것은 디자인 문의 4-22 | | ✅ #278 |
 | | 9-3 | 마이페이지 (프로필, 소셜 연동/해제, 비밀번호, 탈퇴) | |  |
 | | 9-4 | 알림 | |  |
-| | 9-5 | timetable-picker 이식 (origin 검사 포함) | 기존 RN 앱에서 동작 확인 |  |
+| | 9-5 | timetable-picker 이식 (origin 검사 포함) | 기존 RN 앱에서 동작 확인 | ✅ #PR |
 | **10. 마무리** | 10-1 | Playwright e2e (로그인 → 검색 → 담기 → 삭제). 실제 서버 대신 단위 테스트의 가짜 서버(`fakeSnutt`)를 브라우저 요청에 물린다. PR 마다 CI(`test-integration-snutt-web.yml`)에서 프로덕션 빌드로 돌린다 | | ✅ #282 |
 | | 10-2 | 배포 스크립트: 정적 내보내기(`output: 'export'`) → S3 · CloudFront (snutt-webclient 와 같은 방식. 화면이 모두 클라이언트 렌더링이고 로그인 뒤 화면이라 SSR · SEO 가 필요 없다). `yarn deploy:snutt-web` 으로 dev 태그를 달면 `deploy-snutt-web-dev.yml`, `snutt-web-prod-*` 태그는 `deploy-snutt-web-prod.yml`. 페이지마다 확장자 없는 키(`friends`)로 html 을 한 벌 더 올려 CloudFront 함수 없이 새로 고침이 된다. e2e 도 `out/` 을 띄워 배포물을 확인한다 | 인프라: dev · prod 의 S3 버킷 · CloudFront 배포(기본 루트 객체 `index.html`) · 도메인, GitHub environment secrets `SNUTT_WEB_S3_BUCKET` · `SNUTT_WEB_CLOUDFRONT_DISTRIBUTION_ID` · `SNUTT_WEB_CLIENT_KEY` | ✅ #283 |
 

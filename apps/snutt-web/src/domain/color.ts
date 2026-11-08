@@ -21,3 +21,11 @@ export const isSameLectureColor = (a: LectureColor, b: LectureColor) => {
   if (a.type === 'custom' && b.type === 'custom') return a.color.bg === b.color.bg && a.color.fg === b.color.fg;
   return false;
 };
+
+/**
+ * 테마 목록에서 themeId 에 맞는 팔레트를 찾는다.
+ * timetable-picker 와 메인 화면(paletteOf)에서 공통으로 쓴다.
+ * 테마를 받기 전이거나 ID 가 없으면 빈 배열을 반환한다.
+ */
+export const findThemePalette = (themes: readonly Theme[], themeId: string | null | undefined): readonly ColorPair[] =>
+  themes.find((theme) => theme.id === themeId)?.colors ?? [];

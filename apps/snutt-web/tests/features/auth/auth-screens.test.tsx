@@ -13,7 +13,11 @@ import { problem, TOKEN_RESPONSE } from '../../msw/fixtures';
 import { api, server } from '../../msw/server';
 
 const replace = vi.fn();
-vi.mock('next/navigation', () => ({ useRouter: () => ({ replace }) }));
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ replace }),
+  // LoginForm · RegisterForm 이 ?next 를 읽기 위해 사용한다
+  useSearchParams: () => new URLSearchParams(window.location.search),
+}));
 
 beforeEach(() => window.history.replaceState(null, '', '/'));
 afterEach(() => {
@@ -148,5 +152,35 @@ describe('RegisterForm', () => {
     await userEvent.click(screen.getByRole('button', { name: '가입하기' }));
 
     expect(await screen.findByRole('alert')).toHaveTextContent('영문과 숫자 모두를 포함하는 6~20자');
+  });
+});
+
+describe('next 유실 버그 수정', () => {
+  it('LoginForm 에서 ?next 가 있으면 회원가입 링크에도 ?next 가 붙는다', async () => {
+    window.history.replaceState(null, '', '/login?next=%2Ffriends');
+    renderWithQuery(<LoginForm />);
+    const registerLink = screen.getByRole('link', { name: '회원가입' });
+    expect(registerLink).toHaveAttribute('href', '/register?next=%2Ffriends');
+  });
+
+  it('LoginForm 에서 ?next 가 없으면 회원가입 링크는 /register 다', async () => {
+    window.history.replaceState(null, '', '/login');
+    renderWithQuery(<LoginForm />);
+    const registerLink = screen.getByRole('link', { name: '회원가입' });
+    expect(registerLink).toHaveAttribute('href', '/register');
+  });
+
+  it('RegisterForm 에서 ?next 가 있으면 로그인 링크에도 ?next 가 붙는다', async () => {
+    window.history.replaceState(null, '', '/register?next=%2Ffriends');
+    renderWithQuery(<RegisterForm />);
+    const loginLink = screen.getByRole('link', { name: '로그인' });
+    expect(loginLink).toHaveAttribute('href', '/login?next=%2Ffriends');
+  });
+
+  it('RegisterForm 에서 ?next 가 없으면 로그인 링크는 /login 이다', async () => {
+    window.history.replaceState(null, '', '/register');
+    renderWithQuery(<RegisterForm />);
+    const loginLink = screen.getByRole('link', { name: '로그인' });
+    expect(loginLink).toHaveAttribute('href', '/login');
   });
 });

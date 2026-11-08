@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { type FormEvent, useState } from 'react';
 import { useLocalLogin } from '@/api/auth';
 import { getFailureMessage } from '@/api/errors';
@@ -13,6 +14,10 @@ export function LoginForm() {
   const [localId, setLocalId] = useState('');
   const [password, setPassword] = useState('');
   const login = useLocalLogin();
+  const searchParams = useSearchParams();
+  // ?next 가 있으면 회원가입 링크에도 그대로 넘겨 가입 뒤 같은 곳으로 돌아온다
+  const next = searchParams.get('next');
+  const registerHref = next ? `/register?next=${encodeURIComponent(next)}` : '/register';
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
@@ -46,7 +51,7 @@ export function LoginForm() {
       </form>
       <p className="text-center text-13-regular text-alternative">
         계정이 없나요?{' '}
-        <Link href="/register" className="text-plain underline">
+        <Link href={registerHref} className="text-plain underline">
           회원가입
         </Link>
       </p>

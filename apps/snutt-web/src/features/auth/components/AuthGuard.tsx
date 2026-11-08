@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { type ReactNode, useEffect } from 'react';
 import { useSignedIn } from '@/api/auth';
 import { getLoginPath, getNextPath } from '@/features/auth/redirect';
+import { LoginForm } from './LoginForm';
 
 // 토큰이 브라우저(localStorage)에만 있어서 서버는 로그인 여부를 모른다. 브라우저에서 토큰을 읽은 뒤에 화면을 정한다.
 // 읽기 전(서버 렌더링, 첫 hydration)에는 아무것도 그리지 않아 다른 화면이 잠깐 보이지 않게 한다.
@@ -30,4 +31,19 @@ export function RedirectIfSignedIn({ children }: { children: ReactNode }) {
   }, [signedIn, router]);
 
   return signedIn === false ? children : null;
+}
+
+/**
+ * URL 을 바꾸지 않는 인라인 로그인 가드.
+ * timetable-picker 처럼 팝업 / RN WebView 에서 열려 내비게이션을 피해야 하는 화면에 쓴다.
+ *
+ * - signedIn === null (서버 렌더링 · 첫 hydration): 아무것도 그리지 않는다
+ * - signedIn === false: LoginForm 을 인라인으로 보여 준다
+ * - signedIn === true: children 을 그린다
+ */
+export function InlineLogin({ children }: { children?: ReactNode }) {
+  const signedIn = useSignedIn();
+  if (signedIn === null) return null;
+  if (!signedIn) return <LoginForm />;
+  return <>{children ?? null}</>;
 }

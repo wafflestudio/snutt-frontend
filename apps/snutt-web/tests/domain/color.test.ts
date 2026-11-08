@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { type ColorPair, FALLBACK_LECTURE_COLOR, isSameLectureColor, resolveLectureColor } from '@/domain/color';
+import { type ColorPair, FALLBACK_LECTURE_COLOR, findThemePalette, isSameLectureColor, resolveLectureColor, type Theme } from '@/domain/color';
 
 const palette: ColorPair[] = [
   { bg: '#e54459', fg: '#ffffff' },
@@ -32,5 +32,33 @@ describe('isSameLectureColor', () => {
     expect(isSameLectureColor({ type: 'custom', color: custom }, { type: 'custom', color: { ...custom } })).toBe(true);
     // 결과 색이 같아도 종류가 다르면 다른 색 설정이다
     expect(isSameLectureColor({ type: 'palette', index: 0 }, { type: 'custom', color: custom })).toBe(false);
+  });
+});
+
+describe('findThemePalette', () => {
+  const themes: Theme[] = [
+    { id: 'theme-1', name: 'SNUTT', colors: [{ bg: '#e54459', fg: '#ffffff' }] },
+    { id: 'theme-2', name: 'Custom', colors: [{ bg: '#f58d3d', fg: '#ffffff' }] },
+  ];
+
+  it('themeId 에 맞는 테마의 팔레트를 반환한다', () => {
+    expect(findThemePalette(themes, 'theme-1')).toEqual(themes[0]!.colors);
+    expect(findThemePalette(themes, 'theme-2')).toEqual(themes[1]!.colors);
+  });
+
+  it('themeId 가 없는 테마면 빈 배열을 반환한다', () => {
+    expect(findThemePalette(themes, 'unknown')).toEqual([]);
+  });
+
+  it('themeId 가 null 이면 빈 배열을 반환한다', () => {
+    expect(findThemePalette(themes, null)).toEqual([]);
+  });
+
+  it('themeId 가 undefined 이면 빈 배열을 반환한다', () => {
+    expect(findThemePalette(themes, undefined)).toEqual([]);
+  });
+
+  it('테마 목록이 비어 있으면 빈 배열을 반환한다', () => {
+    expect(findThemePalette([], 'theme-1')).toEqual([]);
   });
 });
