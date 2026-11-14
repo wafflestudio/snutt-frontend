@@ -23,7 +23,7 @@ export function AddTimetableButton({ defaultTitle, onCreate }: AddTimetableButto
   const [open, setOpen] = useState(false);
   return (
     <>
-      <IconButton label="새 시간표" icon={<IconAdd />} onClick={() => setOpen(true)} />
+      <IconButton label="새 시간표" icon={<IconAdd className="size-4!" />} onClick={() => setOpen(true)} />
       <PromptDialog
         open={open}
         onOpenChange={setOpen}
@@ -60,7 +60,7 @@ export function TimetableMenu({
 
   return (
     <>
-      <Menu trigger={<IconButton label={label} icon={<IconMoreHorizontal />} />} align="end">
+      <Menu trigger={<IconButton label={label} icon={<IconMoreHorizontal className="size-4!" />} />} align="end">
         <MenuItem onClick={() => setDialog('rename')}>이름 변경</MenuItem>
         <MenuItem onClick={() => onSetPrimary(!timetable.isPrimary)}>
           {timetable.isPrimary ? '기본 시간표 해제' : '기본 시간표로 지정'}

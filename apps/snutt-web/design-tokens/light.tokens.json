@@ -374,17 +374,17 @@
     }
   },
   "Icon": {
-    "Normal": {
+    "nomal": {
       "$type": "color",
       "$value": {
         "colorSpace": "srgb",
         "components": [
-          0.0006347656017169356,
-          0.0006347656017169356,
-          0.0006347656017169356
+          0.6509803921568628,
+          0.6509803921568628,
+          0.6509803921568628
         ],
         "alpha": 1,
-        "hex": "#000000"
+        "hex": "#A6A6A6"
       },
       "$extensions": {
         "com.figma.variableId": "VariableID:3034:18981",
@@ -399,12 +399,12 @@
       "$value": {
         "colorSpace": "srgb",
         "components": [
-          1,
-          1,
-          1
+          0.0,
+          0.0,
+          0.0
         ],
         "alpha": 1,
-        "hex": "#FFFFFF"
+        "hex": "#000000"
       },
       "$extensions": {
         "com.figma.variableId": "VariableID:3034:18979",
@@ -449,6 +449,42 @@
       },
       "$extensions": {
         "com.figma.variableId": "VariableID:3176:21399",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ]
+      }
+    },
+    "deem2": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "alpha": 0.06,
+        "hex": "#000000"
+      },
+      "$extensions": {
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ]
+      }
+    },
+    "filter": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "alpha": 0,
+        "hex": "#FFFFFF"
+      },
+      "$extensions": {
         "com.figma.scopes": [
           "ALL_SCOPES"
         ]

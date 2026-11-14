@@ -47,7 +47,7 @@ export function PickerTimetableList({ timetables, selectedId, onSelect }: Props)
               data-testid={`timetable-picker-group-header-${group.key}`}
             >
               <IconChevronRight
-                className="size-4 shrink-0 text-icon-normal transition-transform"
+                className="size-4 shrink-0 text-icon-on-item transition-transform"
                 style={{ transform: expanded ? 'rotate(90deg)' : undefined }}
                 aria-hidden
               />

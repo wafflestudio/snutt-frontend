@@ -34,13 +34,16 @@ export type TimetableGridProps = {
  * 용도(메인, 친구, 비교, 시간 필터, 미리보기)에 따라 레이어를 골라 겹친다. props 로 용도를 나누지 않는다.
  * 높이는 부르는 쪽이 className 으로 정하고(메인은 `h-full`), 시간 칸은 그 높이를 고르게 나눠 스크롤 없이 다 보인다.
  * 강의 시간이 넓어 칸이 늘어나면 한 칸이 낮아진다. (Figma `course` 는 13칸에 한 칸 59px)
+ *
+ * 선 색 (Figma `course/기본`, 11-09): 맨 위 Background/lightField, 시각 · 요일 선 Line/light, 30분 선 Background/light.
+ * Background 토큰은 border 색 이름공간에 없어서 맨 위 선은 변수를 직접 쓴다.
  */
 export function TimetableGrid({ range, children, className }: TimetableGridProps) {
   const hours = getHourMarks(range);
 
   return (
     <div
-      className={clsx('grid border-t border-line-light bg-normal', className)}
+      className={clsx('grid border-t border-(--background-color-light-field) bg-normal', className)}
       style={{
         gridTemplateColumns: `35px repeat(${range.days.length}, minmax(0, 1fr))`,
         gridTemplateRows: 'auto minmax(0, 1fr)',
@@ -65,7 +68,7 @@ export function TimetableGrid({ range, children, className }: TimetableGridProps
         <div aria-hidden className="absolute inset-0 flex flex-col">
           {hours.map((minute) => (
             <div key={minute} className="relative flex-1 border-t border-line-light">
-              <div className="absolute inset-x-0 top-1/2 h-px bg-line-light-field" />
+              <div className="absolute inset-x-0 top-1/2 h-px bg-light" />
             </div>
           ))}
         </div>

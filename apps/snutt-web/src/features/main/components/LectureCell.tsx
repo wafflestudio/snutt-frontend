@@ -122,7 +122,6 @@ export function LectureCell({
             variant="circle"
             label="관심강좌"
             aria-pressed={bookmarked}
-            // Figma: 채운 책갈피 16px. 기본은 회색, 담으면 검정
             icon={<IconBookmarkFill className="size-4" />}
             onClick={onBookmarkToggle}
           />
@@ -132,7 +131,7 @@ export function LectureCell({
                 <IconButton
                   variant="circle"
                   label="시간표에 담기"
-                  icon={<IconAdd className="size-5.5" />}
+                  icon={<IconAdd className="size-4" />}
                   disabled={!canAdd}
                 />
               }
@@ -148,7 +147,8 @@ export function LectureCell({
             <IconButton
               variant="circle"
               label={added ? '시간표에서 빼기' : '시간표에 담기'}
-              icon={added ? <IconRemove className="size-5.5" /> : <IconAdd className="size-5.5" />}
+              // 빼기(−)는 받은 아이콘이 없어 Material 을 쓴다. 가로 14px 로 `+` 와 맞춘다
+              icon={added ? <IconRemove className="size-6" /> : <IconAdd className="size-4" />}
               disabled={!added && !canAdd}
               onClick={onAddToggle}
             />
