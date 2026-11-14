@@ -4,12 +4,12 @@ import type { ReactNode } from 'react';
 import { IconButton } from '@/shared/ui/IconButton';
 import { IconDockToRight } from '@/shared/ui/icons';
 import { ResizeHandle } from '@/shared/ui/ResizeHandle';
+import { SemesterSelect } from '@/shared/ui/SemesterSelect';
 import { Tab, TabList, TabPanel, Tabs } from '@/shared/ui/Tabs';
 import type { Semester } from '@/domain/semester';
 import type { PanelView } from '@/features/main/main-view';
 import { PANEL_MAX_WIDTH, PANEL_MIN_WIDTH, panelWidth, usePanelWidth } from '@/features/main/panel-width';
 import { PanelColumn } from './PanelColumn';
-import { SemesterSelect } from './SemesterSelect';
 
 type ListPanelView = Extract<PanelView, { type: 'list' }>;
 

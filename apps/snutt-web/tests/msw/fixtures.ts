@@ -118,6 +118,42 @@ export const FRIEND_RESPONSES: SnuttV2.FriendResponse[] = [
   { id: 4, userId: 59465, displayName: '룸메', nickname: '시간표장인', nicknameTag: '0562', createdAt: 1692246423442 },
 ];
 
+/**
+ * 친구(id 10)의 학기별 기본 시간표 (dev 서버 응답과 같은 모양). 친구 테마의 색이 `color` 에 정해져 온다.
+ * 겨울학기 시간표는 내 테마 목록에 없는 친구의 테마를 쓴다
+ */
+export const FRIEND_TIMETABLE_RESPONSES: SnuttV2.TimetableResponse[] = [
+  {
+    id: 517178,
+    year: 2025,
+    semester: 4,
+    title: '겨울 시간표',
+    themeId: 9999,
+    isPrimary: true,
+    updatedAt: 1767262909581,
+    lectures: [
+      {
+        ...LECTURE_RESPONSE,
+        id: 1398241,
+        courseTitle: '창의공학설계',
+        classPlaceAndTimes: [{ day: 0, place: '38-422', startMinute: 600, endMinute: 650 }],
+        color: { backgroundColor: '#AABBCC', foregroundColor: '#112233' },
+        paletteIndex: 1,
+      },
+    ],
+  },
+  {
+    id: 516690,
+    year: 2025,
+    semester: 3,
+    title: '2학기',
+    themeId: 1,
+    isPrimary: true,
+    updatedAt: 1738310278957,
+    lectures: [LECTURE_RESPONSE],
+  },
+];
+
 /** 강좌의 강의평 통계 (CourseEvaluationDetailsResponse). 이메일 인증을 하지 않은 dev 계정으로는 받을 수 없어 명세대로 만들었다 */
 export const EVALUATION_SUMMARY_RESPONSE: SnuttV2.CourseEvaluationDetailsResponse = {
   courseId: 9756,

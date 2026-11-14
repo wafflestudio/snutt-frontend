@@ -6,7 +6,7 @@ import { http, HttpResponse } from 'msw';
 import { describe, expect, it } from 'vitest';
 import { FriendsScreen } from '@/features/friends/components/FriendsScreen';
 import { fakeFriends } from '../../msw/fake-friends';
-import { FRIEND_RESPONSES, problem } from '../../msw/fixtures';
+import { FRIEND_RESPONSES, FRIEND_TIMETABLE_RESPONSES, problem } from '../../msw/fixtures';
 import { api, server } from '../../msw/server';
 
 const REQUEST = { id: 21, userId: 70001, nickname: '새내기', nicknameTag: '1234', createdAt: 1760000000000 };
@@ -117,5 +117,110 @@ describe('친구 화면', () => {
 
     expect(await screen.findByText('목록을 불러오지 못했습니다')).toBeInTheDocument();
     expect(screen.getByText('잠시 후 다시 시도해 주세요.')).toBeInTheDocument();
+  });
+});
+
+describe('친구 시간표', () => {
+  /** 오른쪽 친구 시간표 자리 */
+  const timetableArea = () => within(screen.getByRole('region', { name: '친구 시간표' }));
+  const pickFriend = async (name: string) =>
+    userEvent.click(await within(screen.getByRole('tabpanel')).findByRole('button', { name: new RegExp(name) }));
+
+  it('친구를 고르기 전에는 안내만 보여 준다', async () => {
+    server.use(...fakeFriends({ ACTIVE: FRIEND_RESPONSES }).handlers);
+    renderFriends();
+
+    await screen.findByText('와플');
+    expect(timetableArea().getByText('친구를 고르면 시간표를 볼 수 있습니다')).toBeInTheDocument();
+  });
+
+  it('친구를 고르면 이름과 가장 최근 학기의 기본 시간표를 읽기 전용으로 보여 준다', async () => {
+    server.use(
+      ...fakeFriends({ ACTIVE: FRIEND_RESPONSES, primaryTables: { 10: FRIEND_TIMETABLE_RESPONSES } }).handlers,
+    );
+    renderFriends();
+
+    await pickFriend('와플');
+
+    expect(screen.getByRole('button', { name: /와플/ })).toHaveAttribute('aria-pressed', 'true');
+    expect(timetableArea().getByRole('heading', { name: '와플' })).toBeInTheDocument();
+    expect(await timetableArea().findByRole('combobox', { name: '학기' })).toHaveTextContent('2025년 겨울학기');
+    const block = (await timetableArea().findByText('창의공학설계')).parentElement;
+    // 내 테마 목록에 없는 친구의 테마도 서버가 정해 준 색으로 그린다
+    expect(block).toHaveStyle({ backgroundColor: '#AABBCC', color: '#112233' });
+    // 강의 블록을 눌러 상세를 열 수 없다
+    expect(timetableArea().queryByRole('button')).not.toBeInTheDocument();
+  });
+
+  it('학기를 바꾸면 그 학기의 기본 시간표를 보여 준다', async () => {
+    server.use(
+      ...fakeFriends({ ACTIVE: FRIEND_RESPONSES, primaryTables: { 10: FRIEND_TIMETABLE_RESPONSES } }).handlers,
+    );
+    renderFriends();
+    await pickFriend('와플');
+
+    await userEvent.click(await timetableArea().findByRole('combobox', { name: '학기' }));
+    // 친구가 기본 시간표를 가진 학기만 고를 수 있다
+    expect((await screen.findAllByRole('option')).map((option) => option.textContent)).toEqual([
+      '2025년 겨울학기',
+      '2025년 2학기',
+    ]);
+    await userEvent.click(screen.getByRole('option', { name: '2025년 2학기' }));
+
+    // 수업 시간마다 블록 하나
+    expect(await timetableArea().findAllByText('공학수학 1')).toHaveLength(2);
+    expect(timetableArea().queryByText('창의공학설계')).not.toBeInTheDocument();
+  });
+
+  it('다른 친구를 고르면 그 친구의 시간표로 바뀌고, 시간표가 없으면 알려 준다', async () => {
+    server.use(
+      ...fakeFriends({ ACTIVE: FRIEND_RESPONSES, primaryTables: { 10: FRIEND_TIMETABLE_RESPONSES } }).handlers,
+    );
+    renderFriends();
+    await pickFriend('와플');
+    await timetableArea().findByText('창의공학설계');
+
+    await pickFriend('룸메');
+
+    expect(timetableArea().getByRole('heading', { name: '룸메' })).toBeInTheDocument();
+    expect(await timetableArea().findByText('친구의 시간표가 없습니다')).toBeInTheDocument();
+    expect(timetableArea().queryByRole('combobox', { name: '학기' })).not.toBeInTheDocument();
+  });
+
+  it('고른 학기에 기본 시간표가 없으면(404 primary-timetable-not-found) 알려 준다', async () => {
+    server.use(
+      http.get(api('/v2/friends/10/coursebooks'), () => HttpResponse.json([{ year: 2026, semester: 1 }])),
+      ...fakeFriends({ ACTIVE: FRIEND_RESPONSES, primaryTables: { 10: FRIEND_TIMETABLE_RESPONSES } }).handlers,
+    );
+    renderFriends();
+    await pickFriend('와플');
+
+    expect(await timetableArea().findByText('이 학기에는 친구의 시간표가 없습니다')).toBeInTheDocument();
+    expect(timetableArea().getByRole('combobox', { name: '학기' })).toHaveTextContent('2026년 1학기');
+  });
+
+  it('시간표를 불러오지 못하면 서버 메시지를 보여 준다', async () => {
+    server.use(
+      http.get(api('/v2/friends/10/primary-table'), () =>
+        HttpResponse.json(problem(500, 'internal-server-error', '서버 오류', '잠시 후 다시 시도해 주세요.'), {
+          status: 500,
+        }),
+      ),
+      ...fakeFriends({ ACTIVE: FRIEND_RESPONSES, primaryTables: { 10: FRIEND_TIMETABLE_RESPONSES } }).handlers,
+    );
+    renderFriends();
+    await pickFriend('와플');
+
+    expect(await timetableArea().findByText('시간표를 불러오지 못했습니다')).toBeInTheDocument();
+    expect(timetableArea().getByText('잠시 후 다시 시도해 주세요.')).toBeInTheDocument();
+  });
+
+  it('받은 요청 · 보낸 요청 줄은 고를 수 없다', async () => {
+    server.use(...fakeFriends({ REQUESTING: [SENT] }).handlers);
+    renderFriends();
+
+    await openTab('보낸 요청');
+    await screen.findByText('선배#4321');
+    expect(within(rows()[0]).queryByRole('button')).not.toBeInTheDocument();
   });
 });
