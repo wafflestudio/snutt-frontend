@@ -1,7 +1,9 @@
+import type { SnuttV2 } from '@sf/snutt-api';
 import { describe, expect, it } from 'vitest';
+import { toTimetable } from '@/api/mappers/timetable';
 import type { ClassTime } from '@/domain/lecture';
-import { createPickerMessage, getClassTimeMask, toSharedTimetable } from '@/features/timetable-picker/picker-message';
 import type { Timetable } from '@/domain/timetable';
+import { createPickerMessage, getClassTimeMask, toSharedTimetable } from '@/features/timetable-picker/picker-message';
 
 // 단위 테스트용 최소 Timetable 픽스처
 const makeTimetable = (overrides: Partial<Timetable> = {}): Timetable => ({
@@ -85,9 +87,10 @@ describe('getClassTimeMask', () => {
 // ── toSharedTimetable ───────────────────────────────────────────────────────
 
 describe('toSharedTimetable', () => {
-  it('기본 필드(title, year, semester, lecture_list)를 포함한다', () => {
+  it('기본 필드(year, semester, lecture_list, title, isPrimary)를 v1 순서로 넣는다', () => {
     const result = toSharedTimetable(makeTimetable());
-    expect(result).toMatchObject({ title: '나의 시간표', year: 2026, semester: 3, lecture_list: [] });
+    expect(result).toEqual({ year: 2026, semester: 3, lecture_list: [], title: '나의 시간표', isPrimary: false });
+    expect(Object.keys(result)).toEqual(['year', 'semester', 'lecture_list', 'title', 'isPrimary']);
   });
 
   it('null 값은 키를 뺀다', () => {
@@ -119,22 +122,44 @@ describe('toSharedTimetable', () => {
     expect('lecture_number' in shared).toBe(false);
   });
 
-  it('레거시 형태와 같은 키 순서로 직렬화된다', () => {
+  it('v1 응답과 같은 키 순서로 직렬화된다 (class_time_mask 는 class_time_json 뒤)', () => {
     const lecture = makeLecture({
+      courseId: '2451',
+      categoryPre2025: '과학적 사고와 실험',
+      freshmanQuota: 70,
       classTimes: [{ day: 1, startMinute: 660, endMinute: 735, place: '302-208' }],
     });
-    const result = toSharedTimetable(makeTimetable({ lectures: [lecture] }));
-    const shared = result.lecture_list[0]!;
-
-    // 키 순서: course_title → instructor → credit → class_time_json → remark → class_time_mask → lecture_id → ...
-    const keys = Object.keys(shared);
-    const indexOf = (k: string) => keys.indexOf(k);
-    expect(indexOf('course_title')).toBeLessThan(indexOf('instructor'));
-    expect(indexOf('instructor')).toBeLessThan(indexOf('credit'));
-    expect(indexOf('credit')).toBeLessThan(indexOf('class_time_json'));
-    expect(indexOf('class_time_json')).toBeLessThan(indexOf('remark'));
-    expect(indexOf('remark')).toBeLessThan(indexOf('class_time_mask'));
-    expect(indexOf('class_time_mask')).toBeLessThan(indexOf('lecture_id'));
+    const shared = toSharedTimetable(makeTimetable({ lectures: [lecture] })).lecture_list[0]!;
+    expect(Object.keys(shared)).toEqual([
+      'academic_year',
+      'category',
+      'class_time_json',
+      'class_time_mask',
+      'classification',
+      'credit',
+      'department',
+      'instructor',
+      'lecture_number',
+      'quota',
+      'freshman_quota',
+      'remark',
+      'course_number',
+      'course_title',
+      'lecture_id',
+      'snuttEvLecture',
+      'categoryPre2025',
+    ]);
+    expect(Object.keys(shared.class_time_json[0]!)).toEqual([
+      'day',
+      'place',
+      'startMinute',
+      'endMinute',
+      'start_time',
+      'end_time',
+      'len',
+      'start',
+    ]);
+    expect(shared.snuttEvLecture).toEqual({ evLectureId: 2451 });
   });
 
   it('class_time_json 에 start · len 을 계산해 넣는다', () => {
@@ -143,17 +168,17 @@ describe('toSharedTimetable', () => {
     });
     const result = toSharedTimetable(makeTimetable({ lectures: [lecture] }));
     const ct = result.lecture_list[0]!.class_time_json[0]!;
-    expect(ct.start).toBe(11); // 660 / 60
-    expect(ct.len).toBeCloseTo(1.25); // (735 - 660) / 60
+    // 08:00 부터의 교시. 시작은 30분 단위 내림, 끝은 올림
+    expect(ct).toMatchObject({ start_time: '11:00', end_time: '12:15', start: 3, len: 1.5 });
   });
 
-  it('class_time_json 에서 place 가 null 이면 키를 뺀다', () => {
+  it('class_time_json 에서 place 가 null 이면 빈 문자열이다 (v1 과 같다)', () => {
     const lecture = makeLecture({
       classTimes: [{ day: 2, startMinute: 930, endMinute: 1040, place: null }],
     });
     const result = toSharedTimetable(makeTimetable({ lectures: [lecture] }));
     const ct = result.lecture_list[0]!.class_time_json[0]!;
-    expect('place' in ct).toBe(false);
+    expect(ct.place).toBe('');
   });
 
   it('class_time_mask 는 요일 7개 배열이다', () => {
@@ -179,7 +204,7 @@ describe('toSharedTimetable', () => {
     expect('lecture_id' in result.lecture_list[0]!).toBe(false);
   });
 
-  it('lectureBuildings 는 포함하지 않는다 (v2 응답에 없음)', () => {
+  it('lectureBuildings 는 포함하지 않는다 (v1 · v2 시간표 응답 모두 없음)', () => {
     const lecture = makeLecture({
       classTimes: [{ day: 0, startMinute: 540, endMinute: 615, place: '302-208' }],
     });
@@ -200,5 +225,228 @@ describe('createPickerMessage', () => {
   it('payload 가 SharedTimetable 형태다', () => {
     const msg = createPickerMessage(makeTimetable());
     expect(msg.payload).toMatchObject({ title: '나의 시간표', year: 2026, semester: 3 });
+  });
+});
+
+// ── dev 서버 대조 ──────────────────────────────────────────────────────────
+// 2026-11-14 dev 서버에서 같은 시간표를 v2 `GET /v2/timetables/:id` 와 v1 `GET /v1/tables/:id` 로 받은 실제 값.
+// 레거시 picker 는 v1 응답에서 _id · user_id · updated_at · theme(· lecture_list 의 _id · color · colorIndex)만 빼고 보낸다.
+// v1 응답에 없는 class_time_mask 는 빼고 비교한다.
+
+const DEV_V2_TIMETABLE: SnuttV2.TimetableResponse = {
+  id: 33725,
+  year: 2018,
+  semester: 1,
+  title: '나의 시간표',
+  themeId: 1,
+  isPrimary: false,
+  updatedAt: 1519220415709,
+  lectures: [
+    {
+      id: 88143,
+      lectureId: 66150,
+      courseId: 24736,
+      academicYear: '1학년',
+      category: '컴퓨터와 정보 활용',
+      classification: '교양',
+      courseNumber: '035.001',
+      lectureNumber: '017',
+      department: '컴퓨터공학부',
+      quota: 70,
+      courseTitle: '컴퓨터의 개념 및 실습',
+      instructor: '김석준',
+      credit: 3,
+      remark: '®컴퓨터공학부 1학년만 수강 가능',
+      classPlaceAndTimes: [
+        { day: 0, place: '301-203', startMinute: 870, endMinute: 980 },
+        { day: 2, place: '301-203', startMinute: 870, endMinute: 980 },
+      ],
+      color: { backgroundColor: '#4F48C4', foregroundColor: '#ffffff' },
+      paletteIndex: 7,
+    },
+    {
+      id: 88144,
+      lectureId: 65958,
+      courseId: 2451,
+      academicYear: '1학년',
+      category: '과학적 사고와 실험',
+      classification: '교양',
+      courseNumber: '034.005',
+      lectureNumber: '002',
+      department: '물리·천문학부(물리학전공)',
+      quota: 200,
+      freshmanQuota: 140,
+      courseTitle: '물리의 기본 1',
+      instructor: '김경태',
+      credit: 3,
+      classPlaceAndTimes: [
+        { day: 1, place: '028-301', startMinute: 750, endMinute: 825 },
+        { day: 3, place: '028-301', startMinute: 750, endMinute: 825 },
+      ],
+      color: { backgroundColor: '#1D99E8', foregroundColor: '#ffffff' },
+      paletteIndex: 6,
+    },
+    // 직접 추가한 강의 (dev 시간표 516951, 517146 에서 가져옴)
+    {
+      id: 1397843,
+      courseTitle: '1',
+      instructor: '1',
+      credit: 1,
+      remark: '1',
+      classPlaceAndTimes: [
+        { day: 0, place: '장소', startMinute: 480, endMinute: 510 },
+        { day: 1, place: '장소', startMinute: 855, endMinute: 860 },
+      ],
+      color: { backgroundColor: '#EAA32A', foregroundColor: '#ffffff' },
+      paletteIndex: 2,
+    },
+    {
+      id: 1398173,
+      courseTitle: 'asd',
+      instructor: 'asdasd',
+      credit: 1,
+      classPlaceAndTimes: [{ day: 0, place: '', startMinute: 965, endMinute: 1270 }],
+      color: { backgroundColor: '#3BD01B', foregroundColor: '#FFFFFF' },
+      paletteIndex: 0,
+    },
+  ],
+};
+
+/** 같은 시간표의 v1 응답에서 레거시 picker 가 보내는 부분 */
+const DEV_V1_PAYLOAD = {
+  year: 2018,
+  semester: 1,
+  lecture_list: [
+    {
+      academic_year: '1학년',
+      category: '컴퓨터와 정보 활용',
+      class_time_json: [
+        {
+          day: 0,
+          place: '301-203',
+          startMinute: 870,
+          endMinute: 980,
+          start_time: '14:30',
+          end_time: '16:20',
+          len: 2,
+          start: 6.5,
+        },
+        {
+          day: 2,
+          place: '301-203',
+          startMinute: 870,
+          endMinute: 980,
+          start_time: '14:30',
+          end_time: '16:20',
+          len: 2,
+          start: 6.5,
+        },
+      ],
+      classification: '교양',
+      credit: 3,
+      department: '컴퓨터공학부',
+      instructor: '김석준',
+      lecture_number: '017',
+      quota: 70,
+      remark: '®컴퓨터공학부 1학년만 수강 가능',
+      course_number: '035.001',
+      course_title: '컴퓨터의 개념 및 실습',
+      lecture_id: '66150',
+      snuttEvLecture: { evLectureId: 24736 },
+    },
+    {
+      academic_year: '1학년',
+      category: '과학적 사고와 실험',
+      class_time_json: [
+        {
+          day: 1,
+          place: '028-301',
+          startMinute: 750,
+          endMinute: 825,
+          start_time: '12:30',
+          end_time: '13:45',
+          len: 1.5,
+          start: 4.5,
+        },
+        {
+          day: 3,
+          place: '028-301',
+          startMinute: 750,
+          endMinute: 825,
+          start_time: '12:30',
+          end_time: '13:45',
+          len: 1.5,
+          start: 4.5,
+        },
+      ],
+      classification: '교양',
+      credit: 3,
+      department: '물리·천문학부(물리학전공)',
+      instructor: '김경태',
+      lecture_number: '002',
+      quota: 200,
+      freshman_quota: 140,
+      course_number: '034.005',
+      course_title: '물리의 기본 1',
+      lecture_id: '65958',
+      snuttEvLecture: { evLectureId: 2451 },
+    },
+    {
+      class_time_json: [
+        {
+          day: 0,
+          place: '장소',
+          startMinute: 480,
+          endMinute: 510,
+          start_time: '08:00',
+          end_time: '08:30',
+          len: 0.5,
+          start: 0,
+        },
+        {
+          day: 1,
+          place: '장소',
+          startMinute: 855,
+          endMinute: 860,
+          start_time: '14:15',
+          end_time: '14:20',
+          len: 0.5,
+          start: 6,
+        },
+      ],
+      credit: 1,
+      instructor: '1',
+      remark: '1',
+      course_title: '1',
+    },
+    {
+      class_time_json: [
+        {
+          day: 0,
+          place: '',
+          startMinute: 965,
+          endMinute: 1270,
+          start_time: '16:05',
+          end_time: '21:10',
+          len: 5.5,
+          start: 8,
+        },
+      ],
+      credit: 1,
+      instructor: 'asdasd',
+      course_title: 'asd',
+    },
+  ],
+  title: '나의 시간표',
+  isPrimary: false,
+};
+
+describe('dev 서버 v1 응답 대조', () => {
+  it('v2 응답을 변환한 payload 가 v1 레거시 payload 와 키 순서까지 같다 (class_time_mask 제외)', () => {
+    const payload = toSharedTimetable(toTimetable(DEV_V2_TIMETABLE));
+    const withoutMask = JSON.stringify(payload, (key, value: unknown) =>
+      key === 'class_time_mask' ? undefined : value,
+    );
+    expect(withoutMask).toBe(JSON.stringify(DEV_V1_PAYLOAD));
   });
 });
