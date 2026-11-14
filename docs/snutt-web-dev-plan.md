@@ -3,7 +3,7 @@
 > 기준 문서: [기획 스펙](./snutt-web-planning.md), [디자인 스펙](./snutt-web-design.md)
 > 작성일: 2026-09-23
 > 디자인 반영: 2026-09-26, Figma "웹 업데이트" 페이지의 **완료** 영역 기준. 디자인 스펙과 다른 부분은 [디자인 변경](#디자인-변경-figma-완료-영역) 을 따른다.
-> 컴포넌트 반영: 2026-10-04, 완료 영역의 `Web 컴포넌트` 섹션과 텍스트 스타일. 2026-10-09 에 10-07 수정분(`드롭다운`, `top` 등)을, 2026-10-17 에 10-12 ~ 10-14 수정분(패널 토글, 시간대 검색, 미리보기 글자색 등)을, 2026-10-24 에 10-17 수정분(관심강좌 토스트, 강의 삭제 확인)을, 2026-11-08 에 11-04 수정분(시간표 블록 `course/timetable`, `Add Icon`, `notice / trash`)을 다시 반영. [Figma 컴포넌트](#figma-컴포넌트-web-컴포넌트-섹션) 참고.
+> 컴포넌트 반영: 2026-10-04, 완료 영역의 `Web 컴포넌트` 섹션과 텍스트 스타일. 2026-10-09 에 10-07 수정분(`드롭다운`, `top` 등)을, 2026-10-17 에 10-12 ~ 10-14 수정분(패널 토글, 시간대 검색, 미리보기 글자색 등)을, 2026-10-24 에 10-17 수정분(관심강좌 토스트, 강의 삭제 확인)을, 2026-11-08 에 11-04 수정분(시간표 블록 `course/timetable`, `Add Icon`, `notice / trash`)을, 2026-11-14 에 11-09 수정분(아이콘 컴포넌트와 받은 SVG, Variables 변경, `관심강좌 버튼` · `Add button`, 테마 버튼)을 다시 반영. [Figma 컴포넌트](#figma-컴포넌트-web-컴포넌트-섹션) 참고.
 > 디자이너 문의 사항: [snutt-web-design-questions.md](./snutt-web-design-questions.md)
 
 ---
@@ -41,24 +41,25 @@ Figma 의 완료 영역(`home` 섹션: 메인, 비교, 필터, 강의 상세, �
 
 | Figma 컴포넌트 | 내용 | 코드 | 단위 |
 |---|---|---|---|
-| `LNB` | 폭 80px, 배경 `Background/lightField`, 오른쪽 선 `Line/light`. 로고, 검색 · 강의평 · 친구 시간표 · 더보기(아이콘 30px, 라벨 `14/SemiBold`, 간격 30px), 하단 테마 버튼(40px). 선택된 항목마다 변형 4개 | `features/app-shell` Lnb | 4-1 |
+| `LNB` | 폭 80px, 배경 `Background/lightField`, 오른쪽 선 `Line/light`. 로고, 검색 · 강의평 · 친구 시간표 · 더보기(아이콘 30px, 라벨 `14/SemiBold`, 간격 30px), 하단 테마 버튼(40px, 둥글기 10, 테두리 `Line/border`, 배경 `Line/lightField`, 아이콘 24px `Icon/nomal`. 11-09). 로고 24px. 선택된 항목마다 변형 4개 | `features/app-shell` Lnb | 4-1 |
 | `연도 선택` | `2026년 2학기 ⌄`, `22/Bold`, 화살표와 간격 10px | 학기 드롭다운 | 4-3 |
 | `상단 탭` | 검색 · 강의 목록 · 관심강좌, 선택 `17/Bold` · 나머지 `17/SemiBold`, 간격 15px, 아래 선 1px | `shared/ui/Tabs` (underline) | 2-2 ✅ |
 | `검색창` | 390 × 42, 왼쪽 검색 아이콘, 오른쪽 필터 아이콘, 글자 `14/Regular` | `shared/ui/SearchField` | 2-2 ✅ |
 | `검색 필터칩` | `12/Medium`, `×` 아이콘. 색 8가지: 회색(`Text/Assistive`) + red · orange · lime · mint · blue · navy · purple | `shared/ui/Chip` | 2-2 ✅ |
 | `cell` | 강의 한 줄. 강의명 `15/Bold`, 교수 / 학점 · 학과 · 시간 · 장소 `13/Regular`, 강의계획서 `13/Medium`, 오른쪽 관심강좌 · 담기 버튼. 변형 `기본`(흰 배경) / `호버`(`Background/lightField`, 10-13 에 이름이 정해짐) | `LectureCell` (검색 결과, 강의 목록, 관심강좌가 함께 씀) | 5-1, 7-1, 7-2 |
-| `course` | 시간표 그리드. 최소 375px(컴포넌트 폭은 10-07 에 1015 → 656px 로 바뀌었지만 그리드는 화면 폭을 채운다), 월~금, 9~24시. 선 색 일부가 hex(`#F2F2F2`, `#EBEBED`) | `TimetableGrid` | 4-2 |
+| `course` | 시간표 그리드. 최소 375px(컴포넌트 폭은 10-07 에 1015 → 656px 로 바뀌었지만 그리드는 화면 폭을 채운다), 월~금, 9~24시. 선 색: 맨 위 `Background/lightField`, 시각 · 요일 선 `Line/light`, 30분 선 `Background/light` (11-09 에 모두 토큰이 됨) | `TimetableGrid` | 4-2 |
 | `timetable`, `course`(변형 `1h` 등) | 강의 블록. 좌우 여백 12px, 강의명 `12px Regular` · 장소 `12px Bold`, 사이 1px. 10-07 추가 | `LectureLayer` | 4-2 |
 | `course/timetable` | 강의 블록 예시(`course/cell` 6개)를 묶은 것. 블록 값은 위와 같고 글꼴이 Pretendard 로 바뀌었다(줄 높이 140%, 자간 −2%). 11-04 추가 | `LectureLayer`, `PreviewLayer` (`text-12-regular` · `text-12-bold`) | 4-2 ✅ |
-| `top` | 시간표 헤더. 높이 56(여백 13 · 20). 변형 3개: `기본`(탭 · + · ··· · 직접 추가 · 시간표 비교), 비교 중 왼쪽 `메인 시간표`(탭 · + · ···), 비교 중 오른쪽 `복수 시간표`(탭 · ··· · 비교 종료). 10-07 추가 | `MainScreen` 의 헤더 | 4-3, 9-2 |
+| `top` | 시간표 헤더. 높이 56(여백 13 · 20). 변형 3개: `기본`(탭 · + · ··· · 직접 추가 · 시간표 비교), 비교 중 왼쪽 `메인 시간표`(탭 · + · ···), 비교 중 오른쪽 `복수 시간표`(탭 · ··· · 비교 종료). 10-07 추가. 11-09 에 탭 스크롤 화살표가 `Icon/arrow/left` · `right` 로, 비선택 탭 글자가 `Text/Assistive`, 고른 탭 배경이 `Background/lightField` 로 바뀜 | `MainScreen` 의 헤더 | 4-3, 9-2 |
 | `드롭다운` | 펼친 목록(학기 목록). 테두리 1px `Line/border`, 둥글기 8, 그림자 `0 0 10px #000 · 10%`. 한 줄 42px(여백 12 · 16), 글자 `15/title/regular`, 줄 사이 선 없음, 고를 줄 배경 `Background/lightField`. 10-07 추가 | `shared/ui/popup.ts` (`Select`, `Menu`) | 2-3, 4-3 |
-| `관심강좌 버튼` | 30px 원, 변형 `기본` · `호버`(배경 `#000 · 10%`) · `선택`. 10-07 추가 | 검색 결과의 관심강좌 토글 | 5-1 |
+| `관심강좌 버튼` | 30px 원, 테두리 `Line/light`, 아이콘 `Icon/bookmark` 16px. 변형 `기본`(배경 `Background/Normal`, 아이콘 `Icon/nomal`) · `선택`(배경 `Background/deem2`, 아이콘 `Icon/onItem`). 10-07 추가, 11-09 에 `호버` 가 빠짐 (디자인 문의 4-26) | `IconButton` (`circle`) | 5-1 ✅ |
 | `Toggle Button` | 패널 접기 버튼 27 × 57 (4-1 에서 화면으로 잰 값과 같다). 10-07 추가. 화면에서는 10-12 에 `토글 버튼` 으로 바뀌어 접힌 뒤 펼칠 때만 쓴다 | `MainScreen` | 4-1 ✅ |
-| `토글 버튼` | 학기 오른쪽의 패널 접기. `dock_to_right` 아이콘 14 × 12, 여백 10, `Text/med`. 10-13 추가 | `MainPanel` | 4-1 |
+| `토글 버튼` | 학기 오른쪽의 패널 접기. `Icon/sidebar` 16px(그림 14 × 12), 여백 10, `Text/med`. 10-13 추가 | `MainPanel` | 4-1 |
 | `alert` | 확인 팝업. 라이트 · 다크 변형. 10-13 추가 | `ConfirmDialog` | 2-3 ✅ |
 | `필터 LNB`, `체크박스 버튼`, `즐겨찾기 버튼` | 필터 모달의 왼쪽 목록(카테고리마다 선택 변형)과 고르는 칸. 10-13 추가 | `SearchFilterDialog`, `shared/ui/Checkbox` | 5-3 |
-| `Add Icon` | 담기 버튼. 30px 원, 배경 `#000 · 10%`, 테두리 `#E7E7E7`, `+` 22px `Text/med`. `cell` 안의 담기 버튼은 흰 배경이라 호버 상태로 본다. 11-04 추가 | `IconButton` (`circle`) | 5-1 ✅ |
-| `notice / trash` | 휴지통 아이콘 13.6 × 15.23, 검정. 아직 쓰는 화면이 없다 (디자인 문의 4-24). 11-04 추가 | - | - |
+| `Add button` | 담기 버튼. 11-09 에 `Add Icon` 을 대신함. `관심강좌 버튼` 과 같은 값에 아이콘 `Icon/add` 16px | `IconButton` (`circle`) | 5-1 ✅ |
+| `Icon/*` 아이콘 | 11-09 에 아이콘이 컴포넌트가 됐고 SVG 를 받았다(`apps/snutt-web/design-icons/`). 16px: add · bookmark · clock · edit · map · more · sidebar · switch · tag · trash, 24px: arrow left · right · close · theme light · dark · kakaotalk · person, 30px: `Icon/Tab/*`(search · review · friend · more, light · dark 같은 모양), `Logo` 24px. `notice / trash` 는 `Icon/trash` 로 바뀜. trash · kakaotalk · person 은 아직 쓰는 화면이 없다 (디자인 문의 4-24) | `yarn generate:icons` → `shared/ui/icons` | - |
+| `탭 버튼` | 강의 상세 / 강의평 전환. 고른 칸 흰 배경 · 글자 `#808080`, 나머지 `#B8B8B8`, `14/SemiBold`, 여백 2 · 10, 둥글기 4. 두 변형 모두 `강의 상세 \| 강의평` 순서. 11-09 추가 | `shared/ui/Tabs` (segmented) | 8-4 ✅ |
 | `검색 목록 영역`, `강의평 바로가기 버튼` | 목록 패널 전체, 평점(`★ 4.0 (1)`)을 눌러 강의평으로 가는 버튼으로 추정. 10-13 추가 | `MainPanel`, `LectureCell` | 5-1, 8-4 |
 
 **텍스트 스타일**: Figma 에 `크기/굵기` 이름의 텍스트 스타일이 생겼다(메인 화면과 위 컴포넌트에만 적용, 강의 상세 · 강의평 등 다른 화면은 아직 값이 직접 들어가 있다). 코드에서는 `text-14-semibold` 처럼 같은 이름으로 쓴다(#247).
@@ -377,7 +378,7 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | 친구 기능 서버 | 확인 필요: 별도 friends-api 가 필요한지, core v2 로 충분한지. 8-1 에서 core v2 `GET /v2/friends` 가 dev 서버에서 실제 친구 목록을 돌려주는 것을 확인했다 (2026-10-17) | core v2 명세에 친구 API 전체가 있음 |
 | v2 ID 크기 | ✅ 해결: dev 응답의 ID 는 5~6자리로 2^53 보다 한참 작다 (2026-10-15). 그대로 JSON 숫자로 받아 문자열로 바꾼다 | v2 ID 는 `Int64`. domain 은 문자열로 다룸. 초과하면 JSON 파싱 단계에서 정확도가 깨지므로 별도 처리 필요 |
 | 필터 칩 색 | 디자인 확인 필요: 필터 종류마다 칩 색이 정해져 있는지 | Figma 칩은 8가지 색이고 메인 화면은 전공 orange, 4학년 red, 3학점 lime, 컴퓨터공학부 mint, 평점 높은 순 회색. 필터 종류는 10개라 색보다 많다 |
-| 아이콘 교체 | **나중에 바꿔야 함**: 지금 아이콘은 Figma 에서 내보낼 수 없어 Material Symbols 중 비슷한 것으로 대신했다. 디자이너에게 SVG 를 받으면 바꾼다. 특히 Figma 에서 직접 그린 것으로 보이는 좌측 바 아이콘(`Icon/Tab/timetable`: 검색 · 강의평 · 친구 시간표 · 더보기), 검색 아이콘(`Icon/glass`), 필터 아이콘(`ic/condition/normal`), 로고(`SnuttLogo`, 지금은 snutt-webclient 의 벡터) | 바꿀 곳: `scripts/generate-icons.mts`(Material Symbols 이름) 또는 받은 SVG 로 `shared/ui/` 컴포넌트 교체. 디자이너 문의 C |
+| 아이콘 교체 | 🔶 일부 해결 (11-14): 디자이너에게 받은 SVG 21개와 로고로 바꿨다(좌측 바, 테마, 닫기, 화살표, `+`, `···`, 강의 정보 아이콘 등). 아직 Material Symbols 인 것: 검색창 검색(`Icon/glass`) · 필터(`ic/condition/normal`), 빼기(−), 강의계획서 `↗`, 별, 체크, 공유 · 다운로드 · 복사 · 새로고침 · 좋아요, 학기 `⌄` | 받으면 `apps/snutt-web/design-icons/` 에 넣고 `scripts/generate-icons.mts` 의 `DESIGN_ICONS` 로 옮긴다. 디자이너 문의 C |
 | 강의 시간 겹침 | 그리드는 v1 처럼 겹쳐도 칸을 나누지 않는다(기획상 겹치지 않음). 5-1 에서 v2 강의 추가 · 수정의 `forced` 가 겹치는 강의를 지우는지, 겹친 채로 넣는지 백엔드에 확인 | 겹친 채로 넣는다면 가려진 강의를 고를 방법이 필요 |
 | `paletteIndex` 시작 번호 | ✅ 해결: 0부터. dev 응답에서 `paletteIndex: 1` 인 강의의 `color` 가 테마 `colors[1]` 과 같다 (2026-10-15) | domain 은 0부터(팔레트 배열 인덱스)로 가정. v1 `colorIndex` 는 1~9 가 팔레트, 0 이 직접 고른 색이었음. Figma 색상 드롭다운은 `색상1~9` (표시용 번호는 index + 1) |
 | v2 강의 수정(PATCH)의 null | ✅ 해결 (2026-10-15 dev 에서 확인): `null` 과 생략은 "바꾸지 않음". 값을 지우려면 `resetFields` 에 필드 이름을 넣는다 (직접 추가한 강의는 null, 수강편람 강의는 수강편람 값으로 돌아감). `paletteIndex` 를 보내면 `customColor` 가 지워진다 | `toLectureModifyRequest` 가 null 인 필드를 resetFields 로 보낸다. 6-2 에서 수강편람 강의의 값을 "지우기"가 아니라 "원래대로"로 보여 줄지 정한다 |

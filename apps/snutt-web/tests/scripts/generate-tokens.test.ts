@@ -47,6 +47,12 @@ describe('toTokenEntries', () => {
     ]);
   });
 
+  it('Figma 변수 이름의 오타(Icon/nomal)를 바로잡는다', () => {
+    expect(toTokenEntries({ Icon: { nomal: color('#A6A6A6') } })).toEqual([
+      { name: 'Icon/Normal', cssVariable: '--color-icon-normal', value: '#a6a6a6' },
+    ]);
+  });
+
   it('용도를 모르는 Color 그룹은 건너뛴다', () => {
     expect(toTokenEntries({ Color: color('#FFFFFF') })).toEqual([]);
   });

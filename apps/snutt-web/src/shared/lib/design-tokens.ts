@@ -114,14 +114,14 @@ export const DESIGN_TOKENS = [
   {
     name: 'Icon/Normal',
     cssVariable: '--color-icon-normal',
-    light: '#000000',
-    dark: '#ffffff',
+    light: '#a6a6a6',
+    dark: '#8a898e',
   },
   {
     name: 'Icon/onItem',
     cssVariable: '--color-icon-on-item',
-    light: '#ffffff',
-    dark: '#000000',
+    light: '#000000',
+    dark: '#ffffff',
   },
   {
     name: 'Background/Normal',
@@ -134,6 +134,18 @@ export const DESIGN_TOKENS = [
     cssVariable: '--background-color-deem',
     light: 'rgb(0 0 0 / 20%)',
     dark: 'rgb(0 0 0 / 20%)',
+  },
+  {
+    name: 'Background/deem2',
+    cssVariable: '--background-color-deem2',
+    light: 'rgb(0 0 0 / 6%)',
+    dark: 'rgb(255 255 255 / 6%)',
+  },
+  {
+    name: 'Background/filter',
+    cssVariable: '--background-color-filter',
+    light: 'rgb(255 255 255 / 0%)',
+    dark: 'rgb(34 34 34 / 0%)',
   },
   {
     name: 'Background/light',

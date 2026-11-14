@@ -92,7 +92,7 @@ export function ClassTimeFields({ id, rows, onRowsChange, minRows, error, varian
         // Figma: 여백 6 · 14, 둥글기 5, 글자 Text/med
         className="-mt-3.5 flex items-center gap-1.5 self-center rounded-[5px] px-3.5 py-1.5 text-14-regular text-med hover:bg-light focus-visible:outline-2 focus-visible:outline-snutt-mint"
       >
-        <IconAdd className="size-3.5" />
+        <IconAdd className="size-2.5" />
         시간 추가
       </button>
       {error && (

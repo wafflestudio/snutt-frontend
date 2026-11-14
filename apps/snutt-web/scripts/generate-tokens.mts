@@ -41,6 +41,14 @@ const GROUP_PREFIXES: Record<string, string | null> = {
   Color: null,
 };
 
+/**
+ * Figma 변수 이름의 오타를 바로잡는다. 키는 `그룹/이름`.
+ * Icon/nomal: 11-09 에 Icon/Normal 이 이 이름으로 바뀌었다 (디자인 문의 4-25). Figma 에서 고쳐지면 지운다.
+ */
+const NAME_FIXES: Record<string, string> = {
+  'Icon/nomal': 'Normal',
+};
+
 const isToken = (value: unknown): value is Token =>
   typeof value === 'object' && value !== null && (value as Token).$type === 'color';
 
@@ -72,9 +80,10 @@ export const toTokenEntries = (tokens: TokenGroup): TokenEntry[] =>
       if (prefix === null) return [];
       return Object.entries(value as TokenGroup).map(([name, token]) => {
         if (!isToken(token)) throw new Error(`${group}/${name} 는 색상 토큰이 아닙니다.`);
+        const fixedName = NAME_FIXES[`${group}/${name}`] ?? name;
         return {
-          name: `${group}/${name}`,
-          cssVariable: `${prefix}${toKebabCase(name)}`,
+          name: `${group}/${fixedName}`,
+          cssVariable: `${prefix}${toKebabCase(fixedName)}`,
           value: toCssColor(token.$value),
         };
       });

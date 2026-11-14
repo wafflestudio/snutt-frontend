@@ -60,8 +60,8 @@ export function MainPanel({
       />
       <div className="flex items-center justify-between">
         <SemesterSelect semesters={semesters} value={semester} onValueChange={onSemesterChange} />
-        {/* Figma `토글 버튼`: dock_to_right 아이콘, Text/med */}
-        <IconButton label="패널 접기" icon={<IconDockToRight />} onClick={onCollapse} />
+        {/* Figma `토글 버튼`: Icon/sidebar 16px(그림 14 × 12), Text/med */}
+        <IconButton label="패널 접기" icon={<IconDockToRight className="size-4!" />} onClick={onCollapse} />
       </div>
       <Tabs
         value={tab}
