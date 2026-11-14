@@ -177,7 +177,8 @@ export function MainScreen() {
                 semester={selected.semester}
                 palette={palette}
                 onChange={setDetail}
-                onClose={() => setView({ ...view, panel: null })}
+                // X 는 상세만 닫고 목록 패널은 남긴다
+                onClose={() => setDetail(null)}
                 onColorChange={(color) => timetables.updateLecture(selected.id, detailLecture.id, { color })}
                 onSave={(change, options) => timetables.updateLecture(selected.id, detailLecture.id, change, options)}
                 onRemove={() => timetables.removeLecture(selected.id, detailLecture.id, () => setDetail(null))}
@@ -191,7 +192,7 @@ export function MainScreen() {
                 canAdd={selected !== null}
                 onViewChange={(next) => setDetail({ ...detail, view: next })}
                 onBack={() => setDetail(null)}
-                onClose={() => setView({ ...view, panel: null })}
+                onClose={() => setDetail(null)}
                 onAdd={(options) => selected && timetables.addLecture(selected.id, detailCourse.id, options)}
               />
             )}

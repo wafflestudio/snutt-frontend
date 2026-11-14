@@ -106,7 +106,7 @@ describe('LectureDetailPanel', () => {
     expect(onRemove).toHaveBeenCalledTimes(1);
   });
 
-  it('강의평으로 바꾸고, `<` 는 상세를 닫고, `×` 는 패널을 접는다', async () => {
+  it('강의평으로 바꾸고, `<` 는 목록으로 돌아가고, `×` 는 상세를 닫는다', async () => {
     const { onChange, onClose } = setup();
     await userEvent.click(screen.getByRole('tab', { name: '강의평' }));
     expect(onChange).toHaveBeenLastCalledWith({
@@ -119,7 +119,7 @@ describe('LectureDetailPanel', () => {
     await userEvent.click(screen.getByRole('button', { name: '목록으로' }));
     expect(onChange).toHaveBeenLastCalledWith(null);
 
-    await userEvent.click(screen.getByRole('button', { name: '패널 접기' }));
+    await userEvent.click(screen.getByRole('button', { name: '상세 닫기' }));
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 

@@ -412,6 +412,15 @@ describe('MainScreen', () => {
       expect(window.location.search).toBe('');
     });
 
+    it('강의 상세의 `×` 는 상세만 닫고 목록 패널은 남긴다', async () => {
+      await renderMain();
+      await userEvent.click(block('경영전략'));
+      await userEvent.click(screen.getByRole('button', { name: '상세 닫기' }));
+      expect(panel('강의 상세')).not.toBeInTheDocument();
+      expect(panel('강의 목록')).toBeInTheDocument();
+      expect(window.location.search).toBe('');
+    });
+
     it('강의 상세가 열리면 헤더의 직접 추가 · 시간표 비교는 아이콘만 남는다', async () => {
       await renderMain();
       expect(screen.getByRole('button', { name: '직접 추가' })).toHaveTextContent('직접 추가');
