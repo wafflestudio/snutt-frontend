@@ -7,7 +7,7 @@ const ALLOWED = ['https://host.test'];
 
 const dummyMessage: PickerMessage = {
   type: 'SNUTT_TIMETABLE_SELECTED',
-  payload: { title: 'test', year: 2026, semester: 3, lecture_list: [] },
+  payload: { year: 2026, semester: 3, lecture_list: [], title: 'test', isPrimary: false },
 };
 
 // window 에 ReactNativeWebView 가 있는지 에 따라 target 이 달라진다

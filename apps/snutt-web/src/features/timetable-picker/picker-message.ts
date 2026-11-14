@@ -24,6 +24,9 @@ const MASK_SLOTS = (MASK_END_MINUTE - MASK_START_MINUTE) / MASK_SLOT_MINUTES; //
  * 07:00 부터 30분 슬롯 k(0..31) 마다 bit `1 << (31 - k)` (unsigned).
  * 수업과 겹치는 슬롯을 모두 켠다 (끝은 올림). 07:00 전/23:00 후 슬롯은 버린다.
  *
+ * 2026-11-14 dev 의 v1 `GET /v1/tables/:id` 응답에는 이 필드가 없어 서버 값과 대조하지 못했다.
+ * 계산식은 옛 v1(Node) 시절 레거시 mock fixture 에 맞춘 것이다.
+ *
  * 검증값(레거시 fixture):
  *   660–735  → 14680064
  *   1110–1220 → 480
@@ -49,42 +52,60 @@ const buildClassTimeMask = (classTimes: readonly ClassTime[]): number[] => {
 };
 
 /**
- * timetable-picker 가 소비자에게 전달하는 강의 형태.
- * 내부 식별자(TimetableLectureId)·색상은 제거하고, 소비자에게 필요한 필드만 남긴다.
- * 값이 없는 필드는 키를 뺀다 (레거시 undefined 와 동일).
+ * timetable-picker 가 소비자에게 전달하는 수업 시간 형태 (v1 `class_time_json[]`).
+ * `start` · `len` 은 08:00 부터의 교시(30분 단위)다. 시작은 내림, 끝은 올림.
+ * 계산식 출처: snutt-v2 `v1compat/.../LegacyTimetableDtos.kt` (`startPeriod` · `endPeriod`)
  */
 export type SharedClassTime = {
   day: number;
-  place?: string;
+  /** 장소가 없으면 '' (v1 과 같다) */
+  place: string;
   startMinute: number;
   endMinute: number;
+  /** 'HH:MM' */
+  start_time: string;
+  end_time: string;
   len: number;
   start: number;
-  // lectureBuildings: v2 응답에 없으므로 포함하지 않는다
+  // lectureBuildings: v1 시간표 응답에도 없다 (2026-11-14 dev 확인)
 };
 
+/**
+ * timetable-picker 가 소비자에게 전달하는 강의 형태.
+ * 레거시 picker 는 v1 `GET /v1/tables/:id` 의 강의에서 `_id` · `color` · `colorIndex` 만 뺀 것을 보낸다.
+ * 키 이름 · 순서 · 값은 그것과 같다. `class_time_mask` 만 v1 응답에 없는 것을 더 보낸다(옛 v1 에는 있었다).
+ * 값이 없는 필드는 키를 뺀다 (v1 응답과 같다).
+ */
 export type SharedLecture = {
-  course_title: string;
-  instructor?: string;
-  credit?: number;
-  class_time_json: SharedClassTime[];
-  remark?: string;
-  class_time_mask: number[];
-  lecture_id?: string;
-  course_number?: string;
-  classification?: string;
-  department?: string;
   academic_year?: string;
   category?: string;
-  quota?: number;
+  class_time_json: SharedClassTime[];
+  class_time_mask: number[];
+  classification?: string;
+  credit?: number;
+  department?: string;
+  instructor?: string;
   lecture_number?: string;
+  quota?: number;
+  freshman_quota?: number;
+  remark?: string;
+  course_number?: string;
+  course_title: string;
+  lecture_id?: string;
+  snuttEvLecture?: { evLectureId: number };
+  categoryPre2025?: string;
 };
 
+/**
+ * v1 시간표에서 `_id` · `user_id` · `updated_at` · `theme` · `themeId` 를 뺀 것.
+ * 레거시 picker 는 사용자 테마 시간표면 `themeId` 가 따라갔지만, 테마 정보를 빼려던 의도라 보내지 않는다.
+ */
 export type SharedTimetable = {
-  title: string;
   year: number;
   semester: Term;
   lecture_list: SharedLecture[];
+  title: string;
+  isPrimary: boolean;
 };
 
 export type PickerMessage = {
@@ -92,40 +113,57 @@ export type PickerMessage = {
   payload: SharedTimetable;
 };
 
-/** 수업 시간 하나를 SharedClassTime 으로 변환한다 */
-const toSharedClassTime = ({ day, place, startMinute, endMinute }: ClassTime): SharedClassTime => ({
-  day,
-  ...(place ? { place } : {}),
-  startMinute,
-  endMinute,
-  len: (endMinute - startMinute) / 60,
-  start: startMinute / 60,
-});
+const PERIOD_START_MINUTE = 8 * 60; // 1교시 08:00 (0 교시)
 
-/**
- * domain Timetable → SharedTimetable (소비자 계약 형태).
- * 키 순서와 undefined 처리는 레거시와 동일하다.
- */
+const toPeriod = (minute: number, round: (x: number) => number) => round(((minute - PERIOD_START_MINUTE) / 60) * 2) / 2;
+
+const formatHHMM = (minute: number) =>
+  `${String(Math.floor(minute / 60)).padStart(2, '0')}:${String(minute % 60).padStart(2, '0')}`;
+
+/** 수업 시간 하나를 SharedClassTime 으로 변환한다 */
+const toSharedClassTime = ({ day, place, startMinute, endMinute }: ClassTime): SharedClassTime => {
+  const start = toPeriod(startMinute, Math.floor);
+  return {
+    day,
+    place: place ?? '',
+    startMinute,
+    endMinute,
+    start_time: formatHHMM(startMinute),
+    end_time: formatHHMM(endMinute),
+    len: toPeriod(endMinute, Math.ceil) - start,
+    start,
+  };
+};
+
+/** 값이 null 이면 키를 뺀다 */
+const optional = <K extends string, V>(key: K, value: V | null) =>
+  (value === null ? {} : { [key]: value }) as Partial<Record<K, V>>;
+
+/** domain Timetable → SharedTimetable (소비자 계약 형태) */
 export const toSharedTimetable = (timetable: Timetable): SharedTimetable => ({
-  title: timetable.title,
   year: timetable.semester.year,
   semester: timetable.semester.term,
   lecture_list: timetable.lectures.map((lecture): SharedLecture => ({
-    course_title: lecture.title,
-    ...(lecture.instructor !== null ? { instructor: lecture.instructor } : {}),
-    ...(lecture.credit !== null ? { credit: lecture.credit } : {}),
+    ...optional('academic_year', lecture.academicYear),
+    ...optional('category', lecture.category),
     class_time_json: lecture.classTimes.map(toSharedClassTime),
-    ...(lecture.remark !== null ? { remark: lecture.remark } : {}),
     class_time_mask: buildClassTimeMask(lecture.classTimes),
-    ...(lecture.lectureId !== null ? { lecture_id: lecture.lectureId } : {}),
-    ...(lecture.courseNumber !== null ? { course_number: lecture.courseNumber } : {}),
-    ...(lecture.classification !== null ? { classification: lecture.classification } : {}),
-    ...(lecture.department !== null ? { department: lecture.department } : {}),
-    ...(lecture.academicYear !== null ? { academic_year: lecture.academicYear } : {}),
-    ...(lecture.category !== null ? { category: lecture.category } : {}),
-    ...(lecture.quota !== null ? { quota: lecture.quota } : {}),
-    ...(lecture.lectureNumber !== null ? { lecture_number: lecture.lectureNumber } : {}),
+    ...optional('classification', lecture.classification),
+    ...optional('credit', lecture.credit),
+    ...optional('department', lecture.department),
+    ...optional('instructor', lecture.instructor),
+    ...optional('lecture_number', lecture.lectureNumber),
+    ...optional('quota', lecture.quota),
+    ...optional('freshman_quota', lecture.freshmanQuota),
+    ...optional('remark', lecture.remark),
+    ...optional('course_number', lecture.courseNumber),
+    course_title: lecture.title,
+    ...optional('lecture_id', lecture.lectureId),
+    ...optional('snuttEvLecture', lecture.courseId === null ? null : { evLectureId: Number(lecture.courseId) }),
+    ...optional('categoryPre2025', lecture.categoryPre2025),
   })),
+  title: timetable.title,
+  isPrimary: timetable.isPrimary,
 });
 
 /** postMessage 로 보낼 메시지 객체를 만든다 */
