@@ -8,7 +8,13 @@ import { createQueryClient } from '@/api/query-client';
 import type { TimetableLecture } from '@/domain/lecture';
 import { EvaluationView } from '@/features/main/components/EvaluationView';
 import { SAMPLE_TIMETABLES } from '@/features/main/sample-data';
-import { EVALUATION_RESPONSES, EVALUATION_SUMMARY_RESPONSE, problem } from '../../msw/fixtures';
+import { fakeEvaluations } from '../../msw/fake-evaluations';
+import {
+  EVALUATION_LECTURE_RESPONSES,
+  EVALUATION_RESPONSES,
+  EVALUATION_SUMMARY_RESPONSE,
+  problem,
+} from '../../msw/fixtures';
 import { api, server } from '../../msw/server';
 
 const [FIRST, SECOND] = EVALUATION_RESPONSES;
@@ -17,6 +23,7 @@ const LECTURE: TimetableLecture = {
   ...SAMPLE_TIMETABLES[0].lectures.find(({ id }) => id === '1-3')!,
   instructor: '김명수',
   courseId: '9756',
+  lectureId: '7001',
 };
 
 const renderView = (lecture: TimetableLecture = LECTURE) =>
@@ -74,9 +81,7 @@ describe('EvaluationView', () => {
     expect(first).toHaveAccessibleName('2026년 1학기 강의평');
     expect(within(first).getByRole('img', { name: '별점 4.5점' })).toBeInTheDocument();
     expect(within(first).getByText('과제가 많지만 배우는 것이 많아요')).toBeInTheDocument();
-    expect(within(first).getByLabelText('좋아요 3개')).toBeInTheDocument();
-    // 좋아요를 누르는 것은 8-5 라 아직 버튼이 아니다
-    expect(within(first).queryByRole('button')).not.toBeInTheDocument();
+    expect(within(first).getByRole('button', { name: '좋아요 3개', pressed: false })).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole('button', { name: '최신순' }));
     expect(screen.getByRole('button', { name: '최신순', pressed: true })).toBeInTheDocument();
@@ -147,5 +152,193 @@ describe('EvaluationView', () => {
     renderView({ ...LECTURE, courseId: null, lectureId: null, credit: null });
     expect(screen.getByText('직접 추가한 강의는 강의평이 없습니다')).toBeInTheDocument();
     expect(screen.getByText('김명수')).toBeInTheDocument();
+  });
+});
+
+describe('EvaluationView 상호작용', () => {
+  /** 강의평 9756 을 메모리에 두는 가짜 서버. 501 은 남의 강의평, 502 는 내 강의평(2019년 2학기)이다 */
+  const useFake = () => {
+    const fake = fakeEvaluations({
+      courseId: 9756,
+      evaluations: EVALUATION_RESPONSES,
+      lectures: EVALUATION_LECTURE_RESPONSES,
+    });
+    server.use(...fake.handlers);
+    return fake;
+  };
+
+  const findItem = async (semester: string) =>
+    within(await screen.findByRole('region', { name: '강의평 목록' })).findByRole('article', {
+      name: `${semester} 강의평`,
+    });
+
+  const openMenu = async (item: HTMLElement, action: string) => {
+    await userEvent.click(within(item).getByRole('button', { name: '강의평 메뉴' }));
+    await userEvent.click(await screen.findByRole('menuitem', { name: action }));
+  };
+
+  const pickScore = async (scope: HTMLElement, label: string, score: number) =>
+    userEvent.click(
+      within(within(scope).getByRole('group', { name: label })).getByRole('radio', { name: `${score}점` }),
+    );
+
+  it('좋아요를 누르면 수가 늘고 눌린 상태가 되며, 다시 누르면 취소한다', async () => {
+    const fake = useFake();
+    renderView();
+    const item = await findItem('2026년 1학기');
+
+    await userEvent.click(within(item).getByRole('button', { name: '좋아요 3개', pressed: false }));
+    expect(await within(item).findByRole('button', { name: '좋아요 4개', pressed: true })).toBeInTheDocument();
+
+    await userEvent.click(within(item).getByRole('button', { name: '좋아요 4개' }));
+    expect(await within(item).findByRole('button', { name: '좋아요 3개', pressed: false })).toBeInTheDocument();
+    expect(fake.requests.map(({ method, path }) => `${method} ${path}`)).toEqual([
+      'POST /v2/evaluations/501/like',
+      'DELETE /v2/evaluations/501/like',
+    ]);
+  });
+
+  it('좋아요가 실패하면 서버 문구를 알림 팝업으로 띄운다', async () => {
+    const fake = fakeEvaluations({ courseId: 9756, evaluations: EVALUATION_RESPONSES, lectures: [] });
+    server.use(
+      http.post(api('/v2/evaluations/501/like'), () =>
+        HttpResponse.json(problem(400, 'self-like', '잘못된 요청', '내 강의평에는 좋아요를 누를 수 없습니다'), {
+          status: 400,
+        }),
+      ),
+      ...fake.handlers,
+    );
+    renderView();
+    const item = await findItem('2026년 1학기');
+
+    await userEvent.click(within(item).getByRole('button', { name: '좋아요 3개' }));
+    const notice = await screen.findByRole('alertdialog', { name: '내 강의평에는 좋아요를 누를 수 없습니다' });
+    await userEvent.click(within(notice).getByRole('button', { name: '확인' }));
+    expect(within(item).getByRole('button', { name: '좋아요 3개', pressed: false })).toBeInTheDocument();
+  });
+
+  it('⋮ 메뉴: 내 강의평은 수정 · 삭제, 남의 강의평은 신고', async () => {
+    useFake();
+    renderView();
+
+    await userEvent.click(within(await findItem('2019년 2학기')).getByRole('button', { name: '강의평 메뉴' }));
+    expect((await screen.findAllByRole('menuitem')).map((item) => item.textContent)).toEqual(['수정', '삭제']);
+    await userEvent.keyboard('{Escape}');
+
+    await userEvent.click(within(await findItem('2026년 1학기')).getByRole('button', { name: '강의평 메뉴' }));
+    await waitFor(() => expect(screen.getAllByRole('menuitem').map((item) => item.textContent)).toEqual(['신고']));
+  });
+
+  it('작성: 지금 강의의 학기를 고른 채로 열고, 점수와 본문을 모두 채워야 등록한다', async () => {
+    const fake = useFake();
+    renderView();
+    await findItem('2026년 1학기');
+
+    await userEvent.click(screen.getByRole('button', { name: '강의평 작성' }));
+    const dialog = await screen.findByRole('dialog', { name: '강의평 작성' });
+    expect(within(dialog).getByText('서양근대윤리학의 이해')).toBeInTheDocument();
+    expect(await within(dialog).findByRole('combobox', { name: '수강 학기' })).toHaveTextContent('2026년 1학기');
+    const submit = within(dialog).getByRole('button', { name: '등록' });
+    expect(submit).toBeDisabled();
+
+    await pickScore(dialog, '총점', 4);
+    await pickScore(dialog, '성적', 5);
+    await pickScore(dialog, '강의력', 4);
+    await pickScore(dialog, '유익함', 3);
+    expect(submit).toBeDisabled();
+    await pickScore(dialog, '널널함', 2);
+    expect(submit).toBeDisabled();
+    await userEvent.type(within(dialog).getByRole('textbox', { name: '강의평' }), '  알찬 수업  ');
+    await userEvent.click(submit);
+
+    expect(await screen.findByText('강의평을 등록했습니다')).toBeInTheDocument();
+    expect(screen.queryByRole('dialog', { name: '강의평 작성' })).not.toBeInTheDocument();
+    expect(fake.requests).toEqual([
+      {
+        method: 'POST',
+        path: '/v2/lectures/7001/evaluations',
+        body: { content: '알찬 수업', rating: 4, gradeSatisfaction: 5, teachingSkill: 4, gains: 3, lifeBalance: 2 },
+      },
+    ]);
+    // 통계와 목록을 다시 받는다
+    expect(await screen.findByText('알찬 수업')).toBeInTheDocument();
+    expect(within(screen.getByRole('region', { name: '강의평 요약' })).getByText('(3)')).toBeInTheDocument();
+  });
+
+  it('작성이 실패하면 모달을 닫지 않고 서버 문구를 보여 준다', async () => {
+    useFake();
+    server.use(
+      http.post(api('/v2/lectures/7001/evaluations'), () =>
+        HttpResponse.json(problem(403, 'not-taken', '권한 없음', '수강한 강의에만 강의평을 쓸 수 있습니다'), {
+          status: 403,
+        }),
+      ),
+    );
+    renderView();
+    await findItem('2026년 1학기');
+
+    await userEvent.click(screen.getByRole('button', { name: '강의평 작성' }));
+    const dialog = await screen.findByRole('dialog', { name: '강의평 작성' });
+    await within(dialog).findByRole('combobox', { name: '수강 학기' });
+    for (const label of ['총점', '성적', '강의력', '유익함', '널널함']) await pickScore(dialog, label, 3);
+    await userEvent.type(within(dialog).getByRole('textbox', { name: '강의평' }), '좋아요');
+    await userEvent.click(within(dialog).getByRole('button', { name: '등록' }));
+
+    expect(await within(dialog).findByRole('alert')).toHaveTextContent('수강한 강의에만 강의평을 쓸 수 있습니다');
+    expect(screen.getByRole('dialog', { name: '강의평 작성' })).toBeInTheDocument();
+  });
+
+  it('수정: 원래 값을 채워 열고, 바뀐 값만 보낸다', async () => {
+    const fake = useFake();
+    renderView();
+
+    await openMenu(await findItem('2019년 2학기'), '수정');
+    const dialog = await screen.findByRole('dialog', { name: '강의평 수정' });
+    expect(within(dialog).getByText('2019년 2학기')).toBeInTheDocument();
+    expect(within(dialog).getByRole('textbox', { name: '강의평' })).toHaveValue('무난합니다');
+    expect(
+      within(within(dialog).getByRole('group', { name: '총점' })).getByRole('radio', { name: '4점' }),
+    ).toBeChecked();
+    const save = within(dialog).getByRole('button', { name: '저장' });
+    // 바뀐 것이 없으면 저장할 수 없다
+    expect(save).toBeDisabled();
+
+    await pickScore(dialog, '총점', 3);
+    // 예전 snuev 강의평이라 항목별 점수가 없다. 고른 것만 보낸다
+    await pickScore(dialog, '성적', 5);
+    await userEvent.click(save);
+
+    expect(await screen.findByText('강의평을 수정했습니다')).toBeInTheDocument();
+    expect(fake.requests).toEqual([
+      { method: 'PATCH', path: '/v2/evaluations/502', body: { rating: 3, gradeSatisfaction: 5 } },
+    ]);
+  });
+
+  it('삭제: 확인을 받고 지운 뒤 목록에서 뺀다', async () => {
+    const fake = useFake();
+    renderView();
+
+    await openMenu(await findItem('2019년 2학기'), '삭제');
+    const confirm = await screen.findByRole('alertdialog', { name: '강의평을 삭제하시겠습니까?' });
+    await userEvent.click(within(confirm).getByRole('button', { name: '삭제' }));
+
+    expect(await screen.findByText('강의평을 삭제했습니다')).toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByText('무난합니다')).not.toBeInTheDocument());
+    expect(fake.requests).toEqual([{ method: 'DELETE', path: '/v2/evaluations/502' }]);
+  });
+
+  it('신고: 사유를 받아 보낸다', async () => {
+    const fake = useFake();
+    renderView();
+
+    await openMenu(await findItem('2026년 1학기'), '신고');
+    const prompt = await screen.findByRole('dialog', { name: '신고 사유' });
+    await userEvent.type(within(prompt).getByRole('textbox', { name: '신고 사유' }), '광고입니다');
+    await userEvent.click(within(prompt).getByRole('button', { name: '신고' }));
+
+    expect(await screen.findByText('강의평을 신고했습니다')).toBeInTheDocument();
+    expect(fake.requests).toEqual([
+      { method: 'POST', path: '/v2/evaluations/501/report', body: { content: '광고입니다' } },
+    ]);
   });
 });

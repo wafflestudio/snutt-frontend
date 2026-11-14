@@ -12,6 +12,7 @@ import { callApi } from './client';
 import {
   toCourseEvaluationSummary,
   toEvaluation,
+  toEvaluationLectures,
   toEvaluationSortParam,
   toEvaluationUpdateRequest,
   toEvaluationWriteRequest,
@@ -56,6 +57,12 @@ export const evaluationQueries = {
       queryKey: [...evaluationQueries.course(courseId), 'mine'],
       queryFn: async () =>
         (await callApi('GET /v2/courses/:courseId/evaluations/me', { params: { courseId } })).map(toEvaluation),
+    }),
+  /** 강의평을 쓸 때 고르는 강좌의 학기별 강의. 강의마다 내 강의평이 있는지가 오므로 강의평을 쓰면 다시 받는다 */
+  lectures: (courseId: CourseId) =>
+    queryOptions({
+      queryKey: [...evaluationQueries.course(courseId), 'lectures'],
+      queryFn: async () => toEvaluationLectures(await callApi('GET /v2/courses/:courseId', { params: { courseId } })),
     }),
 };
 
