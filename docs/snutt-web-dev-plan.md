@@ -345,7 +345,7 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | | 9-2 | 두 시간표 비교: 검색 패널과 함께 표시, 오른쪽 시간표 탭 · ··· · 비교 종료(Figma `top` 의 `복수 시간표`), 담기 대상 선택(`기본 시간표에 추가` = 왼쪽 / `보조 시간표에 추가` = 오른쪽, Figma `드롭다운`). 탭 · 비교 종료는 4-3 에서 만들었다. 정해지지 않은 것은 디자인 문의 4-22 | | ✅ #278 |
 | | 9-3 | 마이페이지 (프로필, 소셜 연동/해제, 비밀번호, 탈퇴) | |  |
 | | 9-4 | 알림 | |  |
-| | 9-5 | timetable-picker 이식 (origin 검사 포함) | 기존 RN 앱에서 동작 확인 | ✅ #286 |
+| | 9-5 | timetable-picker 이식 (origin 검사 포함). 팝업(`window.opener`) · RN WebView 용. 메시지(`SNUTT_TIMETABLE_SELECTED`)와 payload 는 레거시 v1 형태 그대로이고, v2 에 없는 `class_time_mask` · `start` · `len` 은 계산한다. RN 브리지를 먼저 봐서 레거시에서 동작하지 않던 RN 경로를 고쳤다. 로그인은 주소를 바꾸지 않는 `InlineLogin`(회원가입 뒤 picker 로 돌아옴). 소비자 전환은 미결 사항 참고 | 기존 RN 앱에서 동작 확인 | ✅ #286 |
 | **10. 마무리** | 10-1 | Playwright e2e (로그인 → 검색 → 담기 → 삭제). 실제 서버 대신 단위 테스트의 가짜 서버(`fakeSnutt`)를 브라우저 요청에 물린다. PR 마다 CI(`test-integration-snutt-web.yml`)에서 프로덕션 빌드로 돌린다 | | ✅ #282 |
 | | 10-2 | 배포 스크립트: 정적 내보내기(`output: 'export'`) → S3 · CloudFront (snutt-webclient 와 같은 방식. 화면이 모두 클라이언트 렌더링이고 로그인 뒤 화면이라 SSR · SEO 가 필요 없다). `yarn deploy:snutt-web` 으로 dev 태그를 달면 `deploy-snutt-web-dev.yml`, `snutt-web-prod-*` 태그는 `deploy-snutt-web-prod.yml`. 페이지마다 확장자 없는 키(`friends`)로 html 을 한 벌 더 올려 CloudFront 함수 없이 새로 고침이 된다. e2e 도 `out/` 을 띄워 배포물을 확인한다 | 인프라: dev · prod 의 S3 버킷 · CloudFront 배포(기본 루트 객체 `index.html`) · 도메인, GitHub environment secrets `SNUTT_WEB_S3_BUCKET` · `SNUTT_WEB_CLOUDFRONT_DISTRIBUTION_ID` · `SNUTT_WEB_CLIENT_KEY` | ✅ #283 |
 
@@ -382,3 +382,6 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | `paletteIndex` 시작 번호 | ✅ 해결: 0부터. dev 응답에서 `paletteIndex: 1` 인 강의의 `color` 가 테마 `colors[1]` 과 같다 (2026-10-15) | domain 은 0부터(팔레트 배열 인덱스)로 가정. v1 `colorIndex` 는 1~9 가 팔레트, 0 이 직접 고른 색이었음. Figma 색상 드롭다운은 `색상1~9` (표시용 번호는 index + 1) |
 | v2 강의 수정(PATCH)의 null | ✅ 해결 (2026-10-15 dev 에서 확인): `null` 과 생략은 "바꾸지 않음". 값을 지우려면 `resetFields` 에 필드 이름을 넣는다 (직접 추가한 강의는 null, 수강편람 강의는 수강편람 값으로 돌아감). `paletteIndex` 를 보내면 `customColor` 가 지워진다 | `toLectureModifyRequest` 가 null 인 필드를 resetFields 로 보낸다. 6-2 에서 수강편람 강의의 값을 "지우기"가 아니라 "원래대로"로 보여 줄지 정한다 |
 | 검색 시간 조건의 끝 시각 | ✅ 해결 (5-4, 2026-10-17 dev 확인): v2 는 domain 의 `[start, end)` 그대로 보내면 된다. 10:00~11:00 을 고르면 10:00~11:00 강의가 들어가고, 10:00~11:00 을 빼도 11:00 에 시작하는 강의는 남는다 | v1 웹클라이언트는 `endMinute` 에 -1 을 해서 보냈음 |
+| timetable-picker payload 계산식 | 미검증 (fixture 기준): v2 시간표 응답에 없는 `class_time_mask` · `class_time_json[].start` · `len` 을 `picker-message.ts` 에서 계산한다. 레거시 mock fixture 값(660–735 → 14680064 등)과는 맞지만, dev 서버에서 같은 시간표를 v1 `GET /v1/tables/:id` 와 대조하지 않았다 | 소비자를 옮기기 전에 dev 에서 대조. `lectureBuildings` 는 v2 시간표 응답에 없어 보내지 않는다(소비자가 쓰는지 확인) |
+| timetable-picker 소비자 전환 | 확인 필요: snutt-web 은 snutt-webclient 와 도메인이 달라 소비자(행샤 앱 · 팝업으로 여는 웹)가 여는 URL, `message` 의 `event.origin` 검사, RN WebView 허용 URL 을 바꿔야 한다. 전환 전까지 레거시 picker 를 계속 운영한다. 허용 목록 secret `TIMETABLE_PICKER_ORIGINS` 는 레거시와 같은 `dev` · `prod` environment 의 것을 쓴다 | 레거시 RN 경로는 `window.opener` 가 없어 버튼이 꺼져 동작하지 않았다. 새 picker 는 RN 브리지를 먼저 본다 |
+| timetable-picker 소셜 로그인 | picker 의 인라인 로그인은 아이디 로그인만 있다. 소셜로만 가입한 사용자는 3-2 전까지 로그인할 수 없으므로 소비자 전환은 3-2 뒤에 한다 | 3-2 |

@@ -175,9 +175,7 @@ describe('picker 화면', () => {
     const confirmBtn = await screen.findByTestId('timetable-picker-confirm');
     await userEvent.click(confirmBtn);
 
-    expect(bridge.postMessage).toHaveBeenCalledWith(
-      expect.stringContaining('"type":"SNUTT_TIMETABLE_SELECTED"'),
-    );
+    expect(bridge.postMessage).toHaveBeenCalledWith(expect.stringContaining('"type":"SNUTT_TIMETABLE_SELECTED"'));
   });
 });
 
@@ -198,19 +196,53 @@ describe('빈 시간표', () => {
 });
 
 describe('오류 상태', () => {
-  it('목록 조회 실패 시 오류 메시지를 보여 준다', async () => {
+  it('목록 조회 실패 시 서버 메시지와 다시 시도 버튼을 보여 준다', async () => {
     setAuthTokens({ accessToken: 'a', refreshToken: 'r' });
     server.use(
       http.get(api('/v2/timetables'), () =>
         HttpResponse.json(problem(500, 'internal-error', '서버 오류', '서버 오류가 발생했습니다'), { status: 500 }),
       ),
-      http.get(api('/v2/coursebooks'), () =>
-        HttpResponse.json([{ id: 1, year: 2026, semester: 3, updatedAt: 0 }]),
-      ),
+      http.get(api('/v2/coursebooks'), () => HttpResponse.json([{ id: 1, year: 2026, semester: 3, updatedAt: 0 }])),
       http.get(api('/v2/themes'), () => HttpResponse.json([])),
     );
     renderPicker();
     await waitFor(() => expect(screen.queryByText('불러오는 중')).not.toBeInTheDocument());
-    expect(screen.getByRole('alert')).toBeInTheDocument();
+    expect(screen.getByRole('alert')).toHaveTextContent('서버 오류가 발생했습니다');
+    expect(screen.getByRole('button', { name: '다시 시도' })).toBeInTheDocument();
+  });
+
+  it('다시 시도 버튼을 클릭하면 목록을 다시 가져온다', async () => {
+    setAuthTokens({ accessToken: 'a', refreshToken: 'r' });
+    let callCount = 0;
+    server.use(
+      http.get(api('/v2/timetables'), () => {
+        callCount++;
+        if (callCount === 1) {
+          return HttpResponse.json(problem(500, 'internal-error', '서버 오류', '서버 오류가 발생했습니다'), {
+            status: 500,
+          });
+        }
+        // 두 번째 요청은 성공
+        return HttpResponse.json(
+          SAMPLE_TIMETABLES.map((t) => ({
+            id: t.id,
+            year: t.semester.year,
+            semester: t.semester.term,
+            title: t.title,
+            isPrimary: t.isPrimary,
+            updatedAt: t.updatedAt.getTime(),
+            totalCredit: 0,
+          })),
+        );
+      }),
+      http.get(api('/v2/coursebooks'), () => HttpResponse.json([{ id: 1, year: 2026, semester: 3, updatedAt: 0 }])),
+      http.get(api('/v2/themes'), () => HttpResponse.json([])),
+    );
+    renderPicker();
+    // 에러 상태 대기
+    const retryBtn = await screen.findByRole('button', { name: '다시 시도' });
+    await userEvent.click(retryBtn);
+    // 목록이 다시 로드된다
+    await screen.findByRole('button', { name: /확인/ });
   });
 });

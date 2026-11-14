@@ -77,7 +77,12 @@ export function usePickerTimetables() {
     /** 상세를 불러오는 중 (이전 데이터가 placeholderData 로 있는 중) */
     isDetailLoading: detail.isPlaceholderData || detail.isPending,
     /** 선택한 시간표 팔레트 */
-    palette: findThemePalette(themes.data ?? [], selectedSummary?.id ? detail.data?.themeId : undefined),
+    palette: findThemePalette(themes.data ?? [], detail.data?.themeId),
     select: setSelectedId,
+    /** 에러가 난 쿼리를 다시 가져온다 */
+    refetch: () => {
+      void list.refetch();
+      void coursebooks.refetch();
+    },
   };
 }

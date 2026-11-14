@@ -6,7 +6,7 @@ import { http, HttpResponse } from 'msw';
 import type { ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { clearAuthTokens, getAuthTokens, setAuthTokens } from '@/api/client';
-import { RedirectIfSignedIn, RequireSignIn } from '@/features/auth/components/AuthGuard';
+import { InlineLogin, RedirectIfSignedIn, RequireSignIn } from '@/features/auth/components/AuthGuard';
 import { LoginForm } from '@/features/auth/components/LoginForm';
 import { RegisterForm } from '@/features/auth/components/RegisterForm';
 import { problem, TOKEN_RESPONSE } from '../../msw/fixtures';
@@ -152,6 +152,28 @@ describe('RegisterForm', () => {
     await userEvent.click(screen.getByRole('button', { name: '가입하기' }));
 
     expect(await screen.findByRole('alert')).toHaveTextContent('영문과 숫자 모두를 포함하는 6~20자');
+  });
+});
+
+describe('InlineLogin', () => {
+  it('미로그인 상태에서 LoginForm 을 보여 주며 현재 URL 을 next 로 전달한다', () => {
+    window.history.replaceState(null, '', '/timetable-picker?origin=https%3A%2F%2Fhost.test');
+    renderWithQuery(<InlineLogin />);
+    const registerLink = screen.getByRole('link', { name: '회원가입' });
+    expect(registerLink).toHaveAttribute(
+      'href',
+      '/register?next=%2Ftimetable-picker%3Forigin%3Dhttps%253A%252F%252Fhost.test',
+    );
+  });
+
+  it('LoginForm next prop 으로 직접 경로를 지정하면 searchParams 보다 우선한다', () => {
+    window.history.replaceState(null, '', '/login?next=%2Ffriends');
+    renderWithQuery(<LoginForm next="/timetable-picker?origin=https%3A%2F%2Fhost.test" />);
+    const registerLink = screen.getByRole('link', { name: '회원가입' });
+    expect(registerLink).toHaveAttribute(
+      'href',
+      '/register?next=%2Ftimetable-picker%3Forigin%3Dhttps%253A%252F%252Fhost.test',
+    );
   });
 });
 

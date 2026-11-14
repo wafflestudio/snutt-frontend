@@ -16,8 +16,7 @@ declare global {
 
 /** 메시지를 보낼 수 있는 대상 */
 export type PickerTarget =
-  | { type: 'rn'; bridge: NonNullable<Window['ReactNativeWebView']> }
-  | { type: 'opener'; window: Window };
+  { type: 'rn'; bridge: NonNullable<Window['ReactNativeWebView']> } | { type: 'opener'; window: Window };
 
 /**
  * 현재 window 에서 메시지를 보낼 대상을 찾는다.

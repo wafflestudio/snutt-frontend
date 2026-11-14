@@ -12,10 +12,12 @@
 import { useState, type ReactNode } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useSignedIn } from '@/api/auth';
+import { getFailureMessage } from '@/api/errors';
 import { isAllowedOrigin, PICKER_ALLOWED_ORIGINS } from '@/features/timetable-picker/allowed-origins';
 import { createPickerMessage } from '@/features/timetable-picker/picker-message';
 import { resolvePickerTarget, sendPickerMessage } from '@/features/timetable-picker/picker-target';
 import { usePickerTimetables } from '@/features/timetable-picker/use-picker-timetables';
+import { Button } from '@/shared/ui/Button';
 import { PickerPreview } from './PickerPreview';
 import { PickerTimetableList } from './PickerTimetableList';
 
@@ -35,7 +37,7 @@ export function TimetablePickerScreen({ login }: Props) {
   if (!isAllowedOrigin(origin)) {
     return (
       <div className="flex h-screen items-center justify-center bg-normal">
-        <p className="text-16-regular text-normal">허용되지 않은 요청입니다</p>
+        <p className="text-15-regular text-normal">허용되지 않은 요청입니다</p>
       </div>
     );
   }
@@ -57,7 +59,7 @@ export function TimetablePickerScreen({ login }: Props) {
 
 /** origin 검사와 로그인 확인이 끝난 뒤 실제 picker UI */
 function PickerContent({ origin }: { origin: string }) {
-  const { status, error, timetables, selectedSummary, selectedDetail, isDetailLoading, palette, select } =
+  const { status, error, timetables, selectedSummary, selectedDetail, isDetailLoading, palette, select, refetch } =
     usePickerTimetables();
   const [confirmError, setConfirmError] = useState<string | null>(null);
 
@@ -85,10 +87,13 @@ function PickerContent({ origin }: { origin: string }) {
 
   if (status === 'error') {
     return (
-      <div className="flex h-screen items-center justify-center bg-normal">
+      <div className="flex h-screen flex-col items-center justify-center gap-3 bg-normal">
         <p role="alert" className="text-14-regular text-warning">
-          {error instanceof Error ? error.message : '오류가 발생했습니다'}
+          {error instanceof Error ? getFailureMessage(error) : '오류가 발생했습니다'}
         </p>
+        <Button variant="secondary" onClick={refetch}>
+          다시 시도
+        </Button>
       </div>
     );
   }
@@ -96,7 +101,7 @@ function PickerContent({ origin }: { origin: string }) {
   if (status === 'empty') {
     return (
       <div className="flex h-screen bg-normal">
-        <div className="flex w-75 items-center justify-center border-r border-line-divider bg-bg-normal">
+        <div className="flex w-75 items-center justify-center border-r border-line-divider bg-normal">
           <p className="text-14-regular text-alternative">시간표가 없습니다</p>
         </div>
         <div className="flex flex-1 items-center justify-center">
@@ -110,12 +115,8 @@ function PickerContent({ origin }: { origin: string }) {
   return (
     <div className="flex h-screen flex-col bg-normal md:flex-row">
       {/* 왼쪽: 시간표 목록 */}
-      <div className="border-b border-line-divider bg-bg-normal md:w-75 md:border-b-0 md:border-r md:overflow-y-auto">
-        <PickerTimetableList
-          timetables={timetables}
-          selectedId={selectedSummary?.id ?? null}
-          onSelect={select}
-        />
+      <div className="border-b border-line-divider bg-normal md:w-75 md:overflow-y-auto md:border-r md:border-b-0">
+        <PickerTimetableList timetables={timetables} selectedId={selectedSummary?.id ?? null} onSelect={select} />
       </div>
 
       {/* 오른쪽: 미리보기 + 확인 */}

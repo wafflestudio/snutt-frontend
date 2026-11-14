@@ -9,14 +9,22 @@ import { Button } from '@/shared/ui/Button';
 import { TextField } from '@/shared/ui/TextField';
 import { AuthPage, FormError } from './AuthPage';
 
+type LoginFormProps = {
+  /**
+   * 가입 · 로그인 뒤 돌아갈 경로. 지정하면 ?next 쿼리보다 우선한다.
+   * InlineLogin 이 현재 picker URL 을 넘기면 회원가입 뒤 picker 로 돌아온다.
+   */
+  next?: string;
+};
+
 /** 아이디 로그인. 로그인하면 RedirectIfSignedIn 이 돌아갈 곳으로 보낸다. 소셜 로그인은 3-2, 비밀번호 찾기는 3-3 */
-export function LoginForm() {
+export function LoginForm({ next: nextProp }: LoginFormProps = {}) {
   const [localId, setLocalId] = useState('');
   const [password, setPassword] = useState('');
   const login = useLocalLogin();
   const searchParams = useSearchParams();
-  // ?next 가 있으면 회원가입 링크에도 그대로 넘겨 가입 뒤 같은 곳으로 돌아온다
-  const next = searchParams.get('next');
+  // prop 으로 받은 next 가 우선. 없으면 ?next 쿼리에서 읽는다
+  const next = nextProp ?? searchParams.get('next');
   const registerHref = next ? `/register?next=${encodeURIComponent(next)}` : '/register';
 
   const submit = (event: FormEvent) => {

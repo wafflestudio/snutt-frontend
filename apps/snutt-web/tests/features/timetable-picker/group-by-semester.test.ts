@@ -32,11 +32,7 @@ describe('groupBySemester', () => {
   });
 
   it('최근 학기가 앞에 오도록 year*10+term 내림차순으로 정렬한다', () => {
-    const timetables = [
-      makeSummary('a', 2025, 1),
-      makeSummary('b', 2026, 3),
-      makeSummary('c', 2026, 1),
-    ];
+    const timetables = [makeSummary('a', 2025, 1), makeSummary('b', 2026, 3), makeSummary('c', 2026, 1)];
     const groups = groupBySemester(timetables);
     expect(groups[0]!.semester).toEqual({ year: 2026, term: 3 });
     expect(groups[1]!.semester).toEqual({ year: 2026, term: 1 });

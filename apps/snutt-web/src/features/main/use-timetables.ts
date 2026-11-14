@@ -17,6 +17,7 @@ import {
   useSetPrimaryTimetable,
   useUpdateLecture,
 } from '@/api/timetables';
+import { findThemePalette } from '@/domain/color';
 import type { CustomLectureInput, LectureId, TimetableLectureId } from '@/domain/lecture';
 import { isSameSemester, type Semester } from '@/domain/semester';
 import { pickDefaultTimetable, type Timetable, type TimetableId, type TimetableSummary } from '@/domain/timetable';
@@ -106,7 +107,7 @@ export function useTimetables() {
     selected,
     /** 시간표 테마의 색 목록. 테마를 받기 전이면 빈 목록 (블록은 기본 색으로 그린다) */
     paletteOf: (timetable: Pick<Timetable, 'themeId'> | null) =>
-      themes.data?.find((theme) => theme.id === timetable?.themeId)?.colors ?? [],
+      findThemePalette(themes.data ?? [], timetable?.themeId),
     /** 마지막으로 실패한 동작의 메시지. 보여 준 뒤 dismissFailure 로 지운다 */
     failure,
     dismissFailure: () => setFailure(null),

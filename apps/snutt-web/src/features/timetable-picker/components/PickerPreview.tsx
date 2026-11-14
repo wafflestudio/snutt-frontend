@@ -39,11 +39,7 @@ export function PickerPreview({ timetable, palette, isLoading, confirmError, onC
       )}
 
       <div className="flex justify-end">
-        <Button
-          onClick={onConfirm}
-          disabled={!timetable || isLoading}
-          data-testid="timetable-picker-confirm"
-        >
+        <Button onClick={onConfirm} disabled={!timetable || isLoading} data-testid="timetable-picker-confirm">
           확인
         </Button>
       </div>
