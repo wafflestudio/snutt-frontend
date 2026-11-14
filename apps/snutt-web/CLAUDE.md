@@ -83,6 +83,7 @@ export const timetableQueries = {
 
 - 서버 호출은 `callApi('<메서드> <경로>', { params, query, body })` 로 한다. 엔드포인트 이름과 인자 타입은 `@sf/snutt-api` 의 v2 정의를 따른다. 토큰은 `callApi` 가 붙이므로 넘기지 않는다.
 - 접속 주소와 앱 key 는 `.env.local` 의 `NEXT_PUBLIC_API_BASE_URL`, `NEXT_PUBLIC_CLIENT_KEY` (git 에 올리지 않는다). `x-os-type` 은 `web` 고정.
+- `NEXT_PUBLIC_TIMETABLE_PICKER_ORIGINS`: timetable-picker 팝업/WebView 를 열 수 있는 origin 목록(콤마 구분). 빌드 시 번들에 inlined. 없으면 모든 요청을 거부한다.
 - 실제 서버와의 연결은 개발 서버의 `/login` 에서 로그인해서 확인한다. (`/api-check` 는 응답을 그대로 보는 개발 페이지)
 
 - query key 와 queryFn 은 `queryOptions` 팩토리로 리소스별 파일 한 곳에 모은다. 컴포넌트에서 query key 를 직접 쓰지 않는다.
@@ -91,7 +92,7 @@ export const timetableQueries = {
 - **토큰 처리는 `api/client.ts` 한 곳에만** 둔다. 저장 위치, 헤더, 401 / refresh 처리를 다른 곳에 흩지 않는다. (BFF 전환 가능성 대비)
   - 토큰을 붙인 요청이 401 이면 `callApi` 가 refresh 하고 한 번 다시 보낸다. refresh token 은 쓸 때마다 바뀌므로 동시에 401 을 받아도 갱신은 한 번만 한다. 서버가 refresh token 을 거절하면(4xx) 토큰을 지우고, 서버 오류(5xx)면 토큰을 남기고 오류만 던진다.
   - 로그인 여부는 `useSignedIn` 으로 읽는다(토큰이 바뀌면 다른 탭까지 다시 그린다). 로그인이 필요한 화면은 `(main)` 레이아웃의 `RequireSignIn` 이, 로그인 · 회원가입은 `(auth)` 레이아웃의 `RedirectIfSignedIn` 이 막는다. 토큰이 지워지면 로그인 화면으로 간다.
-- DI context 는 환경마다 달라지는 것(토큰 저장소, timetable-picker 의 RN WebView 브리지 등)에만 쓴다.
+- DI context 는 환경마다 달라지는 것(토큰 저장소 등)에만 쓴다. timetable-picker 의 RN WebView 브리지 · popup opener 는 `resolvePickerTarget(window)` 가 런타임에 감지하므로 DI 가 필요하지 않다.
 - 수정 요청(PATCH)은 사용자가 바꾼 필드만 보낸다.
 - **값이 없는 필드는 domain 에서도 `null` 로 둔다.** `''` / `0` 으로 바꾸지 않는다. 서버 값과 같게 유지해야 그대로 되돌려 보내도 데이터가 바뀌지 않는다.
   - 문자열이 필요한 곳(폼 input 등)에서 `?? ''` 로 바꾼다.
@@ -142,7 +143,7 @@ export const timetableQueries = {
 - 포커스 · 키보드 · 바깥 클릭 처리가 필요한 것(탭, 모달, 드롭다운, 셀렉트)은 Base UI(`@base-ui/react`)로 만들고 모양만 토큰 클래스로 입힌다.
 - 오버레이: 묻고 확인받을 때는 `ConfirmDialog`, 한 줄을 입력받을 때는 `PromptDialog`, 큰 창은 `Dialog`, 동작 목록(···)은 `Menu`, 값 하나를 고를 때는 `Select` (강의 색은 `ColorSelect`). Dialog 의 열림(`open`)과 Select 의 값(`value`)은 부모가 갖고, Menu 는 스스로 열고 닫는다.
 - 아이콘은 `shared/ui/icons.tsx` 의 컴포넌트를 쓴다. 없으면 `scripts/generate-icons.mts` 에 Material Symbols 이름을 추가하고 `yarn generate:icons` 로 만든다. 아이콘만 있는 버튼은 `IconButton` 에 `label` 을 준다.
-- 데스크톱 전용(최소 1200px). 단 `timetable-picker` 는 RN WebView/iframe 에서 열리므로 모바일 폭 대응이 필요하다.
+- 데스크톱 전용(최소 1200px). 단 `timetable-picker` 는 팝업(popup opener) · RN WebView 에서 열리므로 모바일 폭 대응이 필요하다.
 
 ## 렌더링
 

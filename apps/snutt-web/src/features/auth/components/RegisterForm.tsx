@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { type FormEvent, useState } from 'react';
 import { useRegister } from '@/api/auth';
 import { getFailureMessage } from '@/api/errors';
@@ -19,6 +20,10 @@ export function RegisterForm() {
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [email, setEmail] = useState('');
   const register = useRegister();
+  const searchParams = useSearchParams();
+  // ?next 가 있으면 로그인 링크에도 그대로 넘겨 로그인 뒤 같은 곳으로 돌아온다
+  const next = searchParams.get('next');
+  const loginHref = next ? `/login?next=${encodeURIComponent(next)}` : '/login';
 
   const mismatch = passwordConfirm !== '' && password !== passwordConfirm;
   const submit = (event: FormEvent) => {
@@ -81,7 +86,7 @@ export function RegisterForm() {
       </form>
       <p className="text-center text-13-regular text-alternative">
         이미 계정이 있나요?{' '}
-        <Link href="/login" className="text-plain underline">
+        <Link href={loginHref} className="text-plain underline">
           로그인
         </Link>
       </p>

@@ -25,6 +25,11 @@ export default defineConfig({
     timeout: 300_000,
     reuseExistingServer: !process.env.CI,
     // .env.local 보다 앞선다 (Next 는 이미 있는 환경 변수를 덮어쓰지 않는다)
-    env: { NEXT_PUBLIC_API_BASE_URL: API_BASE_URL, NEXT_PUBLIC_CLIENT_KEY: 'e2e-client-key' },
+    // NEXT_PUBLIC_TIMETABLE_PICKER_ORIGINS: timetable-picker 의 허용 origin (팝업 오프너 = 같은 서버)
+    env: {
+      NEXT_PUBLIC_API_BASE_URL: API_BASE_URL,
+      NEXT_PUBLIC_CLIENT_KEY: 'e2e-client-key',
+      NEXT_PUBLIC_TIMETABLE_PICKER_ORIGINS: `http://localhost:${PORT}`,
+    },
   },
 });
