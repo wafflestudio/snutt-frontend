@@ -4,7 +4,12 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { clsx } from 'clsx';
 import { type ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { getFailureMessage, isEmailNotVerified } from '@/api/errors';
-import { evaluationQueries } from '@/api/evaluations';
+import {
+  evaluationQueries,
+  useDeleteEvaluation,
+  useReportEvaluation,
+  useToggleEvaluationLike,
+} from '@/api/evaluations';
 import {
   type CourseEvaluationSummary,
   type Evaluation,
@@ -12,18 +17,23 @@ import {
   type EvaluationScores,
   type EvaluationSort,
 } from '@/domain/evaluation';
-import type { CourseId, Lecture, TimetableLecture } from '@/domain/lecture';
+import type { CourseId, Lecture, LectureId, TimetableLecture } from '@/domain/lecture';
 import { formatSemesterTitle } from '@/domain/semester';
-import { IconStarFill, IconThumbUp } from '@/shared/ui/icons';
+import { ConfirmDialog, NoticeDialog, PromptDialog } from '@/shared/ui/Dialog';
+import { IconButton } from '@/shared/ui/IconButton';
+import { IconEdit, IconMoreVertical, IconStarFill, IconThumbUp } from '@/shared/ui/icons';
+import { Menu, MenuItem } from '@/shared/ui/Menu';
+import { Toast } from '@/shared/ui/Toast';
+import { EvaluationFormDialog } from './EvaluationFormDialog';
 
 const SORT_LABELS: Record<EvaluationSort, string> = { recommended: '추천순', latest: '최신순' };
 
 const SCORE_KEYS = Object.keys(EVALUATION_SCORE_LABELS) as (keyof EvaluationScores)[];
 
 /**
- * 강의 상세의 `강의평` 쪽 (Figma `강의평 상세`): 교수 / 학점, 평균 점수와 항목별 점수, 강의평 목록(추천순 / 최신순).
- * 목록은 패널을 끝까지 내리면 다음 쪽을 받는다.
- * 태그 탭(성적 · 과제 · 수강신청 · 팀플) 통계는 API 가 없어 뺐고, 강의평 작성 · 좋아요 누르기 · ⋮ 메뉴는 8-5 (디자인 문의 4-19)
+ * 강의 상세의 `강의평` 쪽 (Figma `강의평 상세`): 교수 / 학점, 평균 점수와 항목별 점수, 강의평 작성 버튼, 강의평 목록(추천순 / 최신순).
+ * 목록은 패널을 끝까지 내리면 다음 쪽을 받는다. 강의평마다 좋아요 버튼과 ⋮ 메뉴(내 강의평이면 수정 · 삭제, 아니면 신고)가 있다.
+ * 태그 탭(성적 · 과제 · 수강신청 · 팀플) 통계는 API 가 없어 뺐다 (디자인 문의 4-19). 작성 폼 · 메뉴는 디자인 문의 4-27
  */
 export function EvaluationView({ lecture }: { lecture: Lecture | TimetableLecture }) {
   return (
@@ -35,14 +45,36 @@ export function EvaluationView({ lecture }: { lecture: Lecture | TimetableLectur
       {lecture.courseId === null ? (
         <Message>직접 추가한 강의는 강의평이 없습니다</Message>
       ) : (
-        <CourseEvaluations courseId={lecture.courseId} />
+        <CourseEvaluations
+          courseId={lecture.courseId}
+          courseTitle={lecture.title}
+          // 강의평은 수강한 강의에 쓴다. 처음에는 지금 보고 있는 강의를 고른다
+          lectureId={'lectureId' in lecture ? lecture.lectureId : lecture.id}
+        />
       )}
     </div>
   );
 }
 
-function CourseEvaluations({ courseId }: { courseId: CourseId }) {
+/** 강의평에 대해 띄우는 모달. 한 번에 하나만 연다 */
+type EvaluationDialog =
+  | { type: 'write' }
+  | { type: 'edit'; evaluation: Evaluation }
+  | { type: 'delete'; evaluation: Evaluation }
+  | { type: 'report'; evaluation: Evaluation };
+
+type CourseEvaluationsProps = { courseId: CourseId; courseTitle: string; lectureId: LectureId | null };
+
+function CourseEvaluations({ courseId, courseTitle, lectureId }: CourseEvaluationsProps) {
   const [sort, setSort] = useState<EvaluationSort>('recommended');
+  const [dialog, setDialog] = useState<EvaluationDialog | null>(null);
+  // 끝난 동작은 토스트로, 실패한 동작은 알림 팝업으로 알린다
+  const [toast, setToast] = useState<string | null>(null);
+  const [failure, setFailure] = useState<string | null>(null);
+  const toggleLike = useToggleEvaluationLike();
+  const deleteEvaluation = useDeleteEvaluation();
+  const reportEvaluation = useReportEvaluation();
+  const onError = (error: Error) => setFailure(getFailureMessage(error));
   const summary = useQuery(evaluationQueries.summary(courseId));
   const list = useInfiniteQuery(evaluationQueries.list({ courseId, sort }));
   const evaluations = list.data?.pages.flatMap((page) => page.evaluations) ?? [];
@@ -65,6 +97,9 @@ function CourseEvaluations({ courseId }: { courseId: CourseId }) {
         )}
       </div>
 
+      {/* Figma: 통계 아래 가운데 민트 버튼, 아래에 구분선 */}
+      <WriteButton onClick={() => setDialog({ type: 'write' })} />
+
       <hr className="mx-6.5 mt-5 border-line-light" />
 
       <section aria-label="강의평 목록" className="flex flex-col">
@@ -79,7 +114,12 @@ function CourseEvaluations({ courseId }: { courseId: CourseId }) {
           <ul className="flex flex-col px-6.5">
             {evaluations.map((evaluation) => (
               <li key={evaluation.id} className="border-b border-line-light last:border-b-0">
-                <EvaluationItem evaluation={evaluation} />
+                <EvaluationItem
+                  evaluation={evaluation}
+                  liking={toggleLike.isPending && toggleLike.variables.id === evaluation.id}
+                  onLike={() => toggleLike.mutate(evaluation, { onError })}
+                  onAction={(type) => setDialog({ type, evaluation })}
+                />
               </li>
             ))}
           </ul>
@@ -96,7 +136,67 @@ function CourseEvaluations({ courseId }: { courseId: CourseId }) {
           />
         )}
       </section>
+
+      <EvaluationFormDialog
+        open={dialog?.type === 'write' || dialog?.type === 'edit'}
+        onOpenChange={(open) => !open && setDialog(null)}
+        target={
+          dialog?.type === 'edit'
+            ? { type: 'edit', evaluation: dialog.evaluation }
+            : { type: 'write', courseId, lectureId }
+        }
+        courseTitle={courseTitle}
+        onSaved={setToast}
+      />
+      <ConfirmDialog
+        open={dialog?.type === 'delete'}
+        onOpenChange={(open) => !open && setDialog(null)}
+        message="강의평을 삭제하시겠습니까?"
+        confirmLabel="삭제"
+        onConfirm={() =>
+          dialog?.type === 'delete' &&
+          deleteEvaluation.mutate(dialog.evaluation, { onSuccess: () => setToast('강의평을 삭제했습니다'), onError })
+        }
+      />
+      <PromptDialog
+        open={dialog?.type === 'report'}
+        onOpenChange={(open) => !open && setDialog(null)}
+        title="신고 사유"
+        submitLabel="신고"
+        onSubmit={(content) =>
+          dialog?.type === 'report' &&
+          reportEvaluation.mutate(
+            { evaluation: dialog.evaluation, content },
+            { onSuccess: () => setToast('강의평을 신고했습니다'), onError },
+          )
+        }
+      />
+      <Toast open={toast !== null} onOpenChange={(open) => !open && setToast(null)} message={toast ?? ''} />
+      <NoticeDialog open={failure !== null} onOpenChange={(open) => !open && setFailure(null)} message={failure} />
     </>
+  );
+}
+
+/**
+ * Figma `Button/filled`: 폭 123 · 높이 36, 둥글기 17, 여백 8 · 16, 아이콘(연필 20)과 글자 사이 5, 배경 SNUTT/mint,
+ * 글자 Text/onBG 14 Bold, 그림자 0 0 3.5 검정 25%
+ */
+function WriteButton({ onClick }: { onClick: () => void }) {
+  return (
+    <div className="mt-5 flex justify-center">
+      <button
+        type="button"
+        onClick={onClick}
+        className={clsx(
+          'inline-flex h-9 w-30.75 items-center justify-center gap-1.25 rounded-[17px] bg-snutt-mint px-4 py-2',
+          'text-14-bold text-on-bg shadow-[0_0_3.5px_rgb(0_0_0/25%)]',
+          'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-snutt-mint',
+        )}
+      >
+        <IconEdit aria-hidden className="size-5" />
+        강의평 작성
+      </button>
+    </div>
   );
 }
 
@@ -176,8 +276,16 @@ function SortToggle({ value, onChange }: SortToggleProps) {
   );
 }
 
-/** 강의평 한 개: 수강 학기, 별점, 본문(두 줄 넘으면 `더보기`), 좋아요 수. 좋아요를 누르는 것은 8-5 */
-function EvaluationItem({ evaluation }: { evaluation: Evaluation }) {
+type EvaluationItemProps = {
+  evaluation: Evaluation;
+  /** 좋아요를 보내는 중. 그동안은 다시 누를 수 없다 */
+  liking: boolean;
+  onLike: () => void;
+  onAction: (action: 'edit' | 'delete' | 'report') => void;
+};
+
+/** 강의평 한 개: 수강 학기와 ⋮ 메뉴, 별점, 본문(두 줄 넘으면 `더보기`), 좋아요 버튼 */
+function EvaluationItem({ evaluation, liking, onLike, onAction }: EvaluationItemProps) {
   const contentRef = useRef<HTMLParagraphElement>(null);
   const [expanded, setExpanded] = useState(false);
   // 두 줄에서 잘렸는지는 그려 본 뒤에 안다
@@ -190,9 +298,22 @@ function EvaluationItem({ evaluation }: { evaluation: Evaluation }) {
   return (
     // Figma: 위아래 20, 학기 · 별 · 본문 사이 8
     <article aria-label={`${formatSemesterTitle(evaluation.semester)} 강의평`} className="flex flex-col gap-2 py-5">
-      <div className="flex flex-col">
-        <p className="text-13-body-regular text-alternative">{formatSemesterTitle(evaluation.semester)}</p>
-        <Stars rating={evaluation.rating} />
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex flex-col">
+          <p className="text-13-body-regular text-alternative">{formatSemesterTitle(evaluation.semester)}</p>
+          <Stars rating={evaluation.rating} />
+        </div>
+        {/* 고칠 수 있는지(내 강의평인지)는 서버의 isModifiable 로 정한다 */}
+        <Menu align="end" trigger={<IconButton label="강의평 메뉴" icon={<IconMoreVertical />} className="-mr-1.5" />}>
+          {evaluation.isModifiable ? (
+            <>
+              <MenuItem onClick={() => onAction('edit')}>수정</MenuItem>
+              <MenuItem onClick={() => onAction('delete')}>삭제</MenuItem>
+            </>
+          ) : (
+            <MenuItem onClick={() => onAction('report')}>신고</MenuItem>
+          )}
+        </Menu>
       </div>
       <div>
         <p
@@ -211,14 +332,22 @@ function EvaluationItem({ evaluation }: { evaluation: Evaluation }) {
           </button>
         )}
       </div>
-      {/* Figma: 오른쪽 아래 둥근 테두리 안에 엄지 · 수 */}
-      <p
+      {/* Figma: 오른쪽 아래 둥근 테두리 안에 엄지 · 수. 누른 상태는 Figma 에 없어 민트로 칠한다 (디자인 문의 4-27) */}
+      <button
+        type="button"
+        aria-pressed={evaluation.isLiked}
         aria-label={`좋아요 ${evaluation.likeCount}개`}
-        className="flex items-center gap-1 self-end rounded-full border border-line-light px-2.5 py-1 text-13-regular text-alternative"
+        disabled={liking}
+        onClick={onLike}
+        className={clsx(
+          'flex items-center gap-1 self-end rounded-full border px-2.5 py-1 text-13-regular',
+          'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-snutt-mint',
+          evaluation.isLiked ? 'border-current text-snutt-mint' : 'border-line-light text-alternative hover:bg-light',
+        )}
       >
         <IconThumbUp aria-hidden className="size-4" />
         {evaluation.likeCount}
-      </p>
+      </button>
     </article>
   );
 }

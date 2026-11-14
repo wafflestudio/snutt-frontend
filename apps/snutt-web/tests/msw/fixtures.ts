@@ -165,6 +165,37 @@ export const EVALUATION_RESPONSES: SnuttV2.EvaluationResponse[] = [
   },
 ];
 
+/** 강좌 9756 의 학기별 강의 (CourseLectureResponse). 2019년 2학기 강의에는 내 강의평(502)이 있다 */
+export const EVALUATION_LECTURE_RESPONSES: SnuttV2.CourseLectureResponse[] = [
+  {
+    id: 6001,
+    lectureNumber: '001',
+    courseTitle: '공학수학 1',
+    credit: 3,
+    year: 2019,
+    semester: 3,
+    myEvaluationExists: true,
+  },
+  {
+    id: 7002,
+    lectureNumber: '001',
+    courseTitle: '공학수학 1',
+    credit: 3,
+    year: 2025,
+    semester: 3,
+    myEvaluationExists: false,
+  },
+  {
+    id: 7001,
+    lectureNumber: '001',
+    courseTitle: '공학수학 1',
+    credit: 3,
+    year: 2026,
+    semester: 1,
+    myEvaluationExists: false,
+  },
+];
+
 /** v2 에러 응답 (RFC 7807) */
 export const problem = (status: number, type: string, title: string, detail: string) => ({
   type: `/problems/${type}`,

@@ -8,7 +8,12 @@ import { isEmailNotVerified } from '@/api/errors';
 import { evaluationQueries, useDeleteEvaluation, useToggleEvaluationLike, useWriteEvaluation } from '@/api/evaluations';
 import { toEvaluation } from '@/api/mappers/evaluation';
 import { createQueryClient } from '@/api/query-client';
-import { EVALUATION_RESPONSES, EVALUATION_SUMMARY_RESPONSE, problem } from '../msw/fixtures';
+import {
+  EVALUATION_LECTURE_RESPONSES,
+  EVALUATION_RESPONSES,
+  EVALUATION_SUMMARY_RESPONSE,
+  problem,
+} from '../msw/fixtures';
 import { api, server } from '../msw/server';
 
 const [FIRST, SECOND] = EVALUATION_RESPONSES;
@@ -31,6 +36,32 @@ describe('강의평 조회', () => {
 
     expect(await queryClient.fetchQuery(evaluationQueries.summary('9756'))).toMatchObject({ count: 2, rating: 4.25 });
     expect((await queryClient.fetchQuery(evaluationQueries.mine('9756'))).map(({ id }) => id)).toEqual(['502']);
+  });
+
+  it('강의평을 쓸 강의: 강좌 상세의 학기별 강의를 받고, 강좌 아래 key 에 둔다', async () => {
+    server.use(
+      http.get(api('/v2/courses/9756'), () =>
+        HttpResponse.json({
+          course: {
+            id: 9756,
+            title: '공학수학 1',
+            instructor: '김명수',
+            courseNumber: 'M0000.000100',
+            evaluation: { evalCount: 2, avgRating: 4.25 },
+          },
+          lectures: EVALUATION_LECTURE_RESPONSES,
+        }),
+      ),
+    );
+    const { queryClient } = setup();
+
+    expect((await queryClient.fetchQuery(evaluationQueries.lectures('9756')))[0]).toEqual({
+      lectureId: '6001',
+      semester: { year: 2019, term: 3 },
+      lectureNumber: '001',
+      hasMyEvaluation: true,
+    });
+    expect(evaluationQueries.lectures('9756').queryKey.slice(0, 3)).toEqual(evaluationQueries.course('9756'));
   });
 
   it('목록: 정렬을 보내고, 커서로 다음 쪽을 받는다', async () => {

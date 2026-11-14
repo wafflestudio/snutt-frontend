@@ -4,6 +4,7 @@ import type {
   Evaluation,
   EvaluationChange,
   EvaluationInput,
+  EvaluationLecture,
   EvaluationSort,
 } from '@/domain/evaluation';
 import { toSemester } from './timetable';
@@ -45,6 +46,15 @@ export const toEvaluation = (evaluation: SnuttV2.EvaluationResponse): Evaluation
   isModifiable: evaluation.isModifiable,
   fromSnuev: evaluation.fromSnuev,
 });
+
+/** 강좌 상세(GET /v2/courses/:courseId)의 학기별 강의 → 강의평을 쓸 때 고르는 강의 */
+export const toEvaluationLectures = ({ lectures }: SnuttV2.CourseDetailResponse): EvaluationLecture[] =>
+  lectures.map((lecture) => ({
+    lectureId: String(lecture.id),
+    semester: toSemester(lecture),
+    lectureNumber: lecture.lectureNumber,
+    hasMyEvaluation: lecture.myEvaluationExists,
+  }));
 
 // domain → v2 요청
 

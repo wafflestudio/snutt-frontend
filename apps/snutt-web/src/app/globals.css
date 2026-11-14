@@ -91,6 +91,9 @@
   --text-13-body-regular: 13px; /* 강의평 본문 · 학기. Figma 텍스트 스타일 `13/body/regular` */
   --text-13-body-regular--font-weight: 400;
   --text-13-body-regular--line-height: 1.45;
+  --text-14-bold: 14px; /* 강의평 작성 버튼 (Figma 14px Bold, 줄 높이 100%). 텍스트 스타일이 없어 임시 */
+  --text-14-bold--font-weight: 700;
+  --text-14-bold--line-height: 1;
 
   /*
    * 임시: Figma 에 hex 로만 있는 색 중 가까운 토큰이 없는 것. 디자이너가 토큰을 정하면 지운다 (docs/snutt-web-design-questions.md 4-18)

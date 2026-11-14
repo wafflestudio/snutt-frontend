@@ -31,6 +31,7 @@ import {
   CursorPageLectureResponse,
   // 강의평
   CourseEvaluationDetailsResponse,
+  CourseDetailResponse,
   CursorPageEvaluationResponse,
   EvaluationResponse,
   EvaluationWriteRequestBody,
@@ -363,6 +364,13 @@ export const getSnuttTimetableV2Apis = ({ callWithToken, callWithoutToken }: Get
 
     // ── 강의평 ───────────────────────────────────────────────────────────────
     // 강의평은 강좌(courseId, 같은 과목 · 교수의 여러 학기 강의를 묶은 것) 단위로 모인다. 쓸 때만 강의(lectureId)를 고른다
+    /** 강좌와 그 강좌의 학기별 강의. 강의평을 쓸 학기(강의)를 고를 때 쓴다. 강의마다 내 강의평이 있는지(myEvaluationExists)가 온다 */
+    'GET /v2/courses/:courseId': ({ token, params }: { token: string; params: { courseId: string } }) =>
+      callWithToken<SuccessResponse<CourseDetailResponse>>({
+        method: 'get',
+        path: `/v2/courses/${params.courseId}`,
+        token,
+      }),
     'GET /v2/courses/:courseId/evaluation-summary': ({
       token,
       params,
