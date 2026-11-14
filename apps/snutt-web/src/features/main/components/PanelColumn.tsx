@@ -31,16 +31,18 @@ type PanelNavProps = {
   /** `<` 의 이름. 무엇으로 돌아가는지 쓴다 (`목록으로`) */
   backLabel: string;
   onBack: () => void;
-  /** `×`: 패널을 접는다 */
+  /** `×` */
   onClose: () => void;
+  /** `×` 의 이름. 직접 추가는 패널을 접고, 강의 상세는 상세만 닫는다 */
+  closeLabel?: string;
 };
 
 /** 패널 맨 위의 `<` 와 `×` (Figma 강의 상세 · 직접 추가). 둘의 뜻은 디자인 문의 4-8 */
-export function PanelNav({ backLabel, onBack, onClose }: PanelNavProps) {
+export function PanelNav({ backLabel, onBack, onClose, closeLabel = '패널 접기' }: PanelNavProps) {
   return (
     <div className="flex items-center justify-between px-5 pt-5">
       <IconButton label={backLabel} icon={<IconChevronLeft />} onClick={onBack} />
-      <IconButton label="패널 접기" icon={<IconClose />} onClick={onClose} />
+      <IconButton label={closeLabel} icon={<IconClose />} onClick={onClose} />
     </div>
   );
 }
