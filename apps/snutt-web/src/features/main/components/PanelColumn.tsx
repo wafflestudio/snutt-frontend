@@ -40,9 +40,10 @@ type PanelNavProps = {
 /** 패널 맨 위의 `<` 와 `×` (Figma 강의 상세 · 직접 추가). 둘의 뜻은 디자인 문의 4-8 */
 export function PanelNav({ backLabel, onBack, onClose, closeLabel = '패널 접기' }: PanelNavProps) {
   return (
-    <div className="flex items-center justify-between px-5 pt-5">
-      <IconButton label={backLabel} icon={<IconChevronLeft />} onClick={onBack} />
-      <IconButton label={closeLabel} icon={<IconClose />} onClick={onClose} />
+    // Figma(11-18): 아이콘 24px, 위 24 · 왼쪽 27.5 · 오른쪽 27.5. 버튼(28px)이 아이콘보다 2px 크다
+    <div className="flex items-center justify-between px-6.25 pt-5.5">
+      <IconButton variant="nav" label={backLabel} icon={<IconChevronLeft />} onClick={onBack} />
+      <IconButton variant="nav" label={closeLabel} icon={<IconClose />} onClick={onClose} />
     </div>
   );
 }

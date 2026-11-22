@@ -68,8 +68,8 @@ export function CustomLectureForm({ timetable, palette, onSubmit, onBack, onClos
       <PanelNav backLabel="목록으로" onBack={onBack} onClose={onClose} />
 
       <form noValidate onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col">
-        {/* Figma: 왼쪽 여백 30, 오른쪽 32 */}
-        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto pt-6 pr-8 pl-7.5">
+        {/* Figma: 제목은 위에서 73, 왼쪽 여백 30, 오른쪽 32 */}
+        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto pt-5.75 pr-8 pl-7.5">
           <h2 className="text-20-bold">강의 직접 추가</h2>
 
           {/* Figma: 라벨 40px, 라벨과 입력칸 사이 20, 줄 사이 20, 폭 318 */}

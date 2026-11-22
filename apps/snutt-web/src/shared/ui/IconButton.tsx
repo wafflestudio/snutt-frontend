@@ -1,7 +1,7 @@
 import { clsx } from 'clsx';
 import type { ComponentProps, ReactNode } from 'react';
 
-export type IconButtonVariant = 'circle' | 'ghost';
+export type IconButtonVariant = 'circle' | 'ghost' | 'nav';
 
 const VARIANT_CLASSES: Record<IconButtonVariant, string> = {
   // 검색 결과의 관심강좌 · 담기 (Figma `관심강좌 버튼` · `Add button`: 30px 원, 아이콘 16px). 아이콘 크기는 아이콘에 준다.
@@ -11,6 +11,8 @@ const VARIANT_CLASSES: Record<IconButtonVariant, string> = {
     'size-7.5 rounded-full border border-line-light bg-normal text-icon-normal hover:bg-deem2 hover:text-icon-on-item aria-pressed:bg-deem2 aria-pressed:text-icon-on-item',
   // 닫기 · 뒤로 · 더보기처럼 테두리 없는 아이콘
   ghost: 'size-7 rounded-sm hover:bg-light [&>svg]:size-5',
+  // 패널 맨 위의 `<` · `×` (Figma `Icon/arrow/left` · `Icon/close` 24px, 11-18)
+  nav: 'size-7 rounded-sm hover:bg-light [&>svg]:size-6',
 };
 
 export type IconButtonProps = Omit<ComponentProps<'button'>, 'children' | 'aria-label'> & {
