@@ -194,7 +194,7 @@ function DetailColumn({ title, view, onViewChange, onBack, onClose, children }: 
       <PanelNav backLabel="목록으로" onBack={onBack} onClose={onClose} closeLabel="상세 닫기" />
 
       {/* Figma: 제목과 전환 버튼은 위에서 70, 제목은 왼쪽 29 · 전환 버튼은 오른쪽 28 */}
-      <div className="mt-5.5 flex items-start justify-between gap-3 pr-7 pl-7.25">
+      <div className="mt-5 flex items-start justify-between gap-3 pr-7 pl-7.25">
         <h2 className="min-w-0 py-px text-20-bold break-keep text-normal">{title}</h2>
         <Tabs value={view} onValueChange={onViewChange} variant="segmented" className="shrink-0">
           <TabList aria-label="강의 상세 보기">
