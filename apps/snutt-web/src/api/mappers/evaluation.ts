@@ -1,11 +1,14 @@
 import type { SnuttV2 } from '@sf/snutt-api';
 import type {
   CourseEvaluationSummary,
+  CourseSummary,
   Evaluation,
   EvaluationChange,
   EvaluationInput,
   EvaluationLecture,
   EvaluationSort,
+  EvaluationTag,
+  TakenLecture,
 } from '@/domain/evaluation';
 import { toSemester } from './timetable';
 
@@ -55,6 +58,30 @@ export const toEvaluationLectures = ({ lectures }: SnuttV2.CourseDetailResponse)
     lectureNumber: lecture.lectureNumber,
     hasMyEvaluation: lecture.myEvaluationExists,
   }));
+
+export const toEvaluationTag = ({ key, title, description }: SnuttV2.EvaluationTagResponse): EvaluationTag => ({
+  key,
+  title,
+  description,
+});
+
+/** 강좌 검색 결과. 강의평이 없으면 avgRating 이 빠진다 */
+export const toCourseSummary = (course: SnuttV2.CourseResponse): CourseSummary => ({
+  id: String(course.id),
+  title: course.title,
+  instructor: course.instructor,
+  rating: course.evaluation.avgRating ?? null,
+  count: course.evaluation.evalCount,
+});
+
+/** 최근 수강한 강의. 강좌 ID(courseId)는 오지 않는다 */
+export const toTakenLecture = (lecture: SnuttV2.TakenLectureResponse): TakenLecture => ({
+  lectureId: String(lecture.lectureId),
+  title: lecture.title,
+  instructor: lecture.instructor,
+  credit: lecture.credit ?? null,
+  semester: toSemester({ year: lecture.takenYear, semester: lecture.takenSemester }),
+});
 
 // domain → v2 요청
 

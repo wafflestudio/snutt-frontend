@@ -6,16 +6,19 @@ import {
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query';
-import type { Evaluation, EvaluationChange, EvaluationInput, EvaluationSort } from '@/domain/evaluation';
+import type { CourseSummary, Evaluation, EvaluationChange, EvaluationInput, EvaluationSort } from '@/domain/evaluation';
 import type { CourseId, LectureId } from '@/domain/lecture';
 import { callApi } from './client';
 import {
   toCourseEvaluationSummary,
+  toCourseSummary,
   toEvaluation,
+  toEvaluationTag,
   toEvaluationLectures,
   toEvaluationSortParam,
   toEvaluationUpdateRequest,
   toEvaluationWriteRequest,
+  toTakenLecture,
 } from './mappers/evaluation';
 
 // 강의평은 강좌(courseId) 단위로 모인다. 강의 상세에서는 강의의 courseId 로 부른다
@@ -23,6 +26,19 @@ import {
 
 /** 강의평 목록 한 쪽 */
 type EvaluationPage = { evaluations: Evaluation[]; next: string | null };
+
+/** 강좌 검색 결과 한 쪽 */
+type CoursePage = { courses: CourseSummary[]; next: string | null };
+
+/** cursor 로 나눈 강의평 목록 한 쪽을 domain 으로 */
+const toEvaluationPage = (page: {
+  content: Parameters<typeof toEvaluation>[0][];
+  cursor?: string | null;
+  last: boolean;
+}): EvaluationPage => ({ evaluations: page.content.map(toEvaluation), next: page.last ? null : (page.cursor ?? null) });
+
+/** 강의평 목록(쪽으로 나눈 것)의 query key 는 모두 'list' 를 넣는다. 좋아요를 누르면 이 목록들을 한꺼번에 고친다 */
+const LIST = 'list';
 
 export const evaluationQueries = {
   all: () => ['evaluations'] as const,
@@ -40,13 +56,13 @@ export const evaluationQueries = {
   /** 강의평 목록. 한 쪽의 크기는 서버가 정하고, 커서로 다음 쪽을 받는다 */
   list: ({ courseId, sort }: { courseId: CourseId; sort: EvaluationSort }) =>
     infiniteQueryOptions({
-      queryKey: [...evaluationQueries.course(courseId), 'list', sort],
+      queryKey: [...evaluationQueries.course(courseId), LIST, sort],
       queryFn: async ({ pageParam }): Promise<EvaluationPage> => {
         const page = await callApi('GET /v2/courses/:courseId/evaluations', {
           params: { courseId },
           query: { cursor: pageParam ?? undefined, sort: toEvaluationSortParam(sort) },
         });
-        return { evaluations: page.content.map(toEvaluation), next: page.last ? null : (page.cursor ?? null) };
+        return toEvaluationPage(page);
       },
       initialPageParam: null as string | null,
       getNextPageParam: (page) => page.next,
@@ -64,22 +80,83 @@ export const evaluationQueries = {
       queryKey: [...evaluationQueries.course(courseId), 'lectures'],
       queryFn: async () => toEvaluationLectures(await callApi('GET /v2/courses/:courseId', { params: { courseId } })),
     }),
+  // ── 강의평 탭 (8-6) ──
+  /** 둘러보기 태그 (최신 · 추천 · 꿀강 등) */
+  tags: () =>
+    queryOptions({
+      queryKey: [...evaluationQueries.all(), 'tags'],
+      queryFn: async () => (await callApi('GET /v2/evaluations/tags')).map(toEvaluationTag),
+      staleTime: Infinity,
+    }),
+  /** 태그의 강의평 목록. 여러 강좌의 강의평이 섞여 있다 */
+  byTag: (tag: string) =>
+    infiniteQueryOptions({
+      queryKey: [...evaluationQueries.all(), LIST, 'tag', tag],
+      queryFn: async ({ pageParam }) =>
+        toEvaluationPage(
+          await callApi('GET /v2/evaluations/tags/:tag', {
+            params: { tag },
+            query: { cursor: pageParam ?? undefined },
+          }),
+        ),
+      initialPageParam: null as string | null,
+      getNextPageParam: (page) => page.next,
+    }),
+  /** 내가 쓴 강의평 전부 */
+  myList: () =>
+    infiniteQueryOptions({
+      queryKey: [...evaluationQueries.all(), LIST, 'me'],
+      queryFn: async ({ pageParam }) =>
+        toEvaluationPage(await callApi('GET /v2/evaluations/me', { query: { cursor: pageParam ?? undefined } })),
+      initialPageParam: null as string | null,
+      getNextPageParam: (page) => page.next,
+    }),
+  /** 강의명 · 교수명으로 강좌를 찾는다 */
+  courses: (query: string) =>
+    infiniteQueryOptions({
+      queryKey: [...evaluationQueries.all(), 'courses', query],
+      queryFn: async ({ pageParam }): Promise<CoursePage> => {
+        const page = await callApi('GET /v2/courses', { query: { query, cursor: pageParam ?? undefined } });
+        return { courses: page.content.map(toCourseSummary), next: page.last ? null : (page.cursor ?? null) };
+      },
+      initialPageParam: null as string | null,
+      getNextPageParam: (page) => page.next,
+    }),
+  /** 최근 학기에 수강했고 아직 강의평을 쓰지 않은 강의 */
+  takenLectures: () =>
+    queryOptions({
+      queryKey: [...evaluationQueries.all(), 'taken'],
+      queryFn: async () =>
+        (await callApi('GET /v2/users/me/lectures/latest', { query: { excludeEvaluated: 'true' } })).map(
+          toTakenLecture,
+        ),
+    }),
 };
 
 /** 서버가 돌려준 강의평으로 캐시의 같은 강의평을 바꾼다 (좋아요). 통계는 그대로라 다시 받지 않는다 */
 const replaceEvaluation = (queryClient: QueryClient, evaluation: Evaluation) => {
   const replace = (list: Evaluation[]) => list.map((item) => (item.id === evaluation.id ? evaluation : item));
+  // 강좌의 목록, 태그 목록, 내 강의평 목록에 같은 강의평이 있을 수 있다
   queryClient.setQueriesData<InfiniteData<EvaluationPage>>(
-    { queryKey: [...evaluationQueries.course(evaluation.courseId), 'list'] },
+    { predicate: ({ queryKey }) => queryKey[0] === evaluationQueries.all()[0] && queryKey.includes(LIST) },
     (data) =>
       data && { ...data, pages: data.pages.map((page) => ({ ...page, evaluations: replace(page.evaluations) })) },
   );
   queryClient.setQueryData(evaluationQueries.mine(evaluation.courseId).queryKey, (list) => list && replace(list));
 };
 
-/** 강의평을 쓰거나 고치거나 지우면 통계 · 목록 · 내 강의평이 모두 바뀌므로 강좌의 강의평을 다시 받는다 */
+/**
+ * 강의평을 쓰거나 고치거나 지우면 강좌의 통계 · 목록 · 내 강의평이 모두 바뀌므로 강좌의 강의평을 다시 받는다.
+ * 강의평 탭의 목록(태그 · 내 강의평 · 수강한 강의)도 바뀌므로 함께 다시 받는다
+ */
 const invalidateCourse = (queryClient: QueryClient, courseId: CourseId) =>
-  queryClient.invalidateQueries({ queryKey: evaluationQueries.course(courseId) });
+  Promise.all([
+    queryClient.invalidateQueries({ queryKey: evaluationQueries.course(courseId) }),
+    queryClient.invalidateQueries({
+      predicate: ({ queryKey }) =>
+        queryKey[0] === evaluationQueries.all()[0] && queryKey[1] !== 'course' && queryKey[1] !== 'tags',
+    }),
+  ]);
 
 /** 강의평 작성. 강좌가 아니라 수강한 학기의 강의(lectureId)에 쓴다 */
 export const useWriteEvaluation = () => {

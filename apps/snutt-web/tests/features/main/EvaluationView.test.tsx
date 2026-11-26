@@ -119,20 +119,21 @@ describe('EvaluationView', () => {
     expect(cursors).toEqual([undefined, 'c1']);
   });
 
-  it('강의평이 없으면 점수 자리에 `-`, 목록 자리에 안내', async () => {
+  it('강의평이 없으면 요약 · 목록 대신 안내와 작성 버튼 (Figma `강의평 상세_ empty 케이스`)', async () => {
     server.use(
       summaryHandler({ courseId: 9756, evalCount: 0 }),
       http.get(api('/v2/courses/9756/evaluations'), () => HttpResponse.json({ content: [], size: 0, last: true })),
     );
     renderView();
 
-    expect(await screen.findByText('아직 강의평이 없습니다')).toBeInTheDocument();
-    const summary = await screen.findByRole('region', { name: '강의평 요약' });
-    expect(within(summary).getByText('(0)')).toBeInTheDocument();
-    expect(scores()).toEqual({ 성적: '-', 강의력: '-', 유익함: '-', 널널함: '-' });
+    const empty = await screen.findByRole('region', { name: '강의평 없음' });
+    expect(within(empty).getByText('아직 강의평이 없어요.')).toBeInTheDocument();
+    expect(within(empty).getByRole('button', { name: '강의평 작성' })).toBeInTheDocument();
+    expect(screen.queryByRole('region', { name: '강의평 요약' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('region', { name: '강의평 목록' })).not.toBeInTheDocument();
   });
 
-  it('이메일 인증을 하지 않았으면 서버 문구만 보여 준다', async () => {
+  it('이메일 인증을 하지 않았으면 인증 팝업을 보여 준다', async () => {
     const message = '이메일 인증이 완료된 후 강의평을 확인할 수 있습니다';
     const forbidden = () =>
       HttpResponse.json(problem(403, 'email-not-verified', 'Forbidden', message), { status: 403 });
@@ -142,7 +143,7 @@ describe('EvaluationView', () => {
     );
     renderView();
 
-    expect(await screen.findByText(message)).toBeInTheDocument();
+    expect(await screen.findByRole('region', { name: '이메일 인증' })).toBeInTheDocument();
     expect(screen.queryByRole('region', { name: '강의평 목록' })).not.toBeInTheDocument();
     expect(screen.queryByRole('group', { name: '정렬' })).not.toBeInTheDocument();
   });
@@ -235,37 +236,49 @@ describe('EvaluationView 상호작용', () => {
     await findItem('2026년 1학기');
 
     await userEvent.click(screen.getByRole('button', { name: '강의평 작성' }));
-    const dialog = await screen.findByRole('dialog', { name: '강의평 작성' });
-    expect(within(dialog).getByText('서양근대윤리학의 이해')).toBeInTheDocument();
+    // 모달이 아니라 강의평 자리에 폼을 그린다 (Figma `강의평_강의평 작성`)
+    const dialog = await screen.findByRole('form', { name: '강의평 작성' });
+    expect(screen.queryByRole('region', { name: '강의평 목록' })).not.toBeInTheDocument();
     expect(await within(dialog).findByRole('combobox', { name: '수강 학기' })).toHaveTextContent('2026년 1학기');
-    const submit = within(dialog).getByRole('button', { name: '등록' });
+    const submit = within(dialog).getByRole('button', { name: '작성완료' });
     expect(submit).toBeDisabled();
 
     await pickScore(dialog, '총점', 4);
-    await pickScore(dialog, '성적', 5);
-    await pickScore(dialog, '강의력', 4);
-    await pickScore(dialog, '유익함', 3);
+    await pickScore(dialog, '성적이 만족스러웠나요?', 5);
+    await pickScore(dialog, '교수님의 강의력이 좋았나요?', 4);
+    await pickScore(dialog, '수업 내용이 유익했나요?', 3);
     expect(submit).toBeDisabled();
-    await pickScore(dialog, '널널함', 2);
+    await pickScore(dialog, '과제량이 적절했나요?', 2.5);
+    // 강의 리뷰는 20자 이상 써야 한다 (서버가 빈 본문을 받지 않는다)
     expect(submit).toBeDisabled();
-    await userEvent.type(within(dialog).getByRole('textbox', { name: '강의평' }), '  알찬 수업  ');
+    const content = within(dialog).getByRole('textbox', { name: '강의 리뷰' });
+    await userEvent.type(content, '알찬 수업');
+    expect(submit).toBeDisabled();
+    await userEvent.type(content, '이고 과제가 많지만 배우는 게 많아요  ');
     await userEvent.click(submit);
 
     expect(await screen.findByText('강의평을 등록했습니다')).toBeInTheDocument();
-    expect(screen.queryByRole('dialog', { name: '강의평 작성' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('form', { name: '강의평 작성' })).not.toBeInTheDocument();
     expect(fake.requests).toEqual([
       {
         method: 'POST',
         path: '/v2/lectures/7001/evaluations',
-        body: { content: '알찬 수업', rating: 4, gradeSatisfaction: 5, teachingSkill: 4, gains: 3, lifeBalance: 2 },
+        body: {
+          content: '알찬 수업이고 과제가 많지만 배우는 게 많아요',
+          rating: 4,
+          gradeSatisfaction: 5,
+          teachingSkill: 4,
+          gains: 3,
+          lifeBalance: 2.5,
+        },
       },
     ]);
     // 통계와 목록을 다시 받는다
-    expect(await screen.findByText('알찬 수업')).toBeInTheDocument();
+    expect(await screen.findByText('알찬 수업이고 과제가 많지만 배우는 게 많아요')).toBeInTheDocument();
     expect(within(screen.getByRole('region', { name: '강의평 요약' })).getByText('(3)')).toBeInTheDocument();
   });
 
-  it('작성이 실패하면 모달을 닫지 않고 서버 문구를 보여 준다', async () => {
+  it('작성이 실패하면 폼을 닫지 않고 서버 문구를 보여 준다', async () => {
     useFake();
     server.use(
       http.post(api('/v2/lectures/7001/evaluations'), () =>
@@ -278,14 +291,24 @@ describe('EvaluationView 상호작용', () => {
     await findItem('2026년 1학기');
 
     await userEvent.click(screen.getByRole('button', { name: '강의평 작성' }));
-    const dialog = await screen.findByRole('dialog', { name: '강의평 작성' });
+    const dialog = await screen.findByRole('form', { name: '강의평 작성' });
     await within(dialog).findByRole('combobox', { name: '수강 학기' });
-    for (const label of ['총점', '성적', '강의력', '유익함', '널널함']) await pickScore(dialog, label, 3);
-    await userEvent.type(within(dialog).getByRole('textbox', { name: '강의평' }), '좋아요');
-    await userEvent.click(within(dialog).getByRole('button', { name: '등록' }));
+    for (const label of [
+      '총점',
+      '성적이 만족스러웠나요?',
+      '교수님의 강의력이 좋았나요?',
+      '수업 내용이 유익했나요?',
+      '과제량이 적절했나요?',
+    ])
+      await pickScore(dialog, label, 3);
+    await userEvent.type(
+      within(dialog).getByRole('textbox', { name: '강의 리뷰' }),
+      '과제가 많지만 배우는 게 많은 수업이에요',
+    );
+    await userEvent.click(within(dialog).getByRole('button', { name: '작성완료' }));
 
     expect(await within(dialog).findByRole('alert')).toHaveTextContent('수강한 강의에만 강의평을 쓸 수 있습니다');
-    expect(screen.getByRole('dialog', { name: '강의평 작성' })).toBeInTheDocument();
+    expect(screen.getByRole('form', { name: '강의평 작성' })).toBeInTheDocument();
   });
 
   it('수정: 원래 값을 채워 열고, 바뀐 값만 보낸다', async () => {
@@ -293,9 +316,10 @@ describe('EvaluationView 상호작용', () => {
     renderView();
 
     await openMenu(await findItem('2019년 2학기'), '수정');
-    const dialog = await screen.findByRole('dialog', { name: '강의평 수정' });
+    const dialog = await screen.findByRole('form', { name: '강의평 수정' });
     expect(within(dialog).getByText('2019년 2학기')).toBeInTheDocument();
-    expect(within(dialog).getByRole('textbox', { name: '강의평' })).toHaveValue('무난합니다');
+    // 20자보다 짧은 예전 강의평도 본문을 그대로 두면 점수를 고칠 수 있다
+    expect(within(dialog).getByRole('textbox', { name: '강의 리뷰' })).toHaveValue('무난합니다');
     expect(
       within(within(dialog).getByRole('group', { name: '총점' })).getByRole('radio', { name: '4점' }),
     ).toBeChecked();
@@ -305,7 +329,7 @@ describe('EvaluationView 상호작용', () => {
 
     await pickScore(dialog, '총점', 3);
     // 예전 snuev 강의평이라 항목별 점수가 없다. 고른 것만 보낸다
-    await pickScore(dialog, '성적', 5);
+    await pickScore(dialog, '성적이 만족스러웠나요?', 5);
     await userEvent.click(save);
 
     expect(await screen.findByText('강의평을 수정했습니다')).toBeInTheDocument();

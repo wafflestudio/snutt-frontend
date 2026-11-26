@@ -26,8 +26,8 @@ type NavItem = {
 
 const NAV_ITEMS: NavItem[] = [
   { label: '검색', icon: IconTabSearch, href: '/' },
-  // 어떤 화면이 열리는지 디자인 확인 중 (디자이너 문의 4-3)
-  { label: '강의평', icon: IconTabReview, href: null },
+  // 강의평 탭 (8-6, 디자인 문의 4-30)
+  { label: '강의평', icon: IconTabReview, href: '/reviews' },
   { label: '친구 시간표', icon: IconTabFriend, href: '/friends' },
   // 지금은 로그아웃만 있다. 마이페이지 · 알림 등은 Phase 9 (디자인 문의 4-12)
   { label: '더보기', icon: IconTabMore, href: 'menu' },
