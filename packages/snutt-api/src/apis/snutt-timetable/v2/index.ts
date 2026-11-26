@@ -59,6 +59,8 @@ import {
   UpdateFriendDisplayNameRequest,
   FriendRequestLinkResponse,
   YearAndSemesterResponse,
+  // 피드백
+  FeedbackPostRequest,
 } from './schemas';
 
 type AuthProvider = AuthProvidersResponse['authProviders'][number];
@@ -572,6 +574,16 @@ export const getSnuttTimetableV2Apis = ({ callWithToken, callWithoutToken }: Get
       callWithToken<SuccessResponse<NotificationCountResponse>>({
         method: 'get',
         path: `/v2/notifications/count`,
+        token,
+      }),
+
+    // ── 피드백 ───────────────────────────────────────────────────────────────
+    // 앱의 `개발자 괴롭히기`. 응답 본문은 없다 (명세)
+    'POST /v2/feedback': ({ token, body }: { token: string; body: FeedbackPostRequest }) =>
+      callWithToken<SuccessResponse<never>>({
+        method: 'post',
+        path: `/v2/feedback`,
+        body,
         token,
       }),
 

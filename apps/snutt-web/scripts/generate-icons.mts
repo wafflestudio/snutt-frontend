@@ -44,18 +44,22 @@ export const DESIGN_ICONS: Record<string, string> = {
 export const MATERIAL_ICONS: Record<string, string> = {
   IconArrowOutward: 'arrow_outward',
   IconBookmark: 'bookmark',
+  IconCalendar: 'calendar_today',
   IconCheckCircleFill: 'check_circle-fill',
   IconChevronDown: 'keyboard_arrow_down',
   IconCopy: 'content_copy',
   IconDownload: 'download',
+  IconError: 'error',
   IconFilter: 'tune',
   IconMoreVertical: 'more_vert',
+  IconPersonAdd: 'person_add',
   IconRefresh: 'refresh',
   IconRemove: 'remove',
   IconSearch: 'search',
   IconShare: 'share',
   IconStar: 'star',
   IconStarFill: 'star-fill',
+  IconSync: 'sync',
   IconThumbUp: 'thumb_up',
 };
 

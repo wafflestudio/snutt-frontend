@@ -1,5 +1,6 @@
 import type { LectureId, TimetableLectureId } from '@/domain/lecture';
 import type { TimetableId } from '@/domain/timetable';
+import { isMorePage, type MorePage } from '@/shared/lib/more-page';
 
 /**
  * 메인 화면의 레이아웃 상태. URL search params 와 동기화한다. (docs/snutt-web-dev-plan.md 설계 포인트 2)
@@ -29,14 +30,17 @@ export type PanelView =
   /** 검색 · 강의 목록 · 관심강좌 탭. detail 이 있으면 목록 옆에 강의 상세를 연다 */
   | { type: 'list'; tab: PanelTab; detail: LectureDetail | null }
   /** 직접 추가 폼. 목록 자리를 대신한다 */
-  | { type: 'custom-form' };
+  | { type: 'custom-form' }
+  /** 좌측 바의 더보기 (내 계정, 알림, 설정 …). 목록 자리를 대신한다 */
+  | { type: 'more'; page: MorePage };
 
 export const DEFAULT_PANEL: PanelView = { type: 'list', tab: 'search', detail: null };
 export const DEFAULT_MAIN_VIEW: MainView = { panel: DEFAULT_PANEL, compare: null };
 
 /*
  * URL 형식. 기본값은 쓰지 않아서 처음 화면의 URL 은 `/` 이다.
- *   panel=closed | custom   (없으면 목록)
+ *   panel=closed | custom | more   (없으면 목록)
+ *   page=account | notifications | …  (더보기 안의 화면. 없으면 더보기 목록)
  *   tab=lectures | bookmark (없으면 검색)
  *   lecture=<id> &view=review &edit=1   (시간표 강의의 상세)
  *   course=<id> &view=review            (수강편람 강의의 상세)
@@ -56,6 +60,10 @@ const parsePanel = (params: Pick<URLSearchParams, 'get'>): PanelView | null => {
   const panel = params.get('panel');
   if (panel === 'closed') return null;
   if (panel === 'custom') return { type: 'custom-form' };
+  if (panel === 'more') {
+    const page = params.get('page');
+    return { type: 'more', page: isMorePage(page) ? page : 'menu' };
+  }
 
   const tab = params.get('tab');
   return { type: 'list', tab: isPanelTab(tab) ? tab : 'search', detail: parseDetail(params) };
@@ -75,7 +83,10 @@ export const toSearchParams = ({ panel, compare }: MainView): URLSearchParams =>
 
   if (panel === null) params.set('panel', 'closed');
   else if (panel.type === 'custom-form') params.set('panel', 'custom');
-  else {
+  else if (panel.type === 'more') {
+    params.set('panel', 'more');
+    if (panel.page !== 'menu') params.set('page', panel.page);
+  } else {
     if (panel.tab !== 'search') params.set('tab', panel.tab);
     const { detail } = panel;
     if (detail) {

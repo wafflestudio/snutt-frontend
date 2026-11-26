@@ -20,6 +20,12 @@ describe('parseMainView', () => {
     expect(parse('panel=custom').panel).toEqual({ type: 'custom-form' });
   });
 
+  it('panel=more 면 더보기. page 가 없거나 잘못되면 더보기 목록', () => {
+    expect(parse('panel=more').panel).toEqual({ type: 'more', page: 'menu' });
+    expect(parse('panel=more&page=account').panel).toEqual({ type: 'more', page: 'account' });
+    expect(parse('panel=more&page=wrong').panel).toEqual({ type: 'more', page: 'menu' });
+  });
+
   it('탭과 강의 상세를 읽는다', () => {
     expect(parse('tab=bookmark&lecture=l1&view=review').panel).toEqual({
       type: 'list',
@@ -58,6 +64,8 @@ describe('toSearchParams', () => {
   const views: [string, MainView][] = [
     ['접힘 + 비교', { panel: null, compare: { right: 't2' } }],
     ['직접 추가', { panel: { type: 'custom-form' }, compare: null }],
+    ['더보기 목록', { panel: { type: 'more', page: 'menu' }, compare: null }],
+    ['더보기 알림', { panel: { type: 'more', page: 'notifications' }, compare: null }],
     [
       '관심강좌 + 강의평',
       {

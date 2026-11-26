@@ -2,9 +2,8 @@
 
 import { clsx } from 'clsx';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import type { ComponentType, SVGProps } from 'react';
-import { useLogout } from '@/api/auth';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { type ComponentType, type SVGProps, Suspense } from 'react';
 import { useTheme } from '@/shared/lib/use-theme';
 import {
   IconDarkMode,
@@ -14,33 +13,36 @@ import {
   IconTabReview,
   IconTabSearch,
 } from '@/shared/ui/icons';
-import { Menu, MenuItem } from '@/shared/ui/Menu';
 import { SnuttLogo } from '@/shared/ui/SnuttLogo';
 
 type NavItem = {
   label: string;
   icon: ComponentType<SVGProps<SVGSVGElement>>;
-  /** null 이면 아직 화면이 없다. 'menu' 는 누르면 동작 목록을 연다 */
-  href: string | null | 'menu';
+  /** null 이면 아직 화면이 없다 */
+  href: string | null;
 };
+
+const MORE_HREF = '/?panel=more';
 
 const NAV_ITEMS: NavItem[] = [
   { label: '검색', icon: IconTabSearch, href: '/' },
   // 어떤 화면이 열리는지 디자인 확인 중 (디자이너 문의 4-3)
   { label: '강의평', icon: IconTabReview, href: null },
   { label: '친구 시간표', icon: IconTabFriend, href: '/friends' },
-  // 지금은 로그아웃만 있다. 마이페이지 · 알림 등은 Phase 9 (디자인 문의 4-12)
-  { label: '더보기', icon: IconTabMore, href: 'menu' },
+  // 메인 화면의 목록 패널 자리에 더보기 패널을 연다 (Figma `더보기` 섹션, MainView 의 panel=more)
+  { label: '더보기', icon: IconTabMore, href: MORE_HREF },
 ];
 
-const isActive = (href: string, pathname: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href));
+/** 더보기는 메인 화면(`/`)의 패널이라 주소가 같고 search params 로 가른다 */
+const isActive = (href: string, pathname: string, morePanel: boolean) => {
+  if (href === MORE_HREF) return pathname === '/' && morePanel;
+  if (href === '/') return pathname === '/' && !morePanel;
+  return pathname.startsWith(href);
+};
 
 /** 좌측 바 (Figma `LNB`). 위에서부터 로고, 화면 이동, 맨 아래 테마 전환. */
 export function Lnb() {
-  const pathname = usePathname();
   const { theme, setTheme } = useTheme();
-  // 로그아웃하면 토큰이 지워져 RequireSignIn 이 로그인 화면으로 보낸다
-  const logout = useLogout();
 
   return (
     <nav
@@ -51,44 +53,10 @@ export function Lnb() {
         <SnuttLogo className="size-6" />
       </Link>
 
-      <ul className="mt-10 flex flex-col gap-7.5">
-        {NAV_ITEMS.map(({ label, icon: Icon, href }) => {
-          const active = href !== null && href !== 'menu' && isActive(href, pathname);
-          const className = clsx(
-            'flex w-15.5 flex-col items-center gap-0.5 text-14-semibold',
-            active ? 'text-normal' : 'text-assistive',
-          );
-          const content = (
-            <>
-              <Icon className="size-7.5" />
-              {label}
-            </>
-          );
-          return (
-            <li key={label}>
-              {href === 'menu' ? (
-                <Menu
-                  trigger={
-                    <button type="button" className={clsx(className, 'outline-none focus-visible:text-normal')}>
-                      {content}
-                    </button>
-                  }
-                >
-                  <MenuItem onClick={() => void logout()}>로그아웃</MenuItem>
-                </Menu>
-              ) : href === null ? (
-                <span aria-disabled className={clsx(className, 'cursor-not-allowed')} title="준비 중">
-                  {content}
-                </span>
-              ) : (
-                <Link href={href} aria-current={active ? 'page' : undefined} className={className}>
-                  {content}
-                </Link>
-              )}
-            </li>
-          );
-        })}
-      </ul>
+      {/* search params 를 읽는 부분만 Suspense 로 감싼다. 정적 내보내기에서는 더보기가 고르지 않은 채로 먼저 그려진다 */}
+      <Suspense fallback={<NavList morePanel={false} />}>
+        <NavListWithParams />
+      </Suspense>
 
       {/* 서버 렌더링 중에는 테마를 몰라서(theme === null) 해 아이콘을 보여 준다 */}
       <button
@@ -101,5 +69,44 @@ export function Lnb() {
         {theme === 'dark' ? <IconDarkMode className="size-6" /> : <IconLightMode className="size-6" />}
       </button>
     </nav>
+  );
+}
+
+function NavListWithParams() {
+  return <NavList morePanel={useSearchParams().get('panel') === 'more'} />;
+}
+
+/** 화면 이동 목록. morePanel: 메인 화면에 더보기 패널이 열려 있는지 */
+function NavList({ morePanel }: { morePanel: boolean }) {
+  const pathname = usePathname();
+  return (
+    <ul className="mt-10 flex flex-col gap-7.5">
+      {NAV_ITEMS.map(({ label, icon: Icon, href }) => {
+        const active = href !== null && isActive(href, pathname, morePanel);
+        const className = clsx(
+          'flex w-15.5 flex-col items-center gap-0.5 text-14-semibold',
+          active ? 'text-normal' : 'text-assistive',
+        );
+        const content = (
+          <>
+            <Icon className="size-7.5" />
+            {label}
+          </>
+        );
+        return (
+          <li key={label}>
+            {href === null ? (
+              <span aria-disabled className={clsx(className, 'cursor-not-allowed')} title="준비 중">
+                {content}
+              </span>
+            ) : (
+              <Link href={href} aria-current={active ? 'page' : undefined} className={className}>
+                {content}
+              </Link>
+            )}
+          </li>
+        );
+      })}
+    </ul>
   );
 }

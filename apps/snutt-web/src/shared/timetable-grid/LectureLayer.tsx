@@ -6,6 +6,7 @@ import { type ColorPair, resolveLectureColor } from '@/domain/color';
 import { layoutGridBlocks, toGridEntries } from '@/domain/grid-layout';
 import type { TimetableLecture } from '@/domain/lecture';
 import { formatDayTimeRange } from '@/domain/time';
+import { DEFAULT_TIMETABLE_SETTINGS, type LectureBlockDisplay } from '@/domain/timetable-settings';
 import { getBlockStyle, useGridRange } from './TimetableGrid';
 
 export type LectureLayerProps = {
@@ -14,10 +15,17 @@ export type LectureLayerProps = {
   palette: readonly ColorPair[];
   /** 없으면 읽기 전용이다 (친구 시간표, 비교의 오른쪽) */
   onLectureClick?: (lecture: TimetableLecture) => void;
+  /** 블록에 쓸 것 (더보기 → 시간표 설정). 없으면 강의명과 장소 */
+  display?: LectureBlockDisplay;
 };
 
-/** 시간표에 담긴 강의 블록. 수업 시간마다 블록 하나에 강의명과 장소를 쓴다. */
-export function LectureLayer({ lectures, palette, onLectureClick }: LectureLayerProps) {
+/** 시간표에 담긴 강의 블록. 수업 시간마다 블록 하나에 강의명 · 장소(설정에 따라 분반 · 교수)를 쓴다. */
+export function LectureLayer({
+  lectures,
+  palette,
+  onLectureClick,
+  display = DEFAULT_TIMETABLE_SETTINGS.display,
+}: LectureLayerProps) {
   const range = useGridRange();
   const blocks = useMemo(() => layoutGridBlocks(toGridEntries(lectures), range), [lectures, range]);
 
@@ -35,8 +43,12 @@ export function LectureLayer({ lectures, palette, onLectureClick }: LectureLayer
         const style = { ...getBlockStyle(block, range.days.length), backgroundColor: color.bg, color: color.fg };
         const content = (
           <>
-            <span className="text-12-regular">{lecture.title}</span>
-            {time.place && <span className="text-12-bold">{time.place}</span>}
+            {display.title && <span className="text-12-regular">{lecture.title}</span>}
+            {display.place && time.place && <span className="text-12-bold">{time.place}</span>}
+            {display.lectureNumber && lecture.lectureNumber && (
+              <span className="text-12-regular">({lecture.lectureNumber})</span>
+            )}
+            {display.instructor && lecture.instructor && <span className="text-12-regular">{lecture.instructor}</span>}
           </>
         );
 

@@ -1,28 +1,29 @@
 // @vitest-environment jsdom
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render as renderBase, screen, waitFor } from '@testing-library/react';
+import { render as renderBase, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { http, HttpResponse } from 'msw';
 import type { ReactElement } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { getAuthTokens, setAuthTokens } from '@/api/client';
 import { Lnb } from '@/features/app-shell/components/Lnb';
-import { api, server } from '../../msw/server';
 
-const pathname = vi.hoisted(() => ({ current: '/' }));
-vi.mock('next/navigation', () => ({ usePathname: () => pathname.current }));
+const location = vi.hoisted(() => ({ pathname: '/', search: '' }));
+vi.mock('next/navigation', () => ({
+  usePathname: () => location.pathname,
+  useSearchParams: () => new URLSearchParams(location.search),
+}));
 
 const render = (ui: ReactElement) =>
   renderBase(<QueryClientProvider client={new QueryClient()}>{ui}</QueryClientProvider>);
 
 beforeEach(() => {
-  pathname.current = '/';
+  location.pathname = '/';
+  location.search = '';
   document.documentElement.dataset.theme = 'light';
 });
 
 describe('Lnb', () => {
   it('지금 화면의 메뉴를 표시한다', () => {
-    pathname.current = '/friends';
+    location.pathname = '/friends';
     render(<Lnb />);
     expect(screen.getByRole('link', { name: '친구 시간표' })).toHaveAttribute('aria-current', 'page');
     expect(screen.getByRole('link', { name: '검색' })).not.toHaveAttribute('aria-current');
@@ -42,15 +43,15 @@ describe('Lnb', () => {
     expect(document.documentElement.dataset.theme).toBe('light');
   });
 
-  it('더보기의 로그아웃은 토큰을 지운다 (RequireSignIn 이 로그인 화면으로 보낸다)', async () => {
-    const logout = vi.fn(() => new HttpResponse(null, { status: 200 }));
-    server.use(http.post(api('/v2/auth/logout'), logout));
-    setAuthTokens({ accessToken: 'a', refreshToken: 'r' });
-    render(<Lnb />);
+  it('더보기는 메인 화면의 더보기 패널을 연다. 열려 있으면 검색 대신 더보기를 표시한다', () => {
+    const { unmount } = render(<Lnb />);
+    expect(screen.getByRole('link', { name: '더보기' })).toHaveAttribute('href', '/?panel=more');
+    expect(screen.getByRole('link', { name: '검색' })).toHaveAttribute('aria-current', 'page');
+    unmount();
 
-    await userEvent.click(screen.getByRole('button', { name: '더보기' }));
-    await userEvent.click(await screen.findByRole('menuitem', { name: '로그아웃' }));
-    expect(getAuthTokens()).toBeNull();
-    await waitFor(() => expect(logout).toHaveBeenCalledTimes(1));
+    location.search = '?panel=more&page=account';
+    render(<Lnb />);
+    expect(screen.getByRole('link', { name: '더보기' })).toHaveAttribute('aria-current', 'page');
+    expect(screen.getByRole('link', { name: '검색' })).not.toHaveAttribute('aria-current');
   });
 });
