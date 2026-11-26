@@ -35,12 +35,28 @@ export type MenuItemProps = {
   onClick: () => void;
   children: ReactNode;
   disabled?: boolean;
+  /** 글자 왼쪽 아이콘 (Figma 친구 시간표 `드롭다운`: 16px) */
+  icon?: ReactNode;
+  /** danger: 지우는 동작 (친구 `목록에서 삭제`, special/warning) */
+  variant?: 'default' | 'danger';
 };
 
-export function MenuItem({ onClick, children, disabled }: MenuItemProps) {
+export function MenuItem({ onClick, children, disabled, icon, variant = 'default' }: MenuItemProps) {
   return (
-    <BaseMenu.Item onClick={onClick} disabled={disabled} className={POPUP_ITEM_CLASSES}>
-      {children}
+    <BaseMenu.Item
+      onClick={onClick}
+      disabled={disabled}
+      // 공용 줄 모양의 글자색(text-normal)을 덮어쓴다
+      className={clsx(POPUP_ITEM_CLASSES, variant === 'danger' && 'text-warning!')}
+    >
+      {icon ? (
+        <span className="flex items-center gap-2 [&>svg]:size-4">
+          {icon}
+          {children}
+        </span>
+      ) : (
+        children
+      )}
     </BaseMenu.Item>
   );
 }
