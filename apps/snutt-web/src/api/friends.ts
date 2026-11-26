@@ -73,3 +73,44 @@ export const useDeclineFriend = () => {
     onSuccess: (_, id) => removeFromList(queryClient, 'requested', id),
   });
 };
+
+/** `닉네임#0000` 의 사용자에게 친구 요청을 보낸다. 보낸 요청 목록은 다시 받는다 */
+export const useRequestFriend = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (target: Pick<Friend, 'nickname' | 'nicknameTag'>): Promise<Friend> =>
+      toFriend(
+        await callApi('POST /v2/friends', {
+          body: { nickname: target.nickname, nicknameTag: target.nicknameTag },
+        }),
+      ),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: friendQueries.list('requesting').queryKey }),
+  });
+};
+
+/** 친구를 목록에서 지운다(친구 끊기). 응답 본문이 없어서 보낸 ID 로 친구 목록을 고친다 */
+export const useDeleteFriend = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: FriendId) => callApi('DELETE /v2/friends/:friendId', { params: { friendId: id } }),
+    onSuccess: (_, id) => removeFromList(queryClient, 'active', id),
+  });
+};
+
+/** 친구에게 내가 붙인 이름을 바꾼다. 응답(바뀐 친구)으로 친구 목록의 그 줄을 바꾼다 */
+export const useRenameFriend = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, displayName }: { id: FriendId; displayName: string }): Promise<Friend> =>
+      toFriend(
+        await callApi('PATCH /v2/friends/:friendId/display-name', {
+          params: { friendId: id },
+          body: { displayName },
+        }),
+      ),
+    onSuccess: (friend) =>
+      queryClient.setQueryData(friendQueries.list('active').queryKey, (list) =>
+        list?.map((item) => (item.id === friend.id ? friend : item)),
+      ),
+  });
+};

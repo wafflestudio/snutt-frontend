@@ -2,6 +2,7 @@
 
 import { clsx } from 'clsx';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { getFailureMessage } from '@/api/errors';
 import { type ReactNode, type Ref, useMemo, useRef, useState } from 'react';
 import type { ColorPair } from '@/domain/color';
@@ -18,7 +19,7 @@ import { TimetableGrid } from '@/shared/timetable-grid/TimetableGrid';
 import { Button } from '@/shared/ui/Button';
 import { NoticeDialog } from '@/shared/ui/Dialog';
 import { IconCompare, IconEdit } from '@/shared/ui/icons';
-import { DEFAULT_PANEL, type LectureDetail } from '@/features/main/main-view';
+import { DEFAULT_PANEL, type LectureDetail, type MainView, toSearchParams } from '@/features/main/main-view';
 import { usePreviewLecture } from '@/features/main/preview-store';
 import { useMainView } from '@/features/main/use-main-view';
 import { useTimetableDetail, useTimetables } from '@/features/main/use-timetables';
@@ -39,15 +40,27 @@ export type MorePanelSlotProps = {
 };
 
 type MainScreenProps = {
+  /**
+   * 있으면 목록 패널 대신 이 패널을 그린다 (강의평 탭 `/reviews`). 패널을 접으면(onCollapse) 시간표만 남는다.
+   * 이때 시간표의 강의를 누르거나 직접 추가를 누르면 메인 화면(`/`)으로 가서 연다
+   */
+  aside?: (props: { onCollapse: () => void }) => ReactNode;
   /** 좌측 바 `더보기` 의 패널 (features/more). 없으면 더보기 패널 자리를 비운다 */
   renderMore?: (props: MorePanelSlotProps) => ReactNode;
 };
 
 /** 메인 화면: 패널(목록 · 상세 · 직접 추가 · 더보기)과 시간표. 무엇을 보여 줄지는 URL 의 MainView 로 정한다. */
-export function MainScreen({ renderMore }: MainScreenProps = {}) {
+export function MainScreen({ aside, renderMore }: MainScreenProps = {}) {
   const { view, setView } = useMainView();
+  const router = useRouter();
   // 더보기 → 시간표 설정 (자동 맞춤, 블록에 쓸 것)
   const settings = useTimetableSettings();
+  /** 패널을 바꾼다. 강의평 탭에서는 패널 자리가 강의평이라 메인 화면으로 가서 바꾼다 */
+  const setPanelView = (next: MainView) => {
+    if (!aside) return setView(next);
+    const query = toSearchParams(next).toString();
+    router.push(query ? `/?${query}` : '/');
+  };
   const timetables = useTimetables();
   const { selected, selectedSummary } = timetables;
   const palette = timetables.paletteOf(selected);
@@ -76,11 +89,11 @@ export function MainScreen({ renderMore }: MainScreenProps = {}) {
   const detailCourse =
     detail?.source === 'coursebook' && !detailLecture && openedCourse?.id === detail.lectureId ? openedCourse : null;
   // 강의 상세가 열리면 그리드가 좁아져 헤더 버튼을 아이콘만 남긴다
-  const compactHeader = detailLecture !== null || detailCourse !== null;
+  const compactHeader = !aside && (detailLecture !== null || detailCourse !== null);
   const setDetail = (next: LectureDetail | null) =>
     listPanel && setView({ ...view, panel: { ...listPanel, detail: next } });
   const openDetail = (lecture: TimetableLecture) =>
-    setView({
+    setPanelView({
       ...view,
       panel: {
         type: 'list',
@@ -147,7 +160,9 @@ export function MainScreen({ renderMore }: MainScreenProps = {}) {
         onOpenChange={(open) => !open && timetables.dismissFailure()}
         message={timetables.failure}
       />
-      {view.panel?.type === 'more' ? (
+      {aside ? (
+        view.panel && aside({ onCollapse: () => setView({ ...view, panel: null }) })
+      ) : view.panel?.type === 'more' ? (
         renderMore?.({
           page: view.panel.page,
           onNavigate: (page) => setView({ ...view, panel: { type: 'more', page } }),
@@ -276,7 +291,7 @@ export function MainScreen({ renderMore }: MainScreenProps = {}) {
                       variant="outline"
                       aria-label={compactHeader ? '직접 추가' : undefined}
                       className={compactHeader ? 'w-6 px-0' : undefined}
-                      onClick={() => setView({ ...view, panel: { type: 'custom-form' } })}
+                      onClick={() => setPanelView({ ...view, panel: { type: 'custom-form' } })}
                     >
                       <IconEdit />
                       {!compactHeader && '직접 추가'}

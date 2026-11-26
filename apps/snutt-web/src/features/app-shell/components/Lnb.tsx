@@ -26,8 +26,8 @@ const MORE_HREF = '/?panel=more';
 
 const NAV_ITEMS: NavItem[] = [
   { label: '검색', icon: IconTabSearch, href: '/' },
-  // 어떤 화면이 열리는지 디자인 확인 중 (디자이너 문의 4-3)
-  { label: '강의평', icon: IconTabReview, href: null },
+  // 강의평 탭 (8-6, 디자인 문의 4-30)
+  { label: '강의평', icon: IconTabReview, href: '/reviews' },
   { label: '친구 시간표', icon: IconTabFriend, href: '/friends' },
   // 메인 화면의 목록 패널 자리에 더보기 패널을 연다 (Figma `더보기` 섹션, MainView 의 panel=more)
   { label: '더보기', icon: IconTabMore, href: MORE_HREF },

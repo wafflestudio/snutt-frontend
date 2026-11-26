@@ -29,10 +29,12 @@ describe('Lnb', () => {
     expect(screen.getByRole('link', { name: '검색' })).not.toHaveAttribute('aria-current');
   });
 
-  it('화면이 아직 없는 메뉴는 링크가 아니다', () => {
+  it('강의평은 강의평 탭(/reviews)으로 간다', () => {
+    location.pathname = '/reviews';
     render(<Lnb />);
-    expect(screen.queryByRole('link', { name: '강의평' })).not.toBeInTheDocument();
-    expect(screen.getByText('강의평').closest('[aria-disabled]')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: '강의평' })).toHaveAttribute('href', '/reviews');
+    expect(screen.getByRole('link', { name: '강의평' })).toHaveAttribute('aria-current', 'page');
+    expect(screen.getByRole('link', { name: '검색' })).not.toHaveAttribute('aria-current');
   });
 
   it('테마 버튼으로 라이트 / 다크를 바꾼다', async () => {

@@ -37,6 +37,13 @@ import {
   EvaluationWriteRequestBody,
   EvaluationUpdateRequestBody,
   EvaluationReportRequestBody,
+  EvaluationTagResponse,
+  CursorPageCourseResponse,
+  TakenLectureResponse,
+  // 이메일 인증
+  SendVerificationEmailRequest,
+  VerificationCodeRequest,
+  EmailVerificationResultResponse,
   // 즐겨찾기
   BookmarkResponse,
   // 빈자리 알림
@@ -160,6 +167,22 @@ export const getSnuttTimetableV2Apis = ({ callWithToken, callWithoutToken }: Get
       callWithToken<SuccessResponse<AuthProvidersResponse>>({
         method: 'delete',
         path: `/v2/users/me/social/${params.provider}`,
+        token,
+      }),
+    /** 이메일 인증 메일 보내기. 강의평은 인증한 사용자만 쓸 수 있다 */
+    'POST /v2/users/me/email/verification': ({ token, body }: { token: string; body: SendVerificationEmailRequest }) =>
+      callWithToken<SuccessResponse<never>>({
+        method: 'post',
+        path: '/v2/users/me/email/verification',
+        body,
+        token,
+      }),
+    /** 메일로 받은 인증번호 확인 */
+    'POST /v2/users/me/email/verification/code': ({ token, body }: { token: string; body: VerificationCodeRequest }) =>
+      callWithToken<SuccessResponse<EmailVerificationResultResponse>>({
+        method: 'post',
+        path: '/v2/users/me/email/verification/code',
+        body,
         token,
       }),
     'POST /v2/users/me/password': ({ token, body }: { token: string; body: AttachLocalRequest }) =>
@@ -478,6 +501,75 @@ export const getSnuttTimetableV2Apis = ({ callWithToken, callWithoutToken }: Get
         method: 'post',
         path: `/v2/evaluations/${params.evaluationId}/report`,
         body,
+        token,
+      }),
+    /** 강의평 탭의 둘러보기 태그(최신, 추천, 꿀강 등). 제목 · 설명은 서버가 준다 */
+    'GET /v2/evaluations/tags': ({ token }: { token: string }) =>
+      callWithToken<SuccessResponse<EvaluationTagResponse[]>>({
+        method: 'get',
+        path: '/v2/evaluations/tags',
+        token,
+      }),
+    /** 태그의 강의평 목록. cursor 기반 */
+    'GET /v2/evaluations/tags/:tag': ({
+      token,
+      params,
+      query,
+    }: {
+      token: string;
+      params: { tag: string };
+      query?: { cursor?: string };
+    }) =>
+      callWithToken<SuccessResponse<CursorPageEvaluationResponse>>({
+        method: 'get',
+        path: `/v2/evaluations/tags/${params.tag}${toQueryString(query)}`,
+        token,
+      }),
+    /** 내가 쓴 강의평 전체. cursor 기반 */
+    'GET /v2/evaluations/me': ({ token, query }: { token: string; query?: { cursor?: string } }) =>
+      callWithToken<SuccessResponse<CursorPageEvaluationResponse>>({
+        method: 'get',
+        path: `/v2/evaluations/me${toQueryString(query)}`,
+        token,
+      }),
+    /**
+     * 강좌 검색 (강의평 탭). 강의명 · 교수명으로 찾는다. cursor 기반.
+     * 거르는 값(분류 · 학과 등)은 명세에서 배열이지만 지금은 값 하나만 보낼 수 있다
+     */
+    'GET /v2/courses': ({
+      token,
+      query,
+    }: {
+      token: string;
+      query?: {
+        query?: string;
+        cursor?: string;
+        classification?: string;
+        department?: string;
+        academicYear?: string;
+        credit?: string;
+        category?: string;
+        categoryPre2025?: string;
+        year?: string;
+        semester?: string;
+      };
+    }) =>
+      callWithToken<SuccessResponse<CursorPageCourseResponse>>({
+        method: 'get',
+        path: `/v2/courses${toQueryString(query)}`,
+        token,
+      }),
+    /** 최근 학기에 수강한 강의. excludeEvaluated=true 면 강의평을 쓴 강의를 뺀다 */
+    'GET /v2/users/me/lectures/latest': ({
+      token,
+      query,
+    }: {
+      token: string;
+      query?: { excludeEvaluated?: 'true' | 'false' };
+    }) =>
+      callWithToken<SuccessResponse<TakenLectureResponse[]>>({
+        method: 'get',
+        path: `/v2/users/me/lectures/latest${toQueryString(query)}`,
         token,
       }),
 

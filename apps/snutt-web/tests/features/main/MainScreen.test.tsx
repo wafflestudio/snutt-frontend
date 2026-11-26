@@ -21,6 +21,8 @@ vi.mock('next/navigation', async () => {
     return () => window.removeEventListener('test-navigate', onChange);
   };
   return {
+    // 강의평 탭(/reviews)에서 메인 화면으로 갈 때만 쓴다
+    useRouter: () => ({ push: (url: string) => originalPushState(null, '', url) }),
     useSearchParams: () => {
       const search = useSyncExternalStore(subscribe, () => window.location.search);
       return useMemo(() => new URLSearchParams(search), [search]);
@@ -684,5 +686,47 @@ describe('MainScreen', () => {
     await userEvent.click(await screen.findByRole('menuitem', { name: '삭제' }));
     await userEvent.click(await screen.findByRole('button', { name: '삭제' }));
     await waitFor(() => expect(tabNames('비교할 시간표')).toEqual(['시간표 3(0학점)']));
+  });
+});
+
+describe('MainScreen 강의평 탭 (aside)', () => {
+  const block = (title: string) => screen.getByRole('button', { name: new RegExp(`^${title},`) });
+  const renderReviews = async () => {
+    window.history.replaceState(null, '', '/reviews');
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MainScreen
+          aside={({ onCollapse }) => (
+            <aside aria-label="강의평">
+              <button type="button" onClick={onCollapse}>
+                접기
+              </button>
+            </aside>
+          )}
+        />
+      </QueryClientProvider>,
+    );
+    await screen.findByRole('tab', { name: /시간표 1/ });
+  };
+
+  it('목록 패널 대신 받은 패널을 그리고, 접으면 시간표만 남는다', async () => {
+    await renderReviews();
+    expect(panel('강의평')).toBeInTheDocument();
+    expect(panel('강의 목록')).not.toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole('button', { name: '접기' }));
+    expect(panel('강의평')).not.toBeInTheDocument();
+    expect(window.location.pathname).toBe('/reviews');
+  });
+
+  it('시간표의 강의 · 직접 추가는 메인 화면으로 가서 연다', async () => {
+    await renderReviews();
+    await userEvent.click(block('경영전략'));
+    expect(`${window.location.pathname}${window.location.search}`).toBe('/?lecture=1-1');
+
+    window.history.replaceState(null, '', '/reviews');
+    await userEvent.click(screen.getByRole('button', { name: '직접 추가' }));
+    expect(`${window.location.pathname}${window.location.search}`).toBe('/?panel=custom');
   });
 });

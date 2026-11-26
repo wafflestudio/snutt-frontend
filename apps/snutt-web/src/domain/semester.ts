@@ -16,6 +16,10 @@ export const formatSemester = ({ year, term }: Semester) => `${year} ${TERM_LABE
 /** 학기 드롭다운 표기 (Figma `연도 선택`). { year: 2026, term: 3 } → '2026년 2학기' */
 export const formatSemesterTitle = ({ year, term }: Semester) => `${year}년 ${TERM_LABELS[term]}`;
 
+/** 강의평 탭의 짧은 표기 (Figma `25년 2학기`). { year: 2025, term: 3 } → '25년 2학기' */
+export const formatSemesterShortTitle = ({ year, term }: Semester) =>
+  `${String(year).slice(-2)}년 ${TERM_LABELS[term]}`;
+
 export const isSameSemester = (a: Semester, b: Semester) => a.year === b.year && a.term === b.term;
 
 /** 오래된 학기가 앞에 오도록 정렬 */
