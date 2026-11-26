@@ -39,10 +39,10 @@
   --text-14-medium: 14px; /* 자간은 아직 확인하지 못했다 */
   --text-14-medium--font-weight: 500;
   --text-14-medium--line-height: 1.4;
-  --text-14-regular: 14px; /* 검색창, 입력칸 */
+  --text-14-regular: 14px; /* 검색창, 입력칸. 자간은 11-24 에 −2% → −3% */
   --text-14-regular--font-weight: 400;
   --text-14-regular--line-height: 1.2;
-  --text-14-regular--letter-spacing: -0.02em;
+  --text-14-regular--letter-spacing: -0.03em;
   --text-13-medium: 13px; /* 강의계획서 링크 */
   --text-13-medium--font-weight: 500;
   --text-13-medium--line-height: 1.2;
