@@ -8,13 +8,18 @@ type ServerFriendState = 'ACTIVE' | 'REQUESTED' | 'REQUESTING';
 type FakeFriendsOptions = Partial<Record<ServerFriendState, readonly SnuttV2.FriendResponse[]>> & {
   /** 친구 관계 ID → 친구의 학기별 기본 시간표 */
   primaryTables?: Record<number, readonly SnuttV2.TimetableResponse[]>;
+  /** 닉네임으로 친구 요청을 보낼 수 있는 사용자. 요청을 보내면 이 정보로 보낸 요청에 들어간다 */
+  users?: readonly Pick<SnuttV2.FriendResponse, 'userId' | 'nickname' | 'nicknameTag'>[];
 };
 
 /**
  * 친구 화면 테스트용 가짜 서버. 상태별 친구 목록을 메모리에 두고 v2 처럼 응답한다.
  * - 수락하면 받은 요청에서 친구로 옮기고, 거절하면 받은 요청에서 지운다 (응답 본문 없음)
  * - 친구의 학기 목록은 기본 시간표가 있는 학기를 최근 학기부터 준다. 그 학기에 기본 시간표가 없으면 404 `primary-timetable-not-found`
+ * - 닉네임으로 요청하면 `users` 에서 찾아 보낸 요청에 넣는다. 없는 닉네임은 404 `user-not-found`, 이미 목록에 있으면 409 `friend-already-exists`
+ * - 친구를 지우면(DELETE) 어느 목록에 있든 지운다 (응답 본문 없음). 이름을 바꾸면 바뀐 친구를 준다
  * - 없는 친구 관계는 404 `friend-not-found`
+ * (오류의 type · 문구는 명세에 없어 테스트용으로 정했다)
  */
 export const fakeFriends = (initial: FakeFriendsOptions) => {
   const state: Record<ServerFriendState, SnuttV2.FriendResponse[]> = {
@@ -37,7 +42,44 @@ export const fakeFriends = (initial: FakeFriendsOptions) => {
     return index < 0 ? null : state.REQUESTED.splice(index, 1)[0];
   };
 
+  const users = initial.users ?? [];
+  let nextId = 1000;
+  const all = () => [...state.ACTIVE, ...state.REQUESTED, ...state.REQUESTING];
+  const findActive = (friendId: string) => state.ACTIVE.find(({ id }) => String(id) === friendId);
+
   const handlers = [
+    http.post(api('/v2/friends'), async ({ request }) => {
+      const body = (await request.json()) as SnuttV2.FriendRequest;
+      const user = users.find(
+        ({ nickname, nicknameTag }) => nickname === body.nickname && nicknameTag === body.nicknameTag,
+      );
+      if (!user)
+        return HttpResponse.json(problem(404, 'user-not-found', '찾을 수 없음', '존재하지 않는 닉네임입니다.'), {
+          status: 404,
+        });
+      if (all().some(({ userId }) => userId === user.userId))
+        return HttpResponse.json(problem(409, 'friend-already-exists', '충돌', '이미 친구 관계입니다.'), {
+          status: 409,
+        });
+      const friend: SnuttV2.FriendResponse = { id: nextId++, ...user, createdAt: 1760000000000 };
+      state.REQUESTING.push(friend);
+      return HttpResponse.json(friend);
+    }),
+    http.delete(api('/v2/friends/:friendId'), ({ params }) => {
+      const friendId = String(params.friendId);
+      const key = (['ACTIVE', 'REQUESTED', 'REQUESTING'] as const).find((k) =>
+        state[k].some(({ id }) => String(id) === friendId),
+      );
+      if (!key) return notFound();
+      state[key] = state[key].filter(({ id }) => String(id) !== friendId);
+      return new HttpResponse(null, { status: 200 });
+    }),
+    http.patch(api('/v2/friends/:friendId/display-name'), async ({ params, request }) => {
+      const friend = findActive(String(params.friendId));
+      if (!friend) return notFound();
+      friend.displayName = ((await request.json()) as SnuttV2.UpdateFriendDisplayNameRequest).displayName;
+      return HttpResponse.json(friend);
+    }),
     http.get(api('/v2/friends'), ({ request }) => {
       const key = new URL(request.url).searchParams.get('state');
       if (key !== 'ACTIVE' && key !== 'REQUESTED' && key !== 'REQUESTING')
