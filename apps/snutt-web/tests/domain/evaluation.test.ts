@@ -4,7 +4,9 @@ import {
   type EvaluationDraft,
   type EvaluationLecture,
   getEvaluationChange,
+  getEvaluationChipTags,
   getWritableEvaluationLectures,
+  groupBySemester,
   toEvaluationInput,
 } from '@/domain/evaluation';
 
@@ -16,7 +18,7 @@ const EVALUATION: Evaluation = {
   courseTitle: '공학수학 1',
   instructor: '김명수',
   semester: { year: 2026, term: 1 },
-  content: '좋아요',
+  content: '과제가 많지만 배우는 것이 많은 수업이에요',
   rating: 4,
   scores: SCORES,
   likeCount: 0,
@@ -33,25 +35,37 @@ const draft = (change: Partial<EvaluationDraft> = {}): EvaluationDraft => ({
 });
 
 describe('toEvaluationInput', () => {
-  it('점수와 본문이 모두 있으면 본문 앞뒤 공백을 지워 돌려준다', () => {
-    expect(toEvaluationInput(draft({ content: '  좋아요 \n' }))).toEqual({
-      content: '좋아요',
+  it('점수가 모두 있으면 본문 앞뒤 공백을 지워 돌려준다', () => {
+    expect(toEvaluationInput(draft({ content: '  과제가 많지만 배우는 것이 많은 수업이에요 \n' }))).toEqual({
+      content: '과제가 많지만 배우는 것이 많은 수업이에요',
       rating: 4,
       scores: SCORES,
     });
   });
 
-  it('본문이 공백뿐이거나 고르지 않은 점수가 있으면 null', () => {
-    expect(toEvaluationInput(draft({ content: '  ' }))).toBeNull();
+  it('본문은 비워 둘 수 있다 (공백뿐이면 빈 문자열)', () => {
+    expect(toEvaluationInput(draft({ content: '  ' }))).toEqual({ content: '', rating: 4, scores: SCORES });
+  });
+
+  it('본문이 20자보다 짧거나 고르지 않은 점수가 있으면 null', () => {
+    expect(toEvaluationInput(draft({ content: '좋아요' }))).toBeNull();
+    expect(toEvaluationInput(draft({ content: '가'.repeat(19) }))).toBeNull();
+    expect(toEvaluationInput(draft({ content: '가'.repeat(20) }))).not.toBeNull();
     expect(toEvaluationInput(draft({ rating: null }))).toBeNull();
     expect(toEvaluationInput(draft({ scores: { ...SCORES, lifeBalance: null } }))).toBeNull();
+  });
+
+  it('점수는 반 개(0.5) 단위도 받는다', () => {
+    expect(toEvaluationInput(draft({ rating: 2.5 }))?.rating).toBe(2.5);
   });
 });
 
 describe('getEvaluationChange', () => {
   it('바뀐 값만 모은다', () => {
-    expect(getEvaluationChange(EVALUATION, draft({ content: '별로예요 ', rating: 4 }))).toEqual({
-      content: '별로예요',
+    expect(
+      getEvaluationChange(EVALUATION, draft({ content: '과제가 너무 많아서 힘들었지만 배운 것은 많아요 ', rating: 4 })),
+    ).toEqual({
+      content: '과제가 너무 많아서 힘들었지만 배운 것은 많아요',
     });
     expect(getEvaluationChange(EVALUATION, draft({ rating: 2, scores: { ...SCORES, gains: 1 } }))).toEqual({
       rating: 2,
@@ -59,9 +73,13 @@ describe('getEvaluationChange', () => {
     });
   });
 
-  it('바뀐 것이 없거나 본문이 비면 null', () => {
-    expect(getEvaluationChange(EVALUATION, draft({ content: ' 좋아요 ' }))).toBeNull();
-    expect(getEvaluationChange(EVALUATION, draft({ content: '', rating: 1 }))).toBeNull();
+  it('바뀐 것이 없거나 본문이 20자보다 짧으면 null', () => {
+    expect(getEvaluationChange(EVALUATION, draft({ content: ` ${EVALUATION.content} ` }))).toBeNull();
+    expect(getEvaluationChange(EVALUATION, draft({ content: '별로예요', rating: 1 }))).toBeNull();
+  });
+
+  it('본문을 지울 수 있다', () => {
+    expect(getEvaluationChange(EVALUATION, draft({ content: ' ' }))).toEqual({ content: '' });
   });
 
   it('항목별 점수가 없던 강의평은 고른 점수만 보낸다', () => {
@@ -72,6 +90,36 @@ describe('getEvaluationChange', () => {
     expect(getEvaluationChange(old, draft({ scores: { ...old.scores, teachingSkill: 5 } }))).toEqual({
       scores: { teachingSkill: 5 },
     });
+  });
+});
+
+describe('groupBySemester', () => {
+  it('최근 학기부터 묶고, 학기 안에서는 받은 순서를 지킨다', () => {
+    const items = [
+      { id: 'a', semester: { year: 2025, term: 3 as const } },
+      { id: 'b', semester: { year: 2026, term: 1 as const } },
+      { id: 'c', semester: { year: 2025, term: 3 as const } },
+    ];
+    expect(
+      groupBySemester(items, ({ semester }) => semester).map(({ semester, items }) => [
+        semester,
+        items.map(({ id }) => id),
+      ]),
+    ).toEqual([
+      [{ year: 2026, term: 1 }, ['b']],
+      [{ year: 2025, term: 3 }, ['a', 'c']],
+    ]);
+  });
+});
+
+describe('getEvaluationChipTags', () => {
+  it('정렬 태그(최신 · 추천)는 칩에서 뺀다', () => {
+    const tag = (key: string) => ({ key, title: key, description: '' });
+    expect(
+      getEvaluationChipTags([tag('RECENT'), tag('RECOMMENDED'), tag('SWEET'), tag('WELL_TAUGHT')]).map(
+        ({ key }) => key,
+      ),
+    ).toEqual(['SWEET', 'WELL_TAUGHT']);
   });
 });
 
