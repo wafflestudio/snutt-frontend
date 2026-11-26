@@ -61,7 +61,6 @@ export function useLectureCells({
       lecture,
       added: added !== null,
       canAdd: timetable !== null,
-      bookmarked,
       onAddToggle: () => (added ? onRemove(added) : timetable && add(timetable.id, lecture)),
       // Figma `드롭다운`: 기본은 왼쪽(메인) 시간표, 보조는 오른쪽(비교) 시간표. 이미 담긴 쪽은 고를 수 없다
       addTargets:
@@ -74,11 +73,14 @@ export function useLectureCells({
           : undefined,
       onOpen: () => onOpen(lecture),
       onPreviewChange: (previewing) => (previewing ? preview.show(lecture) : preview.hide(lecture)),
-      onBookmarkToggle: () =>
-        bookmarked
-          ? // 관심강좌 탭에서 빼면 셀이 사라져 커서가 벗어났다는 알림이 오지 않으므로 미리보기를 직접 지운다
-            removeBookmark.mutate(lecture, { onSuccess: () => preview.hide(lecture), onError: onFailure })
-          : addBookmark.mutate(lecture, { onSuccess: onBookmarkAdded, onError: onFailure }),
+      bookmark: {
+        bookmarked,
+        onToggle: () =>
+          bookmarked
+            ? // 관심강좌 탭에서 빼면 셀이 사라져 커서가 벗어났다는 알림이 오지 않으므로 미리보기를 직접 지운다
+              removeBookmark.mutate(lecture, { onSuccess: () => preview.hide(lecture), onError: onFailure })
+            : addBookmark.mutate(lecture, { onSuccess: onBookmarkAdded, onError: onFailure }),
+      },
     };
   };
 

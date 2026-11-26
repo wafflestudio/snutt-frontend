@@ -20,24 +20,32 @@ export const bookmarkQueries = {
 };
 
 // 관심강좌 추가 · 삭제는 본문 없이 성공한다. 이미 있는 것을 추가하거나 없는 것을 지워도 성공한다 (dev 서버에서 확인)
-// 그래서 다시 받지 않고 보낸 강의로 목록을 고친다
+// 그래서 다시 받지 않고 보낸 강의로 목록을 고친다. 강의 목록 탭(7-2)처럼 수강편람 강의를 다 모르면 목록을 다시 받는다
+
+/** 관심강좌에 넣고 뺄 강의. 수강편람 강의 전체, 또는 시간표 강의에서 아는 ID · 학기만 */
+export type BookmarkTarget = Lecture | Pick<Lecture, 'id' | 'semester'>;
+
+const isFullLecture = (target: BookmarkTarget): target is Lecture => 'title' in target;
 
 export const useAddBookmark = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (lecture: Lecture) =>
+    mutationFn: (lecture: BookmarkTarget) =>
       callApi('POST /v2/bookmarks/lectures/:lectureId', { params: { lectureId: lecture.id } }),
-    onSuccess: (_, lecture) =>
-      queryClient.setQueryData(bookmarkQueries.list(lecture.semester).queryKey, (list) =>
+    onSuccess: (_, lecture) => {
+      const { queryKey } = bookmarkQueries.list(lecture.semester);
+      if (!isFullLecture(lecture)) return queryClient.invalidateQueries({ queryKey });
+      queryClient.setQueryData(queryKey, (list) =>
         list?.some(({ id }) => id === lecture.id) ? list : [...(list ?? []), lecture],
-      ),
+      );
+    },
   });
 };
 
 export const useRemoveBookmark = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (lecture: Lecture) =>
+    mutationFn: (lecture: BookmarkTarget) =>
       callApi('DELETE /v2/bookmarks/lectures/:lectureId', { params: { lectureId: lecture.id } }),
     onSuccess: (_, lecture) =>
       queryClient.setQueryData(bookmarkQueries.list(lecture.semester).queryKey, (list) =>

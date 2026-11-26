@@ -437,6 +437,76 @@ describe('MainScreen', () => {
     });
   });
 
+  describe('강의 목록 탭', () => {
+    const list = () => within(screen.getByRole('list', { name: '강의 목록' }));
+    const cell = (title: string) => within(list().getByRole('article', { name: title }));
+    const openTab = async () => {
+      await userEvent.click(screen.getByRole('tab', { name: '강의 목록' }));
+      return list();
+    };
+
+    it('고른 시간표의 강의를 수업 시간 순으로 검색 결과와 같은 셀로 보여 주고, 평점은 숨긴다', async () => {
+      await renderMain();
+      const lectures = await openTab();
+      expect(lectures.getAllByRole('article').map((item) => item.getAttribute('aria-label'))).toEqual([
+        '경영전략',
+        '서양근대윤리학의 이해',
+        '재무관리',
+        '공공커뮤니케이션 미디어',
+        '행정학',
+      ]);
+      expect(cell('경영전략').getByText('김민준 / 3학점')).toBeInTheDocument();
+      expect(cell('경영전략').getByRole('button', { name: '시간표에서 빼기' })).toBeInTheDocument();
+      expect(cell('경영전략').getByRole('button', { name: '관심강좌' })).toBeInTheDocument();
+      expect(cell('경영전략').getByRole('link', { name: /강의계획서/ })).toBeInTheDocument();
+      expect(cell('경영전략').queryByLabelText(/평점|강의평 없음/)).not.toBeInTheDocument();
+    });
+
+    it('직접 추가한 강의는 학점 · 관심강좌 버튼 없이 보여 준다', async () => {
+      await renderMain();
+      await userEvent.click(tabList('시간표').getByRole('tab', { name: /^시간표 2/ }));
+      await openTab();
+      expect(cell('동아리 모임').queryByText(/학점/)).not.toBeInTheDocument();
+      expect(cell('동아리 모임').queryByRole('button', { name: '관심강좌' })).not.toBeInTheDocument();
+      expect(cell('동아리 모임').getByRole('button', { name: '시간표에서 빼기' })).toBeInTheDocument();
+    });
+
+    it('빼면 목록과 시간표에서 빠진다', async () => {
+      await renderMain();
+      await openTab();
+      await userEvent.click(cell('재무관리').getByRole('button', { name: '시간표에서 빼기' }));
+      await waitFor(() => expect(list().queryByRole('article', { name: '재무관리' })).not.toBeInTheDocument());
+      expect(screen.queryAllByRole('button', { name: /^재무관리,/ })).toHaveLength(0);
+    });
+
+    it('셀을 누르면 시간표 강의의 상세를 연다', async () => {
+      await renderMain();
+      await openTab();
+      await userEvent.click(cell('경영전략').getByRole('button', { name: '경영전략' }));
+      expect(within(panel('강의 상세')!).getByRole('heading', { name: '경영전략' })).toBeInTheDocument();
+      expect(window.location.search).toBe('?tab=lectures&lecture=1-1');
+    });
+
+    it('관심강좌를 켜면 관심강좌 탭에 들어간다', async () => {
+      await renderMain();
+      await openTab();
+      await userEvent.click(cell('경영전략').getByRole('button', { name: '관심강좌' }));
+      await waitFor(() =>
+        expect(cell('경영전략').getByRole('button', { name: '관심강좌' })).toHaveAttribute('aria-pressed', 'true'),
+      );
+      await userEvent.click(screen.getByRole('tab', { name: '관심강좌' }));
+      expect(
+        await within(screen.getByRole('list', { name: '관심강좌' })).findByRole('article', { name: '경영전략' }),
+      ).toBeInTheDocument();
+    });
+
+    it('시간표가 비었으면 비었다고 알린다', async () => {
+      await renderMain();
+      await userEvent.click(tabList('시간표').getByRole('tab', { name: /^시간표 3/ }));
+      expect((await openTab()).getByText('시간표에 담긴 강의가 없습니다')).toBeInTheDocument();
+    });
+  });
+
   describe('강의 상세', () => {
     const block = (title: string) => screen.getByRole('button', { name: new RegExp(`^${title},`) });
 

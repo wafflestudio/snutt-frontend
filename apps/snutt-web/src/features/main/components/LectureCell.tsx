@@ -1,6 +1,13 @@
 import { clsx } from 'clsx';
 import type { MouseEvent, ReactNode } from 'react';
-import { getClassTimeSummary, getPlaceSummary, getSyllabusUrl, type Lecture } from '@/domain/lecture';
+import {
+  getClassTimeSummary,
+  getPlaceSummary,
+  getSyllabusUrl,
+  type LectureEvaluation,
+  type TimetableLecture,
+} from '@/domain/lecture';
+import type { Semester } from '@/domain/semester';
 import { IconButton } from '@/shared/ui/IconButton';
 import { Menu, MenuItem } from '@/shared/ui/Menu';
 import { openInPopup } from '@/shared/lib/open-in-popup';
@@ -16,17 +23,30 @@ import {
   IconTagFill,
 } from '@/shared/ui/icons';
 
+/**
+ * 셀에 그리는 강의. 수강편람 강의(`Lecture`)는 그대로 들어간다. 시간표 강의(강의 목록 탭, 7-2)는 학기를 붙여 넣는다.
+ * 시간표 강의는 평점을 몰라(evaluation 없음) 평점을 숨기고, 직접 추가한 강의는 학점 · 강의계획서가 없을 수 있다
+ */
+export type CellLecture = Pick<
+  TimetableLecture,
+  'title' | 'instructor' | 'remark' | 'classTimes' | 'department' | 'academicYear' | 'courseNumber' | 'lectureNumber'
+> & {
+  credit: number | null;
+  semester: Semester;
+  evaluation?: LectureEvaluation | null;
+};
+
 type LectureCellProps = {
-  lecture: Lecture;
+  lecture: CellLecture;
   /** 고른 시간표에 담겨 있으면 `+` 대신 `−` 를 보여 준다 */
   added: boolean;
-  bookmarked: boolean;
+  /** 관심강좌 버튼. 없으면 버튼을 숨긴다 (직접 추가한 강의) */
+  bookmark?: { bookmarked: boolean; onToggle: () => void };
   /** 담을 시간표가 없으면 담기 버튼을 누를 수 없다 */
   canAdd: boolean;
   onAddToggle: () => void;
   /** 있으면 `+` 를 눌렀을 때 담을 시간표를 고르는 메뉴를 연다 (비교 중, 9-2). 담겨 있을 때의 `−` 는 그대로 onAddToggle */
   addTargets?: readonly AddTarget[];
-  onBookmarkToggle: () => void;
   /** 셀을 누르면 강의 상세를 연다. 안의 버튼 · 강의계획서를 누를 때는 부르지 않는다 */
   onOpen?: () => void;
   /** 커서를 올리거나 안의 버튼에 포커스가 가면 true, 벗어나면 false (시간표 미리보기, 5-2) */
@@ -43,11 +63,10 @@ export type AddTarget = { label: string; disabled: boolean; onSelect: () => void
 export function LectureCell({
   lecture,
   added,
-  bookmarked,
+  bookmark,
   canAdd,
   onAddToggle,
   addTargets,
-  onBookmarkToggle,
   onOpen,
   onPreviewChange,
 }: LectureCellProps) {
@@ -93,9 +112,10 @@ export function LectureCell({
         <div className="flex flex-col gap-2">
           <p className="flex items-center gap-2 text-13-regular">
             <span className="min-w-0 truncate text-normal">
-              {lecture.instructor ?? '-'} / {lecture.credit}학점
+              {lecture.instructor ?? '-'}
+              {lecture.credit !== null && ` / ${lecture.credit}학점`}
             </span>
-            <Rating evaluation={lecture.evaluation} />
+            {lecture.evaluation !== undefined && <Rating evaluation={lecture.evaluation} />}
           </p>
           {/* Figma: 줄 사이 6, 아이콘 13px */}
           <ul className="flex flex-col gap-1.5 text-13-regular text-plain">
@@ -118,13 +138,15 @@ export function LectureCell({
       {/* Figma: 폭 81, 버튼은 위 · 강의계획서는 아래 */}
       <div className="flex w-20.25 shrink-0 flex-col items-end justify-between">
         <div className="flex gap-2.25">
-          <IconButton
-            variant="circle"
-            label="관심강좌"
-            aria-pressed={bookmarked}
-            icon={<IconBookmarkFill className="size-4" />}
-            onClick={onBookmarkToggle}
-          />
+          {bookmark && (
+            <IconButton
+              variant="circle"
+              label="관심강좌"
+              aria-pressed={bookmark.bookmarked}
+              icon={<IconBookmarkFill className="size-4" />}
+              onClick={bookmark.onToggle}
+            />
+          )}
           {!added && addTargets ? (
             <Menu
               trigger={
@@ -173,7 +195,7 @@ export function LectureCell({
 }
 
 /** `★ 4.0 (1)`. 강의평이 없으면 `★ - (0)` 을 흐리게 */
-function Rating({ evaluation }: { evaluation: Lecture['evaluation'] }) {
+function Rating({ evaluation }: { evaluation: LectureEvaluation | null }) {
   const rating = evaluation?.rating ?? null;
   return (
     <span
