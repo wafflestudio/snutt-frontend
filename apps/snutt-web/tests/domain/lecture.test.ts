@@ -6,7 +6,9 @@ import {
   getClassTimeTexts,
   getPlaceSummary,
   getSyllabusUrl,
+  type ClassTime,
   isCustomLecture,
+  sortByFirstClassTime,
   toCustomTimetableLecture,
 } from '@/domain/lecture';
 
@@ -102,5 +104,34 @@ describe('formatQuota', () => {
   it('신입생 정원을 모르면 정원만, 정원을 모르면 null', () => {
     expect(formatQuota({ quota: 40, freshmanQuota: null })).toBe('40');
     expect(formatQuota({ quota: null, freshmanQuota: null })).toBeNull();
+  });
+});
+
+describe('sortByFirstClassTime', () => {
+  const at = (title: string, ...times: [day: number, startMinute: number][]) => ({
+    title,
+    classTimes: times.map(([day, startMinute]): ClassTime => ({
+      day: day as ClassTime['day'],
+      startMinute,
+      endMinute: startMinute + 60,
+      place: null,
+    })),
+  });
+
+  it('가장 이른 수업 시간(요일 → 시각) 순, 시간이 없으면 뒤, 같으면 강의명 순', () => {
+    const lectures = [
+      at('행정학', [4, 870]),
+      at('동아리'),
+      at('재무관리', [2, 840]),
+      at('경영전략', [3, 540], [0, 540]),
+      at('가나다', [0, 540]),
+    ];
+    expect(sortByFirstClassTime(lectures).map(({ title }) => title)).toEqual([
+      '가나다',
+      '경영전략',
+      '재무관리',
+      '행정학',
+      '동아리',
+    ]);
   });
 });

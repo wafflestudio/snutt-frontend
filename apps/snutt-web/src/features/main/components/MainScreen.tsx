@@ -26,6 +26,7 @@ import { useTimetableDetail, useTimetables } from '@/features/main/use-timetable
 import { CustomLectureForm } from './CustomLectureForm';
 import { BookmarkPanel } from './BookmarkPanel';
 import { CoursebookDetailPanel, LectureDetailPanel } from './LectureDetailPanel';
+import { LectureListPanel } from './LectureListPanel';
 import { MainPanel } from './MainPanel';
 import { SearchPanel } from './SearchPanel';
 import { AddTimetableButton, TimetableExportButtons, TimetableMenu } from './TimetableActions';
@@ -199,6 +200,15 @@ export function MainScreen({ aside, renderMore }: MainScreenProps = {}) {
                   key={toSemesterKey(timetables.semester)}
                   {...lectureCells}
                   onGoToBookmarks={() => setView({ ...view, panel: { type: 'list', tab: 'bookmark', detail: null } })}
+                />
+              }
+              lectures={
+                <LectureListPanel
+                  semester={timetables.semester}
+                  timetable={selected}
+                  onRemove={lectureCells.onRemove}
+                  onOpen={openDetail}
+                  onFailure={timetables.notifyFailure}
                 />
               }
               bookmark={<BookmarkPanel {...lectureCells} />}

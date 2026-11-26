@@ -100,6 +100,19 @@ export const getClassTimeSummary = (lecture: Pick<LectureInfo, 'classTimes'>) =>
         .join(', ');
 
 /** 검색 결과 한 줄의 장소. 시간 순서대로 같은 장소도 그대로 둔다 ('302-209, 302-209'). 장소가 하나도 없으면 null */
+/**
+ * 시간표 강의를 가장 이른 수업 시간(요일 → 시각) 순으로. 시간이 없는 강의는 뒤에, 같으면 강의명 순 (강의 목록 탭, 7-2)
+ */
+export const sortByFirstClassTime = <T extends Pick<LectureInfo, 'classTimes' | 'title'>>(lectures: readonly T[]) => {
+  const first = (lecture: T) => [...lecture.classTimes].sort(compareDayTimeRange)[0] ?? null;
+  return [...lectures].sort((a, b) => {
+    const [x, y] = [first(a), first(b)];
+    if (x && y) return compareDayTimeRange(x, y) || a.title.localeCompare(b.title);
+    if (x || y) return x ? -1 : 1;
+    return a.title.localeCompare(b.title);
+  });
+};
+
 export const getPlaceSummary = (lecture: Pick<LectureInfo, 'classTimes'>) =>
   [...lecture.classTimes]
     .sort(compareDayTimeRange)
