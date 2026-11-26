@@ -1,113 +1,96 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
 import { clsx } from 'clsx';
-import type { ReactNode } from 'react';
+import { useState } from 'react';
 import { getFailureMessage } from '@/api/errors';
-import { friendQueries, useAcceptFriend, useDeclineFriend } from '@/api/friends';
-import { formatNicknameWithTag, type Friend, type FriendId, type FriendState, getFriendName } from '@/domain/friend';
-import { Button } from '@/shared/ui/Button';
-
-const EMPTY_MESSAGES: Record<FriendState, string> = {
-  active: '아직 친구가 없습니다',
-  requested: '받은 친구 요청이 없습니다',
-  requesting: '보낸 친구 요청이 없습니다',
-};
+import { useRenameFriend } from '@/api/friends';
+import {
+  DISPLAY_NAME_MAX_LENGTH,
+  type Friend,
+  type FriendId,
+  getFriendLabel,
+  isValidDisplayName,
+} from '@/domain/friend';
+import { IconButton } from '@/shared/ui/IconButton';
+import { IconMoreVertical } from '@/shared/ui/icons';
+import { FriendMenu } from './FriendMenu';
+import { InlineFieldForm } from './InlineFieldForm';
 
 type FriendListProps = {
-  state: FriendState;
-  /** 수락 · 거절이 실패했을 때. 서버가 준 메시지를 넘긴다 */
-  onFailure: (message: string) => void;
+  friends: readonly Friend[];
   /** 시간표를 보고 있는 친구 */
-  selectedId?: FriendId | null;
-  /** 있으면 줄을 눌러 친구를 고른다 (친구 탭에서 시간표 보기) */
-  onSelect?: (friend: Friend) => void;
+  selectedId: FriendId | null;
+  onSelect: (friend: Friend) => void;
+  /** 이름을 고치고 있는 친구. 줄 대신 입력 상자를 보여 준다 */
+  renamingId: FriendId | null;
+  onRenamingChange: (id: FriendId | null) => void;
+  /** `목록에서 삭제` 를 골랐을 때. 부르는 쪽이 확인 팝업을 연다 */
+  onDelete: (friend: Friend) => void;
 };
 
 /**
- * 친구 · 받은 요청 · 보낸 요청 중 하나의 목록. 받은 요청에만 거절 · 수락 버튼이 있다.
- * onSelect 를 넘기면 줄을 눌러 친구를 고른다 (친구 시간표, 8-3). 이름 변경 · 삭제(8-2)는 아직 없다.
+ * `친구 목록` 탭의 목록 (Figma 친구 시간표). 줄을 누르면 오른쪽에 그 친구의 시간표를 보여 주고,
+ * 줄 오른쪽 ⋮ 메뉴로 이름을 고치거나 목록에서 지운다.
  */
-export function FriendList({ state, onFailure, selectedId = null, onSelect }: FriendListProps) {
-  const { data: friends, error } = useQuery(friendQueries.list(state));
-  const accept = useAcceptFriend();
-  const decline = useDeclineFriend();
-
-  if (error)
-    return (
-      <ListMessage>
-        목록을 불러오지 못했습니다
-        <span className="text-13-regular">{getFailureMessage(error)}</span>
-      </ListMessage>
-    );
-  if (!friends) return <ListMessage>불러오는 중</ListMessage>;
-  if (friends.length === 0) return <ListMessage>{EMPTY_MESSAGES[state]}</ListMessage>;
-
-  const onError = (failure: Error) => onFailure(getFailureMessage(failure));
-  // 같은 요청을 두 번 보내지 않도록, 처리 중인 요청의 버튼은 막는다
-  const isPending = (friend: Friend) =>
-    (accept.isPending && accept.variables === friend.id) || (decline.isPending && decline.variables === friend.id);
-
+export function FriendList({ friends, selectedId, onSelect, renamingId, onRenamingChange, onDelete }: FriendListProps) {
   return (
-    <ul className="divide-y divide-line-light">
-      {friends.map((friend) => {
-        const name = (
-          <div className="flex min-w-0 flex-1 flex-col gap-1">
-            <span className="truncate text-15-bold text-normal">{getFriendName(friend)}</span>
-            <span className="truncate text-13-regular text-assistive">{formatNicknameWithTag(friend)}</span>
-          </div>
-        );
-        if (onSelect)
-          return (
-            <li key={friend.id} className="py-1">
-              {/* 고른 줄과 커서를 올린 줄은 Background/light (디자인 문의 4-28) */}
-              <button
-                type="button"
-                aria-pressed={friend.id === selectedId}
-                onClick={() => onSelect(friend)}
-                className={clsx(
-                  'flex w-full cursor-pointer items-center gap-3 rounded-md px-2 py-2 text-left hover:bg-light',
-                  'focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-snutt-mint',
-                  friend.id === selectedId && 'bg-light',
-                )}
-              >
-                {name}
-              </button>
-            </li>
-          );
-        return (
-          <li key={friend.id} className="flex items-center gap-3 py-3">
-            {name}
-            {state === 'requested' && (
-              <div className="flex gap-1.5">
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  disabled={isPending(friend)}
-                  aria-label={`${formatNicknameWithTag(friend)} 거절`}
-                  onClick={() => decline.mutate(friend.id, { onError })}
-                >
-                  거절
-                </Button>
-                <Button
-                  size="sm"
-                  disabled={isPending(friend)}
-                  aria-label={`${formatNicknameWithTag(friend)} 수락`}
-                  onClick={() => accept.mutate(friend.id, { onError })}
-                >
-                  수락
-                </Button>
-              </div>
-            )}
+    <ul>
+      {friends.map((friend) =>
+        friend.id === renamingId ? (
+          <li key={friend.id} className="py-1">
+            <RenameForm friend={friend} onClose={() => onRenamingChange(null)} />
           </li>
-        );
-      })}
+        ) : (
+          // Figma: 줄 높이 66, 여백 위 20 · 아래 16 · 양옆 10, 이름 15/Medium
+          <li key={friend.id} className="flex items-center gap-1">
+            <button
+              type="button"
+              aria-pressed={friend.id === selectedId}
+              onClick={() => onSelect(friend)}
+              className={clsx(
+                'min-w-0 flex-1 cursor-pointer truncate rounded-md px-2.5 pt-5 pb-4 text-left text-15-medium text-normal hover:bg-light',
+                'focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-snutt-mint',
+                // 고른 줄 표시는 Figma 에 없어 임시로 Background/light (디자인 문의 4-31)
+                friend.id === selectedId && 'bg-light',
+              )}
+            >
+              {getFriendLabel(friend)}
+            </button>
+            <FriendMenu
+              trigger={<IconButton label={`${getFriendLabel(friend)} 메뉴`} icon={<IconMoreVertical />} />}
+              onRename={() => onRenamingChange(friend.id)}
+              onDelete={() => onDelete(friend)}
+            />
+          </li>
+        ),
+      )}
     </ul>
   );
 }
 
-function ListMessage({ children }: { children: ReactNode }) {
+const INVALID_NAME_MESSAGE = `공백 포함 한/영/숫자 ${DISPLAY_NAME_MAX_LENGTH}자 이내`;
+
+function RenameForm({ friend, onClose }: { friend: Friend; onClose: () => void }) {
+  const rename = useRenameFriend();
+  const [error, setError] = useState<string | null>(null);
+
   return (
-    <p className="flex flex-col items-center gap-2 pt-10 text-center text-14-regular text-alternative">{children}</p>
+    <InlineFieldForm
+      label="나에게 표시될 친구 이름"
+      defaultValue={friend.displayName ?? ''}
+      placeholder={friend.nickname}
+      submitLabel="저장"
+      validate={(value) => (isValidDisplayName(value) ? null : INVALID_NAME_MESSAGE)}
+      error={error}
+      onChange={() => setError(null)}
+      pending={rename.isPending}
+      onCancel={onClose}
+      onSubmit={(displayName) =>
+        rename.mutate(
+          { id: friend.id, displayName },
+          { onSuccess: onClose, onError: (failure) => setError(getFailureMessage(failure)) },
+        )
+      }
+    />
   );
 }

@@ -55,9 +55,10 @@ test('주소로 바로 들어가면 로그인한 뒤 그 화면으로 돌아온�
   await expect(page).toHaveURL(/\/login/);
   await login(page);
   await expect(page).toHaveURL('/friends');
-  await expect(page.getByText('와플#7052')).toBeVisible();
+  const friendList = page.getByRole('complementary', { name: '친구 목록' });
+  await expect(friendList.getByRole('button', { name: '와플#7052', exact: true })).toBeVisible();
 
   // 정적 파일에서도 /friends 를 새로 고치면 친구 화면이다
   await page.reload();
-  await expect(page.getByText('와플#7052')).toBeVisible();
+  await expect(friendList.getByRole('button', { name: '와플#7052', exact: true })).toBeVisible();
 });
