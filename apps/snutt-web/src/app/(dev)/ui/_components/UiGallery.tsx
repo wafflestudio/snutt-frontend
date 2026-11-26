@@ -12,6 +12,7 @@ import { IconButton } from '@/shared/ui/IconButton';
 import * as Icons from '@/shared/ui/icons';
 import { Menu, MenuItem } from '@/shared/ui/Menu';
 import { SearchField } from '@/shared/ui/SearchField';
+import { Switch } from '@/shared/ui/Switch';
 import { Select } from '@/shared/ui/Select';
 import { Tab, TabList, TabPanel, Tabs } from '@/shared/ui/Tabs';
 import { TextField } from '@/shared/ui/TextField';
@@ -90,6 +91,7 @@ export function UiGallery() {
   const [startMinute, setStartMinute] = useState(9 * 60);
   const [color, setColor] = useState<LectureColor>({ type: 'palette', index: 0 });
   const [semester, setSemester] = useState(SEMESTER_OPTIONS[0].value);
+  const [switchOn, setSwitchOn] = useState(true);
 
   return (
     <main className="mx-auto flex max-w-5xl flex-col gap-10 p-10">
@@ -268,6 +270,14 @@ export function UiGallery() {
           </div>
           <p className="mt-4 text-14-regular text-plain">필터 내용은 5-3 에서 만든다.</p>
         </Dialog>
+      </Section>
+
+      <Section title="Switch">
+        <Row>
+          <Switch label="켜고 끄기" checked={switchOn} onCheckedChange={setSwitchOn} />
+          <Switch label="꺼짐 (누를 수 없음)" checked={false} onCheckedChange={() => {}} disabled />
+          <Switch label="켜짐 (누를 수 없음)" checked onCheckedChange={() => {}} disabled />
+        </Row>
       </Section>
 
       <Section title="Menu">

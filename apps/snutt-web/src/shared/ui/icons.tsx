@@ -323,6 +323,12 @@ export const IconBookmark = (props: IconProps) => (
   </Svg>
 );
 
+export const IconCalendar = (props: IconProps) => (
+  <Svg viewBox="0 -960 960 960" fill="currentColor" {...props}>
+    <path d="M180-80q-24 0-42-18t-18-42v-620q0-24 18-42t42-18h65v-60h65v60h340v-60h65v60h65q24 0 42 18t18 42v620q0 24-18 42t-42 18H180Zm0-60h600v-430H180v430Zm0-490h600v-130H180v130Zm0 0v-130 130Z" />
+  </Svg>
+);
+
 export const IconCheckCircleFill = (props: IconProps) => (
   <Svg viewBox="0 -960 960 960" fill="currentColor" {...props}>
     <path d="m421-298 283-283-46-45-237 237-120-120-45 45 165 166Zm59 218q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Z" />
@@ -347,6 +353,12 @@ export const IconDownload = (props: IconProps) => (
   </Svg>
 );
 
+export const IconError = (props: IconProps) => (
+  <Svg viewBox="0 -960 960 960" fill="currentColor" {...props}>
+    <path d="M503.5-289.48q9.5-9.48 9.5-23.5t-9.48-23.52q-9.48-9.5-23.5-9.5t-23.52 9.48q-9.5 9.48-9.5 23.5t9.48 23.52q9.48 9.5 23.5 9.5t23.52-9.48ZM453-433h60v-253h-60v253Zm27.27 353q-82.74 0-155.5-31.5Q252-143 197.5-197.5t-86-127.34Q80-397.68 80-480.5t31.5-155.66Q143-709 197.5-763t127.34-85.5Q397.68-880 480.5-880t155.66 31.5Q709-817 763-763t85.5 127Q880-563 880-480.27q0 82.74-31.5 155.5Q817-252 763-197.68q-54 54.31-127 86Q563-80 480.27-80Zm.23-60Q622-140 721-239.5t99-241Q820-622 721.19-721T480-820q-141 0-240.5 98.81T140-480q0 141 99.5 240.5t241 99.5Zm-.5-340Z" />
+  </Svg>
+);
+
 export const IconFilter = (props: IconProps) => (
   <Svg viewBox="0 -960 960 960" fill="currentColor" {...props}>
     <path d="M427-120v-225h60v83h353v60H487v82h-60Zm-307-82v-60h247v60H120Zm187-166v-82H120v-60h187v-84h60v226h-60Zm120-82v-60h413v60H427Zm166-165v-225h60v82h187v60H653v83h-60Zm-473-83v-60h413v60H120Z" />
@@ -356,6 +368,12 @@ export const IconFilter = (props: IconProps) => (
 export const IconMoreVertical = (props: IconProps) => (
   <Svg viewBox="0 -960 960 960" fill="currentColor" {...props}>
     <path d="M479.86-160Q460-160 446-174.14t-14-34Q432-228 446.14-242t34-14Q500-256 514-241.86t14 34Q528-188 513.86-174t-34 14Zm0-272Q460-432 446-446.14t-14-34Q432-500 446.14-514t34-14Q500-528 514-513.86t14 34Q528-460 513.86-446t-34 14Zm0-272Q460-704 446-718.14t-14-34Q432-772 446.14-786t34-14Q500-800 514-785.86t14 34Q528-732 513.86-718t-34 14Z" />
+  </Svg>
+);
+
+export const IconPersonAdd = (props: IconProps) => (
+  <Svg viewBox="0 -960 960 960" fill="currentColor" {...props}>
+    <path d="M730-400v-130H600v-60h130v-130h60v130h130v60H790v130h-60ZM252-523q-42-42-42-108t42-108q42-42 108-42t108 42q42 42 42 108t-42 108q-42 42-108 42t-108-42ZM40-160v-94q0-35 17.5-63.5T108-360q75-33 133.5-46.5T360-420q60 0 118 13.5T611-360q33 15 51 43t18 63v94H40Zm60-60h520v-34q0-16-9-30.5T587-306q-71-33-120-43.5T360-360q-58 0-107.5 10.5T132-306q-15 7-23.5 21.5T100-254v34Zm324.5-346.5Q450-592 450-631t-25.5-64.5Q399-721 360-721t-64.5 25.5Q270-670 270-631t25.5 64.5Q321-541 360-541t64.5-25.5ZM360-631Zm0 411Z" />
   </Svg>
 );
 
@@ -392,6 +410,12 @@ export const IconStar = (props: IconProps) => (
 export const IconStarFill = (props: IconProps) => (
   <Svg viewBox="0 -960 960 960" fill="currentColor" {...props}>
     <path d="m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z" />
+  </Svg>
+);
+
+export const IconSync = (props: IconProps) => (
+  <Svg viewBox="0 -960 960 960" fill="currentColor" {...props}>
+    <path d="M167-160v-60h130l-15-12q-64-51-93-111t-29-134q0-106 62.5-190.5T387-784v62q-75 29-121 96.5T220-477q0 63 23.5 109.5T307-287l30 21v-124h60v230H167Zm407-15v-63q76-29 121-96.5T740-483q0-48-23.5-97.5T655-668l-29-26v124h-60v-230h230v60H665l15 14q60 56 90 120t30 123q0 106-62 191T574-175Z" />
   </Svg>
 );
 

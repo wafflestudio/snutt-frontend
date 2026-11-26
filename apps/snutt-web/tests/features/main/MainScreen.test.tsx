@@ -4,9 +4,11 @@ import { act, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { toBlob } from 'html-to-image';
 import { http, HttpResponse } from 'msw';
+import type { ComponentProps } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MainScreen } from '@/features/main/components/MainScreen';
 import { SAMPLE_COURSEBOOK, SAMPLE_PALETTE, SAMPLE_SEMESTERS, SAMPLE_TIMETABLES } from '@/features/main/sample-data';
+import { timetableSettings } from '@/shared/lib/timetable-settings';
 import { fakeSnutt } from '../../msw/fake-snutt';
 import { problem } from '../../msw/fixtures';
 import { api, server } from '../../msw/server';
@@ -53,14 +55,15 @@ beforeEach(() => {
 afterEach(() => vi.restoreAllMocks());
 
 /** MainScreen 을 그리고, 학기 · 시간표를 다 받을 때까지 기다린다 */
-const renderMain = async () => {
+const renderMain = async (props: ComponentProps<typeof MainScreen> = {}) => {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   render(
     <QueryClientProvider client={queryClient}>
-      <MainScreen />
+      <MainScreen {...props} />
     </QueryClientProvider>,
   );
-  await screen.findByRole('combobox', { name: '학기' });
+  // 시간표 헤더의 탭까지 그려지면 다 받은 것이다 (목록 패널은 접히거나 더보기로 바뀌어 있을 수 있다)
+  await screen.findByRole('tablist', { name: '시간표' });
 };
 
 const panel = (name: string) => screen.queryByRole('complementary', { name });
@@ -103,6 +106,44 @@ describe('MainScreen', () => {
     await userEvent.click(screen.getByRole('button', { name: '패널 접기' }));
     expect(window.location.search).toBe('?panel=closed');
     expect(panel('강의 목록')).not.toBeInTheDocument();
+  });
+
+  it('panel=more 면 목록 자리에 더보기 패널을 열고, 더보기 안에서 화면을 바꾸거나 패널을 접는다', async () => {
+    window.history.replaceState(null, '', '/?panel=more');
+    await renderMain({
+      renderMore: ({ page, onNavigate, onCollapse }) => (
+        <aside aria-label={`더보기 ${page}`}>
+          <button type="button" onClick={() => onNavigate('notifications')}>
+            알림
+          </button>
+          <button type="button" onClick={onCollapse}>
+            접기
+          </button>
+        </aside>
+      ),
+    });
+    expect(panel('더보기 menu')).toBeInTheDocument();
+    expect(panel('강의 목록')).not.toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole('button', { name: '알림' }));
+    expect(window.location.search).toBe('?panel=more&page=notifications');
+    expect(panel('더보기 notifications')).toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: '접기' }));
+    expect(window.location.search).toBe('?panel=closed');
+  });
+
+  it('시간표 설정에 따라 블록에 분반 · 교수를 쓴다', async () => {
+    localStorage.setItem(
+      'snutt-web:timetable-settings',
+      JSON.stringify({ autoFit: false, display: { title: true, place: true, lectureNumber: true, instructor: true } }),
+    );
+    timetableSettings.reset();
+    await renderMain();
+    const block = await screen.findByRole('button', { name: /^경영전략, / });
+    expect(block).toHaveTextContent('(001)');
+    expect(block).toHaveTextContent('김민준');
+    localStorage.removeItem('snutt-web:timetable-settings');
+    timetableSettings.reset();
   });
 
   it('직접 추가는 목록 자리를 대신하고, 취소하면 목록으로 돌아온다', async () => {

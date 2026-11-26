@@ -6,10 +6,13 @@ import { useRouter } from 'next/navigation';
 import { getFailureMessage } from '@/api/errors';
 import { type ReactNode, type Ref, useMemo, useRef, useState } from 'react';
 import type { ColorPair } from '@/domain/color';
-import { getGridRange, type GridRange } from '@/domain/grid-layout';
+import type { GridRange } from '@/domain/grid-layout';
 import type { Lecture, TimetableLecture } from '@/domain/lecture';
 import { toSemesterKey } from '@/domain/semester';
 import { getNewTimetableTitle, type Timetable, type TimetableId } from '@/domain/timetable';
+import { getTimetableRange, type LectureBlockDisplay } from '@/domain/timetable-settings';
+import type { MorePage } from '@/shared/lib/more-page';
+import { useTimetableSettings } from '@/shared/lib/timetable-settings';
 import { LectureLayer } from '@/shared/timetable-grid/LectureLayer';
 import { PreviewLayer } from '@/shared/timetable-grid/PreviewLayer';
 import { TimetableGrid } from '@/shared/timetable-grid/TimetableGrid';
@@ -28,18 +31,30 @@ import { SearchPanel } from './SearchPanel';
 import { AddTimetableButton, TimetableExportButtons, TimetableMenu } from './TimetableActions';
 import { TimetableTabs } from './TimetableTabs';
 
+/** 더보기 패널을 그리는 데 필요한 것. 더보기는 다른 feature 라 app 의 page 가 넘겨준다 */
+export type MorePanelSlotProps = {
+  page: MorePage;
+  onNavigate: (page: MorePage) => void;
+  /** `×` 와 패널 접기 */
+  onCollapse: () => void;
+};
+
 type MainScreenProps = {
   /**
    * 있으면 목록 패널 대신 이 패널을 그린다 (강의평 탭 `/reviews`). 패널을 접으면(onCollapse) 시간표만 남는다.
    * 이때 시간표의 강의를 누르거나 직접 추가를 누르면 메인 화면(`/`)으로 가서 연다
    */
   aside?: (props: { onCollapse: () => void }) => ReactNode;
+  /** 좌측 바 `더보기` 의 패널 (features/more). 없으면 더보기 패널 자리를 비운다 */
+  renderMore?: (props: MorePanelSlotProps) => ReactNode;
 };
 
-/** 메인 화면: 패널(목록 · 상세 · 직접 추가)과 시간표. 무엇을 보여 줄지는 URL 의 MainView 로 정한다. */
-export function MainScreen({ aside }: MainScreenProps = {}) {
+/** 메인 화면: 패널(목록 · 상세 · 직접 추가 · 더보기)과 시간표. 무엇을 보여 줄지는 URL 의 MainView 로 정한다. */
+export function MainScreen({ aside, renderMore }: MainScreenProps = {}) {
   const { view, setView } = useMainView();
   const router = useRouter();
+  // 더보기 → 시간표 설정 (자동 맞춤, 블록에 쓸 것)
+  const settings = useTimetableSettings();
   /** 패널을 바꾼다. 강의평 탭에서는 패널 자리가 강의평이라 메인 화면으로 가서 바꾼다 */
   const setPanelView = (next: MainView) => {
     if (!aside) return setView(next);
@@ -97,12 +112,13 @@ export function MainScreen({ aside }: MainScreenProps = {}) {
   // 비교할 때는 두 시간표의 줄이 맞도록 두 시간표의 강의를 합친 범위를 같이 쓴다
   const range = useMemo(
     () =>
-      getGridRange(
+      getTimetableRange(
         [selected, compareTimetable].flatMap((timetable) =>
           (timetable?.lectures ?? []).flatMap(({ classTimes }) => classTimes),
         ),
+        settings,
       ),
-    [selected, compareTimetable],
+    [selected, compareTimetable, settings],
   );
 
   if (timetables.status === 'loading') return <MainMessage>불러오는 중</MainMessage>;
@@ -146,6 +162,12 @@ export function MainScreen({ aside }: MainScreenProps = {}) {
       />
       {aside ? (
         view.panel && aside({ onCollapse: () => setView({ ...view, panel: null }) })
+      ) : view.panel?.type === 'more' ? (
+        renderMore?.({
+          page: view.panel.page,
+          onNavigate: (page) => setView({ ...view, panel: { type: 'more', page } }),
+          onCollapse: () => setView({ ...view, panel: null }),
+        })
       ) : view.panel?.type === 'custom-form' ? (
         <CustomLectureForm
           // 다른 시간표로 바꾸면 입력을 처음부터 다시 받는다
@@ -223,6 +245,7 @@ export function MainScreen({ aside }: MainScreenProps = {}) {
           timetable={selected}
           palette={palette}
           range={range}
+          display={settings.display}
           onLectureClick={openDetail}
           gridRef={gridRef}
           // 검색 결과는 왼쪽(고른) 시간표에 담기므로 미리보기도 왼쪽에만
@@ -298,6 +321,7 @@ export function MainScreen({ aside }: MainScreenProps = {}) {
             timetable={compareTimetable}
             palette={timetables.paletteOf(compareTimetable)}
             range={range}
+            display={settings.display}
             header={
               <>
                 {compareRight ? (
@@ -342,6 +366,8 @@ type TimetableColumnProps = {
   /** 시간표 테마의 색 */
   palette: readonly ColorPair[];
   range: GridRange;
+  /** 강의 블록에 쓸 것 (시간표 설정) */
+  display: LectureBlockDisplay;
   header: ReactNode;
   /** 없으면 강의 블록을 누를 수 없다 (비교의 오른쪽) */
   onLectureClick?: (lecture: TimetableLecture) => void;
@@ -356,6 +382,7 @@ function TimetableColumn({
   timetable,
   palette,
   range,
+  display,
   header,
   onLectureClick,
   overlay,
@@ -370,7 +397,12 @@ function TimetableColumn({
       <div ref={gridRef} className="min-h-0 flex-1">
         <TimetableGrid range={range} className="h-full">
           {timetable && (
-            <LectureLayer lectures={timetable.lectures} palette={palette} onLectureClick={onLectureClick} />
+            <LectureLayer
+              lectures={timetable.lectures}
+              palette={palette}
+              display={display}
+              onLectureClick={onLectureClick}
+            />
           )}
           {overlay}
         </TimetableGrid>
