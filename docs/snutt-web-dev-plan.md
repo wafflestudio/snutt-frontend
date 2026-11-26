@@ -11,7 +11,7 @@
 ## 디자인 변경 (Figma 완료 영역)
 
 Figma 의 완료 영역(`home` 섹션: 메인, 비교, 필터, 강의 상세, 강의평, 강의 편집, 관심강좌, 직접 추가)을 디자인 스펙과 비교한 결과다.
-완료 영역에 없는 화면(친구, 로그인, 마이페이지, 알림)은 아직 작업 중이라 디자인 스펙을 그대로 따른다.
+완료 영역에 없는 화면(친구, 로그인)은 아직 작업 중이라 디자인 스펙을 그대로 따른다. 마이페이지 · 알림은 작업 중 영역의 `더보기` 섹션을 완료로 보고 9-3 · 9-4 · 9-6 에서 따랐다.
 
 | 항목 | 디자인 스펙 | Figma 완료 영역 | 플랜 영향 |
 |---|---|---|---|
@@ -61,7 +61,7 @@ Figma 의 완료 영역(`home` 섹션: 메인, 비교, 필터, 강의 상세, �
 | `Icon/*` 아이콘 | 11-09 에 아이콘이 컴포넌트가 됐고 SVG 를 받았다(`apps/snutt-web/design-icons/`). 16px: add · bookmark · clock · edit · map · more · sidebar · switch · tag · trash, 24px: arrow left · right · close · theme light · dark · kakaotalk · person, 30px: `Icon/Tab/*`(search · review · friend · more, light · dark 같은 모양), `Logo` 24px. `notice / trash` 는 `Icon/trash` 로 바뀜. trash · kakaotalk · person 은 아직 쓰는 화면이 없다 (디자인 문의 4-24). 11-18 에 `Icon/duplicate`(24px 줄)가 추가됐다. SVG 를 아직 받지 못했고 완료 영역에 쓰는 화면이 없다 | `yarn generate:icons` → `shared/ui/icons` | - |
 | `탭 버튼` | 강의 상세 / 강의평 전환. 고른 칸 흰 배경 · 글자 `#808080`, 나머지 `#B8B8B8`, `14/SemiBold`, 여백 2 · 10, 둥글기 4. 두 변형 모두 `강의 상세 \| 강의평` 순서. 11-09 추가 | `shared/ui/Tabs` (segmented) | 8-4 ✅ |
 | `button` | 글자 버튼. 116 × 38(여백 8 · 45), 둥글기 6, 글자 15px Medium(줄 높이 22, 자간 −0.408px, 텍스트 스타일 없음). 변형 `disabled`(배경 `#F7F7F7` = `Background/light` 값, 글자 `Text/med`, 예시 `취소`) · `enabled`(배경 `SNUTT/mint`, 글자 `Text/onBG`, 예시 `추가`). 직접 추가 · 강의 편집의 버튼이 이 인스턴스로 바뀜. 11-24 추가 | `shared/ui/Button` (`secondary` · `primary`) | 6-2 ✅, 6-4 ✅ |
-| `switch` | iOS 모양 토글 44.42 × 27. 변형 `status=on`(바탕 `SNUTT/mint`) · `status=off`(바탕 `Fill/Light/Secondary`, Semantic 밖), 손잡이 흰색 23.5px + 그림자 두 겹. 완료 영역에 쓰는 화면이 없다(디자인 문의 4-29). 11-24 추가 | 없음 | - |
+| `switch` | iOS 모양 토글 44.42 × 27. 변형 `status=on`(바탕 `SNUTT/mint`) · `status=off`(바탕 `Fill/Light/Secondary`, Semantic 밖), 손잡이 흰색 23.5px + 그림자 두 겹. `더보기_시간표 설정` 에서 쓴다. 꺼진 바탕은 `Line/light` 로 읽는다(디자인 문의 4-29). 11-24 추가 | `shared/ui/Switch` | 9-6 |
 | `검색 목록 영역`, `강의평 바로가기 버튼` | 목록 패널 전체, 평점(`★ 4.0 (1)`)을 눌러 강의평으로 가는 버튼으로 추정. 10-13 추가 | `MainPanel`, `LectureCell` | 5-1, 8-4 |
 
 **텍스트 스타일**: Figma 에 `크기/굵기` 이름의 텍스트 스타일이 생겼다(메인 화면과 위 컴포넌트에만 적용, 강의 상세 · 강의평 등 다른 화면은 아직 값이 직접 들어가 있다). 코드에서는 `text-14-semibold` 처럼 같은 이름으로 쓴다(#247).
@@ -143,10 +143,11 @@ dev 서버 OpenAPI 명세(`https://snutt-api-dev.wafflestudio.com/v3/api-docs`)�
 | 빈자리 알림 등록 여부 | `GET /v2/vacancy-notifications/lectures/{lectureId}/state` | |
 | 로그인/회원가입 | `POST /v2/auth/login`, `/v2/auth/login/{provider}`, `/v2/auth/register` | 로그인 실패는 403 `password-mismatch` · `unregistered-local-id`, 가입 실패는 400 `invalid-password`(영문 · 숫자를 포함한 6~20자) · 409 `duplicate-local-id`. 서버 문구를 그대로 보여 준다 (dev 서버 확인) |
 | 토큰 갱신 · 로그아웃 | `POST /v2/auth/refresh`, `POST /v2/auth/logout` | access token 은 2시간 JWT. refresh token 은 갱신할 때마다 새것으로 바뀌고 쓴 것은 401 `invalid-refresh-token`. 로그아웃은 refresh token 만 폐기하고 access token 은 만료까지 남는다 (dev 서버 확인) |
-| 내 정보 | `GET, PATCH, DELETE /v2/users/me` | |
+| 내 정보 | `GET, PATCH, DELETE /v2/users/me` | 응답에 아이디(localId)가 없다 (명세, 9-3). PATCH 는 닉네임만 바꾸고 서버가 태그를 다시 붙인다 |
 | 소셜 연동/해제 | `POST, DELETE /v2/users/me/social/{provider}` | |
-| 비밀번호 | `POST, PATCH /v2/users/me/password` | |
-| 알림 | `GET /v2/notifications`, `GET /v2/notifications/count` | cursor 기반 |
+| 비밀번호 | `POST, PATCH /v2/users/me/password` | PATCH(변경)는 새 토큰을 준다. 받은 토큰을 저장한다 (9-3) |
+| 알림 | `GET /v2/notifications`, `GET /v2/notifications/count` | cursor 기반. `type` 은 0 ~ 7 숫자(snutt-webclient v1 매핑을 따르고 7 은 일반으로 읽음) |
+| 피드백 | `POST /v2/feedback` | 더보기의 개발자 괴롭히기. 본문 `{ email?, message }`. 9-6 에서 `@sf/snutt-api` 에 추가 |
 | 학기 상태 (현재/다음) | `GET /v2/semesters/status` | 현재 수강신청 학기 판단에 사용 |
 | 수강편람 (학기 목록) | `GET /v2/coursebooks`, `GET /v2/coursebooks/recent` | |
 | 테마 (강의 색상 팔레트) | `GET, POST /v2/themes`, `GET, PATCH, DELETE /v2/themes/{themeId}` | |
@@ -327,7 +328,7 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | **3. 인증** | 3-1 | 로컬 로그인, 회원가입, AuthGuard, 토큰 관리(401 이면 한 번 갱신해 다시 보냄), 좌측 바 더보기의 로그아웃. 화면은 디자인 문의 4-12 | | ✅ #261 |
 | | 3-2 | 소셜 로그인 (Google / Facebook / Kakao). 신규 Figma 에 버튼 디자인이 없다 (디자인 문의 4-12). 앱 키는 snutt-webclient `.env.dev` · `.env.prod` 의 `VITE_FACEBOOK_APP_ID` · `VITE_GOOGLE_APP_ID` · `VITE_KAKAO_APP_ID`. v1 은 SDK 팝업으로 provider access token 을 받아 서버에 보내는 방식이라 리다이렉트 URL 이 없다(v2 는 `POST /v2/auth/login/{provider}`). snutt-web 의 origin(`localhost:3000`, 배포 도메인)이 각 콘솔에 등록되어 있는지, Kakao 새 SDK 에서 팝업 로그인을 쓸 수 있는지 확인 필요 | |  |
 | | 3-3 | 비밀번호 재설정 (이메일 인증) | |  |
-| **4. 메인 뼈대** | 4-1 | AppShell: 좌측 바(Figma `LNB`: 검색 · 강의평 · 친구 시간표 · 더보기 · 테마 전환), 헤더(직접 추가 · 시간표 비교), 접을 수 있는 패널(push), `MainView` 상태 + URL 동기화. 강의평 · 더보기는 화면이 없어 비활성 | 패널 열림/접힘, 상세, 직접 추가, 비교가 빈 화면으로 전환됨 | ✅ #251 |
+| **4. 메인 뼈대** | 4-1 | AppShell: 좌측 바(Figma `LNB`: 검색 · 강의평 · 친구 시간표 · 더보기 · 테마 전환), 헤더(직접 추가 · 시간표 비교), 접을 수 있는 패널(push), `MainView` 상태 + URL 동기화. 강의평은 화면이 없어 비활성. 더보기는 9-3 에서 목록 패널 자리의 더보기 패널(`panel=more`)로 바뀜 | 패널 열림/접힘, 상세, 직접 추가, 비교가 빈 화면으로 전환됨 | ✅ #251 |
 | | 4-2 | **TimetableGrid** (Figma `course`, 요일·시간 자동 범위, 블록에 강의명 + 장소, 모드 구조) | readonly 모드로 실데이터 렌더링 (실데이터 연결은 1-2 이후) | ✅ #250 |
 | | 4-3 | 시간표 탭 CRUD (기본 시간표 체크 표시, 학점), 패널 상단 학기 드롭다운 (Figma `연도 선택`, 여름·겨울 포함), 헤더 ··· 메뉴 (이름 변경 · 기본 지정/해제 · 삭제), 비교할 시간표 고르기. 1-2 전까지 예시 데이터(`features/main/sample-data.ts`)를 메모리에서 고친다 | | ✅ #253 |
 | **5. 검색** | 5-1 | 검색 패널: 300ms debounce, 결과 목록 (`LectureCell` = Figma `cell`, `★ 4.0 (1)`, 학과·학년, 시간, 장소, 비고, 강의계획서 링크), 담기/빼기 토글, 관심강좌 토글, 시간이 겹치면 덮어쓸지 확인. 정해지지 않은 것은 디자인 문의 4-11 | | ✅ #260 |
@@ -347,9 +348,10 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | | 8-5 | 강의평 상호작용 (`EvaluationView`): `강의평 작성` 버튼(Figma `Button/filled`)과 작성 · 수정 모달(수강 학기 · 총점 · 항목별 점수 1 ~ 5점 · 본문. 학기는 `GET /v2/courses/{courseId}` 의 학기별 강의 중 아직 쓰지 않은 것), 좋아요 누르기 / 취소, ⋮ 메뉴(서버의 `isModifiable` 이면 수정 · 삭제, 아니면 신고). Figma 에 작성 화면 · 메뉴가 없어 기존 모달 · 드롭다운으로 만들었다. 정해지지 않은 것은 디자인 문의 4-27 | | ✅ #289 |
 | **9. 부가 기능** | 9-1 | 내보내기 (헤더의 공유 · 다운로드): 고른 시간표의 그리드를 PNG(`<시간표 이름>.png`)로 내려받고, 공유는 운영체제 공유 창(못 하면 클립보드 복사). 정해지지 않은 것은 디자인 문의 4-20 | | ✅ #276 |
 | | 9-2 | 두 시간표 비교: 검색 패널과 함께 표시, 오른쪽 시간표 탭 · ··· · 비교 종료(Figma `top` 의 `복수 시간표`), 담기 대상 선택(`기본 시간표에 추가` = 왼쪽 / `보조 시간표에 추가` = 오른쪽, Figma `드롭다운`). 탭 · 비교 종료는 4-3 에서 만들었다. 정해지지 않은 것은 디자인 문의 4-22 | | ✅ #278 |
-| | 9-3 | 마이페이지 (프로필, 소셜 연동/해제, 비밀번호, 탈퇴) | |  |
-| | 9-4 | 알림 | |  |
+| | 9-3 | 더보기 패널(Figma `더보기`: 목록 패널 자리, `MainView` 의 `panel=more&page=…`)과 내 계정(Figma `더보기_내 계정`): 닉네임 변경, 비밀번호 변경 모달, 이메일, SNS 연동 상태, 계정삭제(확인 팝업). 로그아웃은 더보기 목록으로 옮김(확인 팝업). 아이디 줄은 v2 내 정보에 localId 가 없어 뺐고, SNS 연동 · 해제 동작은 3-2(소셜 SDK) 에서. 정해지지 않은 것은 디자인 문의 4-32 | | ✅ #297 |
+| | 9-4 | 알림 (Figma `더보기_알림`): `GET /v2/notifications` 커서 목록(`explicit=true`), 종류별 아이콘 · 제목 · 날짜 · 본문. 읽지 않은 수(`count`)는 보여 줄 자리가 없어 쓰지 않음 | | ✅ #297 |
 | | 9-5 | timetable-picker 이식 (origin 검사 포함). 팝업(`window.opener`) · RN WebView 용. 메시지(`SNUTT_TIMETABLE_SELECTED`)와 payload 는 레거시 v1 형태 그대로이고, v2 에 없는 `class_time_mask` · `start` · `len` 은 계산한다. RN 브리지를 먼저 봐서 레거시에서 동작하지 않던 RN 경로를 고쳤다. 로그인은 주소를 바꾸지 않는 `InlineLogin`(회원가입 뒤 picker 로 돌아옴). 소비자 전환은 미결 사항 참고 | 기존 RN 앱에서 동작 확인 | ✅ #286 |
+| | 9-6 | 더보기의 나머지 화면: 색상 모드(Figma `더보기_색상 모드`, 좌측 바 테마 버튼과 같은 설정), 시간표 설정(Figma `더보기_시간표 설정`: 자동 맞춤 · 강의 정보 표시, 브라우저에 저장해 메인 시간표에 적용. `꽉찬 시간표` 는 비활성), 개발자 괴롭히기(Figma `더보기_개발자 괴롭히기`, `POST /v2/feedback`), 서비스 약관 · 개인정보처리방침 링크, `shared/ui/Switch`. 정해지지 않은 것은 디자인 문의 4-32 | | ✅ #297 |
 | **10. 마무리** | 10-1 | Playwright e2e (로그인 → 검색 → 담기 → 삭제). 실제 서버 대신 단위 테스트의 가짜 서버(`fakeSnutt`)를 브라우저 요청에 물린다. PR 마다 CI(`test-integration-snutt-web.yml`)에서 프로덕션 빌드로 돌린다 | | ✅ #282 |
 | | 10-2 | 배포 스크립트: 정적 내보내기(`output: 'export'`) → S3 · CloudFront (snutt-webclient 와 같은 방식. 화면이 모두 클라이언트 렌더링이고 로그인 뒤 화면이라 SSR · SEO 가 필요 없다). `yarn deploy:snutt-web` 으로 dev 태그를 달면 `deploy-snutt-web-dev.yml`, `snutt-web-prod-*` 태그는 `deploy-snutt-web-prod.yml`. 페이지마다 확장자 없는 키(`friends`)로 html 을 한 벌 더 올려 CloudFront 함수 없이 새로 고침이 된다. e2e 도 `out/` 을 띄워 배포물을 확인한다 | 인프라: dev · prod 의 S3 버킷 · CloudFront 배포(기본 루트 객체 `index.html`) · 도메인, GitHub environment secrets `SNUTT_WEB_S3_BUCKET` · `SNUTT_WEB_CLOUDFRONT_DISTRIBUTION_ID` · `SNUTT_WEB_CLIENT_KEY` | ✅ #283 |
 
