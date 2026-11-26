@@ -249,8 +249,8 @@ describe('EvaluationView 상호작용', () => {
     await pickScore(dialog, '수업 내용이 유익했나요?', 3);
     expect(submit).toBeDisabled();
     await pickScore(dialog, '과제량이 적절했나요?', 2.5);
-    // 강의 리뷰는 쓰지 않아도 되지만, 쓰면 20자 이상
-    expect(submit).toBeEnabled();
+    // 강의 리뷰는 20자 이상 써야 한다 (서버가 빈 본문을 받지 않는다)
+    expect(submit).toBeDisabled();
     const content = within(dialog).getByRole('textbox', { name: '강의 리뷰' });
     await userEvent.type(content, '알찬 수업');
     expect(submit).toBeDisabled();
@@ -301,6 +301,10 @@ describe('EvaluationView 상호작용', () => {
       '과제량이 적절했나요?',
     ])
       await pickScore(dialog, label, 3);
+    await userEvent.type(
+      within(dialog).getByRole('textbox', { name: '강의 리뷰' }),
+      '과제가 많지만 배우는 게 많은 수업이에요',
+    );
     await userEvent.click(within(dialog).getByRole('button', { name: '작성완료' }));
 
     expect(await within(dialog).findByRole('alert')).toHaveTextContent('수강한 강의에만 강의평을 쓸 수 있습니다');

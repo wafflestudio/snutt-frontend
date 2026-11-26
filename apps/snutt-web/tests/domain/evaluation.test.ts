@@ -43,8 +43,9 @@ describe('toEvaluationInput', () => {
     });
   });
 
-  it('본문은 비워 둘 수 있다 (공백뿐이면 빈 문자열)', () => {
-    expect(toEvaluationInput(draft({ content: '  ' }))).toEqual({ content: '', rating: 4, scores: SCORES });
+  it('본문은 비울 수 없다 (서버가 빈 본문을 받지 않는다)', () => {
+    expect(toEvaluationInput(draft({ content: '' }))).toBeNull();
+    expect(toEvaluationInput(draft({ content: '  ' }))).toBeNull();
   });
 
   it('본문이 20자보다 짧거나 고르지 않은 점수가 있으면 null', () => {
@@ -78,8 +79,8 @@ describe('getEvaluationChange', () => {
     expect(getEvaluationChange(EVALUATION, draft({ content: '별로예요', rating: 1 }))).toBeNull();
   });
 
-  it('본문을 지울 수 있다', () => {
-    expect(getEvaluationChange(EVALUATION, draft({ content: ' ' }))).toEqual({ content: '' });
+  it('본문은 지울 수 없다 (서버가 빈 본문을 받지 않는다)', () => {
+    expect(getEvaluationChange(EVALUATION, draft({ content: ' ' }))).toBeNull();
   });
 
   it('항목별 점수가 없던 강의평은 고른 점수만 보낸다', () => {

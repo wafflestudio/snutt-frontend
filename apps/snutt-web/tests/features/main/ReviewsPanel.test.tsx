@@ -209,6 +209,10 @@ describe('ReviewsPanel 나의 강의평', () => {
       await userEvent.click(
         within(within(form).getByRole('group', { name: label })).getByRole('radio', { name: '4.5점' }),
       );
+    await userEvent.type(
+      within(form).getByRole('textbox', { name: '강의 리뷰' }),
+      '과제가 많지만 배우는 게 많은 수업이에요',
+    );
     await userEvent.click(within(form).getByRole('button', { name: '작성완료' }));
 
     const done = await screen.findByRole('alertdialog', { name: /강의평 등록 완료/ });
@@ -216,7 +220,14 @@ describe('ReviewsPanel 나의 강의평', () => {
       {
         method: 'POST',
         path: '/v2/lectures/7002/evaluations',
-        body: { content: '', rating: 4.5, gradeSatisfaction: 4.5, teachingSkill: 4.5, gains: 4.5, lifeBalance: 4.5 },
+        body: {
+          content: '과제가 많지만 배우는 게 많은 수업이에요',
+          rating: 4.5,
+          gradeSatisfaction: 4.5,
+          teachingSkill: 4.5,
+          gains: 4.5,
+          lifeBalance: 4.5,
+        },
       },
     ]);
 

@@ -76,14 +76,15 @@ export type EvaluationChange = Partial<Omit<EvaluationInput, 'scores'>> & { scor
 export const EVALUATION_SCORE_MAX = 5;
 export const EVALUATION_SCORE_STEP = 0.5;
 
-/** 강의 리뷰(본문)는 쓰지 않아도 되지만, 쓰면 이 글자 수 이상 (Figma `(최소 20자)`, 디자인 문의 4-30) */
+/**
+ * 강의 리뷰(본문)의 최소 글자 수 (Figma `(최소 20자)`). Figma 는 `선택` 이라고 적었지만
+ * 서버 작성 요청의 content 가 minLength 1 이라 비울 수 없어 반드시 쓰게 한다 (디자인 문의 4-30)
+ */
 export const EVALUATION_CONTENT_MIN_LENGTH = 20;
 
-/** 본문이 비었거나 최소 글자 수를 넘으면 쓸 수 있다. 앞뒤 공백은 세지 않는다 */
-export const isValidEvaluationContent = (content: string) => {
-  const length = content.trim().length;
-  return length === 0 || length >= EVALUATION_CONTENT_MIN_LENGTH;
-};
+/** 본문이 최소 글자 수 이상이면 쓸 수 있다. 앞뒤 공백은 세지 않는다 */
+export const isValidEvaluationContent = (content: string) =>
+  content.trim().length >= EVALUATION_CONTENT_MIN_LENGTH;
 
 /** 강의평을 쓸 때 고르는 강의. 강좌의 학기별 강의이고, 강의평은 강좌가 아니라 이 강의에 쓴다 */
 export type EvaluationLecture = {
@@ -105,7 +106,6 @@ export type EvaluationDraft = { content: string; rating: number | null; scores: 
 
 /**
  * 쓸 수 있는 값이면 EvaluationInput, 빠진 것이 있으면 null. 본문은 앞뒤 공백을 지운다.
- * 본문은 비워 둘 수 있다(Figma `강의 리뷰 선택`). 서버 요청은 문자열이 필수라 빈 문자열로 보낸다
  */
 export const toEvaluationInput = ({ content, rating, scores }: EvaluationDraft): EvaluationInput | null => {
   const trimmed = content.trim();

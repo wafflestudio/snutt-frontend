@@ -56,7 +56,7 @@ const EMPTY_DRAFT: EvaluationDraft = {
 
 /**
  * 강의평 작성 · 수정 폼 (Figma `강의평_강의평 작성`). 패널 안에 그린다.
- * 위에서부터 학기, `강의 총평`(총점과 항목별 질문 4개, 별 반 개 단위), `강의 리뷰`(선택, 쓰면 20자 이상), `작성완료`.
+ * 위에서부터 학기, `강의 총평`(총점과 항목별 질문 4개, 별 반 개 단위), `강의 리뷰`(20자 이상. Figma 의 `선택` 은 서버가 빈 본문을 받지 않아 뺐다), `작성완료`.
  * `강의 키워드` 는 서버에 받을 곳이 없어 뺐다 (디자인 문의 4-30)
  */
 export function EvaluationForm({ target, heading, onCancel, onSaved }: EvaluationFormProps) {
@@ -179,7 +179,6 @@ export function EvaluationForm({ target, heading, onCancel, onSaved }: Evaluatio
       <div className="flex flex-col gap-3">
         <label htmlFor={contentId} className="flex items-baseline gap-1.5">
           <span className="text-15-semibold text-normal">강의 리뷰</span>
-          <span className="text-13-regular text-assistive">선택</span>
         </label>
         <TextArea
           id={contentId}
