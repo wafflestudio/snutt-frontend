@@ -11,6 +11,10 @@ export default defineConfig({
       NEXT_PUBLIC_API_BASE_URL: 'https://snutt-api.test',
       NEXT_PUBLIC_CLIENT_KEY: 'test-client-key',
       NEXT_PUBLIC_TIMETABLE_PICKER_ORIGINS: 'https://host.test',
+      // 소셜 로그인 앱 키 (src/shared/lib/social-auth.ts). 카카오 토큰 요청도 tests/msw 가 가로챈다
+      NEXT_PUBLIC_KAKAO_REST_API_KEY: 'test-kakao-rest-key',
+      NEXT_PUBLIC_GOOGLE_CLIENT_ID: 'test-google-client-id',
+      NEXT_PUBLIC_FACEBOOK_APP_ID: 'test-facebook-app-id',
     },
     // jsdom 에서 userEvent 로 긴 목록(시간 선택 등)을 여는 테스트는 파일을 동시에 돌리면 기본 5초를 넘길 때가 있다
     testTimeout: 15_000,

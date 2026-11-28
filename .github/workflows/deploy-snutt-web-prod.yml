@@ -36,6 +36,9 @@ jobs:
           NEXT_PUBLIC_API_BASE_URL=https://snutt-api.wafflestudio.com \
           NEXT_PUBLIC_CLIENT_KEY=${{ secrets.SNUTT_WEB_CLIENT_KEY }} \
           NEXT_PUBLIC_TIMETABLE_PICKER_ORIGINS=${{ secrets.TIMETABLE_PICKER_ORIGINS }} \
+          NEXT_PUBLIC_KAKAO_REST_API_KEY=${{ secrets.SNUTT_WEB_KAKAO_REST_API_KEY }} \
+          NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.SNUTT_WEB_GOOGLE_CLIENT_ID }} \
+          NEXT_PUBLIC_FACEBOOK_APP_ID=${{ secrets.SNUTT_WEB_FACEBOOK_APP_ID }} \
             yarn build
 
       - name: Deploy to S3 and Invalidate Cloudfront

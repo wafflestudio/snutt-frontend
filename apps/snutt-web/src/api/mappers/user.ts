@@ -1,6 +1,6 @@
 import type { SnuttV2 } from '@sf/snutt-api';
 import type { Notification, NotificationType } from '@/domain/notification';
-import type { AuthProvider, User } from '@/domain/user';
+import type { AuthProvider, SocialProvider, User } from '@/domain/user';
 
 // v2 내 정보 · 알림 응답 → domain 타입. 서버는 null 인 필드를 보내지 않는다
 
@@ -12,12 +12,21 @@ const PROVIDERS: Record<SnuttV2.UserResponse['authProviders'][number], AuthProvi
   FACEBOOK: 'facebook',
 };
 
+type ApiAuthProvider = SnuttV2.UserResponse['authProviders'][number];
+
+export const toProviders = (providers: readonly ApiAuthProvider[]): AuthProvider[] =>
+  providers.map((provider) => PROVIDERS[provider]);
+
+/** domain 의 소셜 provider → 경로의 provider (`/v2/auth/login/KAKAO`) */
+export const toApiSocialProvider = (provider: SocialProvider) =>
+  provider.toUpperCase() as Exclude<ApiAuthProvider, 'LOCAL'>;
+
 export const toUser = (user: SnuttV2.UserResponse): User => ({
   nickname: user.nickname,
   nicknameTag: user.nicknameTag,
   email: user.email ?? null,
   isEmailVerified: user.isEmailVerified,
-  providers: user.authProviders.map((provider) => PROVIDERS[provider]),
+  providers: toProviders(user.authProviders),
 });
 
 const NOTIFICATION_TYPES: Record<SnuttV2.NotificationResponse['type'], NotificationType> = {

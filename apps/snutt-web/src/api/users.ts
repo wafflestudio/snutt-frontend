@@ -1,9 +1,10 @@
 import { infiniteQueryOptions, queryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { Notification } from '@/domain/notification';
+import type { SocialProvider, User } from '@/domain/user';
 import { callApi, clearAuthTokens, setAuthTokens } from './client';
-import { toNotification, toUser } from './mappers/user';
+import { toApiSocialProvider, toNotification, toProviders, toUser } from './mappers/user';
 
-// 더보기의 내 계정 · 알림 · 개발자 괴롭히기. 소셜 연동/해제는 SDK 와 앱 키가 필요해 3-2 에서 붙인다
+// 더보기의 내 계정(소셜 연동 · 해제 포함) · 알림 · 개발자 괴롭히기
 
 export const userQueries = {
   all: () => ['user'] as const,
@@ -53,6 +54,43 @@ export const useChangePassword = () =>
       callApi('PATCH /v2/users/me/password', { body }),
     onSuccess: ({ accessToken, refreshToken }) => setAuthTokens({ accessToken, refreshToken }),
   });
+
+/**
+ * 소셜 계정 연동 · 해제의 응답: 연결된 로그인 방법과 새 토큰(이전 토큰은 버려진다).
+ * 토큰을 저장하고 내 정보의 로그인 방법을 바꾼다
+ */
+const useApplyProviders = () => {
+  const queryClient = useQueryClient();
+  return (response: { authProviders: Parameters<typeof toProviders>[0]; accessToken: string; refreshToken: string }) => {
+    setAuthTokens({ accessToken: response.accessToken, refreshToken: response.refreshToken });
+    queryClient.setQueryData(userQueries.me().queryKey, (user: User | undefined) =>
+      user ? { ...user, providers: toProviders(response.authProviders) } : user,
+    );
+  };
+};
+
+/** 소셜 계정을 연동한다. provider 가 준 access token 은 shared/lib/social-auth 가 받는다 */
+export const useLinkSocial = () => {
+  const applyProviders = useApplyProviders();
+  return useMutation({
+    mutationFn: ({ provider, token }: { provider: SocialProvider; token: string }) =>
+      callApi('POST /v2/users/me/social/:provider', {
+        params: { provider: toApiSocialProvider(provider) },
+        body: { token },
+      }),
+    onSuccess: applyProviders,
+  });
+};
+
+/** 소셜 계정 연동을 해제한다 */
+export const useUnlinkSocial = () => {
+  const applyProviders = useApplyProviders();
+  return useMutation({
+    mutationFn: (provider: SocialProvider) =>
+      callApi('DELETE /v2/users/me/social/:provider', { params: { provider: toApiSocialProvider(provider) } }),
+    onSuccess: applyProviders,
+  });
+};
 
 /** 계정을 지운다. 토큰과 받은 데이터를 지워 로그인 화면으로 보낸다 */
 export const useDeleteAccount = () => {
