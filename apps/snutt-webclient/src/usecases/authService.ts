@@ -11,7 +11,7 @@ export interface AuthService {
       | { type: 'GOOGLE'; token: string }
       | { type: 'KAKAO'; token: string },
   ): UsecaseResponse<{ token: string }>;
-  signUp(body: { id: string; password: string }): UsecaseResponse<{ token: string }>;
+  signUp(body: { id: string; password: string; email: string }): UsecaseResponse<{ token: string }>;
   closeAccount(_: { token: string }): UsecaseResponse<void>;
   findIdByEmail(body: { email: string }): UsecaseResponse<void>;
   passwordResetCheckEmail(body: { userId: string }): UsecaseResponse<{ email: string }>;
@@ -28,7 +28,7 @@ export const getAuthService = ({
     signInWithFacebook(args: { token: string }): RepositoryResponse<{ token: string }>;
     signInWithGoogle(args: { token: string }): RepositoryResponse<{ token: string }>;
     signInWithKakao(args: { token: string }): RepositoryResponse<{ token: string }>;
-    signUpWithIdPassword(body: { id: string; password: string }): RepositoryResponse<{ token: string }>;
+    signUpWithIdPassword(body: { id: string; password: string; email: string }): RepositoryResponse<{ token: string }>;
     findId(body: { email: string }): RepositoryResponse<void>;
     passwordResetCheckEmail(body: { userId: string }): RepositoryResponse<{ email: string }>;
     sendPasswordResetVerificationEmail(body: { userEmail: string }): RepositoryResponse<{ message: 'ok' }>;

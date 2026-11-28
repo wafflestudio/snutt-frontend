@@ -25,7 +25,7 @@ export const getSnuttTimetableApis = ({ callWithToken, callWithoutToken }: GetAp
         path: '/v1/auth/login_local',
         body,
       }),
-    'POST /v1/auth/register_local': ({ body }: { body: { id: string; password: string } }) =>
+    'POST /v1/auth/register_local': ({ body }: { body: { id: string; password: string; email: string } }) =>
       callWithoutToken<SuccessResponse<LoginResponse> | ErrorResponse<403, 1229>>({
         method: 'post',
         path: `/v1/auth/register_local`,

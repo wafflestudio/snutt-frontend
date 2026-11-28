@@ -13,6 +13,7 @@ export const LandingSignUp = ({ className }: { className?: string }) => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [email, setEmail] = useState('');
   const { authService } = useGuardContext(ServiceContext);
 
   const { isOpen, message, onClose, open } = useErrorDialog();
@@ -31,7 +32,7 @@ export const LandingSignUp = ({ className }: { className?: string }) => {
     }
 
     mutate(
-      { id, password },
+      { id, password, email: email.trim() },
       { onSuccess: (data) => (data.type === 'success' ? saveToken(data.data.token, false) : open(data.message)) },
     );
   };
@@ -61,10 +62,17 @@ export const LandingSignUp = ({ className }: { className?: string }) => {
         value={passwordConfirm}
         onChange={(e) => setPasswordConfirm(e.target.value)}
       />
+      <Input
+        type="email"
+        data-testid="signup-email"
+        placeholder="이메일"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
 
       <br />
 
-      <Button data-testid="signup-submit" disabled={!id || !password || !passwordConfirm}>
+      <Button data-testid="signup-submit" disabled={!id || !password || !passwordConfirm || !email.trim()}>
         가입하기
       </Button>
       <ErrorDialog message={message} isOpen={isOpen} onClose={onClose} />
@@ -74,7 +82,7 @@ export const LandingSignUp = ({ className }: { className?: string }) => {
 
 const useSignUp = () => {
   const { authService } = useGuardContext(ServiceContext);
-  return useMutation({ mutationFn: (body: { id: string; password: string }) => authService.signUp(body) });
+  return useMutation({ mutationFn: (body: { id: string; password: string; email: string }) => authService.signUp(body) });
 };
 
 const Input = styled.input`

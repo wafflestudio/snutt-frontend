@@ -244,7 +244,7 @@ export const handlers = [
 
   http.post<
     never,
-    { id: string; password: string },
+    { id: string; password: string; email: string },
     { message: 'ok'; token: string; user_id: string } | CoreServerError
   >(
     `*/v1/auth/register_local`,
