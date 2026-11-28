@@ -27,7 +27,7 @@ export type TimetableLectureResponse = {
   remark?: string | null;
   classPlaceAndTimes: ClassPlaceAndTime[];
   color: ColorSet;
-  customColor?: ColorSet | null;
+  customColor?: ColorSet;
   paletteIndex: Int32;
 };
 
@@ -97,7 +97,7 @@ export type CustomTimetableLectureAddRequest = {
   credit?: Int32 | null;
   classPlaceAndTimes: ClassPlaceAndTime[];
   remark?: string | null;
-  customColor?: ColorSet | null;
+  customColor?: ColorSet;
   paletteIndex?: Int32 | null;
   isForced: boolean;
 };
@@ -152,7 +152,7 @@ export type EvaluationResponse = {
   fromSnuev: boolean;
   year: Int32;
   semester: 1 | 2 | 3 | 4;
-  isModifiable: boolean;
+  isMine: boolean;
 };
 
 export type LectureSearchRequest = {
@@ -205,7 +205,7 @@ export type LectureResponse = {
   freshmanQuota?: Int32 | null;
   remark?: string | null;
   classPlaceAndTimes: ClassPlaceAndTime[];
-  evaluationSummary?: LectureEvSummaryResponse | null;
+  evaluationSummary?: LectureEvSummaryResponse;
 };
 
 export type FriendRequest = { nickname: string; nicknameTag: string };
@@ -245,7 +245,7 @@ export type DiaryQuestionResponse = {
 export type DiaryQuestionnaireResponse = {
   courseTitle: string;
   questions: DiaryQuestionResponse[];
-  nextLecture?: DiaryTargetLectureResponse | null;
+  nextLecture?: DiaryTargetLectureResponse;
 };
 
 export type DiaryTargetLectureResponse = {
@@ -256,7 +256,7 @@ export type DiaryTargetLectureResponse = {
   classPlaceAndTimes: ClassPlaceAndTime[];
 };
 
-export type RegisterLocalRequest = { localId: string; password: string; email?: string | null };
+export type RegisterLocalRequest = { localId: string; password: string; email: string };
 
 export type TokenResponse = { userId: Int64; accessToken: string; refreshToken: string };
 
@@ -300,7 +300,9 @@ export type AdminPopupResponse = {
 export type InsertNotificationRequest = {
   userId?: Int64 | null;
   title: string;
+  titleEn?: string | null;
   message: string;
+  messageEn?: string | null;
   type: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
   deeplink?: string | null;
   sendPush: boolean;
@@ -396,7 +398,7 @@ export type TimetableLectureModifyRequest = {
   credit?: Int32 | null;
   classPlaceAndTimes?: ClassPlaceAndTime[] | null;
   remark?: string | null;
-  customColor?: ColorSet | null;
+  customColor?: ColorSet;
   paletteIndex?: Int32 | null;
   academicYear?: string | null;
   category?: string | null;
@@ -455,6 +457,10 @@ export type TakenLectureResponse = {
   classification?: string | null;
   takenYear: Int32;
   takenSemester: 1 | 2 | 3 | 4;
+  avgRating?: Double | null;
+  evalCount: Int64;
+  myEvaluationExists: boolean;
+  recentEvaluations: EvaluationResponse[];
 };
 
 export type CursorPageThemePublicationResponse = {
@@ -492,7 +498,7 @@ export type CourseTagListResponse = {
 
 export type YearAndSemesterResponse = { year: Int32; semester: 1 | 2 | 3 | 4 };
 
-export type SemesterStatusResponse = { current?: YearAndSemesterResponse | null; next: YearAndSemesterResponse };
+export type SemesterStatusResponse = { current?: YearAndSemesterResponse; next: YearAndSemesterResponse };
 
 export type PopupResponse = {
   id: Int64;
@@ -609,7 +615,7 @@ export type BuildingResponse = {
   buildingNameKor: string;
   buildingNameEng: string;
   campus: 'GWANAK' | 'YEONGEON' | 'PYEONGCHANG';
-  location?: GeoCoordinate | null;
+  location?: GeoCoordinate;
 };
 
 export type GeoCoordinate = { latitude: Double; longitude: Double };
@@ -643,6 +649,19 @@ export type AdminRegistrationPeriodResponse = {
   year: Int32;
   semester: 1 | 2 | 3 | 4;
   registrationPeriods: RegistrationDate[];
+  createdAt: Int64;
+  updatedAt: Int64;
+};
+
+export type AdminMailLogResponse = {
+  id: Int64;
+  type: 'VERIFICATION' | 'PASSWORD_RESET' | 'FIND_ID';
+  status: 'PENDING' | 'SENT' | 'SUPPRESSED' | 'FAILED' | 'THROTTLED' | 'NO_ACCOUNT' | 'NO_EMAIL';
+  email?: string | null;
+  requestedLocalId?: string | null;
+  subject?: string | null;
+  body?: string | null;
+  errorMessage?: string | null;
   createdAt: Int64;
   updatedAt: Int64;
 };

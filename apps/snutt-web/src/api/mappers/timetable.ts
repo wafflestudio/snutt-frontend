@@ -107,7 +107,7 @@ const toColorSet = ({ bg, fg }: ColorPair): SnuttV2.ColorSet => ({ backgroundCol
 /** 팔레트 색이면 paletteIndex, 직접 고른 색이면 customColor 를 보낸다. paletteIndex 를 받으면 서버가 customColor 를 지운다 */
 export const toColorRequest = (color: LectureColor) =>
   color.type === 'palette'
-    ? { paletteIndex: color.index, customColor: null }
+    ? { paletteIndex: color.index }
     : { paletteIndex: null, customColor: toColorSet(color.color) };
 
 const toClassPlaceAndTime = ({ day, startMinute, endMinute, place }: ClassTime): SnuttV2.ClassPlaceAndTime => ({

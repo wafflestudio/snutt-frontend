@@ -31,7 +31,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyTokenResponse"
                 }
@@ -65,7 +65,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyTokenResponse"
                 }
@@ -93,51 +93,71 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string"
             }
           },
           {
             "name": "x-os-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyTimetableDto"
                 }
@@ -182,7 +202,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -220,7 +240,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -258,37 +278,58 @@
           {
             "name": "x-os-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -305,7 +346,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyTimetableDto"
                 }
@@ -357,37 +398,58 @@
           {
             "name": "x-os-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -404,7 +466,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyTimetableDto"
                 }
@@ -446,44 +508,65 @@
           {
             "name": "x-os-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyTimetableDto"
                 }
@@ -535,37 +618,58 @@
           {
             "name": "x-os-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -581,7 +685,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyTimetableDto"
                 }
@@ -627,7 +731,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyReminderDto"
                 }
@@ -681,7 +785,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyReminderDto"
                 }
@@ -785,7 +889,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyTokenResponse"
                 }
@@ -819,7 +923,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyTokenResponse"
                 }
@@ -845,7 +949,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyEmailVerificationResponse"
                 }
@@ -879,7 +983,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyOkResponse"
                 }
@@ -903,7 +1007,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyEmailVerificationResponse"
                 }
@@ -939,7 +1043,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyEmailVerificationResponse"
                 }
@@ -973,44 +1077,65 @@
           {
             "name": "x-os-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyOkResponse"
                 }
@@ -1044,7 +1169,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyOkResponse"
                 }
@@ -1070,7 +1195,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1107,7 +1232,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyThemeDto"
                 }
@@ -1154,7 +1279,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyOkResponse"
                 }
@@ -1229,7 +1354,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyThemeDto"
                 }
@@ -1266,7 +1391,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyThemeDto"
                 }
@@ -1301,7 +1426,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyThemeDto"
                 }
@@ -1338,7 +1463,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyThemeDto"
                 }
@@ -1374,7 +1499,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyPageResponseLegacyThemeDto"
                 }
@@ -1411,7 +1536,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyThemeDto"
                 }
@@ -1446,7 +1571,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyThemeDto"
                 }
@@ -1472,7 +1597,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1520,7 +1645,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1624,37 +1749,58 @@
           {
             "name": "x-os-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -1671,7 +1817,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyTimetableDto"
                 }
@@ -1723,37 +1869,58 @@
           {
             "name": "x-os-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -1769,7 +1936,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyTimetableDto"
                 }
@@ -1806,7 +1973,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1835,37 +2002,58 @@
           {
             "name": "x-os-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -1882,7 +2070,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1910,7 +2098,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PushPreferenceDto"
                 }
@@ -1973,7 +2161,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyPageResponseLegacyFriendDto"
                 }
@@ -2096,7 +2284,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyFriendDto"
                 }
@@ -2122,37 +2310,58 @@
           {
             "name": "x-os-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -2169,7 +2378,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyOkResponse"
                 }
@@ -2215,7 +2424,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyEvaluationCreateResponse"
                 }
@@ -2231,148 +2440,7 @@
         ]
       }
     },
-    "/v1/ev/v1/semester-lectures/{semesterLectureId}/evaluations": {
-      "post": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "createEvaluation_1",
-        "parameters": [
-          {
-            "name": "semesterLectureId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LegacyEvaluationWriteRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvaluationCreateResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/ev/v1/semester-lectures/{semesterLectureId}/evaluations": {
-      "post": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "createEvaluation_2",
-        "parameters": [
-          {
-            "name": "semesterLectureId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LegacyEvaluationWriteRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvaluationCreateResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/ev-service/v1/semester-lectures/{semesterLectureId}/evaluations": {
-      "post": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "createEvaluation_3",
-        "parameters": [
-          {
-            "name": "semesterLectureId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LegacyEvaluationWriteRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvaluationCreateResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/ev-service/v1/evaluations/{evaluationId}/report": {
+    "/v1/ev-service/v1/evaluations/{evaluationId}/report": {
       "post": {
         "tags": [
           "v-1-compat-ev-controller"
@@ -2403,7 +2471,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyEvaluationReportResponse"
                 }
@@ -2419,148 +2487,7 @@
         ]
       }
     },
-    "/v1/ev/v1/evaluations/{evaluationId}/report": {
-      "post": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "reportEvaluation_1",
-        "parameters": [
-          {
-            "name": "evaluationId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LegacyEvaluationReportRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvaluationReportResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/v1/ev-service/v1/evaluations/{evaluationId}/report": {
-      "post": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "reportEvaluation_2",
-        "parameters": [
-          {
-            "name": "evaluationId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LegacyEvaluationReportRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvaluationReportResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/ev/v1/evaluations/{evaluationId}/report": {
-      "post": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "reportEvaluation_3",
-        "parameters": [
-          {
-            "name": "evaluationId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LegacyEvaluationReportRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvaluationReportResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/ev-service/v1/evaluations/{evaluationId}/likes": {
+    "/v1/ev-service/v1/evaluations/{evaluationId}/likes": {
       "post": {
         "tags": [
           "v-1-compat-ev-controller"
@@ -2579,7 +2506,14 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LegacyEvaluationLikeResponse"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -2607,181 +2541,14 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/v1/ev-service/v1/evaluations/{evaluationId}/likes": {
-      "post": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "likeEvaluation_1",
-        "parameters": [
-          {
-            "name": "evaluationId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LegacyEvaluationLikeResponse"
+                }
+              }
             }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      },
-      "delete": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "cancelLikeEvaluation_1",
-        "parameters": [
-          {
-            "name": "evaluationId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/v1/ev/v1/evaluations/{evaluationId}/likes": {
-      "post": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "likeEvaluation_2",
-        "parameters": [
-          {
-            "name": "evaluationId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      },
-      "delete": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "cancelLikeEvaluation_2",
-        "parameters": [
-          {
-            "name": "evaluationId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/ev/v1/evaluations/{evaluationId}/likes": {
-      "post": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "likeEvaluation_3",
-        "parameters": [
-          {
-            "name": "evaluationId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      },
-      "delete": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "cancelLikeEvaluation_3",
-        "parameters": [
-          {
-            "name": "evaluationId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
           }
         },
         "security": [
@@ -2812,7 +2579,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyOkResponse"
                 }
@@ -2838,37 +2605,58 @@
           {
             "name": "x-os-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -2885,7 +2673,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyDiaryQuestionnaireResponse"
                 }
@@ -2977,7 +2765,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyTokenExchangeResponse"
                 }
@@ -3012,7 +2800,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyLoginResponse"
                 }
@@ -3047,7 +2835,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyOkResponse"
                 }
@@ -3082,7 +2870,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyOkResponse"
                 }
@@ -3117,7 +2905,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyOkResponse"
                 }
@@ -3152,7 +2940,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyMaskedEmailResponse"
                 }
@@ -3186,7 +2974,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyOkResponse"
                 }
@@ -3222,7 +3010,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyLoginResponse"
                 }
@@ -3257,7 +3045,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyLoginResponse"
                 }
@@ -3292,7 +3080,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyLoginResponse"
                 }
@@ -3327,7 +3115,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyLoginResponse"
                 }
@@ -3362,7 +3150,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyLoginResponse"
                 }
@@ -3397,7 +3185,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyLoginResponse"
                 }
@@ -3432,7 +3220,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyLoginResponse"
                 }
@@ -3467,7 +3255,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyOkResponse"
                 }
@@ -3492,7 +3280,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyUserDto"
                 }
@@ -3526,7 +3314,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyUserDto"
                 }
@@ -3563,7 +3351,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyThemeDto"
                 }
@@ -3636,7 +3424,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyThemeDto"
                 }
@@ -3692,7 +3480,7 @@
         ]
       }
     },
-    "/ev/v1/evaluations/{evaluationId}": {
+    "/v1/ev-service/v1/evaluations/{evaluationId}": {
       "get": {
         "tags": [
           "v-1-compat-ev-controller"
@@ -3713,7 +3501,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyEvaluationWithSemesterDto"
                 }
@@ -3786,337 +3574,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvaluationWithSemesterDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/ev-service/v1/evaluations/{evaluationId}": {
-      "get": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "getEvaluation_1",
-        "parameters": [
-          {
-            "name": "evaluationId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvaluationWithSemesterDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      },
-      "delete": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "deleteEvaluation_1",
-        "parameters": [
-          {
-            "name": "evaluationId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      },
-      "patch": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "updateEvaluation_1",
-        "parameters": [
-          {
-            "name": "evaluationId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LegacyEvaluationUpdateRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvaluationWithSemesterDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/v1/ev-service/v1/evaluations/{evaluationId}": {
-      "get": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "getEvaluation_2",
-        "parameters": [
-          {
-            "name": "evaluationId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvaluationWithSemesterDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      },
-      "delete": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "deleteEvaluation_2",
-        "parameters": [
-          {
-            "name": "evaluationId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      },
-      "patch": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "updateEvaluation_2",
-        "parameters": [
-          {
-            "name": "evaluationId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LegacyEvaluationUpdateRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvaluationWithSemesterDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/v1/ev/v1/evaluations/{evaluationId}": {
-      "get": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "getEvaluation_3",
-        "parameters": [
-          {
-            "name": "evaluationId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvaluationWithSemesterDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      },
-      "delete": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "deleteEvaluation_3",
-        "parameters": [
-          {
-            "name": "evaluationId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      },
-      "patch": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "updateEvaluation_3",
-        "parameters": [
-          {
-            "name": "evaluationId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LegacyEvaluationUpdateRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyEvaluationWithSemesterDto"
                 }
@@ -4142,44 +3600,65 @@
           {
             "name": "x-os-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyVacancyLecturesResponse"
                 }
@@ -4216,7 +3695,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyExistsResponse"
                 }
@@ -4242,7 +3721,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacySocialProvidersResponse"
                 }
@@ -4268,7 +3747,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacySocialProvidersResponse"
                 }
@@ -4294,7 +3773,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyUserInfoDto"
                 }
@@ -4331,7 +3810,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyPageResponseLegacyThemeDto"
                 }
@@ -4368,7 +3847,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyPageResponseLegacyThemeDto"
                 }
@@ -4418,44 +3897,65 @@
           {
             "name": "x-os-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyTagListResponse"
                 }
@@ -4505,44 +4005,65 @@
           {
             "name": "x-os-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyTagUpdateTimeResponse"
                 }
@@ -4592,44 +4113,65 @@
           {
             "name": "x-os-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -4669,7 +4211,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -4698,44 +4240,65 @@
           {
             "name": "x-os-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyTimetableDto"
                 }
@@ -4761,7 +4324,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacySemesterStatusResponse"
                 }
@@ -4787,7 +4350,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyPageResponseLegacyPopupDto"
                 }
@@ -4838,13 +4401,69 @@
               "format": "int32",
               "default": 0
             }
+          },
+          {
+            "name": "x-os-type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-app-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-app-type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-os-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-model",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-language",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -4873,7 +4492,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyNotificationCountResponse"
                 }
@@ -4910,7 +4529,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -4950,7 +4569,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -5012,44 +4631,65 @@
           {
             "name": "x-os-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyFriendTimetableDto"
                 }
@@ -5075,7 +4715,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyFriendLinkResponse"
                 }
@@ -5112,7 +4752,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyEvSummary"
                 }
@@ -5127,7 +4767,7 @@
         ]
       }
     },
-    "/ev/v1/users/me/lectures/latest": {
+    "/v1/ev-service/v1/users/me/lectures/latest": {
       "get": {
         "tags": [
           "v-1-compat-taken-lecture-controller"
@@ -5141,38 +4781,58 @@
             "schema": {
               "type": "string"
             }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyTakenLecturesResponse"
-                }
-              }
+          },
+          {
+            "name": "x-os-type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
-          }
-        },
-        "security": [
+          },
           {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/ev-service/v1/users/me/lectures/latest": {
-      "get": {
-        "tags": [
-          "v-1-compat-taken-lecture-controller"
-        ],
-        "operationId": "getMyLatestLectures_1",
-        "parameters": [
+            "name": "x-app-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
-            "name": "filter",
-            "in": "query",
+            "name": "x-app-type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-os-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-model",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-language",
+            "in": "header",
             "required": false,
             "schema": {
               "type": "string"
@@ -5183,79 +4843,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyTakenLecturesResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/v1/ev/v1/users/me/lectures/latest": {
-      "get": {
-        "tags": [
-          "v-1-compat-taken-lecture-controller"
-        ],
-        "operationId": "getMyLatestLectures_2",
-        "parameters": [
-          {
-            "name": "filter",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyTakenLecturesResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/v1/ev-service/v1/users/me/lectures/latest": {
-      "get": {
-        "tags": [
-          "v-1-compat-taken-lecture-controller"
-        ],
-        "operationId": "getMyLatestLectures_3",
-        "parameters": [
-          {
-            "name": "filter",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyTakenLecturesResponse"
                 }
@@ -5281,85 +4869,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacySearchTagGroupsResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/ev-service/v1/tags/search": {
-      "get": {
-        "tags": [
-          "v-1-compat-course-search-controller"
-        ],
-        "operationId": "getSearchTags_1",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacySearchTagGroupsResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/ev/v1/tags/search": {
-      "get": {
-        "tags": [
-          "v-1-compat-course-search-controller"
-        ],
-        "operationId": "getSearchTags_2",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacySearchTagGroupsResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/v1/ev/v1/tags/search": {
-      "get": {
-        "tags": [
-          "v-1-compat-course-search-controller"
-        ],
-        "operationId": "getSearchTags_3",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacySearchTagGroupsResponse"
                 }
@@ -5398,47 +4908,58 @@
             "schema": {
               "type": "string"
             }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvCursorPageLegacyEvaluationWithLectureDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
+          },
           {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/ev/v1/tags/main/{tagId}/evaluations": {
-      "get": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "getMainTagEvaluations_1",
-        "parameters": [
-          {
-            "name": "tagId",
-            "in": "path",
-            "required": true,
+            "name": "x-os-type",
+            "in": "header",
+            "required": false,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string"
             }
           },
           {
-            "name": "cursor",
-            "in": "query",
+            "name": "x-app-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-app-type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-os-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-model",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-language",
+            "in": "header",
             "required": false,
             "schema": {
               "type": "string"
@@ -5449,97 +4970,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvCursorPageLegacyEvaluationWithLectureDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/ev-service/v1/tags/main/{tagId}/evaluations": {
-      "get": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "getMainTagEvaluations_2",
-        "parameters": [
-          {
-            "name": "tagId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          },
-          {
-            "name": "cursor",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvCursorPageLegacyEvaluationWithLectureDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/v1/ev/v1/tags/main/{tagId}/evaluations": {
-      "get": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "getMainTagEvaluations_3",
-        "parameters": [
-          {
-            "name": "tagId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          },
-          {
-            "name": "cursor",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyEvCursorPageLegacyEvaluationWithLectureDto"
                 }
@@ -5561,37 +4992,69 @@
           "v-1-compat-ev-controller"
         ],
         "operationId": "getMainTags",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvTagGroupDto"
-                }
-              }
+        "parameters": [
+          {
+            "name": "x-os-type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-app-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-app-type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-os-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-model",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-language",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/v1/ev/v1/tags/main": {
-      "get": {
-        "tags": [
-          "v-1-compat-ev-controller"
         ],
-        "operationId": "getMainTags_1",
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyEvTagGroupDto"
                 }
@@ -5607,59 +5070,7 @@
         ]
       }
     },
-    "/ev/v1/tags/main": {
-      "get": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "getMainTags_2",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvTagGroupDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/ev-service/v1/tags/main": {
-      "get": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "getMainTags_3",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvTagGroupDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/ev/v1/lectures/{lectureId}/evaluations/users/me": {
+    "/v1/ev-service/v1/lectures/{lectureId}/evaluations/users/me": {
       "get": {
         "tags": [
           "v-1-compat-ev-controller"
@@ -5680,7 +5091,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyMyLectureEvaluationsResponse"
                 }
@@ -5696,118 +5107,7 @@
         ]
       }
     },
-    "/ev-service/v1/lectures/{lectureId}/evaluations/users/me": {
-      "get": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "getMyEvaluationsOfLecture_1",
-        "parameters": [
-          {
-            "name": "lectureId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyMyLectureEvaluationsResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/v1/ev/v1/lectures/{lectureId}/evaluations/users/me": {
-      "get": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "getMyEvaluationsOfLecture_2",
-        "parameters": [
-          {
-            "name": "lectureId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyMyLectureEvaluationsResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/v1/ev-service/v1/lectures/{lectureId}/evaluations/users/me": {
-      "get": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "getMyEvaluationsOfLecture_3",
-        "parameters": [
-          {
-            "name": "lectureId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyMyLectureEvaluationsResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/ev-service/v1/lectures/{lectureId}/evaluations": {
+    "/v1/ev-service/v1/lectures/{lectureId}/evaluations": {
       "get": {
         "tags": [
           "v-1-compat-ev-controller"
@@ -5836,7 +5136,11 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "latest",
+                "recommended"
+              ]
             }
           },
           {
@@ -5862,283 +5166,25 @@
                 4
               ]
             }
+          },
+          {
+            "name": "include_mine",
+            "in": "query",
+            "description": "true면 본인 강의평을 첫 페이지 맨 위에 포함한다",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyEvCursorPageLegacyEvaluationWithSemesterDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/v1/ev-service/v1/lectures/{lectureId}/evaluations": {
-      "get": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "getEvaluationsOfLecture_1",
-        "parameters": [
-          {
-            "name": "lectureId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          },
-          {
-            "name": "cursor",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "sort",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "year",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "semester",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "enum": [
-                1,
-                2,
-                3,
-                4
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvCursorPageLegacyEvaluationWithSemesterDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/v1/ev/v1/lectures/{lectureId}/evaluations": {
-      "get": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "getEvaluationsOfLecture_2",
-        "parameters": [
-          {
-            "name": "lectureId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          },
-          {
-            "name": "cursor",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "sort",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "year",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "semester",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "enum": [
-                1,
-                2,
-                3,
-                4
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvCursorPageLegacyEvaluationWithSemesterDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/ev/v1/lectures/{lectureId}/evaluations": {
-      "get": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "getEvaluationsOfLecture_3",
-        "parameters": [
-          {
-            "name": "lectureId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          },
-          {
-            "name": "cursor",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "sort",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "year",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "semester",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "enum": [
-                1,
-                2,
-                3,
-                4
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvCursorPageLegacyEvaluationWithSemesterDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/ev-service/v1/lectures/{lectureId}/evaluation-summary": {
-      "get": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "getEvaluationSummaryOfLecture",
-        "parameters": [
-          {
-            "name": "lectureId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvLectureSummaryResponse"
                 }
               }
             }
@@ -6157,7 +5203,7 @@
         "tags": [
           "v-1-compat-ev-controller"
         ],
-        "operationId": "getEvaluationSummaryOfLecture_1",
+        "operationId": "getEvaluationSummaryOfLecture",
         "parameters": [
           {
             "name": "lectureId",
@@ -6167,200 +5213,71 @@
               "type": "integer",
               "format": "int64"
             }
+          },
+          {
+            "name": "x-os-type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-app-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-app-type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-os-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-model",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-language",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyEvLectureSummaryResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/ev/v1/lectures/{lectureId}/evaluation-summary": {
-      "get": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "getEvaluationSummaryOfLecture_2",
-        "parameters": [
-          {
-            "name": "lectureId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvLectureSummaryResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/v1/ev/v1/lectures/{lectureId}/evaluation-summary": {
-      "get": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "getEvaluationSummaryOfLecture_3",
-        "parameters": [
-          {
-            "name": "lectureId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvLectureSummaryResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/v1/ev/v1/lectures/{courseId}/semester-lectures": {
-      "get": {
-        "tags": [
-          "v-1-compat-course-search-controller"
-        ],
-        "operationId": "getSemesterLectures",
-        "parameters": [
-          {
-            "name": "courseId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyCourseWithSemestersResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/ev-service/v1/lectures/{courseId}/semester-lectures": {
-      "get": {
-        "tags": [
-          "v-1-compat-course-search-controller"
-        ],
-        "operationId": "getSemesterLectures_1",
-        "parameters": [
-          {
-            "name": "courseId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyCourseWithSemestersResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/ev/v1/lectures/{courseId}/semester-lectures": {
-      "get": {
-        "tags": [
-          "v-1-compat-course-search-controller"
-        ],
-        "operationId": "getSemesterLectures_2",
-        "parameters": [
-          {
-            "name": "courseId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyCourseWithSemestersResponse"
                 }
               }
             }
@@ -6379,7 +5296,7 @@
         "tags": [
           "v-1-compat-course-search-controller"
         ],
-        "operationId": "getSemesterLectures_3",
+        "operationId": "getSemesterLectures",
         "parameters": [
           {
             "name": "courseId",
@@ -6389,13 +5306,69 @@
               "type": "integer",
               "format": "int64"
             }
+          },
+          {
+            "name": "x-os-type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-app-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-app-type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-os-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-model",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-language",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyCourseWithSemestersResponse"
                 }
@@ -6411,7 +5384,7 @@
         ]
       }
     },
-    "/ev-service/v1/lectures/id": {
+    "/v1/ev-service/v1/lectures/id": {
       "get": {
         "tags": [
           "v-1-compat-course-search-controller"
@@ -6447,175 +5420,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyLectureIdResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          },
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/v1/ev-service/v1/lectures/id": {
-      "get": {
-        "tags": [
-          "v-1-compat-course-search-controller"
-        ],
-        "operationId": "getCourseIdByLectureId_1",
-        "parameters": [
-          {
-            "name": "semesterLectureSnuttId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "course_number",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "instructor",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyLectureIdResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          },
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/ev/v1/lectures/id": {
-      "get": {
-        "tags": [
-          "v-1-compat-course-search-controller"
-        ],
-        "operationId": "getCourseIdByLectureId_2",
-        "parameters": [
-          {
-            "name": "semesterLectureSnuttId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "course_number",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "instructor",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyLectureIdResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          },
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/v1/ev/v1/lectures/id": {
-      "get": {
-        "tags": [
-          "v-1-compat-course-search-controller"
-        ],
-        "operationId": "getCourseIdByLectureId_3",
-        "parameters": [
-          {
-            "name": "semesterLectureSnuttId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "course_number",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "instructor",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyLectureIdResponse"
                 }
@@ -6640,7 +5445,7 @@
         "tags": [
           "v-1-compat-course-search-controller"
         ],
-        "operationId": "searchLectures_1",
+        "operationId": "searchEvLectures",
         "parameters": [
           {
             "name": "query",
@@ -6672,215 +5477,58 @@
                 "format": "int64"
               }
             }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyCourseSearchResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
+          },
           {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/v1/ev/v1/lectures": {
-      "get": {
-        "tags": [
-          "v-1-compat-course-search-controller"
-        ],
-        "operationId": "searchLectures_2",
-        "parameters": [
-          {
-            "name": "query",
-            "in": "query",
+            "name": "x-os-type",
+            "in": "header",
             "required": false,
             "schema": {
-              "type": "string",
-              "default": ""
+              "type": "string"
             }
           },
           {
-            "name": "page",
-            "in": "query",
+            "name": "x-app-version",
+            "in": "header",
             "required": false,
             "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 0
+              "type": "string"
             }
           },
           {
-            "name": "tags",
-            "in": "query",
+            "name": "x-app-type",
+            "in": "header",
             "required": false,
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "integer",
-                "format": "int64"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyCourseSearchResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/ev-service/v1/lectures": {
-      "get": {
-        "tags": [
-          "v-1-compat-course-search-controller"
-        ],
-        "operationId": "searchLectures_3",
-        "parameters": [
-          {
-            "name": "query",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "default": ""
+              "type": "string"
             }
           },
           {
-            "name": "page",
-            "in": "query",
+            "name": "x-os-version",
+            "in": "header",
             "required": false,
             "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 0
+              "type": "string"
             }
           },
           {
-            "name": "tags",
-            "in": "query",
+            "name": "x-device-id",
+            "in": "header",
             "required": false,
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "integer",
-                "format": "int64"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyCourseSearchResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/ev/v1/lectures": {
-      "get": {
-        "tags": [
-          "v-1-compat-course-search-controller"
-        ],
-        "operationId": "searchLectures_4",
-        "parameters": [
-          {
-            "name": "query",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "default": ""
+              "type": "string"
             }
           },
           {
-            "name": "page",
-            "in": "query",
+            "name": "x-device-model",
+            "in": "header",
             "required": false,
             "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 0
+              "type": "string"
             }
           },
           {
-            "name": "tags",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "integer",
-                "format": "int64"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyCourseSearchResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/v1/ev/v1/evaluations/users/me": {
-      "get": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "getMyEvaluations",
-        "parameters": [
-          {
-            "name": "cursor",
-            "in": "query",
+            "name": "x-language",
+            "in": "header",
             "required": false,
             "schema": {
               "type": "string"
@@ -6891,45 +5539,9 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LegacyEvCursorPageLegacyEvaluationWithLectureDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/ev/v1/evaluations/users/me": {
-      "get": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "getMyEvaluations_1",
-        "parameters": [
-          {
-            "name": "cursor",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvCursorPageLegacyEvaluationWithLectureDto"
+                  "$ref": "#/components/schemas/LegacyCourseSearchResponse"
                 }
               }
             }
@@ -6948,11 +5560,67 @@
         "tags": [
           "v-1-compat-ev-controller"
         ],
-        "operationId": "getMyEvaluations_2",
+        "operationId": "getMyEvaluations",
         "parameters": [
           {
             "name": "cursor",
             "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-os-type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-app-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-app-type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-os-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-model",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-language",
+            "in": "header",
             "required": false,
             "schema": {
               "type": "string"
@@ -6963,43 +5631,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LegacyEvCursorPageLegacyEvaluationWithLectureDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/ev-service/v1/evaluations/users/me": {
-      "get": {
-        "tags": [
-          "v-1-compat-ev-controller"
-        ],
-        "operationId": "getMyEvaluations_3",
-        "parameters": [
-          {
-            "name": "cursor",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyEvCursorPageLegacyEvaluationWithLectureDto"
                 }
@@ -7049,44 +5681,65 @@
           {
             "name": "x-os-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyDiaryTargetLectureDto"
                 }
@@ -7112,44 +5765,65 @@
           {
             "name": "x-os-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -7178,7 +5852,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -7207,7 +5881,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -7235,7 +5909,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyCoursebookDto"
                 }
@@ -7302,7 +5976,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyCoursebookOfficialResponse"
                 }
@@ -7327,44 +6001,65 @@
           {
             "name": "x-os-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "object",
                   "additionalProperties": {
@@ -7402,7 +6097,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyPageResponseLegacyLectureBuildingDto"
                 }
@@ -7451,44 +6146,65 @@
           {
             "name": "x-os-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyBookmarksResponse"
                 }
@@ -7525,7 +6241,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyExistsResponse"
                 }
@@ -7561,7 +6277,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -7580,31 +6296,21 @@
         ]
       }
     },
-    "/admin/users/search": {
+    "/v1/admin/registrationPeriods": {
       "get": {
         "tags": [
           "v-1-admin-controller"
         ],
-        "operationId": "searchUsersByEmail_1",
-        "parameters": [
-          {
-            "name": "email",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "operationId": "getSemesterRegistrationPeriods",
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/LegacyAdminUserSearchResponse"
+                    "$ref": "#/components/schemas/SemesterRegistrationPeriod"
                   }
                 }
               }
@@ -7655,7 +6361,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SemesterRegistrationPeriod"
                 }
@@ -7671,35 +6377,27 @@
         ]
       }
     },
-    "/admin/registrationPeriods/{year}/{semester}": {
+    "/v1/admin/mailLogs": {
       "get": {
         "tags": [
           "v-1-admin-controller"
         ],
-        "operationId": "getSemesterRegistrationPeriod_1",
+        "operationId": "getMailLogs",
         "parameters": [
           {
-            "name": "year",
-            "in": "path",
-            "required": true,
+            "name": "email",
+            "in": "query",
+            "required": false,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string"
             }
           },
           {
-            "name": "semester",
-            "in": "path",
-            "required": true,
+            "name": "localId",
+            "in": "query",
+            "required": false,
             "schema": {
-              "type": "integer",
-              "format": "int32",
-              "enum": [
-                1,
-                2,
-                3,
-                4
-              ]
+              "type": "string"
             }
           }
         ],
@@ -7707,66 +6405,11 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/SemesterRegistrationPeriod"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/admin/registrationPeriods": {
-      "get": {
-        "tags": [
-          "v-1-admin-controller"
-        ],
-        "operationId": "getSemesterRegistrationPeriods",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/SemesterRegistrationPeriod"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/v1/admin/registrationPeriods": {
-      "get": {
-        "tags": [
-          "v-1-admin-controller"
-        ],
-        "operationId": "getSemesterRegistrationPeriods_1",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SemesterRegistrationPeriod"
+                    "$ref": "#/components/schemas/LegacyAdminMailLogResponse"
                   }
                 }
               }
@@ -7791,69 +6434,11 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/DiaryQuestion"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/admin/diary/questions": {
-      "get": {
-        "tags": [
-          "v-1-admin-controller"
-        ],
-        "operationId": "getDiaryQuestions_1",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DiaryQuestion"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "legacyApiKey": [],
-            "legacyToken": []
-          }
-        ]
-      }
-    },
-    "/admin/diary/dailyClassTypes": {
-      "get": {
-        "tags": [
-          "v-1-admin-controller"
-        ],
-        "operationId": "getAllDiaryDailyClassTypes",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DiaryDailyClassType"
                   }
                 }
               }
@@ -7873,12 +6458,12 @@
         "tags": [
           "v-1-admin-controller"
         ],
-        "operationId": "getAllDiaryDailyClassTypes_1",
+        "operationId": "getAllDiaryDailyClassTypes",
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -7907,7 +6492,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyOkResponse"
                 }
@@ -7974,7 +6559,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LegacyOkResponse"
                 }
@@ -8301,14 +6886,7 @@
             "type": "string"
           },
           "color": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/LegacyColorSetDto"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/LegacyColorSetDto"
           },
           "colorIndex": {
             "type": "integer",
@@ -8318,14 +6896,7 @@
             "type": "string"
           },
           "snuttEvLecture": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/LegacyEvLectureIdDto"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/LegacyEvLectureIdDto"
           },
           "categoryPre2025": {
             "type": [
@@ -8447,14 +7018,7 @@
             ]
           },
           "color": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/LegacyColorRequest"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/LegacyColorRequest"
           },
           "colorIndex": {
             "type": [
@@ -8641,14 +7205,7 @@
             "type": "boolean"
           },
           "origin": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/LegacyThemeOriginDto"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/LegacyThemeOriginDto"
           },
           "status": {
             "type": "string",
@@ -8660,14 +7217,7 @@
             ]
           },
           "publishInfo": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/LegacyThemePublishInfoDto"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/LegacyThemePublishInfoDto"
           }
         },
         "required": [
@@ -8820,14 +7370,7 @@
             ]
           },
           "color": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/LegacyColorRequest"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/LegacyColorRequest"
           },
           "colorIndex": {
             "type": [
@@ -9127,14 +7670,7 @@
             "type": "boolean"
           },
           "snuttEvLecture": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/LegacyEvSummary"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/LegacyEvSummary"
           },
           "categoryPre2025": {
             "type": [
@@ -9401,6 +7937,22 @@
           "lecture_evaluation_id"
         ]
       },
+      "LegacyEvaluationLikeResponse": {
+        "type": "object",
+        "properties": {
+          "like_count": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "is_liked": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "is_liked",
+          "like_count"
+        ]
+      },
       "LegacyDiarySubmissionRequest": {
         "type": "object",
         "properties": {
@@ -9502,14 +8054,7 @@
             }
           },
           "nextLecture": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/LegacyDiaryTargetLectureDto"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/LegacyDiaryTargetLectureDto"
           }
         },
         "required": [
@@ -9586,13 +8131,11 @@
             "type": "string"
           },
           "email": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string"
           }
         },
         "required": [
+          "email",
           "id",
           "password"
         ]
@@ -9934,6 +8477,9 @@
           },
           "is_reportable": {
             "type": "boolean"
+          },
+          "is_mine": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -9941,6 +8487,7 @@
           "from_snuev",
           "is_hidden",
           "is_liked",
+          "is_mine",
           "is_modifiable",
           "is_reportable",
           "is_reported",
@@ -10120,14 +8667,7 @@
         "type": "object",
         "properties": {
           "current": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/LegacyYearAndSemesterDto"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/LegacyYearAndSemesterDto"
           },
           "next": {
             "$ref": "#/components/schemas/LegacyYearAndSemesterDto"
@@ -10205,10 +8745,6 @@
               "integer",
               "null"
             ],
-            "format": "int32"
-          },
-          "hidden_days": {
-            "type": "integer",
             "format": "int32"
           }
         },
@@ -10494,14 +9030,7 @@
             "type": "string"
           },
           "color": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/LegacyColorSetDto"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/LegacyColorSetDto"
           },
           "colorIndex": {
             "type": "integer",
@@ -10591,11 +9120,33 @@
           "taken_semester": {
             "type": "integer",
             "format": "int32"
+          },
+          "avg_rating": {
+            "type": "number",
+            "format": "double"
+          },
+          "evaluation_count": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "my_evaluation_exists": {
+            "type": "boolean",
+            "description": "해당 강의에 해당 학기(`taken_year`, `taken_semester`)에 본인이 강의평을 썼으면 true, 강의평이 없거나 다른 학기에만 썼으면 false다."
+          },
+          "recent_evaluations": {
+            "type": "array",
+            "description": "해당 강의에 달린 강의평 중 최근 학기 순으로 최대 2개다. 수강 학기와 작성자를 구분하지 않는다.",
+            "items": {
+              "$ref": "#/components/schemas/LegacyEvaluationWithSemesterDto"
+            }
           }
         },
         "required": [
           "course_number",
+          "evaluation_count",
           "instructor",
+          "my_evaluation_exists",
+          "recent_evaluations",
           "taken_semester",
           "taken_year",
           "title"
@@ -10639,6 +9190,13 @@
           "ordering": {
             "type": "integer",
             "format": "int32"
+          },
+          "key": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "고정 식별자. name은 표시용이라 바뀔 수 있다."
           }
         },
         "required": [
@@ -10814,19 +9372,15 @@
             "format": "int32"
           },
           "lecture": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/LegacyEvaluationCourseDto"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/LegacyEvaluationCourseDto"
           },
           "is_modifiable": {
             "type": "boolean"
           },
           "is_reportable": {
+            "type": "boolean"
+          },
+          "is_mine": {
             "type": "boolean"
           }
         },
@@ -10835,6 +9389,7 @@
           "from_snuev",
           "is_hidden",
           "is_liked",
+          "is_mine",
           "is_modifiable",
           "is_reportable",
           "is_reported",
@@ -11480,14 +10035,7 @@
             "$ref": "#/components/schemas/LegacyGeoCoordinateDto"
           },
           "locationInDecimal": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/LegacyGeoCoordinateDto"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/LegacyGeoCoordinateDto"
           }
         },
         "required": [
@@ -11593,14 +10141,7 @@
             "type": "string"
           },
           "snuttEvLecture": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/LegacyEvSummary"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/LegacyEvSummary"
           },
           "categoryPre2025": {
             "type": [
@@ -11828,6 +10369,79 @@
           "registrationPeriodList",
           "semester",
           "year"
+        ]
+      },
+      "LegacyAdminMailLogResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "VERIFICATION",
+              "PASSWORD_RESET",
+              "FIND_ID"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "SENT",
+              "SUPPRESSED",
+              "FAILED",
+              "THROTTLED",
+              "NO_ACCOUNT",
+              "NO_EMAIL"
+            ]
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "requestedLocalId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "subject": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "body": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "errorMessage": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "createdAt": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "updatedAt": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "createdAt",
+          "id",
+          "status",
+          "type",
+          "updatedAt"
         ]
       },
       "DiaryQuestion": {

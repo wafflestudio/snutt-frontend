@@ -39,6 +39,9 @@ const TAKEN: SnuttV2.TakenLectureResponse[] = [
     credit: 3,
     takenYear: 2025,
     takenSemester: 3,
+    evalCount: 0,
+    myEvaluationExists: false,
+    recentEvaluations: [],
   },
   {
     id: 2,
@@ -48,6 +51,9 @@ const TAKEN: SnuttV2.TakenLectureResponse[] = [
     courseNumber: 'M0000.000200',
     takenYear: 2025,
     takenSemester: 1,
+    evalCount: 0,
+    myEvaluationExists: false,
+    recentEvaluations: [],
   },
 ];
 
@@ -69,7 +75,7 @@ const useServer = () => {
       return HttpResponse.json(page(params.tag === 'WELL_TAUGHT' ? [OTHER] : [FIRST]));
     }),
     http.get(api('/v2/evaluations/me'), () =>
-      HttpResponse.json(page(fake.evaluations.filter(({ isModifiable }) => isModifiable))),
+      HttpResponse.json(page(fake.evaluations.filter(({ isMine }) => isMine))),
     ),
     http.get(api('/v2/users/me/lectures/latest'), ({ request }) => {
       expect(new URL(request.url).searchParams.get('excludeEvaluated')).toBe('true');

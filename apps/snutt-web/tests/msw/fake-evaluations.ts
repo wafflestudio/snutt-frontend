@@ -5,7 +5,7 @@ import { api } from './server';
 
 type FakeEvaluationsOptions = {
   courseId: number;
-  /** 처음 강의평. isModifiable 이 true 인 것이 내 강의평이다 */
+  /** 처음 강의평. isMine 이 true 인 것이 내 강의평이다 */
   evaluations: readonly SnuttV2.EvaluationResponse[];
   /** 강좌의 학기별 강의 (GET /v2/courses/:courseId). myEvaluationExists 는 강의평을 쓰면 바뀐다 */
   lectures: readonly SnuttV2.CourseLectureResponse[];
@@ -17,7 +17,7 @@ type ReceivedRequest = { method: string; path: string; body?: unknown };
 /**
  * 강의평 화면 테스트용 가짜 서버. 한 강좌의 강의평을 메모리에 두고 v2 처럼 응답한다.
  * - 통계는 강의평에서 다시 계산한다. 목록은 정렬과 상관없이 한 쪽에 모두 준다
- * - 쓰면 내 강의평(isModifiable)으로 맨 앞에 넣고 그 강의의 myEvaluationExists 를 켠다. 이미 쓴 강의면 409
+ * - 쓰면 내 강의평(isMine)으로 맨 앞에 넣고 그 강의의 myEvaluationExists 를 켠다. 이미 쓴 강의면 409
  * - 좋아요는 isLiked · likeCount 를 바꿔 돌려준다. 삭제 · 신고는 본문 없이 성공한다
  */
 export const fakeEvaluations = (initial: FakeEvaluationsOptions) => {
@@ -61,7 +61,7 @@ export const fakeEvaluations = (initial: FakeEvaluationsOptions) => {
       } satisfies SnuttV2.CursorPageEvaluationResponse),
     ),
     http.get(api(`/v2/courses/${courseId}/evaluations/me`), () =>
-      HttpResponse.json(evaluations.filter(({ isModifiable }) => isModifiable)),
+      HttpResponse.json(evaluations.filter(({ isMine }) => isMine)),
     ),
     http.get(api(`/v2/courses/${courseId}`), () =>
       HttpResponse.json({
@@ -94,7 +94,7 @@ export const fakeEvaluations = (initial: FakeEvaluationsOptions) => {
         semester: lecture.semester,
         likeCount: 0,
         isLiked: false,
-        isModifiable: true,
+        isMine: true,
         fromSnuev: false,
       };
       evaluations.unshift(evaluation);
