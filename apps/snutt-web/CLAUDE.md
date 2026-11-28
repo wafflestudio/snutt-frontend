@@ -83,6 +83,7 @@ export const timetableQueries = {
 
 - 서버 호출은 `callApi('<메서드> <경로>', { params, query, body })` 로 한다. 엔드포인트 이름과 인자 타입은 `@sf/snutt-api` 의 v2 정의를 따른다. 토큰은 `callApi` 가 붙이므로 넘기지 않는다.
 - 접속 주소와 앱 key 는 `.env.local` 의 `NEXT_PUBLIC_API_BASE_URL`, `NEXT_PUBLIC_CLIENT_KEY` (git 에 올리지 않는다). `x-os-type` 은 `web` 고정.
+- 네이버 지도 Client ID: `NEXT_PUBLIC_NAVER_MAP_CLIENT_ID` (공개 값. 배포는 secret `SNUTT_WEB_NAVER_MAP_CLIENT_ID`). SDK 로드는 `shared/lib/naver-map.ts`. 없으면 강의 상세의 지도를 숨긴다.
 - `NEXT_PUBLIC_TIMETABLE_PICKER_ORIGINS`: timetable-picker 팝업/WebView 를 열 수 있는 origin 목록(콤마 구분). 빌드 시 번들에 inlined. 없으면 모든 요청을 거부한다.
 - 실제 서버와의 연결은 개발 서버의 `/login` 에서 로그인해서 확인한다. (`/api-check` 는 응답을 그대로 보는 개발 페이지)
 

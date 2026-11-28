@@ -162,6 +162,8 @@ export const fakeSnutt = ({ timetables, semesters, palette, coursebook = [] }: F
         semesters.map(({ year, term }, index) => ({ id: index + 1, year, semester: term, updatedAt: 0 })),
       ),
     ),
+    // 강의 상세의 지도(지도 Client ID 가 있는 빌드에서만 묻는다). 가짜 서버는 건물 위치를 모른다
+    http.get(api('/v2/buildings'), () => HttpResponse.json([])),
     http.get(api('/v2/themes'), () =>
       HttpResponse.json([
         {

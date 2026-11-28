@@ -24,6 +24,7 @@ import { openInPopup } from '@/shared/lib/open-in-popup';
 import type { LectureDetail, LectureDetailView } from '@/features/main/main-view';
 import { ClassTimeFields, getClassTimeError, type TimeRow, toClassTimes, toTimeRows } from './ClassTimeFields';
 import { EvaluationView } from './EvaluationView';
+import { LectureMap } from './LectureMap';
 import { PanelColumn, PanelNav } from './PanelColumn';
 
 type SaveOptions = { force: boolean; onSuccess: () => void; onOverlap: (message: string) => void };
@@ -52,7 +53,7 @@ type LectureDetailPanelProps = {
 /**
  * 강의 상세 (Figma `강의 상세`). 목록 옆에 열린다.
  * `강의편집` 을 누르면 같은 자리에서 필드가 입력칸으로 바뀐다 (detail.editing). 수강 정보는 고칠 수 없다.
- * 지도에서 보기는 6-3. 강의평 쪽은 EvaluationView.
+ * 지도에서 보기는 LectureMap. 강의평 쪽은 EvaluationView.
  */
 export function LectureDetailPanel({
   detail,
@@ -302,6 +303,7 @@ function ClassTimeSection({ classTimes }: { classTimes: readonly ClassTime[] }) 
       ) : (
         <Empty />
       )}
+      <LectureMap classTimes={classTimes} />
     </InfoSection>
   );
 }
