@@ -8,6 +8,7 @@ import { getFailureMessage } from '@/api/errors';
 import { Button } from '@/shared/ui/Button';
 import { TextField } from '@/shared/ui/TextField';
 import { AuthPage, FormError } from './AuthPage';
+import { SocialLoginButtons } from './SocialLoginButtons';
 
 type LoginFormProps = {
   /**
@@ -15,10 +16,15 @@ type LoginFormProps = {
    * InlineLogin 이 현재 picker URL 을 넘기면 회원가입 뒤 picker 로 돌아온다.
    */
   next?: string;
+  /**
+   * 소셜 로그인 버튼을 보여 줄지 (기본 true). timetable-picker 는 RN WebView 에서도 열려 SDK 팝업이 뜨지 않고,
+   * 카카오는 화면을 떠났다 돌아와 팝업 창 연결(opener)이 끊기므로 끈다
+   */
+  socialLogin?: boolean;
 };
 
-/** 아이디 로그인. 로그인하면 RedirectIfSignedIn 이 돌아갈 곳으로 보낸다. 소셜 로그인은 3-2, 비밀번호 찾기는 3-3 */
-export function LoginForm({ next: nextProp }: LoginFormProps = {}) {
+/** 아이디 · 소셜 로그인. 로그인하면 RedirectIfSignedIn 이 돌아갈 곳으로 보낸다. 비밀번호 찾기는 3-3 */
+export function LoginForm({ next: nextProp, socialLogin = true }: LoginFormProps = {}) {
   const [localId, setLocalId] = useState('');
   const [password, setPassword] = useState('');
   const login = useLocalLogin();
@@ -57,6 +63,7 @@ export function LoginForm({ next: nextProp }: LoginFormProps = {}) {
           로그인
         </Button>
       </form>
+      {socialLogin && <SocialLoginButtons next={next ?? '/'} />}
       <p className="text-center text-13-regular text-alternative">
         계정이 없나요?{' '}
         <Link href={registerHref} className="text-plain underline">

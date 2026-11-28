@@ -46,6 +46,6 @@ export function InlineLogin({ children }: { children?: ReactNode }) {
   if (signedIn === null) return null;
   // 현재 경로(+ 쿼리)를 next 로 넘겨 회원가입 → 로그인 후 이 페이지로 돌아오게 한다.
   // signedIn === false 는 클라이언트에서만 발생하므로 window.location 접근이 안전하다.
-  if (!signedIn) return <LoginForm next={window.location.pathname + window.location.search} />;
+  if (!signedIn) return <LoginForm next={window.location.pathname + window.location.search} socialLogin={false} />;
   return <>{children ?? null}</>;
 }

@@ -5,7 +5,7 @@ import { type FormEvent, useState } from 'react';
 import { getFailureMessage } from '@/api/errors';
 import { useDeleteAccount, userQueries, useUpdateNickname } from '@/api/users';
 import { formatNicknameWithTag } from '@/domain/friend';
-import { hasLocalAccount, SOCIAL_PROVIDER_LABELS, SOCIAL_PROVIDERS, type User } from '@/domain/user';
+import { hasLocalAccount, type User } from '@/domain/user';
 import { Button } from '@/shared/ui/Button';
 import { ConfirmDialog, NoticeDialog } from '@/shared/ui/Dialog';
 import { IconButton } from '@/shared/ui/IconButton';
@@ -14,13 +14,14 @@ import { TextField } from '@/shared/ui/TextField';
 import { Toast } from '@/shared/ui/Toast';
 import { MoreCard, MoreCardButtonRow, MoreCardRow, MoreGroup, MoreSubPage, MoreValue } from './MoreLayout';
 import { PasswordDialog } from './PasswordDialog';
+import { SocialAccountsGroup } from './SocialAccountsGroup';
 
 type AccountPageProps = { onBack: () => void; onClose: () => void };
 
 /**
  * 내 계정 (Figma `더보기_내 계정`): 닉네임(고치기), 보안(비밀번호 변경), 이메일, SNS 계정 연동 및 해제, 계정삭제.
  * - 아이디: v2 내 정보에 아이디(localId)가 없어 줄을 뺐다 (디자인 문의 4-32)
- * - SNS 연동 · 해제: 소셜 SDK 와 앱 키가 필요해(3-2) 지금은 상태만 보여 준다
+ * - SNS 연동 · 해제: SocialAccountsGroup
  */
 export function AccountPage({ onBack, onClose }: AccountPageProps) {
   const me = useQuery(userQueries.me());
@@ -60,14 +61,7 @@ function AccountDetails({ user }: { user: User }) {
         </MoreCardRow>
       </MoreGroup>
 
-      <MoreGroup label="SNS 계정 연동 및 해제">
-        {SOCIAL_PROVIDERS.map((provider) => (
-          <MoreCardRow key={provider} label={SOCIAL_PROVIDER_LABELS[provider]}>
-            {/* 연동 · 해제는 3-2 (소셜 SDK) 에서 붙인다 */}
-            <MoreValue>{user.providers.includes(provider) ? '연동됨' : '연동하기'}</MoreValue>
-          </MoreCardRow>
-        ))}
-      </MoreGroup>
+      <SocialAccountsGroup user={user} onDone={setToast} />
 
       <MoreCard className="py-0">
         <button

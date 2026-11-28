@@ -12,6 +12,17 @@ import { timetableSettings } from '@/shared/lib/timetable-settings';
 import { problem } from '../../msw/fixtures';
 import { api, server } from '../../msw/server';
 
+// SDK 팝업 · 카카오로의 이동은 브라우저 밖이라 가짜로 바꾼다
+const { getPopupAccessToken, startKakaoAuth } = vi.hoisted(() => ({
+  getPopupAccessToken: vi.fn(),
+  startKakaoAuth: vi.fn(),
+}));
+vi.mock('@/shared/lib/social-auth', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/shared/lib/social-auth')>()),
+  getPopupAccessToken,
+  startKakaoAuth,
+}));
+
 const ME: SnuttV2.UserResponse = {
   id: 1,
   nickname: '고독한 초코와플',
@@ -84,11 +95,71 @@ describe('내 계정', () => {
     expect(screen.getByText('waffle@snu.ac.kr')).toBeInTheDocument();
     expect(screen.getByText('카카오 계정').parentElement).toHaveTextContent('연동됨');
     expect(screen.getByText('구글 계정').parentElement).toHaveTextContent('연동하기');
+    // 애플은 웹 로그인이 없어 앱에서만 연동한다
+    expect(screen.getByText('애플 계정').parentElement).toHaveTextContent('앱에서 연동할 수 있습니다');
 
     await userEvent.click(screen.getByRole('button', { name: '더보기로' }));
     expect(onNavigate).toHaveBeenCalledWith('menu');
     await userEvent.click(screen.getByRole('button', { name: '패널 접기' }));
     expect(onCollapse).toHaveBeenCalled();
+  });
+
+  it('구글 팝업에서 받은 토큰으로 연동하고, 새 토큰을 저장한다', async () => {
+    const body = vi.fn();
+    getPopupAccessToken.mockResolvedValue('google-access');
+    server.use(
+      http.post(api('/v2/users/me/social/GOOGLE'), async ({ request }) => {
+        body(await request.json());
+        return HttpResponse.json({ authProviders: ['LOCAL', 'KAKAO', 'GOOGLE'], accessToken: 'new', refreshToken: 'new-r' });
+      }),
+    );
+    renderPanel('account');
+    await userEvent.click(await screen.findByRole('button', { name: '구글 계정 연동하기' }));
+
+    expect(await screen.findByText('구글 계정을 연동했습니다')).toBeInTheDocument();
+    expect(screen.getByText('구글 계정').parentElement).toHaveTextContent('연동됨');
+    expect(body).toHaveBeenCalledWith({ token: 'google-access' });
+    expect(getAuthTokens()).toEqual({ accessToken: 'new', refreshToken: 'new-r' });
+  });
+
+  it('카카오 연동은 이 화면으로 돌아오도록 카카오 화면으로 보낸다', async () => {
+    server.use(http.get(api('/v2/users/me'), () => HttpResponse.json({ ...ME, authProviders: ['LOCAL'] })));
+    window.history.replaceState(null, '', '/?panel=more&page=account');
+    renderPanel('account');
+    await userEvent.click(await screen.findByRole('button', { name: '카카오 계정 연동하기' }));
+    expect(startKakaoAuth).toHaveBeenCalledWith({ purpose: 'link', next: '/?panel=more&page=account' });
+  });
+
+  it('해제는 묻고 나서 하고, 새 토큰을 저장한다', async () => {
+    server.use(
+      http.delete(api('/v2/users/me/social/KAKAO'), () =>
+        HttpResponse.json({ authProviders: ['LOCAL'], accessToken: 'new', refreshToken: 'new-r' }),
+      ),
+    );
+    renderPanel('account');
+    await userEvent.click(await screen.findByRole('button', { name: '카카오 계정 연동 해제' }));
+    const dialog = await screen.findByRole('alertdialog');
+    expect(dialog).toHaveTextContent('카카오 계정 연동을 해제하시겠습니까?');
+    await userEvent.click(within(dialog).getByRole('button', { name: '해제' }));
+
+    expect(await screen.findByText('카카오 계정 연동을 해제했습니다')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '카카오 계정 연동하기' })).toBeInTheDocument();
+    expect(getAuthTokens()).toEqual({ accessToken: 'new', refreshToken: 'new-r' });
+  });
+
+  it('서버가 해제를 거절하면 이유를 알린다', async () => {
+    server.use(
+      http.delete(api('/v2/users/me/social/KAKAO'), () =>
+        HttpResponse.json(problem(400, 'cannot-unlink', '해제 실패', '마지막 로그인 방법은 해제할 수 없습니다'), {
+          status: 400,
+        }),
+      ),
+    );
+    renderPanel('account');
+    await userEvent.click(await screen.findByRole('button', { name: '카카오 계정 연동 해제' }));
+    await userEvent.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: '해제' }));
+    expect(await screen.findByText('마지막 로그인 방법은 해제할 수 없습니다')).toBeInTheDocument();
+    expect(screen.getByText('카카오 계정').parentElement).toHaveTextContent('연동됨');
   });
 
   it('아이디로 가입하지 않았으면 비밀번호 변경이 없다', async () => {
