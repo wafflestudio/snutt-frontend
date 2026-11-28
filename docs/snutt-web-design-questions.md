@@ -13,7 +13,7 @@ snutt-web 개발 중 디자인에서 확인이 필요한 내용입니다. 답을
 | 메인                | [home(1200 ~)](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3177-71539)               |
 | 강의 상세           | [강의 상세](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3177-82418)                  |
 | 강의평              | [강의평](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3177-80835)                     |
-| 강의 편집           | [강의상세 패널_수정시](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3626-57185)       |
+| 강의 편집           | [강의상세 패널\_수정시](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3626-57185)      |
 | 필터                | [필터](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3177-90077)                       |
 | 직접 추가           | [직접 추가](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3177-87728)                  |
 | 팝업                | [팝업 예시](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3177-93870)                  |
@@ -455,7 +455,7 @@ Figma 에 친구 화면이 아직 없어(11-14 확인) 메인 화면의 시간�
 
 ### 4-29. 11-24 수정분
 
-1. **강의 편집에서 고칠 수 있는 칸**: 새 [강의상세 패널_수정시](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3626-57185) 프레임도 강의명만 입력칸이고 교수 · 비고 · 시간 및 장소는 글자 그대로입니다. 지금은 4-14 1번처럼 강의명 · 교수 · 색상 · 비고 · 시간 및 장소(직접 추가한 강의는 학점도)를 고칩니다. 강의명 · 색상만 고치는 것이 맞을까요?
+1. **강의 편집에서 고칠 수 있는 칸**: 새 [강의상세 패널\_수정시](https://www.figma.com/design/LkgyyqYOaZXnbXcCGobavU/SNUTT_web-171016~-?node-id=3626-57185) 프레임도 강의명만 입력칸이고 교수 · 비고 · 시간 및 장소는 글자 그대로입니다. 지금은 4-14 1번처럼 강의명 · 교수 · 색상 · 비고 · 시간 및 장소(직접 추가한 강의는 학점도)를 고칩니다. 강의명 · 색상만 고치는 것이 맞을까요?
 2. **편집 중 아래 링크**: 프레임에서는 편집 중에도 `지도에서 보기`, `강의계획서` · `강의편집` · `삭제` 가 그대로 있고 그 아래 20px 에 `취소` · `저장` 이 있습니다. 지금은 편집 중에 이 링크들을 숨기고 그 자리에 버튼만 둡니다. 편집 중에 `강의편집` 을 다시 누를 일이 없어 그대로 두었는데, 링크를 보여 줘야 할까요?
 3. **`button` 변형 이름**: 변형이 `disabled`(회색, 예시 `취소`) · `enabled`(민트, 예시 `추가`)입니다. 회색이 `취소` 같은 보조 버튼 모양인지, `추가` · `저장` 을 누를 수 없을 때의 모양인지 알려 주세요. 지금은 회색을 보조 버튼에 쓰고, 누를 수 없는 버튼은 원래 색을 40% 로 흐리게 그립니다. 회색 배경은 hex `#F7F7F7` 이라 같은 값의 `Background/light` 를 씁니다.
 4. **`button` 글자**: 15px Medium, 줄 높이 22, 자간 −0.408px 로 텍스트 스타일이 없습니다. 지금은 임시 스타일 `15-medium`(줄 높이 120%, 자간 0)을 씁니다. 버튼 높이는 38 로 같습니다. 텍스트 스타일을 만들어 주실 수 있을까요?
@@ -504,6 +504,16 @@ Figma 에 친구 화면이 아직 없어(11-14 확인) 메인 화면의 시간�
 4. **미리보기**: 이미 그리드에 있는 강의라 커서를 올려도 검은 미리보기를 띄우지 않습니다. 대신 그리드의 블록을 강조해야 할까요?
 5. **빈 상태 · 합계**: 강의가 없으면 `시간표에 담긴 강의가 없습니다`, 학기에 시간표가 없으면 `이 학기에는 시간표가 없습니다` 를 글자로만 띄웁니다. 총 학점이나 강의 수를 목록 위에 보여 줄까요? (헤더 탭에 학점이 있습니다)
 
+### 4-34. 강의실 지도
+
+`강의 상세 패널_색상 선택` 의 지도(높이 285, 둥글기 20, 아래 `지도 접기 ⌃`)와 `강의상세 패널_수정시` 의 접힌 `지도에서 보기 ⌄` 를 따라 만들었습니다(6-3). 지도는 네이버 지도 웹 SDK 입니다.
+
+1. **지도 안 모양**: Figma 의 지도는 예시 이미지(Apple 지도)라, 검은 핀 · `50동` 글자 · 오른쪽 위 화살표 버튼을 그대로 옮길 수 없었습니다. 지금은 테두리 있는 점 아래에 `50동` 을 두고, 화살표 버튼은 뺐습니다. 이 버튼이 내 위치인지, 지도 앱으로 열기인지 알려 주세요. 앱은 외부 지도 앱(네이버맵 → 카카오맵 → Apple 지도)으로 엽니다.
+2. **`Icon/MapColor`**: `지도에서 보기` 앞의 색 있는 핀 아이콘 SVG 를 받지 못해, 지금은 `Icon/map` 모양을 `SNUTT/red` 로 칠했습니다. SVG 를 받으면 바꿉니다.
+3. **처음 상태**: 강의 상세를 열면 지도는 접혀 있고, 장소의 건물 중 서버가 위치를 아는 것이 없으면 `지도에서 보기` 도 보이지 않습니다. 처음부터 펼쳐 둬야 할까요?
+4. **여러 건물**: 수업마다 장소가 다르면 건물마다 마커를 두고 모두 보이게 맞춥니다.
+5. **다크 테마**: 네이버 지도는 어두운 지도가 없어 다크 테마에서도 밝게 보입니다.
+
 ## 5. 개발에서 임시로 정한 것
 
 답을 받기 전까지 개발은 아래 값으로 진행합니다. 답을 받으면 이 표에서 바꿀 곳을 찾아 고칩니다.
@@ -519,7 +529,8 @@ Figma 에 친구 화면이 아직 없어(11-14 확인) 메인 화면의 시간�
 | 펼친 목록 (4-6)             | Figma `드롭다운` 모양을 색상 선택까지 모든 메뉴 · 셀렉트에 씀                                                                                                                                                                                                                                                                  | `apps/snutt-web/src/shared/ui/popup.ts`                                                                           |
 | 시간표 탭 팝업 (4-7)        | 확인 팝업 모양에 입력칸을 넣어 씀. + 를 누르면 `시간표 N` 이 채워진 이름 입력 팝업을 연다                                                                                                                                                                                                                                      | `apps/snutt-web/src/features/main/components/TimetableActions.tsx`                                                |
 | 직접 추가 (4-8)             | `<` · 취소는 목록으로, `×` 는 패널 접기. 시간은 5분 단위 오전 6:00 ~ 자정, 자정은 `오전 12:00`. 고른 값은 `Text/plain`. 시간이 겹치면 추가하지 않음. 모든 시간 줄에 `−` (10-14 프레임대로)                                                                                                                                     | `apps/snutt-web/src/features/main/components/CustomLectureForm.tsx`                                               |
-| 강의 상세 (4-9)             | 직접 추가한 강의는 수강 정보 · 강의계획서를 빼고 학점을 위에 둠. 정원은 `80(60)`. 삭제는 `SNUTT/red`, 확인 팝업(`강의를 삭제하시겠습니까?`)을 거침. 지도에서 보기(6-3)는 해당 단위까지 비워 둠                                                                                                                                 | `apps/snutt-web/src/features/main/components/LectureDetailPanel.tsx`                                              |
+| 강의 상세 (4-9)             | 직접 추가한 강의는 수강 정보 · 강의계획서를 빼고 학점을 위에 둠. 정원은 `80(60)`. 삭제는 `SNUTT/red`, 확인 팝업(`강의를 삭제하시겠습니까?`)을 거침                                                                                                                                                                             | `apps/snutt-web/src/features/main/components/LectureDetailPanel.tsx`                                              |
+| 강의실 지도 (4-34)          | 접힌 채로 시작. 마커는 점 + `50동`, 화살표 버튼 없음. `Icon/MapColor` 대신 `Icon/map` 을 `SNUTT/red` 로                                                                                                                                                                                                                        | `apps/snutt-web/src/features/main/components/LectureMap.tsx`                                                      |
 | 패널 접기 버튼 (4-5)        | 접기는 학기 오른쪽 `dock_to_right` 버튼. 펼치기는 좌측 바의 `검색`                                                                                                                                                                                                                                                             | `apps/snutt-web/src/features/main/components/MainScreen.tsx`                                                      |
 | 목록 패널 폭                | Figma 는 430px 고정. 오른쪽 경계를 끌어 320 ~ 640px 로 바꾸고(커서를 올리면 민트 선), 더블클릭하면 430px. 바꾼 폭은 이 브라우저에 저장. 강의 상세 · 직접 추가는 430px 그대로                                                                                                                                                   | `apps/snutt-web/src/features/main/panel-width.ts`, `src/shared/ui/ResizeHandle.tsx`                               |
 | 로그인 · 회원가입 (4-12)    | 예전 웹 로그인 구성. 로그인 유지 체크박스 없음. 로그아웃은 더보기 목록                                                                                                                                                                                                                                                         | `apps/snutt-web/src/features/auth/components/`, `Lnb.tsx`                                                         |

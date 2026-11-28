@@ -46,6 +46,7 @@ import {
   EmailVerificationResultResponse,
   // 즐겨찾기
   BookmarkResponse,
+  BuildingResponse,
   // 빈자리 알림
   VacancyNotificationLecturesResponse,
   // 알림
@@ -714,6 +715,14 @@ export const getSnuttTimetableV2Apis = ({ callWithToken, callWithoutToken }: Get
       callWithoutToken<SuccessResponse<SemesterStatusResponse>>({
         method: 'get',
         path: '/v2/semesters/status',
+      }),
+
+    // ── 건물 ─────────────────────────────────────────────────────────────────
+    /** 강의 장소(`301-118` 등)를 쉼표로 이어 보내면 그 건물들을 돌려준다. 강의 상세의 지도에서 쓴다 */
+    'GET /v2/buildings': ({ query }: { query: { places: string } }) =>
+      callWithoutToken<SuccessResponse<BuildingResponse[]>>({
+        method: 'get',
+        path: `/v2/buildings${toQueryString(query)}`,
       }),
 
     // ── 테마 ─────────────────────────────────────────────────────────────────
