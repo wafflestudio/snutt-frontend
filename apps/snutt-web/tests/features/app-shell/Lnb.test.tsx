@@ -56,4 +56,12 @@ describe('Lnb', () => {
     expect(screen.getByRole('link', { name: '더보기' })).toHaveAttribute('aria-current', 'page');
     expect(screen.getByRole('link', { name: '검색' })).not.toHaveAttribute('aria-current');
   });
+
+  it('패널을 접으면 검색도 더보기도 표시하지 않는다', () => {
+    location.search = '?panel=closed';
+    render(<Lnb />);
+    for (const name of ['검색', '강의평', '친구 시간표', '더보기']) {
+      expect(screen.getByRole('link', { name })).not.toHaveAttribute('aria-current');
+    }
+  });
 });

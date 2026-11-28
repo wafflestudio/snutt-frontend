@@ -33,10 +33,13 @@ const NAV_ITEMS: NavItem[] = [
   { label: '더보기', icon: IconTabMore, href: MORE_HREF },
 ];
 
-/** 더보기는 메인 화면(`/`)의 패널이라 주소가 같고 search params 로 가른다 */
-const isActive = (href: string, pathname: string, morePanel: boolean) => {
-  if (href === MORE_HREF) return pathname === '/' && morePanel;
-  if (href === '/') return pathname === '/' && !morePanel;
+/**
+ * 더보기는 메인 화면(`/`)의 패널이라 주소가 같고 search params 의 `panel` 로 가른다.
+ * 패널을 접으면(`panel=closed`, MainView 의 panel 이 null) 검색도 더보기도 고르지 않는다.
+ */
+const isActive = (href: string, pathname: string, panel: string | null) => {
+  if (href === MORE_HREF) return pathname === '/' && panel === 'more';
+  if (href === '/') return pathname === '/' && panel !== 'more' && panel !== 'closed';
   return pathname.startsWith(href);
 };
 
@@ -53,8 +56,8 @@ export function Lnb() {
         <SnuttLogo className="size-6" />
       </Link>
 
-      {/* search params 를 읽는 부분만 Suspense 로 감싼다. 정적 내보내기에서는 더보기가 고르지 않은 채로 먼저 그려진다 */}
-      <Suspense fallback={<NavList morePanel={false} />}>
+      {/* search params 를 읽는 부분만 Suspense 로 감싼다. 정적 내보내기에서는 패널 상태를 모른 채(검색) 먼저 그려진다 */}
+      <Suspense fallback={<NavList panel={null} />}>
         <NavListWithParams />
       </Suspense>
 
@@ -73,16 +76,16 @@ export function Lnb() {
 }
 
 function NavListWithParams() {
-  return <NavList morePanel={useSearchParams().get('panel') === 'more'} />;
+  return <NavList panel={useSearchParams().get('panel')} />;
 }
 
-/** 화면 이동 목록. morePanel: 메인 화면에 더보기 패널이 열려 있는지 */
-function NavList({ morePanel }: { morePanel: boolean }) {
+/** 화면 이동 목록. panel: 메인 화면 URL 의 `panel` 값 (closed · more · custom, 없으면 null) */
+function NavList({ panel }: { panel: string | null }) {
   const pathname = usePathname();
   return (
     <ul className="mt-10 flex flex-col gap-7.5">
       {NAV_ITEMS.map(({ label, icon: Icon, href }) => {
-        const active = href !== null && isActive(href, pathname, morePanel);
+        const active = href !== null && isActive(href, pathname, panel);
         const className = clsx(
           'flex w-15.5 flex-col items-center gap-0.5 text-14-semibold',
           active ? 'text-normal' : 'text-assistive',
