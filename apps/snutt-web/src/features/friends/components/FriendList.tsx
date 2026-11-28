@@ -41,14 +41,15 @@ export function FriendList({ friends, selectedId, onSelect, renamingId, onRenami
             <RenameForm friend={friend} onClose={() => onRenamingChange(null)} />
           </li>
         ) : (
-          // Figma: 줄 높이 66, 여백 위 20 · 아래 16 · 양옆 10, 이름 15/Medium
+          // Figma: 여백 위 20 · 아래 16 · 양옆 10, 이름 15/Medium. Figma 대로 위아래를 다르게 두면 한글 이름이 2px 아래로
+          // 치우쳐 보여서, 높이(54)는 그대로 두고 위아래 18 로 맞췄다
           <li key={friend.id} className="flex items-center gap-1">
             <button
               type="button"
               aria-pressed={friend.id === selectedId}
               onClick={() => onSelect(friend)}
               className={clsx(
-                'min-w-0 flex-1 cursor-pointer truncate rounded-md px-2.5 pt-5 pb-4 text-left text-15-medium text-normal hover:bg-light',
+                'min-w-0 flex-1 cursor-pointer truncate rounded-md px-2.5 py-4.5 text-left text-15-medium text-normal hover:bg-light',
                 'focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-snutt-mint',
                 // 고른 줄 표시는 Figma 에 없어 임시로 Background/light (디자인 문의 4-31)
                 friend.id === selectedId && 'bg-light',
