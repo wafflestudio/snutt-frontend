@@ -62,7 +62,7 @@ export const fakeSnutt = ({ timetables, semesters, palette, coursebook = [] }: F
       place: place ?? '',
     })),
     color: toColorSet(lecture.color.type === 'custom' ? lecture.color.color : palette[lecture.color.index]),
-    customColor: lecture.color.type === 'custom' ? toColorSet(lecture.color.color) : null,
+    ...(lecture.color.type === 'custom' && { customColor: toColorSet(lecture.color.color) }),
     paletteIndex: lecture.color.type === 'palette' ? lecture.color.index : 0,
   });
 

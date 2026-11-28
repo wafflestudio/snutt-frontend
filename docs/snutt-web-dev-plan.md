@@ -117,6 +117,7 @@ dev 서버 OpenAPI 명세(`https://snutt-api-dev.wafflestudio.com/v3/api-docs`)�
   1. 그룹 명세(`/v3/api-docs/v1compat`, `/v3/api-docs/v2`)에 `components.schemas` 가 없던 것. 이제 생성 스크립트는 그룹 명세만 받는다.
   2. `is` 로 시작하는 boolean 필드가 `is` 없이 기록되던 것. 이제 `isPrimary`, `isAdmin`, `isForced` 처럼 실제 이름으로 나온다.
 - 명세 거의 전부에 `required` 가 있다. (v2 스키마 108개 중 104개) 없는 스키마는 생성 스크립트가 "응답 스키마의 null 불가 필드는 항상 온다"로 본다.
+- 2026-11-28 명세부터 `$ref` 필드의 nullable 표기(`oneOf: [$ref, null]`)가 빠졌다 (`customColor`, `evaluationSummary`, `location`, `nextLecture`, `SemesterStatusResponse.current` 등). 생성 타입은 `?: T` 가 되어 `null` 을 받지 않는다. 서버는 여전히 null 을 보낼 수 있다고 보고 응답은 `?.` · `??` 로 읽고, 요청에서는 `null` 대신 필드를 뺀다 (`toColorRequest`). 미결 사항 "명세 `$ref` nullable 누락"
 - 명세와 동기화하는 순서는 프로젝트 스킬 `/sync-snutt-api` 에 있다. (`.claude/skills/sync-snutt-api/SKILL.md`)
 
 기획 스펙 대비 v2 매핑 (전체):
@@ -141,7 +142,7 @@ dev 서버 OpenAPI 명세(`https://snutt-api-dev.wafflestudio.com/v3/api-docs`)�
 | 관심강좌 담기 여부 | `GET /v2/bookmarks/lectures/{lectureId}/state` | |
 | 빈자리 알림 | `GET /v2/vacancy-notifications/lectures`, `POST, DELETE .../{lectureId}` | 현재 디자인에서 쓰지 않음 (관심 목록 탭이 빠짐) |
 | 빈자리 알림 등록 여부 | `GET /v2/vacancy-notifications/lectures/{lectureId}/state` | |
-| 로그인/회원가입 | `POST /v2/auth/login`, `/v2/auth/login/{provider}`, `/v2/auth/register` | 로그인 실패는 403 `password-mismatch` · `unregistered-local-id`, 가입 실패는 400 `invalid-password`(영문 · 숫자를 포함한 6~20자) · 409 `duplicate-local-id`. 서버 문구를 그대로 보여 준다 (dev 서버 확인) |
+| 로그인/회원가입 | `POST /v2/auth/login`, `/v2/auth/login/{provider}`, `/v2/auth/register` | 가입 시 `email` 필수 (2026-11-28 명세부터. 그 전에는 선택). 로그인 실패는 403 `password-mismatch` · `unregistered-local-id`, 가입 실패는 400 `invalid-password`(영문 · 숫자를 포함한 6~20자) · 409 `duplicate-local-id`. 서버 문구를 그대로 보여 준다 (dev 서버 확인) |
 | 토큰 갱신 · 로그아웃 | `POST /v2/auth/refresh`, `POST /v2/auth/logout` | access token 은 2시간 JWT. refresh token 은 갱신할 때마다 새것으로 바뀌고 쓴 것은 401 `invalid-refresh-token`. 로그아웃은 refresh token 만 폐기하고 access token 은 만료까지 남는다 (dev 서버 확인) |
 | 내 정보 | `GET, PATCH, DELETE /v2/users/me` | 응답에 아이디(localId)가 없다 (명세, 9-3). PATCH 는 닉네임만 바꾸고 서버가 태그를 다시 붙인다 |
 | 소셜 연동/해제 | `POST, DELETE /v2/users/me/social/{provider}` | |
@@ -158,11 +159,11 @@ dev 서버 OpenAPI 명세(`https://snutt-api-dev.wafflestudio.com/v3/api-docs`)�
 | 이 강좌의 내 강의평 | `GET /v2/courses/{courseId}/evaluations/me` | 배열 |
 | 강의평 작성 | `POST /v2/lectures/{lectureId}/evaluations` | 강좌가 아니라 수강한 학기의 강의에 쓴다. 본문은 내용, 평점, 항목별 점수 4개 (모두 필수) |
 | 강의평을 쓸 강의 | `GET /v2/courses/{courseId}` | 강좌와 학기별 강의(`lectures`). 강의마다 내 강의평이 있는지(`myEvaluationExists`)가 온다. 작성 모달의 수강 학기 목록 (8-5) |
-| 강의평 수정/삭제 | `PATCH, DELETE /v2/evaluations/{evaluationId}` | ⋮ 메뉴. 고칠 수 있는지는 응답의 `isModifiable`. 수정은 바뀐 필드만 |
+| 강의평 수정/삭제 | `PATCH, DELETE /v2/evaluations/{evaluationId}` | ⋮ 메뉴. 고칠 수 있는지는 응답의 `isMine` (2026-11-28 명세에서 `isModifiable` 이 바뀜). 수정은 바뀐 필드만 |
 | 강의평 좋아요 | `POST, DELETE /v2/evaluations/{evaluationId}/like` | 바뀐 강의평(좋아요 수 포함)을 돌려준다 |
 | 강의평 신고 | `POST /v2/evaluations/{evaluationId}/report` | ⋮ 메뉴. 본문 `{ content }` |
 | 이메일 인증 | `POST, DELETE /v2/users/me/email/verification`, `POST .../verification/code` | 강의평을 보려면 필요. 메일을 보내고(`{ email }`) 받은 번호를 확인한다(`{ code }` → `isEmailVerified`). `api/email-verification.ts` (8-6, `DELETE` 는 아직 안 씀) |
-| 강의평 탭 | `GET /v2/evaluations/tags`, `GET /v2/evaluations/tags/{tag}`, `GET /v2/evaluations/me`, `GET /v2/courses`, `GET /v2/users/me/lectures/latest` | 둘러보기 태그(`RECENT` · `RECOMMENDED` · `WELL_TAUGHT` 등, 제목은 서버가 줌)와 태그별 강의평, 내 강의평, 강좌 검색(`query`), 최근 수강한 강의(`excludeEvaluated`). 수강한 강의에는 `courseId` 와 평점이 없다 (8-6) |
+| 강의평 탭 | `GET /v2/evaluations/tags`, `GET /v2/evaluations/tags/{tag}`, `GET /v2/evaluations/me`, `GET /v2/courses`, `GET /v2/users/me/lectures/latest` | 둘러보기 태그(`RECENT` · `RECOMMENDED` · `WELL_TAUGHT` 등, 제목은 서버가 줌)와 태그별 강의평, 내 강의평, 강좌 검색(`query`), 최근 수강한 강의(`excludeEvaluated`). 수강한 강의에는 `courseId` 가 없다 (8-6). 2026-11-28 명세부터 수강한 강의에 `avgRating` · `evalCount` · `myEvaluationExists` · `recentEvaluations`(최근 강의평 최대 2개)가 온다. 아직 화면에 쓰지 않는다 |
 | 친구 목록/요청 | `GET, POST /v2/friends`, `DELETE /v2/friends/{friendId}` | 8-1 에서 아래 친구 엔드포인트를 모두 `@sf/snutt-api` 에 추가. 목록은 `state`(`ACTIVE` · `REQUESTED` · `REQUESTING`)가 필수이고 쪽을 나누지 않는다. 다른 값은 400 `invalid-parameter`. 이름을 붙이지 않은 친구는 `displayName` 이 빠진다 (dev 서버 확인) |
 | 친구 수락/거절 | `POST /v2/friends/{friendId}/accept`, `.../decline` | 수락은 친구를 돌려주고, 거절은 본문이 없다 (명세) |
 | 친구 닉네임 | `PATCH /v2/friends/{friendId}/display-name` | 8-2 의 `친구 이름 설정`. 응답은 바뀐 친구 |
@@ -346,7 +347,7 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | | 8-2 | 친구 추가 (닉네임 / Kakao 링크), 닉네임 변경, 삭제: `닉네임으로 친구 요청` · `친구 이름 설정` 은 목록 안 입력 상자(Figma `Nickname Row`), 줄 ⋮ · 시간표 헤더 ··· 메뉴(`친구 이름 설정` · `목록에서 삭제`), 삭제는 확인 팝업. 카카오톡 친구 초대는 SDK · 앱 키가 없어 버튼만 (디자인 문의 4-31) | | ✅ #295 |
 | | 8-3 | 친구 시간표 뷰: 처음에는 목록 첫 친구, 줄을 누르면 그 친구의 학기별 기본 시간표(읽기 전용 `TimetableGrid`). 헤더 왼쪽에 친구 이름, 오른쪽에 ··· 메뉴와 학기 드롭다운(`SemesterSelect` 의 `field` 모양). 대표 시간표가 없으면 빈 그리드 위에 알림 상자 (Figma `친구 시간표_선택한 친구가 시간표가 없을때`). 정해지지 않은 것은 디자인 문의 4-31 | | ✅ #291, #295 |
 | | 8-4 | 강의평 조회 (강의 상세의 `강의평` 쪽, `EvaluationView`): 평균 점수, 항목별 점수(성적 · 강의력 · 유익함 · 널널함), 리뷰 목록(추천순 / 최신순, 무한 스크롤, 좋아요 수는 보기만). 태그 탭(성적 · 과제 · 수강신청 · 팀플) 통계는 API 가 없어 뺐다. 이메일 인증 전이면 서버 문구만, 직접 추가한 강의는 안내만. 정해지지 않은 것은 디자인 문의 4-19 | | ✅ #275 |
-| | 8-5 | 강의평 상호작용 (`EvaluationView`): `강의평 작성` 버튼(Figma `Button/filled`)과 작성 · 수정 모달(수강 학기 · 총점 · 항목별 점수 1 ~ 5점 · 본문. 학기는 `GET /v2/courses/{courseId}` 의 학기별 강의 중 아직 쓰지 않은 것), 좋아요 누르기 / 취소, ⋮ 메뉴(서버의 `isModifiable` 이면 수정 · 삭제, 아니면 신고). Figma 에 작성 화면 · 메뉴가 없어 기존 모달 · 드롭다운으로 만들었다. 정해지지 않은 것은 디자인 문의 4-27 | | ✅ #289 |
+| | 8-5 | 강의평 상호작용 (`EvaluationView`): `강의평 작성` 버튼(Figma `Button/filled`)과 작성 · 수정 모달(수강 학기 · 총점 · 항목별 점수 1 ~ 5점 · 본문. 학기는 `GET /v2/courses/{courseId}` 의 학기별 강의 중 아직 쓰지 않은 것), 좋아요 누르기 / 취소, ⋮ 메뉴(서버의 `isMine`(처음엔 `isModifiable`) 이면 수정 · 삭제, 아니면 신고). Figma 에 작성 화면 · 메뉴가 없어 기존 모달 · 드롭다운으로 만들었다. 정해지지 않은 것은 디자인 문의 4-27 | | ✅ #289 |
 | | 8-6 | 강의평 탭 (`/reviews`, `ReviewsPanel`): 메인 화면의 목록 패널 자리에 `강의평` 패널(시간표는 메인 그대로). 전체보기(강좌 검색, 태그 칩, 추천순 / 최신순, 강의명을 누르면 강좌의 강의평), 나의 강의평(최근 수강한 강의 · 내 강의평을 학기별로, 최근 강의 목록), 패널 안 작성 화면(Figma `강의평_강의평 작성`, 별 반 개 단위, 리뷰는 20자 이상 필수 — 서버가 빈 본문을 받지 않음)과 등록 완료 팝업, 이메일 인증 팝업. 강의 상세의 작성 · 수정도 모달 대신 같은 폼, 강의평이 없을 때는 empty 화면. 정해지지 않은 것은 디자인 문의 4-30 | | ✅ #296 |
 | **9. 부가 기능** | 9-1 | 내보내기 (헤더의 공유 · 다운로드): 고른 시간표의 그리드를 PNG(`<시간표 이름>.png`)로 내려받고, 공유는 운영체제 공유 창(못 하면 클립보드 복사). 정해지지 않은 것은 디자인 문의 4-20 | | ✅ #276 |
 | | 9-2 | 두 시간표 비교: 검색 패널과 함께 표시, 오른쪽 시간표 탭 · ··· · 비교 종료(Figma `top` 의 `복수 시간표`), 담기 대상 선택(`기본 시간표에 추가` = 왼쪽 / `보조 시간표에 추가` = 오른쪽, Figma `드롭다운`). 탭 · 비교 종료는 4-3 에서 만들었다. 정해지지 않은 것은 디자인 문의 4-22 | | ✅ #278 |
@@ -388,7 +389,8 @@ PR 단위로 나눴다. 기획 스펙 순서에서 바꾼 점:
 | 아이콘 교체 | 🔶 일부 해결 (11-14): 디자이너에게 받은 SVG 21개와 로고로 바꿨다(좌측 바, 테마, 닫기, 화살표, `+`, `···`, 강의 정보 아이콘 등). 아직 Material Symbols 인 것: 검색창 검색(`Icon/glass`) · 필터(`ic/condition/normal`), 빼기(−), 강의계획서 `↗`, 별, 체크, 공유 · 다운로드 · 복사 · 새로고침 · 좋아요, 학기 `⌄`. 11-18 에 추가된 `Icon/duplicate` 도 받지 못함 | 받으면 `apps/snutt-web/design-icons/` 에 넣고 `scripts/generate-icons.mts` 의 `DESIGN_ICONS` 로 옮긴다. 디자이너 문의 C |
 | 강의 시간 겹침 | 그리드는 v1 처럼 겹쳐도 칸을 나누지 않는다(기획상 겹치지 않음). 5-1 에서 v2 강의 추가 · 수정의 `forced` 가 겹치는 강의를 지우는지, 겹친 채로 넣는지 백엔드에 확인 | 겹친 채로 넣는다면 가려진 강의를 고를 방법이 필요 |
 | `paletteIndex` 시작 번호 | ✅ 해결: 0부터. dev 응답에서 `paletteIndex: 1` 인 강의의 `color` 가 테마 `colors[1]` 과 같다 (2026-10-15) | domain 은 0부터(팔레트 배열 인덱스)로 가정. v1 `colorIndex` 는 1~9 가 팔레트, 0 이 직접 고른 색이었음. Figma 색상 드롭다운은 `색상1~9` (표시용 번호는 index + 1) |
-| v2 강의 수정(PATCH)의 null | ✅ 해결 (2026-10-15 dev 에서 확인): `null` 과 생략은 "바꾸지 않음". 값을 지우려면 `resetFields` 에 필드 이름을 넣는다 (직접 추가한 강의는 null, 수강편람 강의는 수강편람 값으로 돌아감). `paletteIndex` 를 보내면 `customColor` 가 지워진다 | `toLectureModifyRequest` 가 null 인 필드를 resetFields 로 보낸다. 6-2 에서 수강편람 강의의 값을 "지우기"가 아니라 "원래대로"로 보여 줄지 정한다 |
+| v2 강의 수정(PATCH)의 null | ✅ 해결 (2026-10-15 dev 에서 확인): `null` 과 생략은 "바꾸지 않음". 값을 지우려면 `resetFields` 에 필드 이름을 넣는다 (직접 추가한 강의는 null, 수강편람 강의는 수강편람 값으로 돌아감). `paletteIndex` 를 보내면 `customColor` 가 지워진다. 2026-11-28 명세부터 `customColor` 에 null 을 쓸 수 없어 팔레트 색일 때는 `customColor` 를 빼고 보낸다 (지워지는 동작은 dev 에서 다시 확인 필요) | `toLectureModifyRequest` 가 null 인 필드를 resetFields 로 보낸다. 6-2 에서 수강편람 강의의 값을 "지우기"가 아니라 "원래대로"로 보여 줄지 정한다 |
+| 명세 `$ref` nullable 누락 | 확인 필요 (2026-11-28): 명세에서 `$ref` 필드의 null 표기만 사라졌다. 일반 필드(`["string", "null"]`)는 그대로라 springdoc 쪽 생성 문제로 보인다. 서버가 실제로 null 을 보내지 않게 바뀐 것인지 백엔드에 확인 | 생성 타입이 `?: T` 라 null 이 오면 타입과 다르다. 응답은 `?.` · `??` 로 읽어 동작에는 문제 없음 |
 | 검색 시간 조건의 끝 시각 | ✅ 해결 (5-4, 2026-10-17 dev 확인): v2 는 domain 의 `[start, end)` 그대로 보내면 된다. 10:00~11:00 을 고르면 10:00~11:00 강의가 들어가고, 10:00~11:00 을 빼도 11:00 에 시작하는 강의는 남는다 | v1 웹클라이언트는 `endMinute` 에 -1 을 해서 보냈음 |
 | timetable-picker payload 계산식 | 대조함 (2026-11-14, dev): 같은 시간표 23개(강의 37개)를 v1 `GET /v1/tables/:id` 와 v2 응답으로 받아, v2 를 picker 로 바꾼 payload 와 레거시 picker 가 v1 에서 만드는 payload 를 비교했다. 30분 단위가 아닌 시간(14:15–14:20, 16:05–21:10 등), 여러 요일, 직접 추가 강의, 장소 없는 수업 포함. 처음엔 `start` · `len` 이 달랐다(v1 은 08:00 기준 교시, 시작 내림 · 끝 올림 30분 단위. 백엔드 `LegacyTimetableDtos.kt`). `start_time` · `end_time` · `freshman_quota` · `snuttEvLecture` · `isPrimary` 가 빠졌고, 장소가 없을 때 v1 은 `place: ''` 를 보낸다. 고친 뒤 키 순서까지 같다(dev 값으로 회귀 테스트). 지금 v1 응답에는 `class_time_mask` · `lectureBuildings` 가 없다. 레거시 picker 도 보내지 않으므로 소비자가 쓰지 않는다고 본다. `class_time_mask` 는 옛 v1 fixture 기준 계산값을 그대로 더 보낸다. 레거시가 사용자 테마일 때 같이 보내던 `themeId` 는 보내지 않는다 | 확인 못 함: 시간 없는 강의(dev 계정에 없음), `categoryPre2025` 가 있는 강의, 소비자 쪽 실제 파싱. prod v1 이 dev 와 같은 백엔드인지 |
 | timetable-picker 소비자 전환 | 확인 필요: snutt-web 은 snutt-webclient 와 도메인이 달라 소비자(행샤 앱 · 팝업으로 여는 웹)가 여는 URL, `message` 의 `event.origin` 검사, RN WebView 허용 URL 을 바꿔야 한다. 전환 전까지 레거시 picker 를 계속 운영한다. 허용 목록 secret `TIMETABLE_PICKER_ORIGINS` 는 레거시와 같은 `dev` · `prod` environment 의 것을 쓴다 | 레거시 RN 경로는 `window.opener` 가 없어 버튼이 꺼져 동작하지 않았다. 새 picker 는 RN 브리지를 먼저 본다 |

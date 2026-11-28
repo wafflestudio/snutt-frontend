@@ -425,7 +425,7 @@ export function EvaluationItem({ evaluation, heading, liking, onLike, onAction, 
             </p>
           </div>
         )}
-        {/* 고칠 수 있는지(내 강의평인지)는 서버의 isModifiable 로 정한다 */}
+        {/* 고칠 수 있는지(내 강의평인지)는 서버의 isMine 으로 정한다 */}
         {onAction && (
           <Menu
             align="end"

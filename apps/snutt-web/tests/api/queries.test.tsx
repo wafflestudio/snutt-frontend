@@ -108,10 +108,10 @@ describe('로그인 · 로그아웃', () => {
     );
     const { wrapper } = setup();
     const { result } = renderHook(() => useRegister(), { wrapper });
-    act(() => result.current.mutate({ localId: 'snutt', password: 'abc123', email: null }));
+    act(() => result.current.mutate({ localId: 'snutt', password: 'abc123', email: 'snutt@snu.ac.kr' }));
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    expect(body).toEqual({ localId: 'snutt', password: 'abc123', email: null });
+    expect(body).toEqual({ localId: 'snutt', password: 'abc123', email: 'snutt@snu.ac.kr' });
     expect(getAuthTokens()).toEqual({ accessToken: 'test-access-token', refreshToken: 'test-refresh-token' });
   });
 

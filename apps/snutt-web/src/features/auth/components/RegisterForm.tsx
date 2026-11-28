@@ -12,7 +12,7 @@ import { AuthPage, FormError } from './AuthPage';
 /**
  * 아이디 회원가입. 가입하면 바로 로그인되어 RedirectIfSignedIn 이 메인으로 보낸다.
  * 아이디 · 비밀번호 규칙은 서버가 확인하고 거절 이유(`비밀번호는 영문과 숫자 모두를 포함하는 6~20자여야 합니다`)를 보여 준다.
- * 비밀번호 확인만 여기서 맞춰 본다.
+ * 비밀번호 확인만 여기서 맞춰 본다. 이메일은 필수다 (v2 명세, 2026-11-28).
  */
 export function RegisterForm() {
   const [localId, setLocalId] = useState('');
@@ -28,7 +28,7 @@ export function RegisterForm() {
   const mismatch = passwordConfirm !== '' && password !== passwordConfirm;
   const submit = (event: FormEvent) => {
     event.preventDefault();
-    register.mutate({ localId: localId.trim(), password, email: email.trim() || null });
+    register.mutate({ localId: localId.trim(), password, email: email.trim() });
   };
 
   return (
@@ -67,8 +67,8 @@ export function RegisterForm() {
         />
         <TextField
           type="email"
-          aria-label="이메일 (선택)"
-          placeholder="이메일 (선택)"
+          aria-label="이메일"
+          placeholder="이메일"
           autoComplete="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
@@ -78,7 +78,7 @@ export function RegisterForm() {
         {register.error && !mismatch && <FormError>{getFailureMessage(register.error)}</FormError>}
         <Button
           type="submit"
-          disabled={!localId.trim() || !password || password !== passwordConfirm || register.isPending}
+          disabled={!localId.trim() || !password || !email.trim() || password !== passwordConfirm || register.isPending}
           className="mt-2 w-full"
         >
           가입하기

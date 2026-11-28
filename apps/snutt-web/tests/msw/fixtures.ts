@@ -183,7 +183,7 @@ export const EVALUATION_RESPONSES: SnuttV2.EvaluationResponse[] = [
     fromSnuev: false,
     year: 2026,
     semester: 1,
-    isModifiable: false,
+    isMine: false,
   },
   {
     id: 502,
@@ -197,7 +197,7 @@ export const EVALUATION_RESPONSES: SnuttV2.EvaluationResponse[] = [
     fromSnuev: true,
     year: 2019,
     semester: 3,
-    isModifiable: true,
+    isMine: true,
   },
 ];
 

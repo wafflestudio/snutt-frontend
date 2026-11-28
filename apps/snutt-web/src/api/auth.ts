@@ -36,7 +36,7 @@ export const useLocalLogin = () => {
 export const useRegister = () => {
   const signIn = useSignIn();
   return useMutation({
-    mutationFn: (body: { localId: string; password: string; email: string | null }) =>
+    mutationFn: (body: { localId: string; password: string; email: string }) =>
       callApi('POST /v2/auth/register', { body }),
     onSuccess: signIn,
   });

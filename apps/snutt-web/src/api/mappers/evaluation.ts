@@ -46,7 +46,7 @@ export const toEvaluation = (evaluation: SnuttV2.EvaluationResponse): Evaluation
   },
   likeCount: evaluation.likeCount,
   isLiked: evaluation.isLiked,
-  isModifiable: evaluation.isModifiable,
+  isModifiable: evaluation.isMine,
   fromSnuev: evaluation.fromSnuev,
 });
 

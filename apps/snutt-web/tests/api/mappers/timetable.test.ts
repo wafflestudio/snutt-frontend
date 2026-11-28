@@ -151,7 +151,6 @@ describe('요청 mapper', () => {
       remark: null,
       classPlaceAndTimes: [{ day: 5, startMinute: 600, endMinute: 660, place: '' }],
       paletteIndex: 3,
-      customColor: null,
       isForced: false,
     });
   });

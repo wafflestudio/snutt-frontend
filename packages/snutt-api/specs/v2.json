@@ -30,32 +30,50 @@
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -72,7 +90,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TimetableResponse"
                 }
@@ -110,7 +128,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -149,7 +167,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -199,7 +217,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TimetableLectureReminderResponse"
                 }
@@ -254,7 +272,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TimetableLectureReminderResponse"
                 }
@@ -368,7 +386,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AuthProvidersResponse"
                 }
@@ -410,7 +428,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AuthProvidersResponse"
                 }
@@ -437,7 +455,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PushPreferenceDto"
                 }
@@ -472,7 +490,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PushPreferenceDto"
                 }
@@ -509,7 +527,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AuthProvidersResponse"
                 }
@@ -544,7 +562,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ChangePasswordResponse"
                 }
@@ -599,7 +617,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/EmailVerificationResultResponse"
                 }
@@ -636,7 +654,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/EmailVerificationResultResponse"
                 }
@@ -671,32 +689,50 @@
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -751,7 +787,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -789,7 +825,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -828,32 +864,50 @@
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -870,7 +924,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TimetableResponse"
                 }
@@ -915,32 +969,50 @@
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -956,7 +1028,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TimetableResponse"
                 }
@@ -992,32 +1064,50 @@
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -1034,7 +1124,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TimetableResponse"
                 }
@@ -1072,7 +1162,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1102,7 +1192,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1140,7 +1230,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1191,7 +1281,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ThemePublicationResponse"
                 }
@@ -1229,7 +1319,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1268,7 +1358,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1309,7 +1399,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1350,7 +1440,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1385,6 +1475,54 @@
               "type": "integer",
               "format": "int64"
             }
+          },
+          {
+            "name": "x-app-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-app-type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-os-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-model",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-language",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -1401,7 +1539,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/EvaluationResponse"
                 }
@@ -1428,32 +1566,50 @@
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -1470,7 +1626,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CursorPageLectureResponse"
                 }
@@ -1511,7 +1667,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1549,7 +1705,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/FriendResponse"
                 }
@@ -1618,7 +1774,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/FriendResponse"
                 }
@@ -1655,7 +1811,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/FriendResponse"
                 }
@@ -1682,32 +1838,50 @@
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -1790,13 +1964,61 @@
               "type": "integer",
               "format": "int64"
             }
+          },
+          {
+            "name": "x-app-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-app-type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-os-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-model",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-language",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/EvaluationResponse"
                 }
@@ -1826,13 +2048,61 @@
               "type": "integer",
               "format": "int64"
             }
+          },
+          {
+            "name": "x-app-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-app-type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-os-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-model",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-language",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/EvaluationResponse"
                 }
@@ -1889,32 +2159,50 @@
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -1931,7 +2219,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DiaryQuestionnaireResponse"
                 }
@@ -2028,7 +2316,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TokenResponse"
                 }
@@ -2064,7 +2352,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TokenResponse"
                 }
@@ -2100,7 +2388,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/VerifyPasswordResetCodeResponse"
                 }
@@ -2136,7 +2424,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/RequestPasswordResetResponse"
                 }
@@ -2230,7 +2518,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TokenResponse"
                 }
@@ -2283,7 +2571,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TokenResponse"
                 }
@@ -2348,7 +2636,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AdminPopupResponse"
                 }
@@ -2428,7 +2716,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -2458,7 +2746,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -2536,7 +2824,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -2632,7 +2920,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -2680,7 +2968,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AdminConfigResponse"
                 }
@@ -2707,7 +2995,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UserResponse"
                 }
@@ -2760,7 +3048,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UserResponse"
                 }
@@ -2796,39 +3084,57 @@
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TimetableResponse"
                 }
@@ -2864,7 +3170,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -2913,7 +3219,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -2961,39 +3267,57 @@
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TimetableResponse"
                 }
@@ -3036,32 +3360,50 @@
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -3078,7 +3420,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TimetableResponse"
                 }
@@ -3116,7 +3458,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ThemeResponse"
                 }
@@ -3152,7 +3494,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -3201,7 +3543,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -3252,7 +3594,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/FriendResponse"
                 }
@@ -3284,13 +3626,61 @@
               "type": "integer",
               "format": "int64"
             }
+          },
+          {
+            "name": "x-app-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-app-type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-os-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-model",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-language",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/EvaluationResponse"
                 }
@@ -3349,6 +3739,54 @@
               "type": "integer",
               "format": "int64"
             }
+          },
+          {
+            "name": "x-app-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-app-type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-os-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-model",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-language",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -3365,7 +3803,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/EvaluationResponse"
                 }
@@ -3418,7 +3856,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AdminRegistrationPeriodResponse"
                 }
@@ -3612,7 +4050,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AdminConfigResponse"
                 }
@@ -3639,39 +4077,57 @@
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/VacancyNotificationLecturesResponse"
                 }
@@ -3709,7 +4165,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "boolean"
                 }
@@ -3741,13 +4197,61 @@
               "type": "boolean",
               "default": false
             }
+          },
+          {
+            "name": "x-app-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-app-type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-os-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-model",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-language",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -3801,39 +4305,57 @@
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -3874,7 +4396,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -3904,39 +4426,57 @@
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TimetableResponse"
                 }
@@ -3981,7 +4521,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CursorPageThemePublicationResponse"
                 }
@@ -4019,7 +4559,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ThemePublicationResponse"
                 }
@@ -4075,7 +4615,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -4115,7 +4655,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CursorPageThemePublicationResponse"
                 }
@@ -4166,39 +4706,57 @@
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TagListResponse"
                 }
@@ -4225,39 +4783,57 @@
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CourseTagListResponse"
                 }
@@ -4284,7 +4860,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SemesterStatusResponse"
                 }
@@ -4310,7 +4886,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -4362,13 +4938,61 @@
               "type": "boolean",
               "default": false
             }
+          },
+          {
+            "name": "x-app-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-app-type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-os-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-model",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-language",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CursorPageNotificationResponse"
                 }
@@ -4395,7 +5019,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotificationCountResponse"
                 }
@@ -4455,39 +5079,57 @@
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TimetableResponse"
                 }
@@ -4525,7 +5167,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -4555,7 +5197,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/FriendRequestLinkResponse"
                 }
@@ -4578,11 +5220,61 @@
           "evaluation-controller"
         ],
         "operationId": "getEvaluationTags",
+        "parameters": [
+          {
+            "name": "x-app-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-app-type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-os-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-model",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-language",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -4632,13 +5324,61 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "x-app-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-app-type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-os-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-model",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-language",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CursorPageEvaluationResponse"
                 }
@@ -4669,13 +5409,61 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "x-app-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-app-type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-os-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-model",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-language",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CursorPageEvaluationResponse"
                 }
@@ -4726,39 +5514,57 @@
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DiaryTargetLectureResponse"
                 }
@@ -4785,7 +5591,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -4815,7 +5621,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -4953,39 +5759,57 @@
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CursorPageCourseResponse"
                 }
@@ -5021,39 +5845,57 @@
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CourseDetailResponse"
                 }
@@ -5130,13 +5972,61 @@
                 4
               ]
             }
+          },
+          {
+            "name": "x-app-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-app-type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-os-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-model",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-language",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CursorPageEvaluationResponse"
                 }
@@ -5168,13 +6058,61 @@
               "type": "integer",
               "format": "int64"
             }
+          },
+          {
+            "name": "x-app-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-app-type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-os-version",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-device-model",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-language",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -5215,7 +6153,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CourseEvaluationDetailsResponse"
                 }
@@ -5242,7 +6180,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -5271,7 +6209,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CoursebookResponse"
                 }
@@ -5339,7 +6277,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CoursebookOfficialResponse"
                 }
@@ -5365,39 +6303,57 @@
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "object",
                   "additionalProperties": {
@@ -5436,7 +6392,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -5489,39 +6445,57 @@
           {
             "name": "x-app-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-app-type",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-os-version",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-id",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-device-model",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "x-language",
             "in": "header",
-            "required": false
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/BookmarkResponse"
                 }
@@ -5559,7 +6533,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "boolean"
                 }
@@ -5596,7 +6570,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -5626,11 +6600,59 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/AdminRegistrationPeriodResponse"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "osType": [],
+            "clientKey": [],
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/v2/admin/mail-logs": {
+      "get": {
+        "tags": [
+          "admin-controller"
+        ],
+        "operationId": "getMailLogs",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "localId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AdminMailLogResponse"
                   }
                 }
               }
@@ -5944,14 +6966,7 @@
             "$ref": "#/components/schemas/ColorSet"
           },
           "customColor": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/ColorSet"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/ColorSet"
           },
           "paletteIndex": {
             "type": "integer",
@@ -6318,14 +7333,7 @@
             ]
           },
           "customColor": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/ColorSet"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/ColorSet"
           },
           "paletteIndex": {
             "type": [
@@ -6590,7 +7598,7 @@
               4
             ]
           },
-          "isModifiable": {
+          "isMine": {
             "type": "boolean"
           }
         },
@@ -6602,7 +7610,7 @@
           "id",
           "instructor",
           "isLiked",
-          "isModifiable",
+          "isMine",
           "likeCount",
           "rating",
           "semester",
@@ -6936,14 +7944,7 @@
             }
           },
           "evaluationSummary": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/LectureEvSummaryResponse"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/LectureEvSummaryResponse"
           }
         },
         "required": [
@@ -7154,14 +8155,7 @@
             }
           },
           "nextLecture": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/DiaryTargetLectureResponse"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/DiaryTargetLectureResponse"
           }
         },
         "required": [
@@ -7217,13 +8211,12 @@
             "minLength": 1
           },
           "email": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string",
+            "minLength": 1
           }
         },
         "required": [
+          "email",
           "localId",
           "password"
         ]
@@ -7474,9 +8467,21 @@
             "type": "string",
             "minLength": 1
           },
+          "titleEn": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "message": {
             "type": "string",
             "minLength": 1
+          },
+          "messageEn": {
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "type": {
             "type": "integer",
@@ -7898,14 +8903,7 @@
             ]
           },
           "customColor": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/ColorSet"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/ColorSet"
           },
           "paletteIndex": {
             "type": [
@@ -8212,13 +9210,38 @@
               3,
               4
             ]
+          },
+          "avgRating": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
+          },
+          "evalCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "myEvaluationExists": {
+            "type": "boolean",
+            "description": "해당 강의에 해당 학기(`takenYear`, `takenSemester`)에 본인이 강의평을 썼으면 true, 강의평이 없거나 다른 학기에만 썼으면 false다."
+          },
+          "recentEvaluations": {
+            "type": "array",
+            "description": "해당 강의에 달린 강의평 중 최근 학기 순으로 최대 2개다. 수강 학기와 작성자를 구분하지 않는다.",
+            "items": {
+              "$ref": "#/components/schemas/EvaluationResponse"
+            }
           }
         },
         "required": [
           "courseNumber",
+          "evalCount",
           "id",
           "instructor",
           "lectureId",
+          "myEvaluationExists",
+          "recentEvaluations",
           "takenSemester",
           "takenYear",
           "title"
@@ -8437,14 +9460,7 @@
         "type": "object",
         "properties": {
           "current": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/YearAndSemesterResponse"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/YearAndSemesterResponse"
           },
           "next": {
             "$ref": "#/components/schemas/YearAndSemesterResponse"
@@ -9066,14 +10082,7 @@
             ]
           },
           "location": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/GeoCoordinate"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/GeoCoordinate"
           }
         },
         "required": [
@@ -9275,6 +10284,80 @@
           "semester",
           "updatedAt",
           "year"
+        ]
+      },
+      "AdminMailLogResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "VERIFICATION",
+              "PASSWORD_RESET",
+              "FIND_ID"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "SENT",
+              "SUPPRESSED",
+              "FAILED",
+              "THROTTLED",
+              "NO_ACCOUNT",
+              "NO_EMAIL"
+            ]
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "requestedLocalId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "subject": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "body": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "errorMessage": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "createdAt": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "updatedAt": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "createdAt",
+          "id",
+          "status",
+          "type",
+          "updatedAt"
         ]
       },
       "AdminDiaryQuestionResponse": {

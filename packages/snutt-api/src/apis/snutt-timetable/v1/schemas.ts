@@ -63,10 +63,10 @@ export type LegacyTimetableLectureDto = {
   remark?: string | null;
   course_number?: string;
   course_title: string;
-  color?: LegacyColorSetDto | null;
+  color?: LegacyColorSetDto;
   colorIndex: Int32;
   lecture_id?: string;
-  snuttEvLecture?: LegacyEvLectureIdDto | null;
+  snuttEvLecture?: LegacyEvLectureIdDto;
   categoryPre2025?: string | null;
 };
 
@@ -89,7 +89,7 @@ export type LegacyModifyLectureRequest = {
   credit?: Int32 | null;
   class_time_json?: LegacyClassTimeRequest[];
   remark?: string | null;
-  color?: LegacyColorRequest | null;
+  color?: LegacyColorRequest;
   colorIndex?: Int32 | null;
   is_forced?: boolean;
 };
@@ -128,9 +128,9 @@ export type LegacyThemeDto = {
   colors?: LegacyColorSetDto[] | null;
   isDefault: boolean;
   isCustom: boolean;
-  origin?: LegacyThemeOriginDto | null;
+  origin?: LegacyThemeOriginDto;
   status: 'BASIC' | 'PRIVATE' | 'PUBLISHED' | 'DOWNLOADED';
-  publishInfo?: LegacyThemePublishInfoDto | null;
+  publishInfo?: LegacyThemePublishInfoDto;
 };
 
 export type LegacyThemeOriginDto = { originId: string; authorId: string };
@@ -151,7 +151,7 @@ export type LegacyCustomLectureRequest = {
   credit?: Int32 | null;
   class_time_json?: LegacyClassTimeRequest[];
   remark?: string | null;
-  color?: LegacyColorRequest | null;
+  color?: LegacyColorRequest;
   colorIndex?: Int32 | null;
   is_forced?: boolean;
 };
@@ -199,7 +199,7 @@ export type LegacyLectureDto = {
   course_title: string;
   registrationCount: Int32;
   wasFull: boolean;
-  snuttEvLecture?: LegacyEvSummary | null;
+  snuttEvLecture?: LegacyEvSummary;
   categoryPre2025?: string | null;
 };
 
@@ -258,6 +258,8 @@ export type LegacyEvaluationReportResponse = {
   is_hidden: boolean;
 };
 
+export type LegacyEvaluationLikeResponse = { like_count: Int64; is_liked: boolean };
+
 export type LegacyDiarySubmissionRequest = {
   lectureId: Int64;
   dailyClassTypes: string[];
@@ -274,7 +276,7 @@ export type LegacyDiaryQuestionDto = { id: string; question: string; answers: st
 export type LegacyDiaryQuestionnaireResponse = {
   courseTitle: string;
   questions: LegacyDiaryQuestionDto[];
-  nextLecture?: LegacyDiaryTargetLectureDto | null;
+  nextLecture?: LegacyDiaryTargetLectureDto;
 };
 
 export type LegacyDiaryTargetLectureDto = { lectureId?: string | null; courseTitle: string };
@@ -285,7 +287,7 @@ export type LegacyTokenExchangeRequest = { legacyToken: string };
 
 export type LegacyTokenExchangeResponse = { userId: string; accessToken: string; refreshToken: string };
 
-export type LegacyLocalRegisterRequest = { id: string; password: string; email?: string | null };
+export type LegacyLocalRegisterRequest = { id: string; password: string; email: string };
 
 export type LegacyLoginResponse = { user_id: string; token: string; message: string };
 
@@ -353,6 +355,7 @@ export type LegacyEvaluationWithSemesterDto = {
   lecture_id: Int64;
   is_modifiable: boolean;
   is_reportable: boolean;
+  is_mine: boolean;
 };
 
 export type LegacyVacancyLecturesResponse = { lectures: LegacyLectureDto[] };
@@ -390,10 +393,7 @@ export type LegacyTagListResponse = {
 
 export type LegacyTagUpdateTimeResponse = { updated_at: Int64 };
 
-export type LegacySemesterStatusResponse = {
-  current?: LegacyYearAndSemesterDto | null;
-  next: LegacyYearAndSemesterDto;
-};
+export type LegacySemesterStatusResponse = { current?: LegacyYearAndSemesterDto; next: LegacyYearAndSemesterDto };
 
 export type LegacyYearAndSemesterDto = { year: Int32; semester: 1 | 2 | 3 | 4 };
 
@@ -406,7 +406,6 @@ export type LegacyPopupDto = {
   image_url: string;
   linkUrl?: string | null;
   hiddenDays?: Int32 | null;
-  hidden_days?: Int32;
 };
 
 export type LegacyNotificationDto = {
@@ -460,7 +459,7 @@ export type LegacyFriendTimetableLectureDto = {
   remark?: string | null;
   courseNumber?: string | null;
   courseTitle: string;
-  color?: LegacyColorSetDto | null;
+  color?: LegacyColorSetDto;
   colorIndex: Int32;
   lectureId?: string | null;
   categoryPre2025?: string | null;
@@ -480,11 +479,21 @@ export type LegacyTakenLectureDto = {
   classification?: string | null;
   taken_year: Int32;
   taken_semester: Int32;
+  avg_rating?: Double;
+  evaluation_count: Int64;
+  my_evaluation_exists: boolean;
+  recent_evaluations: LegacyEvaluationWithSemesterDto[];
 };
 
 export type LegacyTakenLecturesResponse = { content: LegacyTakenLectureDto[]; total_count: Int32 };
 
-export type LegacyEvTagDto = { id: Int64; name: string; description?: string | null; ordering: Int32 };
+export type LegacyEvTagDto = {
+  id: Int64;
+  name: string;
+  description?: string | null;
+  ordering: Int32;
+  key?: string | null;
+};
 
 export type LegacyEvTagGroupDto = {
   id: Int32;
@@ -522,9 +531,10 @@ export type LegacyEvaluationWithLectureDto = {
   from_snuev: boolean;
   year: Int32;
   semester: Int32;
-  lecture?: LegacyEvaluationCourseDto | null;
+  lecture?: LegacyEvaluationCourseDto;
   is_modifiable: boolean;
   is_reportable: boolean;
+  is_mine: boolean;
 };
 
 export type LegacyMyLectureEvaluationsResponse = { evaluations: LegacyEvaluationWithSemesterDto[] };
@@ -668,7 +678,7 @@ export type LegacyLectureBuildingDto = {
   buildingNameEng: string;
   campus: string;
   locationInDMS?: LegacyGeoCoordinateDto;
-  locationInDecimal?: LegacyGeoCoordinateDto | null;
+  locationInDecimal?: LegacyGeoCoordinateDto;
 };
 
 export type LegacyPageResponseLegacyLectureBuildingDto = { content: LegacyLectureBuildingDto[]; totalCount: Int32 };
@@ -688,7 +698,7 @@ export type LegacyBookmarkLectureDto = {
   remark?: string | null;
   course_number?: string;
   course_title: string;
-  snuttEvLecture?: LegacyEvSummary | null;
+  snuttEvLecture?: LegacyEvSummary;
   categoryPre2025?: string | null;
 };
 
@@ -730,6 +740,19 @@ export type SemesterRegistrationPeriod = {
   id?: Int64 | null;
   createdAt?: DateTime | null;
   updatedAt?: DateTime | null;
+};
+
+export type LegacyAdminMailLogResponse = {
+  id: string;
+  type: 'VERIFICATION' | 'PASSWORD_RESET' | 'FIND_ID';
+  status: 'PENDING' | 'SENT' | 'SUPPRESSED' | 'FAILED' | 'THROTTLED' | 'NO_ACCOUNT' | 'NO_EMAIL';
+  email?: string | null;
+  requestedLocalId?: string | null;
+  subject?: string | null;
+  body?: string | null;
+  errorMessage?: string | null;
+  createdAt: Int64;
+  updatedAt: Int64;
 };
 
 export type DiaryQuestion = {

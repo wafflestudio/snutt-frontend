@@ -108,6 +108,7 @@ describe('RegisterForm', () => {
     await userEvent.type(screen.getByRole('textbox', { name: '아이디' }), 'snutt');
     await userEvent.type(screen.getByLabelText('비밀번호'), password);
     await userEvent.type(screen.getByLabelText('비밀번호 확인'), confirm);
+    await userEvent.type(screen.getByRole('textbox', { name: '이메일' }), 'snutt@snu.ac.kr');
   };
 
   it('비밀번호 확인이 다르면 알리고 가입할 수 없다', async () => {
@@ -117,7 +118,7 @@ describe('RegisterForm', () => {
     expect(screen.getByRole('button', { name: '가입하기' })).toBeDisabled();
   });
 
-  it('가입하면 빈 이메일은 null 로 보내고 로그인된다', async () => {
+  it('가입하면 로그인된다', async () => {
     let body: unknown;
     server.use(
       http.post(api('/v2/auth/register'), async ({ request }) => {
@@ -130,7 +131,15 @@ describe('RegisterForm', () => {
     await userEvent.click(screen.getByRole('button', { name: '가입하기' }));
 
     await waitFor(() => expect(getAuthTokens()).not.toBeNull());
-    expect(body).toEqual({ localId: 'snutt', password: 'abc123', email: null });
+    expect(body).toEqual({ localId: 'snutt', password: 'abc123', email: 'snutt@snu.ac.kr' });
+  });
+
+  it('이메일을 넣지 않으면 가입할 수 없다', async () => {
+    renderWithQuery(<RegisterForm />);
+    await userEvent.type(screen.getByRole('textbox', { name: '아이디' }), 'snutt');
+    await userEvent.type(screen.getByLabelText('비밀번호'), 'abc123');
+    await userEvent.type(screen.getByLabelText('비밀번호 확인'), 'abc123');
+    expect(screen.getByRole('button', { name: '가입하기' })).toBeDisabled();
   });
 
   it('서버가 거절한 이유(비밀번호 규칙 등)를 보여 준다', async () => {
